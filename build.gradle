@@ -17,8 +17,13 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven {
-		name 'Xander Maven'
-		url 'https://maven.isxander.dev/releases'
+		name = "FzzyMaven"
+		url = uri("https://maven.fzzyhmstrs.me/")
+	}
+
+	maven {
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
 	}
 }
 
@@ -32,7 +37,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Mod Dependencies.
-	modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+	modImplementation("me.fzzyhmstrs:fzzy_config:${project.fzzy_version}")
 	
 }
 
