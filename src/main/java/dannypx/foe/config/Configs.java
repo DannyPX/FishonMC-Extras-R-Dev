@@ -5,6 +5,7 @@ import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 
 public class Configs {
     public static HUDConfig hudConfig = ConfigApiJava.registerAndLoadConfig(HUDConfig::new, RegisterType.CLIENT);
+    public static DataHandlerConfig dataHandlerConfig = ConfigApiJava.registerAndLoadConfig(DataHandlerConfig::new, RegisterType.CLIENT);
 
     public static void init() {};
 }
