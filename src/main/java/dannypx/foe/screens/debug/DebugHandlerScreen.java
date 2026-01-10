@@ -9,7 +9,9 @@ import dannypx.foe.screens.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.MutableText;
@@ -27,7 +29,7 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
     private final Screen parent;
 
     private ButtonListWidget handlerList;
-    private Map<String, Pair<MutableText, Tooltip>> selectedHandler;
+    private String selectedHandler;
     //endregion
 
     //region Methods
@@ -74,7 +76,7 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
             handlerList.addEntry(new ButtonListWidget.ButtonEntry(
                     ButtonWidget.builder(
                             Text.literal(handler.replace("dannypx.foe.common.handler.", "")),
-                            button -> selectedHandler = _DebugHandler.instance()._getFields().get(handler)
+                            button -> selectedHandler = handler
                     ).width(BUTTON_WIDTH).build()
             ));
         });
@@ -85,18 +87,27 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
     private void renderHandlerFields(DrawContext context, int mouseX, int mouseY, float delta) {
         if(selectedHandler != null) {
             AtomicInteger atomicInteger = new AtomicInteger(0);
-            selectedHandler.forEach((name, value) -> {
-                context.drawText(textRenderer,
-                        TextHelper.concat(
-                                Text.literal(name).formatted(Formatting.BOLD),
-                                Text.literal(": "),
-                                value.v1().formatted(Formatting.GRAY)
-                        ),
-                        (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                        PADDING + (textRenderer.fontHeight + LINE_SPACING) * atomicInteger.getAndIncrement(),
-                        0xFFFFFF,
-                        true
+            _DebugHandler.instance()._getFields().get(selectedHandler).forEach((name, value) -> {
+                Text text = TextHelper.concat(
+                        Text.literal(name).formatted(Formatting.BOLD),
+                        Text.literal(": "),
+                        value.v1().formatted(Formatting.GRAY)
                 );
+                // Get Text Coordinates and Bounds
+                int textx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
+                int texty = PADDING + (textRenderer.fontHeight + LINE_SPACING) * atomicInteger.getAndIncrement();
+                int textwidth = textRenderer.getWidth(text);
+                int textHeight = textRenderer.fontHeight;
+                int color = 0xFFFFFF;
+
+                // Draw Text
+                context.drawText(textRenderer, text, textx, texty, color, true);
+
+                // Draw Tooltip
+                if(value.v2() != null && mouseX >= textx && mouseX <= textx + textwidth
+                        && mouseY >= texty && mouseY <= texty + textHeight) {
+                    context.drawTooltip(textRenderer, value.v2().getLines(minecraftClient), HoveredTooltipPositioner.INSTANCE, mouseX, mouseY);
+                }
             });
         }
     }

@@ -1,5 +1,7 @@
 package dannypx.foe.common.handler.store;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -41,13 +43,18 @@ public class ProfileDataHandler {
     private void setUUID(UUID uuid) {
         this.profileData.uuid = uuid;
     }
+
+    private String dataModelToJson(DataModels.DataModel dataModel) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(dataModel);
+    }
     //endregion
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), null)
+                "profileData", Pair.of(Text.literal("[profileData]"), Tooltip.of(Text.literal(dataModelToJson(profileData))))
         );
     }
     //endregion

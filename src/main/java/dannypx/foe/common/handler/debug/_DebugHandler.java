@@ -3,6 +3,7 @@ package dannypx.foe.common.handler.debug;
 import dannypx.foe.common.handler.fetch._DebugFetch;
 import dannypx.foe.common.handler.logic._DebugLogic;
 import dannypx.foe.common.handler.io._DebugIO;
+import dannypx.foe.common.handler.store._DebugStore;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
@@ -26,33 +27,34 @@ public class _DebugHandler {
     //region Fields
     /// Pair(LIST_OF_HANDLER_NAMES, MAP(HANDLER_NAME, FIELD_AND_TOOLTIP))
     //debugFetch
-    private final Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugFetch =
-            Pair.of(_DebugFetch._getHandlers(), _DebugFetch._getFields());
-    //debugLogic
-    private final Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugLogic =
-            Pair.of(_DebugLogic._getHandlers(), _DebugLogic._getFields());
-    //debugIO
-    private final Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugIO =
-            Pair.of(_DebugIO._getHandlers(), _DebugIO._getFields());
-
-    //handlers
-    List<String> _handlers = Stream.of(debugFetch.v1(), debugLogic.v1(), debugIO.v1())
-            .flatMap(Collection::stream).toList();
-
-    //fields
-    Map<String, Map<String, Pair<MutableText, Tooltip>>> _fields = Stream.of(debugFetch.v2(), debugLogic.v2(),  debugIO.v2())
-            .flatMap(m -> m.entrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-    public List<String> _getHandlers() {
-        return _handlers;
+    private Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugFetch() {
+        return Pair.of(_DebugFetch._getHandlers(), _DebugFetch._getFields());
     }
-
-    public Map<String, Map<String, Pair<MutableText, Tooltip>>> _getFields() {
-        return _fields;
+    //debugLogic
+    private Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugLogic() {
+        return Pair.of(_DebugLogic._getHandlers(), _DebugLogic._getFields());
+    }
+    //debugIO
+    private Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugIO() {
+        return Pair.of(_DebugIO._getHandlers(), _DebugIO._getFields());
+    }
+    //debugStore
+    private Pair<List<String>, Map<String, Map<String, Pair<MutableText, Tooltip>>>> debugStore() {
+        return Pair.of(_DebugStore._getHandlers(), _DebugStore._getFields());
     }
     //endregion
 
     //region Methods
+    public List<String> _getHandlers() {
+        return Stream.of(debugFetch().v1(), debugLogic().v1(), debugIO().v1(), debugStore().v1())
+                .flatMap(Collection::stream).toList();
+    }
+
+    public Map<String, Map<String, Pair<MutableText, Tooltip>>> _getFields() {
+        return Stream.of(debugFetch().v2(), debugLogic().v2(),
+                        debugIO().v2(), debugStore().v2())
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
     //endregion
 }

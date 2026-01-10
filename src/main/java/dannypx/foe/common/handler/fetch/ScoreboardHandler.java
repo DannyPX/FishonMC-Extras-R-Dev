@@ -26,7 +26,6 @@ public class ScoreboardHandler {
 
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    private Collection<Team> prevTeams = new ArrayList<>();
     private List<Text> prevResult = new ArrayList<>();
 
     private String wallet = "";
@@ -142,12 +141,12 @@ public class ScoreboardHandler {
 
     private Pair<Boolean, List<Text>> extractLines(ScoreboardObjective objective) {
         Collection<Team> team = objective.getScoreboard().getTeams();
-        if(!Objects.equals(prevTeams, team)) {
-            prevTeams = team;
-            prevResult = team.stream()
-                    .map(Team::getPrefix)
-                    .filter(prefix -> !prefix.getString().isBlank())
-                    .collect(Collectors.toList());
+        List<Text> textList = team.stream()
+                .map(Team::getPrefix)
+                .filter(prefix -> !prefix.getString().isBlank())
+                .toList();
+        if(!Objects.equals(prevResult, textList)) {
+            prevResult = textList;
             return Pair.of(true, prevResult);
         }
         return Pair.of(false, prevResult);
