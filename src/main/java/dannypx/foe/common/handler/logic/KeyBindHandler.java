@@ -4,8 +4,6 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.type.AdvancedKeyBinding;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.screens.MainScreen;
-import me.fzzyhmstrs.fzzy_config.screen.internal.ConfigScreen;
-import me.fzzyhmstrs.fzzy_config.screen.internal.ConfigScreenManager;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;

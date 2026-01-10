@@ -6,7 +6,6 @@ import dannypx.foe.common.handler.io._DebugIO;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 
 import java.util.Collection;
 import java.util.List;

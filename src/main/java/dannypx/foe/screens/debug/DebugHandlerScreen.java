@@ -74,10 +74,7 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
             handlerList.addEntry(new ButtonListWidget.ButtonEntry(
                     ButtonWidget.builder(
                             Text.literal(handler.replace("dannypx.foe.common.handler.", "")),
-                            button -> {
-                                selectedHandler = _DebugHandler.instance()._getFields().get(handler);
-                                LoggerHandler.info(selectedHandler.toString());
-                            }
+                            button -> selectedHandler = _DebugHandler.instance()._getFields().get(handler)
                     ).width(BUTTON_WIDTH).build()
             ));
         });

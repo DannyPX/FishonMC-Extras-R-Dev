@@ -48,9 +48,8 @@ public class MainScreen extends Screen implements ScreenConstants {
     }
 
     private ButtonWidget debugButton() {
-        return ButtonWidget.builder(Text.literal("Debug Screen"), button -> {
-            minecraftClient.setScreen(new DebugHandlerScreen(minecraftClient.currentScreen));
-        })
+        return ButtonWidget.builder(Text.literal("Debug Screen"), button ->
+                        minecraftClient.setScreen(new DebugHandlerScreen(minecraftClient.currentScreen)))
                 .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT) * 2)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Debug Screen")))
@@ -58,9 +57,8 @@ public class MainScreen extends Screen implements ScreenConstants {
     }
 
     private ButtonWidget configButton() {
-        return ButtonWidget.builder(Text.literal("Config Screen"), button -> {
-                    ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID);
-                })
+        return ButtonWidget.builder(Text.literal("Config Screen"), button ->
+                        ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
                 .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT))
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Config Screen")))

@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 
 import java.util.Map;
 

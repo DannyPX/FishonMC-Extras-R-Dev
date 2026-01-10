@@ -3,7 +3,6 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.Map;
