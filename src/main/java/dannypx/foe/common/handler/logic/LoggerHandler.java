@@ -1,4 +1,4 @@
-package dannypx.foe.common.data.logic;
+package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.FishOnMCExtras;
 import net.minecraft.text.Text;

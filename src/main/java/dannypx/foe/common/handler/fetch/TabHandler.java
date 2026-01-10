@@ -1,15 +1,16 @@
-package dannypx.foe.common.data.fetch;
+package dannypx.foe.common.handler.fetch;
 
 import com.mojang.authlib.GameProfile;
 import dannypx.foe.common.constants.Rank;
-import dannypx.foe.common.data.logic.LoggerHandler;
-import dannypx.foe.common.minecraft.TextHelper;
+import dannypx.foe.common.handler.logic.LoggerHandler;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.mixin.accessor.PlayerListHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 public class TabHandler {
     private static TabHandler INSTANCE = new TabHandler();
+
     public static TabHandler instance() {
         if (INSTANCE == null) {
             INSTANCE = new TabHandler();
@@ -100,7 +102,7 @@ public class TabHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<Text, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
                 "playerName", Pair.of(Text.literal(getPlayerName().getString()), null),
                 "rank", Pair.of(Text.literal(getRank().ID), null),

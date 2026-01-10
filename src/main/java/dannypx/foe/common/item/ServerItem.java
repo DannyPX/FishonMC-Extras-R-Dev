@@ -1,9 +1,8 @@
 package dannypx.foe.common.item;
 
-import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.constants.Rarity;
 import dannypx.foe.common.constants.ServerItemId;
-import dannypx.foe.common.minecraft.ItemStackHelper;
+import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -31,9 +30,9 @@ public class ServerItem {
     public static boolean isServerItem(ItemStack itemStack) {
         Pair<Boolean, NbtCompound> item = isValidItem(itemStack);
         //isValidItem
-        if(item.v1) {
+        if(item.v1()) {
             //is type
-            if(isType(item.v2)) {
+            if(isType(item.v2())) {
                 return false;
             } else {
                 return itemStack.getItem() == Items.FISHING_ROD;
@@ -50,7 +49,7 @@ public class ServerItem {
         Pair<Boolean, NbtCompound> item = isValidItem(itemStack);
 
         //isValidItem
-        if(item.v1) {
+        if(item.v1()) {
             return switch(itemId) {
                 case ServerItemId.FISHINGROD -> itemStack.getItem() == Items.FISHING_ROD;
                 default -> false;

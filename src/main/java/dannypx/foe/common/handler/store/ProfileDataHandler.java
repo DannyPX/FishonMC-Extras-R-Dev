@@ -1,20 +1,21 @@
-package dannypx.foe.common.data.store;
+package dannypx.foe.common.handler.store;
 
-import dannypx.foe.common.data.logic.ExampleHandler;
-import dannypx.foe.common.io.DataModels;
+import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class ProfileHandler {
-    private static ProfileHandler INSTANCE = new ProfileHandler();
-    public static ProfileHandler instance() {
+public class ProfileDataHandler {
+    private static ProfileDataHandler INSTANCE = new ProfileDataHandler();
+
+    public static ProfileDataHandler instance() {
         if (INSTANCE == null) {
-            INSTANCE = new ProfileHandler();
+            INSTANCE = new ProfileDataHandler();
         }
         return INSTANCE;
     }
@@ -30,8 +31,6 @@ public class ProfileHandler {
     public void setProfileData(DataModels.ProfileDataModel profileData) {
         this.profileData = profileData;
     }
-
-
     //endregion
 
     //region Methods
@@ -46,7 +45,7 @@ public class ProfileHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<Text, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
                 "key", Pair.of(Text.literal("value"), null)
         );

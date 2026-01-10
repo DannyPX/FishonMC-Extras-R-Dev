@@ -1,18 +1,19 @@
-package dannypx.foe.common.data.logic;
+package dannypx.foe.common.handler.logic;
 
-import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.constants.ServerItemId;
 import dannypx.foe.common.item.ServerItem;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 
 public class LoadingHandler {
     private static LoadingHandler INSTANCE = new LoadingHandler();
+
     public static LoadingHandler instance() {
         if (INSTANCE == null) {
             INSTANCE = new LoadingHandler();
@@ -38,7 +39,7 @@ public class LoadingHandler {
         }
     }
 
-    public void onJoin() {
+    public void init() {
         isLoadingDone = false;
         LoggerHandler.info("Loading Started");
     }
@@ -53,7 +54,7 @@ public class LoadingHandler {
     //endregion
 
     //region Dev
-    protected Map<String, Pair<Text, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
                 "isLoadingDone", Pair.of(Text.literal(Boolean.toString(isLoadingDone())), null)
         );

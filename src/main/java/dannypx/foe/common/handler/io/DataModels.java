@@ -1,4 +1,4 @@
-package dannypx.foe.common.io;
+package dannypx.foe.common.handler.io;
 
 import java.util.UUID;
 

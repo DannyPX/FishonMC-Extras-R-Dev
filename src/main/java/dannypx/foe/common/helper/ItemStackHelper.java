@@ -1,4 +1,4 @@
-package dannypx.foe.common.minecraft;
+package dannypx.foe.common.helper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

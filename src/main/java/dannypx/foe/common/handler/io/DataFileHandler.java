@@ -1,13 +1,14 @@
-package dannypx.foe.common.io;
+package dannypx.foe.common.handler.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.data.logic.LoggerHandler;
-import dannypx.foe.common.data.store.ProfileHandler;
+import dannypx.foe.common.handler.logic.LoggerHandler;
+import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.type.Pair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 public class DataFileHandler {
     private static DataFileHandler INSTANCE = new DataFileHandler();
+
     public static DataFileHandler instance() {
         if (INSTANCE == null) {
             INSTANCE = new DataFileHandler();
@@ -35,8 +37,8 @@ public class DataFileHandler {
     //endregion
 
     //region Methods
-    public boolean init() {
-        return loadDataToMemory(DataModels.DataModelType.PROFILE_DATA);
+    public void init() {
+        loadDataToMemory(DataModels.DataModelType.PROFILE_DATA);
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -48,8 +50,7 @@ public class DataFileHandler {
             if(!checkIfFileExist(filePath)) {
                 Files.createFile(filePath);
                 this.isDataLoaded = true;
-                this.saveToFile(dataModelType);
-                return true;
+                return this.saveToFile(dataModelType);
             }
             String jsonFromFile = Files.readString(filePath);
             setData(dataModelType, jsonFromFile);
@@ -95,7 +96,7 @@ public class DataFileHandler {
 
     private DataModels.DataModel getData(DataModels.DataModelType dataModelType) {
         return switch (dataModelType) {
-            case PROFILE_DATA -> ProfileHandler.instance().getProfileData();
+            case PROFILE_DATA -> ProfileDataHandler.instance().getProfileData();
         };
     }
 
@@ -103,14 +104,14 @@ public class DataFileHandler {
         Gson gson = new GsonBuilder().create();
         switch (dataModelType) {
             case PROFILE_DATA ->
-                    ProfileHandler.instance().setProfileData(gson.fromJson(json, DataModels.ProfileDataModel.class));
+                    ProfileDataHandler.instance().setProfileData(gson.fromJson(json, DataModels.ProfileDataModel.class));
         };
     }
     //endregion
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<Text, Tooltip>> getFields() {
+    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
                 "isDataLoaded", Pair.of(Text.literal(Boolean.toString(isDataLoaded())), null)
         );

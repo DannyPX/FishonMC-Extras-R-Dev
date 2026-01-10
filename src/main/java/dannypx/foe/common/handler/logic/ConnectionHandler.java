@@ -1,18 +1,18 @@
-package dannypx.foe.common.data.logic;
+package dannypx.foe.common.handler.logic;
 
-import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.data.store.ProfileHandler;
-import dannypx.foe.common.minecraft.TextHelper;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 
 public class ConnectionHandler {
     private static ConnectionHandler INSTANCE = new ConnectionHandler();
+
     public static ConnectionHandler instance() {
         if (INSTANCE == null) {
             INSTANCE = new ConnectionHandler();
@@ -35,7 +35,7 @@ public class ConnectionHandler {
     //endregion
 
     //region Methods
-    public void onJoin() {
+    public void init() {
         this.checkIfOnServer();
     }
 
@@ -61,7 +61,7 @@ public class ConnectionHandler {
     //endregion
 
     //region Dev
-    protected Map<String, Pair<Text, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
                 "isOnServer", Pair.of(TextHelper.literal(isOnServer()), null),
                 "wasOnServer", Pair.of(TextHelper.literal(wasOnServer()), null)
