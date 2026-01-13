@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Version(version = 0)
 @Translatable.Name("Handlers")
-@Translatable.Desc("§7These are the back-end handlers. Disabling these might stop some " +
+@Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")
 public class DataHandlerConfig extends Config {
     public DataHandlerConfig() {
@@ -55,6 +55,4 @@ public class DataHandlerConfig extends Config {
     public @NotNull FileType fileType() {
         return FileType.JSON5;
     }
-
-
 }

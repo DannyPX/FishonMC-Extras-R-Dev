@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Version(version = 0)
 @RootConfig
-@Translatable.Name("FishOnMCExtras Rebirth")
+@Translatable.Name("FishOnExtras Rebirth")
 @IgnoreVisibility
 public class MainConfig extends Config {
     public MainConfig() {
@@ -21,10 +21,12 @@ public class MainConfig extends Config {
     }
 
     @Name("Enable Mod")
-    @Desc("This will turn off the mod when false")
+    @Desc("§4WARNING §7This will turn off the mod when false")
     public ValidatedBoolean enableMod = new ValidatedBoolean(true);
 
-    public ValidatedBoolean debugMode = new ValidatedBoolean(true);
+    @Name("Enable Debug Mode")
+    @Desc("§4WARNING §7This is for advanced users")
+    public ValidatedBoolean debugMode = new ValidatedBoolean(false);
 
     @Override
     public @NotNull FileType fileType() {

@@ -9,9 +9,12 @@ import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.hud.HudRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -24,6 +27,11 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
+        HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
+    }
+
+    private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
+        HudRenderHandler.instance().init(layeredDrawerWrapper);
     }
 
     private void onInit() {

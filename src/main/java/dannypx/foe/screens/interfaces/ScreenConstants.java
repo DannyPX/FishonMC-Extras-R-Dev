@@ -1,4 +1,4 @@
-package dannypx.foe.screens;
+package dannypx.foe.screens.interfaces;
 
 public interface ScreenConstants {
     int PADDING = 8;

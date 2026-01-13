@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -28,48 +29,53 @@ public class ScoreboardHandler {
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private List<Text> prevResult = new ArrayList<>();
 
-    private String wallet = "";
-    private String credits = "";
+    private MutableText level = Text.empty();
+    private MutableText wallet = Text.empty();
+    private MutableText credits = Text.empty();
 
-    private String catches = "";
-    private String locationMin = "";
-    private String locationMax = "";
-    private String catchRate = "";
+    private MutableText catches = Text.empty();
+    private MutableText locationMin = Text.empty();
+    private MutableText locationMax = Text.empty();
+    private MutableText catchRate = Text.empty();
 
-    private String crew = "";
-    private boolean crewNearby = false;
+    private MutableText crew = Text.empty();
+    private MutableText crewNearby = Text.empty();
 
     private boolean noScoreboard = true;
 
-    public String getWallet() {
+    public MutableText getLevel() {
+        return level;
+    }
+
+    public MutableText getWallet() {
         return wallet;
     }
 
-    public String getCredits() {
+    public MutableText getCredits() {
         return credits;
     }
 
-    public String getCatches() {
+    public MutableText getCatches() {
         return catches;
     }
 
-    public String getLocationMin() {
+    public MutableText getLocationMin() {
         return locationMin;
     }
 
-    public String getLocationMax() {
+    public MutableText getLocationMax() {
         return locationMax;
     }
 
-    public String getCatchRate() {
+    public MutableText getCatchRate() {
         return catchRate;
     }
 
-    public String getCrew() {
+    public MutableText getCrew() {
         return crew;
     }
 
-    public boolean isCrewNearby() {
+    public MutableText isCrewNearby() {
         return crewNearby;
     }
 
@@ -99,23 +105,24 @@ public class ScoreboardHandler {
 
     private void extractData(List<Text> texts) {
         texts.forEach(text -> {
+            level = checkText(text, "┏ ʟᴇᴠᴇʟ") && text.getSiblings().size() > 2
+                    ? text.getSiblings().get(3).copy() : level;
             wallet = checkText(text, "ᴡᴀʟʟᴇᴛ")
-                    ? getSubString(text, getIndexString(text, "$") + 1) : wallet;
+                    ? text.getSiblings().get(2).copy() : wallet;
             credits = checkText(text, "ᴄʀᴇᴅɪᴛꜱ")
-                    ? getSubString(text, getIndexString(text, "\uF00C") + 1) : credits;
+                    ? text.getSiblings().get(3).copy() : credits;
             catches = checkText(text, "ᴄᴀᴛᴄʜᴇꜱ")
-                    ? getSubString(text, getIndexString(text, ":") + 2) : catches;
+                    ? text.getSiblings().get(2).copy() : catches;
             locationMin = checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(text, "---")
-                    ? getSubString(text, getIndexString(text, ":") + 2,
-                    getLastIndexString(text, "/")) : locationMin;
+                    ? text.getSiblings().get(2).copy() : locationMin;
             locationMax = checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(text, "---")
-                    ? getSubString(text, getIndexString(text, "/") + 1).trim() : locationMax;
+                    ? text.getSiblings().get(4).copy() : locationMax;
             catchRate = checkText(text, "ᴄᴀᴛᴄʜ ʀᴀᴛᴇ")
-                    ? getSubString(text, getIndexString(text, ":") + 2) : catchRate;
+                    ? text.getSiblings().get(2).copy() : catchRate;
             crew = checkText(text, "ᴄʀᴇᴡ:")
-                    ? getSubString(text, getIndexString(text, "[") + 1,
-                    getLastIndexString(text, "]")) : crew;
-            crewNearby = checkText(text, "ᴄʀᴇᴡ ɴᴇᴀʀʙʏ") && checkText(text, "✔");
+                    ? text.getSiblings().get(3).copy() : crew;
+            crewNearby = checkText(text, "ᴄʀᴇᴡ ɴᴇᴀʀʙʏ")
+                    ? text.getSiblings().get(2).copy() : crewNearby;
         });
     }
 
@@ -162,14 +169,15 @@ public class ScoreboardHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
         return Map.of(
-                "wallet", Pair.of(Text.literal(wallet), null),
-                "credits", Pair.of(Text.literal(credits), null),
-                "catches", Pair.of(Text.literal(catches), null),
-                "locationMin", Pair.of(Text.literal(locationMin), null),
-                "locationMax", Pair.of(Text.literal(locationMax), null),
-                "catchRate", Pair.of(Text.literal(catchRate), null),
-                "crew", Pair.of(Text.literal(crew), null),
-                "crewNearby", Pair.of(TextHelper.literal(crewNearby), null)
+                "level", Pair.of(level, null),
+                "wallet", Pair.of(wallet, null),
+                "credits", Pair.of(credits, null),
+                "catches", Pair.of(catches, null),
+                "locationMin", Pair.of(locationMin, null),
+                "locationMax", Pair.of(locationMax, null),
+                "catchRate", Pair.of(catchRate, null),
+                "crew", Pair.of(crew, null),
+                "crewNearby", Pair.of(crewNearby, null)
         );
     }
     //endregion

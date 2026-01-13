@@ -1,11 +1,11 @@
 package dannypx.foe.common.handler.logic;
 
-import dannypx.foe.common.constants.ServerItemId;
-import dannypx.foe.common.item.ServerItem;
+import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -49,7 +49,7 @@ public class LoadingHandler {
     }
 
     private boolean checkFishingRodLoaded(ItemStack itemStack) {
-        return ServerItem.isServerItem(itemStack, ServerItemId.FISHINGROD);
+        return ValidateItem.isServerItem(itemStack, Items.FISHING_ROD);
     }
     //endregion
 

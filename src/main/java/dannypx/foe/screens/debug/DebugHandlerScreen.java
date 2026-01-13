@@ -1,26 +1,20 @@
 package dannypx.foe.screens.debug;
 
 import dannypx.foe.common.handler.debug._DebugHandler;
-import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
-import dannypx.foe.common.widget.ButtonListWidget;
-import dannypx.foe.screens.ScreenConstants;
+import dannypx.foe.common.render_module.widget.ButtonListWidget;
+import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DebugHandlerScreen extends Screen implements ScreenConstants {
@@ -91,7 +85,7 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
                 Text text = TextHelper.concat(
                         Text.literal(name).formatted(Formatting.BOLD),
                         Text.literal(": "),
-                        value.v1().formatted(Formatting.GRAY)
+                        value.v1()
                 );
                 // Get Text Coordinates and Bounds
                 int textx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
