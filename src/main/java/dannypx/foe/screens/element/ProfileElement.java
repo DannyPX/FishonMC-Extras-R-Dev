@@ -1,4 +1,4 @@
-package dannypx.foe.screens.hud;
+package dannypx.foe.screens.element;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.fetch.ClientPlayerHandler;
@@ -6,8 +6,7 @@ import dannypx.foe.common.handler.fetch.ScoreboardHandler;
 import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.render_module.element.iElement;
-import dannypx.foe.common.render_module.helper.DrawHelper;
+import dannypx.foe.screens.helper.DrawHelper;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -18,44 +17,56 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-public class ProfileElement extends iElement {
+public class ProfileElement extends Element {
+    //region Fields
     private final MinecraftClient minecraftClient;
     private final TextRenderer textRenderer;
 
     private final Identifier PROFILE_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile");
     private final Identifier PROFILE_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile_flip");
-    private final int PROFILE_TEXTURE_WIDTH = 160;
-    private final int PROFILE_TEXTURE_HEIGHT = 44;
+    //endregion
 
     public ProfileElement(MinecraftClient minecraftClient) {
-        super(false);
+        super(160,
+                44,
+                Configs.hudConfig.profileElementXPosition.get() / 100f,
+                Configs.hudConfig.profileElementYPosition.get() / 100f,
+                Configs.hudConfig.profileElementAlignment.get(),
+                Configs.hudConfig.profileElementGroup.translation("Profile Element"),
+                false);
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;
     }
 
     public ProfileElement(MinecraftClient minecraftClient, boolean isCopy) {
-        super(isCopy);
+        super(160,
+                44,
+                Configs.hudConfig.profileElementXPosition.get() / 100f,
+                Configs.hudConfig.profileElementYPosition.get() / 100f,
+                Configs.hudConfig.profileElementAlignment.get(),
+                Configs.hudConfig.profileElementGroup.translation("Profile Element"),
+                isCopy);
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;
-        xPercent = Configs.hudConfig.xPosition.get() / 100f;
-        yPercent = Configs.hudConfig.yPosition.get() / 100f;
     }
 
+    //region Methods
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        if(LoadingHandler.instance().isLoadingDone() && !ScoreboardHandler.instance().isNoScoreboard() && Configs.hudConfig.showProfileElement.get()) {
+        if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showProfileElement.get()) {
             // Position
             if(!isCopy) {
-                xPercent = Configs.hudConfig.xPosition.get() / 100f;
-                yPercent = Configs.hudConfig.yPosition.get() / 100f;
+                xPercent = Configs.hudConfig.profileElementXPosition.get() / 100f;
+                yPercent = Configs.hudConfig.profileElementYPosition.get() / 100f;
             }
 
-            int x = switch (Configs.hudConfig.alignment.get()) {
-                case LEFT -> (int) (minecraftClient.getWindow().getScaledWidth() * xPercent);
+            int x = switch (Configs.hudConfig.profileElementAlignment.get()) {
+                case LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
                 case RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - (int) (minecraftClient.getWindow().getScaledWidth() * xPercent);
+                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                default -> 0;
             };
-            int y = (int) (minecraftClient.getWindow().getScaledHeight() * yPercent);
+            int y = Math.round(minecraftClient.getWindow().getScaledHeight() * yPercent);
 
             this.renderTexture(drawContext, x, y);
             this.renderText(drawContext, textRenderer, x, y);
@@ -66,7 +77,7 @@ public class ProfileElement extends iElement {
     private void renderHead(DrawContext drawContext, int x, int y) {
         if(minecraftClient.player != null) {
             Identifier SKIN_TEXTURE = minecraftClient.player.getSkinTextures().texture();
-            switch (Configs.hudConfig.alignment.get()) {
+            switch (Configs.hudConfig.profileElementAlignment.get()) {
                 case LEFT -> {
                     drawContext.drawTexture(RenderLayer::getGuiTextured,
                             SKIN_TEXTURE,
@@ -167,7 +178,7 @@ public class ProfileElement extends iElement {
         );
         int creditsWidth = textRenderer.getWidth(creditsText);
 
-        switch (Configs.hudConfig.alignment.get()) {
+        switch (Configs.hudConfig.profileElementAlignment.get()) {
             case LEFT -> {
                 drawContext.drawText(textRenderer,
                         player,
@@ -216,21 +227,22 @@ public class ProfileElement extends iElement {
     }
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
-        switch (Configs.hudConfig.alignment.get()) {
+        switch (Configs.hudConfig.profileElementAlignment.get()) {
             case LEFT -> {
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         PROFILE_TEXTURE,
                         x, y,
-                        PROFILE_TEXTURE_WIDTH, PROFILE_TEXTURE_HEIGHT
+                        width, height
                 );
             }
             case RIGHT -> {
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         PROFILE_TEXTURE_FLIP,
-                        x - PROFILE_TEXTURE_WIDTH, y,
-                        PROFILE_TEXTURE_WIDTH, PROFILE_TEXTURE_HEIGHT
+                        x - width, y,
+                        width, height
                 );
             }
         }
     }
+    //endregion
 }

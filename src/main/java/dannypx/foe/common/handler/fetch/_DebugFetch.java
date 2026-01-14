@@ -13,7 +13,8 @@ public class _DebugFetch {
                 TabHandler.class.getName(),
                 InventoryHandler.class.getName(),
                 ClientPlayerHandler.class.getName(),
-                ScoreboardHandler.class.getName()
+                ScoreboardHandler.class.getName(),
+                BossBarHandler.class.getName()
         );
     }
 
@@ -23,7 +24,8 @@ public class _DebugFetch {
                 TabHandler.class.getName(), TabHandler.instance()._getFields(),
                 InventoryHandler.class.getName(), InventoryHandler.instance()._getFields(),
                 ClientPlayerHandler.class.getName(), ClientPlayerHandler.instance()._getFields(),
-                ScoreboardHandler.class.getName(), ScoreboardHandler.instance()._getFields()
+                ScoreboardHandler.class.getName(), ScoreboardHandler.instance()._getFields(),
+                BossBarHandler.class.getName(), BossBarHandler.instance()._getFields()
         );
     }
 }

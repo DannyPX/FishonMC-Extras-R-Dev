@@ -1,15 +1,13 @@
 package dannypx.foe.screens.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.render_module.element.iElement;
+import dannypx.foe.screens.element.Element;
 import dannypx.foe.common.type.Pair;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
+import dannypx.foe.screens.element.ProfileElement;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -31,7 +29,7 @@ public class HudRenderHandler {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-    List<Pair<String, iElement>> elements = new ArrayList<>();
+    List<Pair<String, Element>> elements = new ArrayList<>();
     //endregion
 
     //region Methods

@@ -29,6 +29,8 @@ public class ScoreboardHandler {
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private List<Text> prevResult = new ArrayList<>();
 
+    private MutableText date = Text.empty();
+    private MutableText version = Text.empty();
     private MutableText level = Text.empty();
     private MutableText wallet = Text.empty();
     private MutableText credits = Text.empty();
@@ -82,6 +84,14 @@ public class ScoreboardHandler {
     public boolean isNoScoreboard() {
         return noScoreboard;
     }
+
+    public MutableText getVersion() {
+        return version;
+    }
+
+    public MutableText getDate() {
+        return date;
+    }
     //endregion
 
     //region Methods
@@ -105,6 +115,10 @@ public class ScoreboardHandler {
 
     private void extractData(List<Text> texts) {
         texts.forEach(text -> {
+            date = checkText(text, "/") && !checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
+                    ? text.getSiblings().get(0).copy() : date;
+            version = checkText(text, "/") && !checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
+                    ? text.getSiblings().get(1).copy() : version;
             level = checkText(text, "┏ ʟᴇᴠᴇʟ") && text.getSiblings().size() > 2
                     ? text.getSiblings().get(3).copy() : level;
             wallet = checkText(text, "ᴡᴀʟʟᴇᴛ")
@@ -168,16 +182,18 @@ public class ScoreboardHandler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
-        return Map.of(
-                "level", Pair.of(level, null),
-                "wallet", Pair.of(wallet, null),
-                "credits", Pair.of(credits, null),
-                "catches", Pair.of(catches, null),
-                "locationMin", Pair.of(locationMin, null),
-                "locationMax", Pair.of(locationMax, null),
-                "catchRate", Pair.of(catchRate, null),
-                "crew", Pair.of(crew, null),
-                "crewNearby", Pair.of(crewNearby, null)
+        return Map.ofEntries(
+                Map.entry("version", Pair.of(getVersion(), null)),
+                Map.entry("date", Pair.of(getDate(), null)),
+                Map.entry("level", Pair.of(getLevel(), null)),
+                Map.entry("wallet", Pair.of(getWallet(), null)),
+                Map.entry("credits", Pair.of(getCredits(), null)),
+                Map.entry("catches", Pair.of(getCatches(), null)),
+                Map.entry("locationMin", Pair.of(getLocationMin(), null)),
+                Map.entry("locationMax", Pair.of(getLocationMax(), null)),
+                Map.entry("catchRate", Pair.of(getCatchRate(), null)),
+                Map.entry("crew", Pair.of(getCrew(), null)),
+                Map.entry("crewNearby", Pair.of(isCrewNearby(), null))
         );
     }
     //endregion

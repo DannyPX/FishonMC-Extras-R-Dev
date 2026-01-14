@@ -47,6 +47,8 @@ public class MainScreen extends Screen implements ScreenConstants {
         //TODO Better button placement
         if(Configs.mainConfig.debugMode.get()) widgets.add(debugButton());
         if(Configs.mainConfig.debugMode.get()) widgets.add(configButton());
+        if(Configs.mainConfig.debugMode.get()) widgets.add(moveHudButton());
+        
 
         widgets.forEach(this::addDrawableChild);
     }
@@ -54,7 +56,7 @@ public class MainScreen extends Screen implements ScreenConstants {
     private ButtonWidget debugButton() {
         return ButtonWidget.builder(Text.literal("Debug Screen"), button ->
                         minecraftClient.setScreen(new DebugHandlerScreen(minecraftClient.currentScreen)))
-                .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT) * 2)
+                .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT) * 3)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Debug Screen")))
                 .build();
@@ -63,9 +65,18 @@ public class MainScreen extends Screen implements ScreenConstants {
     private ButtonWidget configButton() {
         return ButtonWidget.builder(Text.literal("Config Screen"), button ->
                         ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
-                .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT))
+                .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT) * 2)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Config Screen")))
+                .build();
+    }
+
+    private ButtonWidget moveHudButton() {
+        return ButtonWidget.builder(Text.literal("Move HUD Elements Screen"), button ->
+                        minecraftClient.setScreen(new MoveElementScreen(minecraftClient.currentScreen)))
+                .position(width - PADDING - BUTTON_WIDTH, height - (PADDING + BUTTON_HEIGHT))
+                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Move HUD Elements Screen")))
                 .build();
     }
 

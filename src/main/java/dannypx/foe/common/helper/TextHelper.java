@@ -1,9 +1,11 @@
 package dannypx.foe.common.helper;
 
 import com.google.gson.Gson;
+import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 
 public class TextHelper {
     private static final Gson gson = new Gson();
@@ -124,5 +126,9 @@ public class TextHelper {
                  'ᴜ', 'ᴠ', 'ᴡ', 'x', 'ʏ', 'ᴢ', '.', ',', ':', ';' -> true;
             default -> false;
         };
+    }
+
+    public static String textToJson(Text text) {
+        return gson.toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
     }
 }

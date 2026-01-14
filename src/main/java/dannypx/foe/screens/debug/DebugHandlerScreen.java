@@ -2,7 +2,7 @@ package dannypx.foe.screens.debug;
 
 import dannypx.foe.common.handler.debug._DebugHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.render_module.widget.ButtonListWidget;
+import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

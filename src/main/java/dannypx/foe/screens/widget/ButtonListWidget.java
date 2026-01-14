@@ -1,4 +1,4 @@
-package dannypx.foe.common.render_module.widget;
+package dannypx.foe.screens.widget;
 
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;

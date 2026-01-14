@@ -1,5 +1,6 @@
 package dannypx.foe.config;
 
+import com.google.gson.JsonArray;
 import dannypx.foe.FishOnMCExtras;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.FileType;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 @Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")
 public class DataHandlerConfig extends Config {
+
     public DataHandlerConfig() {
         super(Identifier.of(FishOnMCExtras.MOD_ID, "data_handler_config"));
     }
@@ -33,9 +35,12 @@ public class DataHandlerConfig extends Config {
     @Desc("§7Data from Client Player")
     public ValidatedBoolean clientPlayerHandler = new ValidatedBoolean(true);
 
-    @ConfigGroup.Pop
     @Desc("§7Data from Player Inventory")
     public ValidatedBoolean inventoryHandler = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @Desc("§7Data from Boss Bar")
+    public ValidatedBoolean bossBarHandler = new ValidatedBoolean(true);
     //endregion
 
     //region Logic Handler Group
