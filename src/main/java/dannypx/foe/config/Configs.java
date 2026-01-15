@@ -7,7 +7,7 @@ public class Configs {
     public static MainConfig mainConfig = ConfigApiJava.registerAndLoadConfig(MainConfig::new, RegisterType.CLIENT);
 
     public static HUDConfig hudConfig = ConfigApiJava.registerAndLoadConfig(HUDConfig::new, RegisterType.CLIENT);
-    public static DataHandlerConfig dataHandlerConfig = ConfigApiJava.registerAndLoadConfig(DataHandlerConfig::new, RegisterType.CLIENT);
+    public static HandlerConfig handlerConfig = ConfigApiJava.registerAndLoadConfig(HandlerConfig::new, RegisterType.CLIENT);
 
     public static void init() {}
 }

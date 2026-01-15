@@ -131,7 +131,7 @@ public class ProfileElement extends Element {
         int text2x = 40;
         int text2y = 21;
 
-        Text level = ScoreboardHandler.instance().getLevel().getString().isEmpty()
+        Text level = ScoreboardHandler.instance().getLevel().getString().isBlank()
                 ? Text.literal("0").formatted(Formatting.DARK_GRAY)
                 : ScoreboardHandler.instance().getLevel();
         int bars = 20;

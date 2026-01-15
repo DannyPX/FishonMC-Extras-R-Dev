@@ -2,10 +2,8 @@ package dannypx.foe.screens;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
-import dannypx.foe.config.DataHandlerConfig;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

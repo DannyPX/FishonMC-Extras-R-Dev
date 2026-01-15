@@ -1,6 +1,5 @@
 package dannypx.foe.config;
 
-import com.google.gson.JsonArray;
 import dannypx.foe.FishOnMCExtras;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.FileType;
@@ -8,6 +7,8 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 @Translatable.Name("Handlers")
 @Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")
-public class DataHandlerConfig extends Config {
+public class HandlerConfig extends Config {
 
-    public DataHandlerConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "data_handler_config"));
+    public HandlerConfig() {
+        super(Identifier.of(FishOnMCExtras.MOD_ID, "handler_config"));
     }
 
     //region Fetch Handler Group
@@ -46,7 +47,7 @@ public class DataHandlerConfig extends Config {
     //region Logic Handler Group
     @Name("Logic Handlers")
     @Desc("§7Handles logic of data")
-    public ConfigGroup fetchLogicGroup = new ConfigGroup("fetch_logic_group");
+    public ConfigGroup logicGroup = new ConfigGroup("logic_group");
 
 
     @Desc("§7Handles loading mod when on server")
@@ -54,6 +55,16 @@ public class DataHandlerConfig extends Config {
 
     @Desc("§7Handles key binds")
     public ValidatedBoolean keyBindHandler = new ValidatedBoolean(true);
+
+    @Name("Logic Handlers")
+    @Desc("§7Handles logic of fishing")
+    public ConfigGroup fishingLogicGroup = new ConfigGroup("fishing_logic_group");
+
+    @Desc("§7Handles fishing")
+    public ValidatedBoolean fishingHandler = new ValidatedBoolean(true);
+
+    @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
+    public ValidatedInt fishingStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
     @Override

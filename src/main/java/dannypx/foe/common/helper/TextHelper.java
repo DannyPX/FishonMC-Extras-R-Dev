@@ -34,6 +34,10 @@ public class TextHelper {
         return Text.literal(Float.toString(f));
     }
 
+    public static MutableText literal(Text text) {
+        return concat(text);
+    }
+
     public static int ordinalIndexOf(String str, String substr, int n) {
         int pos = str.indexOf(substr);
         while (--n > 0 && pos != -1)

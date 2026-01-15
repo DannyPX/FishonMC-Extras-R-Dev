@@ -70,7 +70,12 @@ public class BossBarHandler {
                     if(jsonObject.get("extra") != null) {
                         JsonObject locationObject = jsonObject.get("extra").getAsJsonArray().get(0).getAsJsonObject()
                                 .get("extra").getAsJsonArray().get(0).getAsJsonObject();
-                        location = Text.literal(locationObject.get("text").getAsString().substring(4))
+                        String locationString = locationObject.get("text").getAsString().substring(4).trim();
+                        if(locationString.contains("(")) {
+                            locationString = locationString.substring(0, locationString.indexOf("(") - 1);
+                        }
+
+                        location = Text.literal(locationString)
                                 .withColor(TextColor.parse(locationObject.get("color").getAsString()).getOrThrow().getRgb());
 
                         JsonObject weatherObject = jsonObject.get("extra").getAsJsonArray().get(2).getAsJsonObject()

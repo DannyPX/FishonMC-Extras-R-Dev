@@ -3,6 +3,7 @@ package dannypx.foe.screens.hud;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.screens.element.LocationElement;
 import dannypx.foe.screens.element.ProfileElement;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
@@ -39,6 +40,7 @@ public class HudRenderHandler {
 
     private void addElements(LayeredDrawerWrapper layeredDrawerWrapper) {
         elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
+        elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
 
         elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
                 Identifier.of(FishOnMCExtras.MOD_ID, element.v1()), element.v2()::render));

@@ -3,6 +3,7 @@ package dannypx.foe.screens;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.type.Alignment;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.element.LocationElement;
 import dannypx.foe.screens.element.ProfileElement;
 import dannypx.foe.screens.widget.MovableBoxWidget;
 import net.minecraft.client.MinecraftClient;
@@ -50,6 +51,17 @@ public class MoveElementScreen extends Screen {
                     Configs.hudConfig.profileElementAlignment.accept(alignment);
                     Configs.hudConfig.save();
         }));
+
+        widgets.add(new MovableBoxWidget(minecraftClient,
+                new LocationElement(minecraftClient, true),
+                Alignment.getHorizontal(),
+                Configs.hudConfig.showLocationElement.translationKey(),
+                (xPercent, yPercent, alignment) -> {
+                    Configs.hudConfig.locationElementXPosition.accept(xPercent);
+                    Configs.hudConfig.locationElementYPosition.accept(yPercent);
+                    Configs.hudConfig.locationElementAlignment.accept(alignment);
+                    Configs.hudConfig.save();
+                }));
 
         widgets.forEach(this::addDrawableChild);
     }

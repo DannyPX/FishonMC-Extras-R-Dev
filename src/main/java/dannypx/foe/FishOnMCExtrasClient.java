@@ -62,13 +62,13 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ) {
             // Check if done loading
             if(LoadingHandler.instance().isLoadingDone()) {
-                if(Configs.dataHandlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
-                if(Configs.dataHandlerConfig.tabHandler.get()) TabHandler.instance().tick();
-                if(Configs.dataHandlerConfig.scoreboardHandler.get()) ScoreboardHandler.instance().tick();
-                if(Configs.dataHandlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
-                if(Configs.dataHandlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
+                if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
+                if(Configs.handlerConfig.tabHandler.get()) TabHandler.instance().tick();
+                if(Configs.handlerConfig.scoreboardHandler.get()) ScoreboardHandler.instance().tick();
+                if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
+                if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
             } else {
-                if(Configs.dataHandlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();
+                if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();
             }
         }
     }
