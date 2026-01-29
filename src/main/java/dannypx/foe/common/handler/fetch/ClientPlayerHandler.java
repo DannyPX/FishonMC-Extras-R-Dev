@@ -3,7 +3,6 @@ package dannypx.foe.common.handler.fetch;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -56,11 +55,11 @@ public class ClientPlayerHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "name", Pair.of(getName().copy(), null),
-                "experienceLevel", Pair.of(TextHelper.literal(getExperienceLevel()), null),
-                "experienceProgress", Pair.of(TextHelper.literal(getExperienceProgress()), null)
+                "name", Pair.of(getName().copy(), Text.empty()),
+                "experienceLevel", Pair.of(TextHelper.literal(getExperienceLevel()), Text.empty()),
+                "experienceProgress", Pair.of(TextHelper.literal(getExperienceProgress()), Text.empty())
         );
     }
     //endregion

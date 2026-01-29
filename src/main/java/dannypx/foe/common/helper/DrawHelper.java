@@ -1,6 +1,5 @@
-package dannypx.foe.screens.helper;
+package dannypx.foe.common.helper;
 
-import dannypx.foe.common.helper.TextHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Style;

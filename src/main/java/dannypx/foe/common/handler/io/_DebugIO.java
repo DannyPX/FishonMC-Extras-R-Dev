@@ -1,7 +1,6 @@
 package dannypx.foe.common.handler.io;
 
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public class _DebugIO {
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
-    public static Map<String, Map<String, Pair<MutableText, Tooltip>>> _getFields() {
+    public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
         return Map.of(
                 DataFileHandler.class.getName(), DataFileHandler.instance()._getFields()
         );

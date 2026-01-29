@@ -1,10 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
-import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -13,7 +10,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ScoreboardHandler {
     private static ScoreboardHandler INSTANCE = new ScoreboardHandler();
@@ -181,19 +177,19 @@ public class ScoreboardHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.ofEntries(
-                Map.entry("version", Pair.of(getVersion(), null)),
-                Map.entry("date", Pair.of(getDate(), null)),
-                Map.entry("level", Pair.of(getLevel(), null)),
-                Map.entry("wallet", Pair.of(getWallet(), null)),
-                Map.entry("credits", Pair.of(getCredits(), null)),
-                Map.entry("catches", Pair.of(getCatches(), null)),
-                Map.entry("locationMin", Pair.of(getLocationMin(), null)),
-                Map.entry("locationMax", Pair.of(getLocationMax(), null)),
-                Map.entry("catchRate", Pair.of(getCatchRate(), null)),
-                Map.entry("crew", Pair.of(getCrew(), null)),
-                Map.entry("crewNearby", Pair.of(isCrewNearby(), null))
+                Map.entry("version", Pair.of(getVersion(), Text.empty())),
+                Map.entry("date", Pair.of(getDate(), Text.empty())),
+                Map.entry("level", Pair.of(getLevel(), Text.empty())),
+                Map.entry("wallet", Pair.of(getWallet(), Text.empty())),
+                Map.entry("credits", Pair.of(getCredits(), Text.empty())),
+                Map.entry("catches", Pair.of(getCatches(), Text.empty())),
+                Map.entry("locationMin", Pair.of(getLocationMin(), Text.empty())),
+                Map.entry("locationMax", Pair.of(getLocationMax(), Text.empty())),
+                Map.entry("catchRate", Pair.of(getCatchRate(), Text.empty())),
+                Map.entry("crew", Pair.of(getCrew(), Text.empty())),
+                Map.entry("crewNearby", Pair.of(isCrewNearby(), Text.empty()))
         );
     }
     //endregion

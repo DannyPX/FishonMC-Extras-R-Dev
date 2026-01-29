@@ -29,6 +29,7 @@ public abstract class Element {
     public void setXPercent(float percent) {
         xPercent = percent;
     };
+
     public void setYPercent(float percent) {
         yPercent = percent;
     };

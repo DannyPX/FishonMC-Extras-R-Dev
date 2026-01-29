@@ -1,13 +1,11 @@
 package dannypx.foe.common.handler.fetch;
 
 import com.google.gson.*;
-import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.mixin.accessor.BossBarHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -65,7 +63,8 @@ public class BossBarHandler {
             bossBars.forEach(((uuid, clientBossBar) -> {
                 if(clientBossBar.getName().getString().contains("\uF039") && !Objects.equals(prevBossbar, clientBossBar.getName().getString())) {
                     prevBossbar = clientBossBar.getName().getString();
-                    JsonObject jsonObject = JsonParser.parseString(TextHelper.textToJson(clientBossBar.getName())).getAsJsonObject();
+                    String json = TextHelper.textToJson(clientBossBar.getName());
+                    JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 
                     if(jsonObject.get("extra") != null) {
                         JsonObject locationObject = jsonObject.get("extra").getAsJsonArray().get(0).getAsJsonObject()
@@ -82,6 +81,21 @@ public class BossBarHandler {
                                 .get("extra").getAsJsonArray().get(0).getAsJsonObject();
                         weather = Text.literal(weatherObject.get("text").getAsString())
                                 .withColor(TextColor.parse(weatherObject.get("color").getAsString()).getOrThrow().getRgb());
+
+                        if(weather.getString().trim().length() != 1) {
+                            weather = Text.literal(weatherObject.get("text").getAsString().substring(0, 1))
+                                    .withColor(TextColor.parse(weatherObject.get("color").getAsString()).getOrThrow().getRgb());
+
+                            time = Text.literal(weatherObject.get("text").getAsString().substring(1).trim())
+                                    .withColor(TextColor.parse(weatherObject.get("color").getAsString()).getOrThrow().getRgb());
+
+                            if(weatherObject.get("extra") != null) {
+                                JsonObject temperatureObject = weatherObject.get("extra").getAsJsonArray().get(0).getAsJsonObject();
+                                temperature = Text.literal(temperatureObject.get("text").getAsString().trim())
+                                        .withColor(TextColor.parse(temperatureObject.get("color").getAsString()).getOrThrow().getRgb());
+                            }
+                            return;
+                        }
 
                         if(weatherObject.get("extra") != null) {
                             JsonObject timeObject = weatherObject.get("extra").getAsJsonArray().get(0).getAsJsonObject();
@@ -113,13 +127,13 @@ public class BossBarHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "location", Pair.of(getLocation(), null),
-                "weather", Pair.of(getWeather(), null),
-                "time", Pair.of(getTime(), null),
-                "temperature", Pair.of(getTemperature(), null),
-                "subLocation", Pair.of(getSubLocation(), null)
+                "location", Pair.of(getLocation(), Text.empty()),
+                "weather", Pair.of(getWeather(), Text.empty()),
+                "time", Pair.of(getTime(), Text.empty()),
+                "temperature", Pair.of(getTemperature(), Text.empty()),
+                "subLocation", Pair.of(getSubLocation(), Text.empty())
         );
     }
     //endregion

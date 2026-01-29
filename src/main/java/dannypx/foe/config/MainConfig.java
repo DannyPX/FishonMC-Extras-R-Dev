@@ -24,10 +24,6 @@ public class MainConfig extends Config {
     @Desc("§4WARNING §7This will turn off the mod when false")
     public ValidatedBoolean enableMod = new ValidatedBoolean(true);
 
-    @Name("Enable Debug Mode")
-    @Desc("§4WARNING §7This is for advanced users")
-    public ValidatedBoolean debugMode = new ValidatedBoolean(false);
-
     @Override
     public @NotNull FileType fileType() {
         return FileType.JSON5;

@@ -8,7 +8,6 @@ import dannypx.foe.common.type.Pair;
 import dannypx.foe.mixin.accessor.PlayerListHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.PlayerListHud;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -102,12 +101,12 @@ public class TabHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "playerName", Pair.of(Text.literal(getPlayerName().getString()), null),
-                "rank", Pair.of(Text.literal(getRank().ID), null),
-                "instance", Pair.of(Text.literal(getInstance()), null),
-                "isInInstance", Pair.of(TextHelper.literal(isInInstance()), null)
+                "playerName", Pair.of(Text.literal(getPlayerName().getString()), Text.empty()),
+                "rank", Pair.of(Text.literal(getRank().ID), Text.empty()),
+                "instance", Pair.of(Text.literal(getInstance()), Text.empty()),
+                "isInInstance", Pair.of(TextHelper.literal(isInInstance()), Text.empty())
         );
     }
     //endregion

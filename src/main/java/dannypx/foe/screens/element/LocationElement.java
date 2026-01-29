@@ -5,7 +5,7 @@ import dannypx.foe.common.handler.fetch.BossBarHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.config.Configs;
-import dannypx.foe.screens.helper.DrawHelper;
+import dannypx.foe.common.helper.DrawHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -20,13 +20,16 @@ public class LocationElement extends Element {
     private final MinecraftClient minecraftClient;
     private final TextRenderer textRenderer;
 
+    private static final int TEXTURE_WIDTH = 160;
+    private static final int TEXTURE_HEIGHT = 36;
+
     private final Identifier LOCATION_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location");
     private final Identifier LOCATION_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location_flip");
     //endregion
 
     public LocationElement(MinecraftClient minecraftClient) {
-        super(160,
-                36,
+        super(TEXTURE_WIDTH,
+                TEXTURE_HEIGHT,
                 Configs.hudConfig.locationElementXPosition.get() / 100f,
                 Configs.hudConfig.locationElementYPosition.get() / 100f,
                 Configs.hudConfig.locationElementAlignment.get(),
@@ -37,8 +40,8 @@ public class LocationElement extends Element {
     }
 
     public LocationElement(MinecraftClient minecraftClient, boolean isCopy) {
-        super(160,
-                36,
+        super(TEXTURE_WIDTH,
+                TEXTURE_HEIGHT,
                 Configs.hudConfig.locationElementXPosition.get() / 100f,
                 Configs.hudConfig.locationElementYPosition.get() / 100f,
                 Configs.hudConfig.locationElementAlignment.get(),
@@ -60,8 +63,8 @@ public class LocationElement extends Element {
             }
 
             int x = switch (Configs.hudConfig.locationElementAlignment.get()) {
-                case LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
-                case RIGHT -> minecraftClient.getWindow().getScaledWidth()
+                case TOP_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                case TOP_RIGHT -> minecraftClient.getWindow().getScaledWidth()
                         - Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
                 default -> 0;
             };
@@ -94,12 +97,12 @@ public class LocationElement extends Element {
                 .setStyle(subLocation.getStyle());
 
         Text locationTotal = switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case LEFT -> subLocationText.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
+            case TOP_LEFT -> subLocationText.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
                     locationText,
                     Text.literal(" | ").formatted(Formatting.DARK_GRAY),
                     subLocationText
             );
-            case RIGHT -> subLocationText.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
+            case TOP_RIGHT -> subLocationText.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
                     subLocationText,
                     Text.literal(" | ").formatted(Formatting.DARK_GRAY),
                     locationText
@@ -116,7 +119,7 @@ public class LocationElement extends Element {
         int timeWidth = textRenderer.getWidth(timeText);
 
         switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case LEFT -> {
+            case TOP_LEFT -> {
                 DrawHelper.drawText(drawContext, textRenderer,
                         weather,
                         x + text1x - (weatherWidth / 2), y + text1y,
@@ -132,7 +135,7 @@ public class LocationElement extends Element {
                         x + text3x, y + text3y,
                         true);
             }
-            case RIGHT -> {
+            case TOP_RIGHT -> {
                 DrawHelper.drawText(drawContext, textRenderer,
                         weather,
                         x - text1x - (weatherWidth / 2), y + text1y,
@@ -153,14 +156,14 @@ public class LocationElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case LEFT -> {
+            case TOP_LEFT -> {
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         LOCATION_TEXTURE,
                         x, y,
                         width, height
                 );
             }
-            case RIGHT -> {
+            case TOP_RIGHT -> {
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         LOCATION_TEXTURE_FLIP,
                         x - width, y,

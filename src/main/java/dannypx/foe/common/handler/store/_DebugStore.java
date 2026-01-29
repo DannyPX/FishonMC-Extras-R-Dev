@@ -1,10 +1,6 @@
 package dannypx.foe.common.handler.store;
 
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.KeyBindHandler;
-import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 
 import java.util.List;
@@ -18,7 +14,7 @@ public class _DebugStore {
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
-    public static Map<String, Map<String, Pair<MutableText, Tooltip>>> _getFields() {
+    public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
         return Map.of(
             ProfileDataHandler.class.getName(), ProfileDataHandler.instance()._getFields()
         );

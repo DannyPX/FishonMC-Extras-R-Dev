@@ -3,9 +3,9 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
 import java.util.Map;
 
@@ -60,10 +60,10 @@ public class ConnectionHandler {
     //endregion
 
     //region Dev
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "isOnServer", Pair.of(TextHelper.literal(isOnServer()), null),
-                "wasOnServer", Pair.of(TextHelper.literal(wasOnServer()), null)
+                "isOnServer", Pair.of(TextHelper.literal(isOnServer()), Text.empty()),
+                "wasOnServer", Pair.of(TextHelper.literal(wasOnServer()), Text.empty())
         );
     }
     //endregion

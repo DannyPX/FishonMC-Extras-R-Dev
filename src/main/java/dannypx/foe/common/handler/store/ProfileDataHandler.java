@@ -3,9 +3,9 @@ package dannypx.foe.common.handler.store;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dannypx.foe.common.handler.io.DataModels;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -52,9 +52,9 @@ public class ProfileDataHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "profileData", Pair.of(Text.literal("[profileData]"), Tooltip.of(Text.literal(dataModelToJson(profileData))))
+                "profileData", Pair.of(Text.literal("[profileData]"), TextHelper.literal(profileData))
         );
     }
     //endregion

@@ -7,7 +7,6 @@ import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.type.Pair;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -111,9 +110,9 @@ public class DataFileHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "isDataLoaded", Pair.of(Text.literal(Boolean.toString(isDataLoaded())), null)
+                "isDataLoaded", Pair.of(Text.literal(Boolean.toString(isDataLoaded())), Text.empty())
         );
     }
     //endregion

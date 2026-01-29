@@ -6,7 +6,6 @@ import dannypx.foe.common.type.Pair;
 import dannypx.foe.screens.MainScreen;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -57,9 +56,9 @@ public class KeyBindHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, Tooltip>> _getFields() {
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "openMainKeybind", Pair.of(Text.literal(openMainKeybind.getBoundKeyTranslationKey()), null)
+                "openMainKeybind", Pair.of(Text.literal(openMainKeybind.getBoundKeyTranslationKey()), Text.empty())
         );
     }
     //endregion

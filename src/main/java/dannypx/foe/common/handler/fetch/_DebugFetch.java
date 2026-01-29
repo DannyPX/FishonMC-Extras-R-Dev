@@ -1,7 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 
 import java.util.List;
@@ -13,17 +12,19 @@ public class _DebugFetch {
                 TabHandler.class.getName(),
                 ClientPlayerHandler.class.getName(),
                 ScoreboardHandler.class.getName(),
-                BossBarHandler.class.getName()
+                BossBarHandler.class.getName(),
+                TitleHandler.class.getName()
         );
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
-    public static Map<String, Map<String, Pair<MutableText, Tooltip>>> _getFields() {
+    public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
         return Map.of(
                 TabHandler.class.getName(), TabHandler.instance()._getFields(),
                 ClientPlayerHandler.class.getName(), ClientPlayerHandler.instance()._getFields(),
                 ScoreboardHandler.class.getName(), ScoreboardHandler.instance()._getFields(),
-                BossBarHandler.class.getName(), BossBarHandler.instance()._getFields()
+                BossBarHandler.class.getName(), BossBarHandler.instance()._getFields(),
+                TitleHandler.class.getName(), TitleHandler.instance()._getFields()
         );
     }
 }

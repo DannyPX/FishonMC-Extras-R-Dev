@@ -17,4 +17,12 @@ public enum Alignment implements EnumTranslatable {
     public static List<Alignment> getHorizontal() {
         return List.of(LEFT, RIGHT);
     }
+
+    public static List<Alignment> getTopHorizontal() {
+        return List.of(TOP_LEFT, TOP_RIGHT);
+    }
+
+    public static List<Alignment> getCorners() {
+        return List.of(TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
+    }
 }

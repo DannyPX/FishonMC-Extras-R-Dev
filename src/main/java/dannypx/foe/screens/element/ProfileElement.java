@@ -6,7 +6,7 @@ import dannypx.foe.common.handler.fetch.ScoreboardHandler;
 import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.screens.helper.DrawHelper;
+import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -22,13 +22,16 @@ public class ProfileElement extends Element {
     private final MinecraftClient minecraftClient;
     private final TextRenderer textRenderer;
 
+    private static final int TEXTURE_WIDTH = 160;
+    private static final int TEXTURE_HEIGHT = 44;
+
     private final Identifier PROFILE_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile");
     private final Identifier PROFILE_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile_flip");
     //endregion
 
     public ProfileElement(MinecraftClient minecraftClient) {
-        super(160,
-                44,
+        super(TEXTURE_WIDTH,
+                TEXTURE_HEIGHT,
                 Configs.hudConfig.profileElementXPosition.get() / 100f,
                 Configs.hudConfig.profileElementYPosition.get() / 100f,
                 Configs.hudConfig.profileElementAlignment.get(),
@@ -39,8 +42,8 @@ public class ProfileElement extends Element {
     }
 
     public ProfileElement(MinecraftClient minecraftClient, boolean isCopy) {
-        super(160,
-                44,
+        super(TEXTURE_WIDTH,
+                TEXTURE_HEIGHT,
                 Configs.hudConfig.profileElementXPosition.get() / 100f,
                 Configs.hudConfig.profileElementYPosition.get() / 100f,
                 Configs.hudConfig.profileElementAlignment.get(),
@@ -61,8 +64,8 @@ public class ProfileElement extends Element {
             }
 
             int x = switch (Configs.hudConfig.profileElementAlignment.get()) {
-                case LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
-                case RIGHT -> minecraftClient.getWindow().getScaledWidth()
+                case TOP_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                case TOP_RIGHT -> minecraftClient.getWindow().getScaledWidth()
                         - Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
                 default -> 0;
             };
@@ -78,7 +81,7 @@ public class ProfileElement extends Element {
         if(minecraftClient.player != null) {
             Identifier SKIN_TEXTURE = minecraftClient.player.getSkinTextures().texture();
             switch (Configs.hudConfig.profileElementAlignment.get()) {
-                case LEFT -> {
+                case TOP_LEFT -> {
                     drawContext.drawTexture(RenderLayer::getGuiTextured,
                             SKIN_TEXTURE,
                             x + 8, y + 8,
@@ -97,7 +100,7 @@ public class ProfileElement extends Element {
                             64, 64
                     );
                 }
-                case RIGHT -> {
+                case TOP_RIGHT -> {
                     drawContext.drawTexture(RenderLayer::getGuiTextured,
                             SKIN_TEXTURE,
                             x - 8 - 21, y + 8,
@@ -179,7 +182,7 @@ public class ProfileElement extends Element {
         int creditsWidth = textRenderer.getWidth(creditsText);
 
         switch (Configs.hudConfig.profileElementAlignment.get()) {
-            case LEFT -> {
+            case TOP_LEFT -> {
                 drawContext.drawText(textRenderer,
                         player,
                         x + text1x, y + text1y,
@@ -201,7 +204,7 @@ public class ProfileElement extends Element {
                         x + text4x, y + text4y,
                         true);
             }
-            case RIGHT -> {
+            case TOP_RIGHT -> {
                 drawContext.drawText(textRenderer,
                         player,
                         x - text1x - playerWidth, y + text1y,
@@ -228,14 +231,14 @@ public class ProfileElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.profileElementAlignment.get()) {
-            case LEFT -> {
+            case TOP_LEFT -> {
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         PROFILE_TEXTURE,
                         x, y,
                         width, height
                 );
             }
-            case RIGHT -> {
+            case TOP_RIGHT -> {
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         PROFILE_TEXTURE_FLIP,
                         x - width, y,

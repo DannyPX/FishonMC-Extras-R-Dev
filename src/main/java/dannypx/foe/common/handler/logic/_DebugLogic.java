@@ -1,7 +1,6 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.MutableText;
 
 import java.util.List;
@@ -12,16 +11,20 @@ public class _DebugLogic {
         return List.of(
                 ConnectionHandler.class.getName(),
                 LoadingHandler.class.getName(),
-                KeyBindHandler.class.getName()
+                KeyBindHandler.class.getName(),
+                FishCaughtHandler.class.getName(),
+                InventoryHandler.class.getName()
         );
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
-    public static Map<String, Map<String, Pair<MutableText, Tooltip>>> _getFields() {
+    public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
         return Map.of(
                 ConnectionHandler.class.getName(), ConnectionHandler.instance()._getFields(),
                 LoadingHandler.class.getName(), LoadingHandler.instance()._getFields(),
-                KeyBindHandler.class.getName(), KeyBindHandler.instance()._getFields()
+                KeyBindHandler.class.getName(), KeyBindHandler.instance()._getFields(),
+                FishCaughtHandler.class.getName(), FishCaughtHandler.instance()._getFields(),
+                InventoryHandler.class.getName(), InventoryHandler.instance()._getFields()
         );
     }
 }

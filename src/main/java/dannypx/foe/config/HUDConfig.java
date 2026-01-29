@@ -38,7 +38,7 @@ public class HUDConfig extends Config {
 
     @ConfigGroup.Pop
     @Name("Anchor point")
-    public ValidatedChoice<Alignment> profileElementAlignment = new ValidatedChoice<>(Alignment.LEFT, Alignment.getHorizontal(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+    public ValidatedChoice<Alignment> profileElementAlignment = new ValidatedChoice<>(Alignment.TOP_LEFT, Alignment.getTopHorizontal(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Name("Location Element")
     @Desc("§7This the location element. (Time, Temperature, Weather, Location)")
@@ -55,7 +55,7 @@ public class HUDConfig extends Config {
 
     @ConfigGroup.Pop
     @Name("Anchor point")
-    public ValidatedChoice<Alignment> locationElementAlignment = new ValidatedChoice<>(Alignment.RIGHT, Alignment.getHorizontal(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+    public ValidatedChoice<Alignment> locationElementAlignment = new ValidatedChoice<>(Alignment.TOP_RIGHT, Alignment.getTopHorizontal(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Override
     public @NotNull FileType fileType() {

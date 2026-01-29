@@ -41,7 +41,7 @@ public class ValidateItem {
                             && (isType(nbtCompound) || isFish(nbtCompound) || isOther(itemStack)),
                     nbtCompound);
         }
-        return Pair.nullableFalse();
+        return Pair.ofFalse();
     }
 
     private static boolean isType(NbtCompound nbtCompound) {
@@ -54,6 +54,26 @@ public class ValidateItem {
 
     private static boolean isOther(ItemStack itemStack) {
         return itemStack.getItem() == Items.FISHING_ROD;
+    }
+
+    public static Pair<Boolean, NbtObject> isType(ItemStack itemStack) {
+        if(!itemStack.isEmpty()
+                && hasLore(itemStack)
+                && hasCustomData(itemStack)) {
+            NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
+            return Pair.of(!isShopItem(nbtCompound) && isType(nbtCompound), NbtObject.of(nbtCompound));
+        }
+        return Pair.ofFalse();
+    }
+
+    public static Pair<Boolean, NbtObject> isFish(ItemStack itemStack) {
+        if(!itemStack.isEmpty()
+                && hasLore(itemStack)
+                && hasCustomData(itemStack)) {
+            NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
+            return Pair.of(!isShopItem(nbtCompound) && isFish(nbtCompound), NbtObject.of(nbtCompound));
+        }
+        return Pair.ofFalse();
     }
 
     private static boolean hasLore(ItemStack itemStack) {

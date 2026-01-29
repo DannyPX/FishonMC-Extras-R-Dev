@@ -1,10 +1,10 @@
 package dannypx.foe.screens;
 
-import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.type.Alignment;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.LocationElement;
 import dannypx.foe.screens.element.ProfileElement;
+import dannypx.foe.screens.element._DebugField;
 import dannypx.foe.screens.widget.MovableBoxWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -43,7 +43,7 @@ public class MoveElementScreen extends Screen {
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new ProfileElement(minecraftClient, true),
-                Alignment.getHorizontal(),
+                Alignment.getTopHorizontal(),
                 Configs.hudConfig.showProfileElement.translationKey(),
                 (xPercent, yPercent, alignment) -> {
                     Configs.hudConfig.profileElementXPosition.accept(xPercent);
@@ -54,7 +54,7 @@ public class MoveElementScreen extends Screen {
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new LocationElement(minecraftClient, true),
-                Alignment.getHorizontal(),
+                Alignment.getTopHorizontal(),
                 Configs.hudConfig.showLocationElement.translationKey(),
                 (xPercent, yPercent, alignment) -> {
                     Configs.hudConfig.locationElementXPosition.accept(xPercent);
@@ -62,6 +62,19 @@ public class MoveElementScreen extends Screen {
                     Configs.hudConfig.locationElementAlignment.accept(alignment);
                     Configs.hudConfig.save();
                 }));
+
+        if(Configs.debugConfig.debugMode.get()) {
+            widgets.add(new MovableBoxWidget(minecraftClient,
+                    new _DebugField(minecraftClient, true),
+                    Alignment.getCorners(),
+                    Configs.debugConfig.debugFieldElement.translationKey(),
+                    (xPercent, yPercent, alignment) -> {
+                        Configs.debugConfig.debugFieldXPosition.accept(xPercent);
+                        Configs.debugConfig.debugFieldYPosition.accept(yPercent);
+                        Configs.debugConfig.debugFieldAlignment.accept(alignment);
+                        Configs.debugConfig.save();
+                    }));
+        }
 
         widgets.forEach(this::addDrawableChild);
     }

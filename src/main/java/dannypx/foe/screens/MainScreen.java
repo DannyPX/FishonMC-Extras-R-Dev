@@ -43,9 +43,9 @@ public class MainScreen extends Screen implements ScreenConstants {
         List<ClickableWidget> widgets = new ArrayList<>();
 
         //TODO Better button placement
-        if(Configs.mainConfig.debugMode.get()) widgets.add(debugButton());
-        if(Configs.mainConfig.debugMode.get()) widgets.add(configButton());
-        if(Configs.mainConfig.debugMode.get()) widgets.add(moveHudButton());
+        if(Configs.debugConfig.debugMode.get()) widgets.add(debugButton());
+        widgets.add(configButton());
+        widgets.add(moveHudButton());
         
 
         widgets.forEach(this::addDrawableChild);

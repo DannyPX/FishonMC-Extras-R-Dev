@@ -10,14 +10,20 @@ import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.hud.HudRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
@@ -25,10 +31,31 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         this.onInit();
+
+        ScreenEvents.BEFORE_INIT.register(this::onBeforeInitScreen);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
+        ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
+    }
+
+    private void onAfterInitScreen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
+        //TODO
+        // Check if screen is instance of x (e.g. InventoryScreen), then call the register
+        if(screen instanceof InventoryScreen) {
+            // ScreenEvents.afterRender(screen).register(InventoryScreenHandler.instance().afterRender());
+        }
+    }
+
+    private void onBeforeInitScreen(MinecraftClient minecraftClient, Screen screen, int scaledWidth, int scaledHeight) {
+        ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, modifiers, modifiers2) -> afterKeyPress(screen1, key, modifiers2));
+    }
+
+    private void afterKeyPress(Screen screen, int key, int modifiers) {
+        if(screen instanceof DebugHandlerScreen debugHandlerScreen) {
+            debugHandlerScreen.copyText(key, modifiers);
+        }
     }
 
     private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
@@ -55,7 +82,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onEndClientTick(MinecraftClient minecraftClient) {
-        if(minecraftClient.getCurrentServerEntry() != null
+        if(!LoadingHandler.instance().isError()
+                && minecraftClient.getCurrentServerEntry() != null
                 // Check if on server before ticking
                 && ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()

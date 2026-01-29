@@ -12,6 +12,8 @@
   },
   "client": [
     "accessor.BossBarHudAccessor",
-    "accessor.PlayerListHudAccessor"
+    "accessor.PlayerListHudAccessor",
+    "inject.BossBarHudMixin",
+    "inject.InGameHudMixin"
   ]
 }

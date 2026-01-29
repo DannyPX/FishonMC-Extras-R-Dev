@@ -1,14 +1,16 @@
 package dannypx.foe.common.helper;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 
+import java.util.List;
+
 public class TextHelper {
-    private static final Gson gson = new Gson();
+    private static final GsonBuilder gson = new GsonBuilder();
 
     public static MutableText concat(Text... texts) {
         MutableText text = Text.empty();
@@ -23,7 +25,7 @@ public class TextHelper {
     }
 
     public static MutableText literal(DataModels.DataModel dataModel) {
-        return Text.literal(gson.toJson(dataModel));
+        return Text.literal(gson.setPrettyPrinting().create().toJson(dataModel));
     }
 
     public static MutableText literal(int i) {
@@ -36,6 +38,10 @@ public class TextHelper {
 
     public static MutableText literal(Text text) {
         return concat(text);
+    }
+
+    public static <T> MutableText literal(List<T> list) {
+        return Text.literal(gson.setPrettyPrinting().create().toJson(list));
     }
 
     public static int ordinalIndexOf(String str, String substr, int n) {
@@ -133,6 +139,10 @@ public class TextHelper {
     }
 
     public static String textToJson(Text text) {
-        return gson.toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
+        return gson.create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
+    }
+
+    public static  String textToJsonPretty(Text text) {
+        return gson.setPrettyPrinting().create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
     }
 }
