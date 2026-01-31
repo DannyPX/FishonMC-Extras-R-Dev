@@ -1,11 +1,8 @@
 package dannypx.foe.screens.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.screens.element.Element;
+import dannypx.foe.screens.element.*;
 import dannypx.foe.common.type.Pair;
-import dannypx.foe.screens.element.LocationElement;
-import dannypx.foe.screens.element.ProfileElement;
-import dannypx.foe.screens.element._DebugField;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.minecraft.client.MinecraftClient;
@@ -42,6 +39,7 @@ public class HudRenderHandler {
     private void addElements(LayeredDrawerWrapper layeredDrawerWrapper) {
         elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
         elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
+        elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraftClient)));
         elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
 
         elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,

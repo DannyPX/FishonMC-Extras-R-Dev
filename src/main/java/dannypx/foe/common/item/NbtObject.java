@@ -1,20 +1,29 @@
 package dannypx.foe.common.item;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 
 import java.util.UUID;
 
 public class NbtObject {
 
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    protected final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     private static final String UUID = "id";
     private static final String CATCHER = "catcher";
-    private final NbtCompound nbtCompound;
+    protected final NbtCompound nbtCompound;
+    protected final ItemStack itemStack;
 
-    private NbtObject(NbtCompound nbtCompound) {
+    protected NbtObject() {
+        this.nbtCompound = new NbtCompound();
+        this.itemStack = ItemStack.EMPTY;
+    }
+
+    protected NbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
         this.nbtCompound = nbtCompound;
+        this.itemStack = itemStack.copy();
     }
 
     public UUID getUUID() {
@@ -28,6 +37,10 @@ public class NbtObject {
         return null;
     }
 
+    public Text getName() {
+        return this.itemStack.getName();
+    }
+
     public boolean isOwn() {
         if(minecraftClient.player != null && getPlayerUUID() != null) {
             return minecraftClient.player.getUuid().equals(getPlayerUUID());
@@ -35,8 +48,8 @@ public class NbtObject {
         return false;
     }
 
-    public static NbtObject of(NbtCompound nbtCompound) {
-        return new NbtObject(nbtCompound);
+    public static NbtObject of(NbtCompound nbtCompound, ItemStack itemStack) {
+        return new NbtObject(nbtCompound, itemStack);
     }
 
     //{

@@ -1,6 +1,7 @@
 package dannypx.foe;
 
 import dannypx.foe.common.handler.fetch.BossBarHandler;
+import dannypx.foe.common.handler.logic.FishCaughtHandler;
 import dannypx.foe.common.handler.logic.KeyBindHandler;
 import dannypx.foe.common.handler.fetch.ClientPlayerHandler;
 import dannypx.foe.common.handler.fetch.ScoreboardHandler;
@@ -95,6 +96,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.scoreboardHandler.get()) ScoreboardHandler.instance().tick();
                 if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
                 if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
+                if(Configs.handlerConfig.fishCaughtHandler.get()) FishCaughtHandler.instance().tick();
             } else {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();
             }

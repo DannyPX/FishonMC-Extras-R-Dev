@@ -52,7 +52,6 @@ public class LocationElement extends Element {
     }
 
     //region Methods
-
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showLocationElement.get()) {

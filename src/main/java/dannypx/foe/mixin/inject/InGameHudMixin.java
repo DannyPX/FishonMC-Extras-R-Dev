@@ -48,4 +48,11 @@ public class InGameHudMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
+    private void injectRenderHotbar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+        if(ConnectionHandler.instance().isOnServer()) {
+            ci.cancel();
+        }
+    }
 }

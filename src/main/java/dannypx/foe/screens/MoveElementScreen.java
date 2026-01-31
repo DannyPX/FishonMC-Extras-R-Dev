@@ -2,6 +2,7 @@ package dannypx.foe.screens;
 
 import dannypx.foe.common.type.Alignment;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.element.HotbarElement;
 import dannypx.foe.screens.element.LocationElement;
 import dannypx.foe.screens.element.ProfileElement;
 import dannypx.foe.screens.element._DebugField;
@@ -43,7 +44,7 @@ public class MoveElementScreen extends Screen {
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new ProfileElement(minecraftClient, true),
-                Alignment.getTopHorizontal(),
+                Alignment.getTopCorners(),
                 Configs.hudConfig.showProfileElement.translationKey(),
                 (xPercent, yPercent, alignment) -> {
                     Configs.hudConfig.profileElementXPosition.accept(xPercent);
@@ -54,12 +55,23 @@ public class MoveElementScreen extends Screen {
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new LocationElement(minecraftClient, true),
-                Alignment.getTopHorizontal(),
+                Alignment.getTopCorners(),
                 Configs.hudConfig.showLocationElement.translationKey(),
                 (xPercent, yPercent, alignment) -> {
                     Configs.hudConfig.locationElementXPosition.accept(xPercent);
                     Configs.hudConfig.locationElementYPosition.accept(yPercent);
                     Configs.hudConfig.locationElementAlignment.accept(alignment);
+                    Configs.hudConfig.save();
+                }));
+
+        widgets.add(new MovableBoxWidget(minecraftClient,
+                new HotbarElement(minecraftClient, true),
+                Alignment.getBottom(),
+                Configs.hudConfig.showHotbarElement.translationKey(),
+                (xPercent, yPercent, alignment) -> {
+                    Configs.hudConfig.hotbarElementXPosition.accept(xPercent);
+                    Configs.hudConfig.hotbarElementYPosition.accept(yPercent);
+                    Configs.hudConfig.hotbarElementAlignment.accept(alignment);
                     Configs.hudConfig.save();
                 }));
 

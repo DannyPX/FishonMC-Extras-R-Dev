@@ -1,7 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
 import com.mojang.authlib.GameProfile;
-import dannypx.foe.common.constants.Rank;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
@@ -29,16 +28,11 @@ public class TabHandler {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private Text playerName = Text.empty();
-    private Rank rank = Rank.DEFAULT;
     private String instance = "";
     private boolean isInInstance = false;
 
     public Text getPlayerName() {
         return playerName;
-    }
-
-    public Rank getRank() {
-        return rank;
     }
 
     public String getInstance() {
@@ -79,7 +73,6 @@ public class TabHandler {
                     Objects.requireNonNull(minecraftClient.getNetworkHandler())
                             .getPlayerListEntry(minecraftClient.player.getUuid())
             );
-            this.rank = Rank.valueOfTagString(this.playerName.getString());
         }
     }
 
@@ -103,8 +96,7 @@ public class TabHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "playerName", Pair.of(Text.literal(getPlayerName().getString()), Text.empty()),
-                "rank", Pair.of(Text.literal(getRank().ID), Text.empty()),
+                "playerName", Pair.of(getPlayerName().copy(), Text.empty()),
                 "instance", Pair.of(Text.literal(getInstance()), Text.empty()),
                 "isInInstance", Pair.of(TextHelper.literal(isInInstance()), Text.empty())
         );

@@ -38,7 +38,7 @@ public class HUDConfig extends Config {
 
     @ConfigGroup.Pop
     @Name("Anchor point")
-    public ValidatedChoice<Alignment> profileElementAlignment = new ValidatedChoice<>(Alignment.TOP_LEFT, Alignment.getTopHorizontal(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+    public ValidatedChoice<Alignment> profileElementAlignment = new ValidatedChoice<>(Alignment.TOP_LEFT, Alignment.getTopCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Name("Location Element")
     @Desc("§7This the location element. (Time, Temperature, Weather, Location)")
@@ -55,7 +55,38 @@ public class HUDConfig extends Config {
 
     @ConfigGroup.Pop
     @Name("Anchor point")
-    public ValidatedChoice<Alignment> locationElementAlignment = new ValidatedChoice<>(Alignment.TOP_RIGHT, Alignment.getTopHorizontal(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+    public ValidatedChoice<Alignment> locationElementAlignment = new ValidatedChoice<>(Alignment.TOP_RIGHT, Alignment.getTopCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+
+    @Name("Hotbar Element")
+    @Desc("§7This the hotbar element.")
+    public ConfigGroup hotbarElementGroup = new ConfigGroup("hotbar_element_group");
+
+    @Name("Show Hotbar Element")
+    public ValidatedBoolean showHotbarElement = new ValidatedBoolean(true);
+
+    @Name("X Position in %")
+    public ValidatedInt hotbarElementXPosition = new ValidatedInt(50, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Y Position in %")
+    public ValidatedInt hotbarElementYPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Anchor point")
+    public ValidatedChoice<Alignment> hotbarElementAlignment = new ValidatedChoice<>(Alignment.BOTTOM, Alignment.getBottom(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+
+    @Name("Hotbar Options")
+    @Desc("§7Options for the hotbar.")
+    public ConfigGroup hotbarOptions = new ConfigGroup("hotbar_options_group");
+
+    @Name("Show Armor")
+    public ValidatedBoolean showHotbarArmor = new ValidatedBoolean(true);
+
+    @Name("Show Fishing Parts")
+    public ValidatedBoolean showHotbarParts = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Name("Show Active Bait")
+    public ValidatedBoolean showHotbarBait = new ValidatedBoolean(true);
 
     @Override
     public @NotNull FileType fileType() {

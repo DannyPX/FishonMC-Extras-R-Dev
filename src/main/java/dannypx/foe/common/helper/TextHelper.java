@@ -44,6 +44,10 @@ public class TextHelper {
         return Text.literal(gson.setPrettyPrinting().create().toJson(list));
     }
 
+    public static MutableText literal(String s) {
+        return Text.empty().append(Text.literal(s));
+    }
+
     public static int ordinalIndexOf(String str, String substr, int n) {
         int pos = str.indexOf(substr);
         while (--n > 0 && pos != -1)

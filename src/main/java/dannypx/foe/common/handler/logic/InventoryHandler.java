@@ -1,7 +1,7 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.item.NbtObject;
+import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -37,15 +37,22 @@ public class InventoryHandler {
 
     }
 
+    public void addToTrackedFish(UUID uuid) {
+        if (!trackedFish.contains(uuid)) {
+            trackedFish.add(uuid);
+        }
+    }
+
     public boolean trackAllFish() {
         if(minecraftClient.player != null) {
             trackedFish.clear();
             minecraftClient.player.getInventory().main.forEach(itemStack -> {
-                Pair<Boolean, NbtObject> validatedItem = ValidateItem.isFish(itemStack);
+                Pair<Boolean, FishNbtObject> validatedItem = ValidateItem.isFish(itemStack);
                 if(validatedItem.v1() && validatedItem.v2().isOwn()) {
-                    trackedFish.add(validatedItem.v2().getUUID());
+                    this.addToTrackedFish(validatedItem.v2().getUUID());
                 }
             });
+            LoggerHandler.info("Tracked Fish: " + trackedFish.size());
             return true;
         }
         return false;
