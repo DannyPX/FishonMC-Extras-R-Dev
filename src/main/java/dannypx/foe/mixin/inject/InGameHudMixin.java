@@ -28,6 +28,13 @@ public class InGameHudMixin {
         }
     }
 
+    @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"),  cancellable = true)
+    private void injectRenderHeldItemTooltip(DrawContext context, CallbackInfo ci) {
+        if(ConnectionHandler.instance().isOnServer()) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"), cancellable = true)
     private void injectRenderScoreboardSidebar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()) {

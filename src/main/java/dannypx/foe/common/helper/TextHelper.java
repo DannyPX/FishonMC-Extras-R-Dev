@@ -3,6 +3,7 @@ package dannypx.foe.common.helper;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -41,11 +42,20 @@ public class TextHelper {
     }
 
     public static <T> MutableText literal(List<T> list) {
-        return Text.literal(gson.setPrettyPrinting().create().toJson(list));
+        if(!list.isEmpty()) {
+            Object first = list.getFirst();
+            if(first instanceof ItemStack) return Text.empty().append(ItemStackHelper.itemStackListToJson((List<ItemStack>) list));
+            return Text.literal(gson.setPrettyPrinting().create().toJson(list));
+        }
+        return Text.empty();
     }
 
     public static MutableText literal(String s) {
         return Text.empty().append(Text.literal(s));
+    }
+
+    public static MutableText literal(ItemStack i) {
+        return Text.empty().append(ItemStackHelper.itemStackToJson(i));
     }
 
     public static int ordinalIndexOf(String str, String substr, int n) {
@@ -140,6 +150,26 @@ public class TextHelper {
                  'ᴜ', 'ᴠ', 'ᴡ', 'x', 'ʏ', 'ᴢ', '.', ',', ':', ';' -> true;
             default -> false;
         };
+    }
+
+    public static String shortenNumber(float d, int decimals) {
+        if(d > 1000 && d < 1000000) {
+            String s = String.format("%." + decimals + "f", d / 1000);
+            return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "K";
+        } else if (d > 1000000 && d < 1000000000 ){
+            String s = String.format("%." + decimals + "f", d / 1000000);
+            return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "M";
+        } else if (d > 1000000000) {
+            String s = String.format("%." + decimals + "f", d / 1000000000);
+            return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "B";
+        } else {
+            String s = String.format("%.0f", d);
+            return s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s;
+        }
+    }
+
+    public static String shortenNumber(int i, int decimals) {
+        return shortenNumber((float) i, decimals);
     }
 
     public static String textToJson(Text text) {

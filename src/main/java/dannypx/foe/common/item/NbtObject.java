@@ -1,18 +1,26 @@
 package dannypx.foe.common.item;
 
+import com.mojang.serialization.DataResult;
+import dannypx.foe.common.helper.ItemStackHelper;
+import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.Text;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class NbtObject {
 
     protected final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-    private static final String UUID = "id";
+    private static final String ID = "id";
     private static final String CATCHER = "catcher";
+    private static final String UUID = "uuid";
+    private static final String COUNTER = "counter";
     protected final NbtCompound nbtCompound;
     protected final ItemStack itemStack;
 
@@ -26,19 +34,29 @@ public class NbtObject {
         this.itemStack = itemStack.copy();
     }
 
-    public UUID getUUID() {
-        return this.nbtCompound.getUuid(UUID);
+    public UUID getID() {
+        return this.nbtCompound.getUuid(ID);
     }
 
     public UUID getPlayerUUID() {
         if(this.nbtCompound.contains(CATCHER)) {
             return this.nbtCompound.getUuid(CATCHER);
+        } else if (this.nbtCompound.contains(UUID)) {
+            return this.nbtCompound.getUuid(UUID);
         }
         return null;
     }
 
+    //region Generic
     public Text getName() {
         return this.itemStack.getName();
+    }
+
+    public int getCount() {
+        if(this.nbtCompound.contains(COUNTER)) {
+            return this.nbtCompound.getInt(COUNTER);
+        }
+        return this.itemStack.getCount();
     }
 
     public boolean isOwn() {
@@ -48,32 +66,31 @@ public class NbtObject {
         return false;
     }
 
+    public ItemStack getItemStack() {
+        return this.itemStack;
+    }
+
+    protected List<NbtObject> getItemStackList(String key) {
+        if(this.nbtCompound.contains(key)) {
+            DataResult<List<ItemStack>> result =
+                    ItemStack.CODEC.listOf().parse(NbtOps.INSTANCE, this.nbtCompound.get(key));
+            List<ItemStack> itemStackList = result.result().orElse(List.of());
+
+
+            return itemStackList.stream().map(item -> {
+                Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(item);
+                return validatedItem.v2();
+            }).filter(Objects::nonNull).toList();
+        }
+        return List.of();
+    }
+    //endregion
+
     public static NbtObject of(NbtCompound nbtCompound, ItemStack itemStack) {
         return new NbtObject(nbtCompound, itemStack);
     }
 
-    //{
-    //    date: "01/15/2026",
-    //    nature: "jolly",
-    //    rod: "§fStandard Fishing Rod",
-    //    scientific: "Pomoxis annularis",
-    //    sex: "♂",
-    //    length: 5.46f,
-    //    catcher: [I; -2053775741, -1988999195, -1691904089, 957736602],
-    //    weight: 0.06855662f,
-    //    water: "freshwater",
-    //    lifestyle: "demersal",
-    //    conservation: "LC",
-    //    size: "juvenile",
-    //    native: "native",
-    //    fish: "whitecrappie",
-    //    xp: 50.0f,
-    //    migration: "non-migratory",
-    //    variant: "normal",
-    //    location: "spawn",
-    //    id: [I; 1577787886, -2043916372, -1960242947, 415098906],
-    //    value: 50.0f,
-    //    group: "panfishes",
-    //    rarity: "rare"
-    //}
+    public static NbtObject empty() {
+        return new NbtObject(ItemStackHelper.getNbt(ItemStack.EMPTY), ItemStack.EMPTY);
+    }
 }

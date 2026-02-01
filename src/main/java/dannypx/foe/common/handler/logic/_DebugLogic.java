@@ -12,7 +12,7 @@ public class _DebugLogic {
                 ConnectionHandler.class.getName(),
                 LoadingHandler.class.getName(),
                 KeyBindHandler.class.getName(),
-                FishCaughtHandler.class.getName(),
+                CatchingHandler.class.getName(),
                 InventoryHandler.class.getName()
         );
     }
@@ -23,7 +23,7 @@ public class _DebugLogic {
                 ConnectionHandler.class.getName(), ConnectionHandler.instance()._getFields(),
                 LoadingHandler.class.getName(), LoadingHandler.instance()._getFields(),
                 KeyBindHandler.class.getName(), KeyBindHandler.instance()._getFields(),
-                FishCaughtHandler.class.getName(), FishCaughtHandler.instance()._getFields(),
+                CatchingHandler.class.getName(), CatchingHandler.instance()._getFields(),
                 InventoryHandler.class.getName(), InventoryHandler.instance()._getFields()
         );
     }

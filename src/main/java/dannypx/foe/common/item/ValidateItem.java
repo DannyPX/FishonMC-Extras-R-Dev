@@ -7,32 +7,27 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public class ValidateItem {
-    /**
-     * Check whether it is a general item
-     */
     public static Pair<Boolean, NbtCompound> isServerItem(ItemStack itemStack) {
         return isValidItem(itemStack);
     }
 
-    /**
-     * Check whether it is a specific item
-     */
-    public static boolean isServerItem(ItemStack itemStack, Item itemType) {
+    public static Pair<Boolean, NbtCompound> isServerItem(ItemStack itemStack, Item itemType) {
         Pair<Boolean, NbtCompound> item = isValidItem(itemStack);
 
         //isValidItem
-        if(item.v1()) {
-            return itemStack.getItem() == itemType;
+        if(item.v1() && itemStack.getItem() == itemType) {
+            return item;
         } else {
-            return false;
+            return Pair.ofFalse();
         }
     }
 
-    private static Pair<Boolean, NbtCompound> isValidItem(ItemStack itemStack) {
+    private static Pair<Boolean, @Nullable NbtCompound> isValidItem(ItemStack itemStack) {
         if(!itemStack.isEmpty()) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
             return Pair.of(hasLore(itemStack)
@@ -56,7 +51,7 @@ public class ValidateItem {
         return itemStack.getItem() == Items.FISHING_ROD;
     }
 
-    public static Pair<Boolean, NbtObject> isType(ItemStack itemStack) {
+    public static Pair<Boolean, @Nullable NbtObject> isType(ItemStack itemStack) {
         if(!itemStack.isEmpty()
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
@@ -66,7 +61,7 @@ public class ValidateItem {
         return Pair.ofFalse();
     }
 
-    public static Pair<Boolean, FishNbtObject> isFish(ItemStack itemStack) {
+    public static Pair<Boolean, @Nullable FishNbtObject> isFish(ItemStack itemStack) {
         if(!itemStack.isEmpty()
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
@@ -74,6 +69,11 @@ public class ValidateItem {
             return Pair.of(!isShopItem(nbtCompound) && isFish(nbtCompound), FishNbtObject.of(nbtCompound, itemStack));
         }
         return Pair.ofFalse();
+    }
+
+    public static Pair<Boolean, @Nullable FishingRodNbtObject> isFishingRod(ItemStack itemStack) {
+        Pair<Boolean, NbtCompound> serverItem = isServerItem(itemStack, Items.FISHING_ROD);
+        return serverItem.v1() ? Pair.of(true, FishingRodNbtObject.of(serverItem.v2(), itemStack)) : Pair.ofFalse();
     }
 
     private static boolean hasLore(ItemStack itemStack) {

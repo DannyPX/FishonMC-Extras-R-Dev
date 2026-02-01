@@ -1,6 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
-import dannypx.foe.common.handler.logic.FishCaughtHandler;
+import dannypx.foe.common.handler.logic.CatchingHandler;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -42,11 +42,11 @@ public class TitleHandler {
     }
 
     private void forwardTitleEvent(Text title) {
-        FishCaughtHandler.instance().scanFishListener();
+        CatchingHandler.instance().scanFishListener();
     }
 
     private void forwardSubTitleEvent(Text subTitle) {
-        FishCaughtHandler.instance().scanFishNameListener();
+        CatchingHandler.instance().scanFishNameListener();
     }
     //endregion
 

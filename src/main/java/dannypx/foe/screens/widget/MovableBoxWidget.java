@@ -27,9 +27,6 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     private int originalX;
     private int originalY;
 
-    //TODO
-    // Add TOP, BOTTOM, LEFT, RIGHT
-
     public MovableBoxWidget(MinecraftClient minecraftClient,
                             Element element,
                             List<Alignment> alignmentList,

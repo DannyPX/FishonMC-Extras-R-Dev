@@ -1,13 +1,10 @@
 package dannypx.foe;
 
 import dannypx.foe.common.handler.fetch.BossBarHandler;
-import dannypx.foe.common.handler.logic.FishCaughtHandler;
-import dannypx.foe.common.handler.logic.KeyBindHandler;
+import dannypx.foe.common.handler.logic.*;
 import dannypx.foe.common.handler.fetch.ClientPlayerHandler;
 import dannypx.foe.common.handler.fetch.ScoreboardHandler;
 import dannypx.foe.common.handler.fetch.TabHandler;
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
@@ -20,12 +17,16 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
 
@@ -39,6 +40,13 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
+        UseItemCallback.EVENT.register(this::onUseItem);
+    }
+
+    private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
+        InventoryHandler.instance().onUseItem(hand);
+
+        return ActionResult.PASS;
     }
 
     private void onAfterInitScreen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
@@ -91,12 +99,17 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ) {
             // Check if done loading
             if(LoadingHandler.instance().isLoadingDone()) {
-                if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
+                // Fetch
                 if(Configs.handlerConfig.tabHandler.get()) TabHandler.instance().tick();
                 if(Configs.handlerConfig.scoreboardHandler.get()) ScoreboardHandler.instance().tick();
                 if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
                 if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
-                if(Configs.handlerConfig.fishCaughtHandler.get()) FishCaughtHandler.instance().tick();
+                if(Configs.handlerConfig.inventoryHandler.get()) InventoryHandler.instance().tick();
+
+                // Logic
+                if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
+                if(Configs.handlerConfig.catchingHandler.get()) CatchingHandler.instance().tick();
+
             } else {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();
             }

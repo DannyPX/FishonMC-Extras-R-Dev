@@ -1,12 +1,13 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.item.FishingRodNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -61,7 +62,13 @@ public class LoadingHandler {
     }
 
     private boolean checkFishingRodLoaded(ItemStack itemStack) {
-        return ValidateItem.isServerItem(itemStack, Items.FISHING_ROD);
+        Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(itemStack);
+
+        if(validatedFishingRod.v1()) {
+            InventoryHandler.instance().setCurrentFishingRod(validatedFishingRod.v2());
+            return true;
+        }
+        return false;
     }
 
     private boolean scanFish() {

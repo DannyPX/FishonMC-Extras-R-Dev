@@ -58,13 +58,13 @@ public class HandlerConfig extends Config {
 
     @Name("Logic Handlers")
     @Desc("§7Handles logic of fishing")
-    public ConfigGroup fishCaughtLogicGroup = new ConfigGroup("fishing_logic_group");
+    public ConfigGroup catchingLogicGroup = new ConfigGroup("fishing_logic_group");
 
     @Desc("§7Handles fishing")
-    public ValidatedBoolean fishCaughtHandler = new ValidatedBoolean(true);
+    public ValidatedBoolean catchingHandler = new ValidatedBoolean(true);
 
     @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
-    public ValidatedInt fishCaughtStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedInt catchingStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
     @Override

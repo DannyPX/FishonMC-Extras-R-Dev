@@ -1,12 +1,19 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
+import dannypx.foe.common.item.FishingRodNbtObject;
+import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
+import net.minecraft.util.collection.DefaultedList;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +32,57 @@ public class InventoryHandler {
 
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    private List<UUID> trackedFish = new ArrayList<>();
+    private final List<UUID> trackedFish = new ArrayList<>();
+    private DefaultedList<ItemStack> snapshotInventory = DefaultedList.ofSize(0);
+    private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
 
     public List<UUID> getTrackedFish() {
         return trackedFish;
+    }
+
+    public DefaultedList<ItemStack> getSnapshotInventory() {
+        return snapshotInventory;
+    }
+
+    protected void setCurrentFishingRod(FishingRodNbtObject currentFishingRod) {
+        this.currentFishingRod = currentFishingRod;
+    }
+
+    public FishingRodNbtObject getCurrentFishingRod() {
+        return this.currentFishingRod;
     }
     //endregion
 
     //region Methods
     public void tick() {
+        if(minecraftClient.player != null) {
+            ItemStack fishingRod = minecraftClient.player.getInventory().main.getFirst();
+            if(!ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
+                Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
+                if(validatedFishingRod.v1()) {
+                    this.setCurrentFishingRod(validatedFishingRod.v2());
+                    LoggerHandler.info("Item Changed");
+                }
+            }
+        }
+    }
 
+    public void onUseItem(Hand hand) {
+
+        if(minecraftClient.player != null && ValidateItem.isFishingRod(minecraftClient.player.getStackInHand(hand)).v1()) {
+            this.snapshotInventory();
+        }
+    }
+
+    public void snapshotInventory() {
+        if(minecraftClient.player != null) {
+
+            snapshotInventory = ItemStackHelper.deepCopy(
+                    minecraftClient.player.getInventory().main,
+                    ItemStack.EMPTY,
+                    stack -> stack.isEmpty() ? ItemStack.EMPTY : stack.copy()
+            );
+        }
     }
 
     public void addToTrackedFish(UUID uuid) {
@@ -49,7 +97,7 @@ public class InventoryHandler {
             minecraftClient.player.getInventory().main.forEach(itemStack -> {
                 Pair<Boolean, FishNbtObject> validatedItem = ValidateItem.isFish(itemStack);
                 if(validatedItem.v1() && validatedItem.v2().isOwn()) {
-                    this.addToTrackedFish(validatedItem.v2().getUUID());
+                    this.addToTrackedFish(validatedItem.v2().getID());
                 }
             });
             LoggerHandler.info("Tracked Fish: " + trackedFish.size());
@@ -63,7 +111,12 @@ public class InventoryHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "trackedFish", Pair.of(Text.literal("[trackedFish]"), TextHelper.literal(getTrackedFish()))
+                "trackedFish", Pair.of(Text.literal("[trackedFish]"), TextHelper.literal(getTrackedFish())),
+                "snapshotInventory", Pair.of(Text.literal("[snapshotInventory]"), TextHelper.literal(
+                        ItemStackHelper.itemStackListToJson(getSnapshotInventory())
+                )),
+                "currentFishingRod", Pair.of(Text.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack()))
+
         );
     }
     //endregion
