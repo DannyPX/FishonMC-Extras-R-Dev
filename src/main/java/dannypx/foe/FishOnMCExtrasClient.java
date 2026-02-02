@@ -7,6 +7,7 @@ import dannypx.foe.common.handler.fetch.ScoreboardHandler;
 import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
+import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.hud.HudRenderHandler;
@@ -85,6 +86,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         //onJoin when on server
         if(ConnectionHandler.instance().isOnServer()) {
             ProfileDataHandler.instance().init();
+            StatsDataHandler.instance().init();
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
         }
@@ -105,6 +107,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
                 if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
                 if(Configs.handlerConfig.inventoryHandler.get()) InventoryHandler.instance().tick();
+
+                // IO
+                if(Configs.handlerConfig.dataFileHandler.get()) DataFileHandler.instance().tick();
 
                 // Logic
                 if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();

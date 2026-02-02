@@ -44,6 +44,16 @@ public class HandlerConfig extends Config {
     public ValidatedBoolean bossBarHandler = new ValidatedBoolean(true);
     //endregion
 
+    //region IO Handler Group
+    @Name("IO Handlers")
+    @Desc("§7Handles storing data to disk")
+    public ConfigGroup ioHandlerGroup = new ConfigGroup("io_handler_group");
+
+    @ConfigGroup.Pop
+    @Desc("§7File storing handler")
+    public ValidatedBoolean dataFileHandler = new ValidatedBoolean(true);
+    //endregion
+
     //region Logic Handler Group
     @Name("Logic Handlers")
     @Desc("§7Handles logic of data")

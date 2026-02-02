@@ -1,7 +1,6 @@
 package dannypx.foe.common.handler.store;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
@@ -10,6 +9,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ProfileDataHandler {
@@ -24,18 +24,31 @@ public class ProfileDataHandler {
 
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    private DataModels.ProfileDataModel profileData = new DataModels.ProfileDataModel();
+    private ProfileDataModel profileData = new ProfileDataModel();
+    private ProfileDataModel profileDataOld = new ProfileDataModel();
 
-    public DataModels.ProfileDataModel getProfileData() {
+    public ProfileDataModel getProfileData() {
         return profileData;
     }
 
-    public void setProfileData(DataModels.ProfileDataModel profileData) {
+    public void setProfileData(ProfileDataModel profileData) {
         this.profileData = profileData;
+        this.updateProfileData(profileData);
+    }
+
+    private void updateProfileData(ProfileDataModel profileData) {
+        this.profileDataOld = profileData.copy();
+        DataFileHandler.instance().saveToFile(DataModels.DataModelType.PROFILE_DATA);
     }
     //endregion
 
     //region Methods
+    public void tick() {
+        if(!profileDataOld.equals(profileData)) {
+            this.updateProfileData(profileData);
+        }
+    }
+
     public void init() {
         if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
     }
@@ -43,10 +56,31 @@ public class ProfileDataHandler {
     private void setUUID(UUID uuid) {
         this.profileData.uuid = uuid;
     }
+    //endregion
 
-    private String dataModelToJson(DataModels.DataModel dataModel) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(dataModel);
+    //region Model
+    public static class ProfileDataModel extends DataModels.DataModel {
+        private static final String PROFILE_DATA_MODEL_VERSION = "0";
+
+        public ProfileDataModel() {
+            super(PROFILE_DATA_MODEL_VERSION, null);
+        }
+
+        public ProfileDataModel(ProfileDataModel oldData) {
+            super(oldData.version, oldData.uuid);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj == this) return true;
+
+            return obj instanceof ProfileDataModel oldStatsData
+                    && this.uuid.equals(oldStatsData.uuid);
+        }
+
+        public ProfileDataModel copy() {
+            return new ProfileDataModel(this);
+        }
     }
     //endregion
 
@@ -54,7 +88,7 @@ public class ProfileDataHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "profileData", Pair.of(Text.literal("[profileData]"), TextHelper.literal(profileData))
+                "profileData", Pair.of(Text.literal("[profileData]"), TextHelper.literal(getProfileData()))
         );
     }
     //endregion

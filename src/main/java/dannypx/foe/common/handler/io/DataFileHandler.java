@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
+import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.type.Pair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.MutableText;
@@ -36,8 +37,14 @@ public class DataFileHandler {
     //endregion
 
     //region Methods
+    public void tick() {
+        ProfileDataHandler.instance().tick();
+        StatsDataHandler.instance().tick();
+    }
+
     public void init() {
         loadDataToMemory(DataModels.DataModelType.PROFILE_DATA);
+        loadDataToMemory(DataModels.DataModelType.STATS_DATA);
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -58,7 +65,7 @@ public class DataFileHandler {
         } catch (IOException e) {
             LoggerHandler.error(e);
         }
-        return true;
+        return false;
     }
 
     public boolean saveToFile(DataModels.DataModelType dataModelType) {
@@ -69,6 +76,8 @@ public class DataFileHandler {
             Path filePath = configDir.resolve(dataModelType.FILENAME + ".json");
             String resultJson = dataModelToJson(data);
             Files.writeString(filePath, resultJson);
+
+            LoggerHandler.info("Updating file: " + dataModelType.FILENAME + ".json");
         } catch (IOException e) {
             LoggerHandler.error(e);
         }
@@ -96,6 +105,7 @@ public class DataFileHandler {
     private DataModels.DataModel getData(DataModels.DataModelType dataModelType) {
         return switch (dataModelType) {
             case PROFILE_DATA -> ProfileDataHandler.instance().getProfileData();
+            case STATS_DATA -> StatsDataHandler.instance().getStatsData();
         };
     }
 
@@ -103,7 +113,9 @@ public class DataFileHandler {
         Gson gson = new GsonBuilder().create();
         switch (dataModelType) {
             case PROFILE_DATA ->
-                    ProfileDataHandler.instance().setProfileData(gson.fromJson(json, DataModels.ProfileDataModel.class));
+                    ProfileDataHandler.instance().setProfileData(gson.fromJson(json, ProfileDataHandler.ProfileDataModel.class));
+            case STATS_DATA ->
+                    StatsDataHandler.instance().setStatsData(gson.fromJson(json, StatsDataHandler.StatsDataModel.class));
         };
     }
     //endregion

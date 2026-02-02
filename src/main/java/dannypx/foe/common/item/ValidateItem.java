@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class ValidateItem {
+    private static final String PET = "pet";
+
     public static Pair<Boolean, NbtCompound> isServerItem(ItemStack itemStack) {
         return isValidItem(itemStack);
     }
@@ -51,7 +53,7 @@ public class ValidateItem {
         return itemStack.getItem() == Items.FISHING_ROD;
     }
 
-    public static Pair<Boolean, @Nullable NbtObject> isType(ItemStack itemStack) {
+    public static Pair<Boolean, NbtObject> isType(ItemStack itemStack) {
         if(!itemStack.isEmpty()
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
@@ -61,7 +63,22 @@ public class ValidateItem {
         return Pair.ofFalse();
     }
 
-    public static Pair<Boolean, @Nullable FishNbtObject> isFish(ItemStack itemStack) {
+    public static Pair<Boolean, PetNbtObject> isPet(ItemStack itemStack) {
+        Pair<Boolean, @Nullable NbtObject> validatedItem = isType(itemStack);
+        if(validatedItem.v1() && validatedItem.v2() != null) {
+            return isPet(validatedItem.v2());
+        }
+        return Pair.ofFalse();
+    }
+
+    public static Pair<Boolean, PetNbtObject> isPet(NbtObject item) {
+        if(Objects.equals(item.getType(), PET)) {
+            return Pair.of(true, PetNbtObject.of(item.nbtCompound, item.itemStack));
+        }
+        return Pair.ofFalse();
+    }
+
+    public static Pair<Boolean, FishNbtObject> isFish(ItemStack itemStack) {
         if(!itemStack.isEmpty()
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
@@ -71,7 +88,7 @@ public class ValidateItem {
         return Pair.ofFalse();
     }
 
-    public static Pair<Boolean, @Nullable FishingRodNbtObject> isFishingRod(ItemStack itemStack) {
+    public static Pair<Boolean, FishingRodNbtObject> isFishingRod(ItemStack itemStack) {
         Pair<Boolean, NbtCompound> serverItem = isServerItem(itemStack, Items.FISHING_ROD);
         return serverItem.v1() ? Pair.of(true, FishingRodNbtObject.of(serverItem.v2(), itemStack)) : Pair.ofFalse();
     }

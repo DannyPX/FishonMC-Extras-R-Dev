@@ -9,14 +9,16 @@ import java.util.Map;
 public class _DebugStore {
     public static List<String> _getHandlers() {
         return List.of(
-            ProfileDataHandler.class.getName()
+                ProfileDataHandler.class.getName(),
+                StatsDataHandler.class.getName()
         );
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
     public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
         return Map.of(
-            ProfileDataHandler.class.getName(), ProfileDataHandler.instance()._getFields()
+                ProfileDataHandler.class.getName(), ProfileDataHandler.instance()._getFields(),
+                StatsDataHandler.class.getName(), StatsDataHandler.instance()._getFields()
         );
     }
 }

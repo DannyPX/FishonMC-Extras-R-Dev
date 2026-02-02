@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.fetch.TitleHandler;
+import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
@@ -45,12 +46,14 @@ public class CatchingHandler {
         if(!scanDone && System.currentTimeMillis() < startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)) {
             Pair<Boolean, FishNbtObject> foundFish = this.findFish();
             if(foundFish.v1()) {
-                //TODO
-                // Track Stats Fish
                 this.scanDone = true;
                 InventoryHandler.instance().addToTrackedFish(foundFish.v2().getID());
-                this.checkForCaughtItems();
+
+                // Store to Stats
+                StatsDataHandler.instance().setFish(foundFish.v2());
                 LoggerHandler.info("Found Fish: " + foundFish.v2().getName().getString());
+
+                this.checkForCaughtItems();
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){
             this.scanDone = true;
@@ -89,8 +92,9 @@ public class CatchingHandler {
         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
 
         if(validatedItem.v1()) {
-            //TODO
-            // Track Stats Item
+            // Store to Stats
+            StatsDataHandler.instance().setItem(validatedItem.v2(), count);
+
             LoggerHandler.info("Found Item: " + itemStack.getName().getString());
         }
     }
@@ -177,7 +181,6 @@ public class CatchingHandler {
 
         if(subTitle.getString().charAt(0) > 0xF000 && subTitle.getString().charAt(0) < 0xF999) {
             fishNameToFind = subTitle.getString();
-            LoggerHandler.info("Fish to find: " + fishNameToFind);
         }
     }
 

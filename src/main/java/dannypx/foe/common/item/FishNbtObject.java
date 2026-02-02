@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public class FishNbtObject extends NbtObject {
 
-    private static final String FISH = "fish";
+    public static final String FISH = "fish";
+    public static final String SIZE = "size";
+    public static final String VARIANT = "variant";
 
     public FishNbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
         super(nbtCompound, itemStack);
@@ -16,6 +18,14 @@ public class FishNbtObject extends NbtObject {
 
     public String getFish() {
         return this.nbtCompound.getString(FISH);
+    }
+
+    public String getVariant() {
+        return this.nbtCompound.getString(VARIANT);
+    }
+
+    public String getSize() {
+        return this.nbtCompound.getString(SIZE);
     }
 
     public static FishNbtObject of(NbtCompound nbtCompound, ItemStack itemStack) {

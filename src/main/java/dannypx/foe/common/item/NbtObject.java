@@ -17,10 +17,12 @@ public class NbtObject {
 
     protected final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-    private static final String ID = "id";
-    private static final String CATCHER = "catcher";
-    private static final String UUID = "uuid";
-    private static final String COUNTER = "counter";
+    public static final String ID = "id";
+    public static final String CATCHER = "catcher";
+    public static final String UUID = "uuid";
+    public static final String COUNTER = "counter";
+    public static final String TYPE = "type";
+    public static final String RARITY = "rarity";
     protected final NbtCompound nbtCompound;
     protected final ItemStack itemStack;
 
@@ -66,6 +68,20 @@ public class NbtObject {
         return false;
     }
 
+    public String getType() {
+        if(this.nbtCompound.contains(TYPE)) {
+            return this.nbtCompound.getString(TYPE);
+        }
+        return null;
+    }
+
+    public String getRarity() {
+        if(this.nbtCompound.contains(RARITY)) {
+            return this.nbtCompound.getString(RARITY);
+        }
+        return null;
+    }
+
     public ItemStack getItemStack() {
         return this.itemStack;
     }
@@ -75,7 +91,6 @@ public class NbtObject {
             DataResult<List<ItemStack>> result =
                     ItemStack.CODEC.listOf().parse(NbtOps.INSTANCE, this.nbtCompound.get(key));
             List<ItemStack> itemStackList = result.result().orElse(List.of());
-
 
             return itemStackList.stream().map(item -> {
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(item);
