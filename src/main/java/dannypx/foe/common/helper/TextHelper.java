@@ -3,6 +3,7 @@ package dannypx.foe.common.helper;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -150,6 +151,10 @@ public class TextHelper {
                  'ᴜ', 'ᴠ', 'ᴡ', 'x', 'ʏ', 'ᴢ', '.', ',', ':', ';' -> true;
             default -> false;
         };
+    }
+
+    public static boolean isCustomFont(char c) {
+        return (c >= '\uF000' && c <= '\uF999');
     }
 
     public static String shortenNumber(float d, int decimals) {

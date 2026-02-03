@@ -1,10 +1,11 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.FishingRodNbtObject;
-import dannypx.foe.common.item.NbtObject;
+import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -35,6 +36,7 @@ public class InventoryHandler {
     private final List<UUID> trackedFish = new ArrayList<>();
     private DefaultedList<ItemStack> snapshotInventory = DefaultedList.ofSize(0);
     private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
+    private PetNbtObject currentPet = PetNbtObject.empty();
 
     public List<UUID> getTrackedFish() {
         return trackedFish;
@@ -51,18 +53,43 @@ public class InventoryHandler {
     public FishingRodNbtObject getCurrentFishingRod() {
         return this.currentFishingRod;
     }
+
+    protected  void setCurrentPet(PetNbtObject currentPet) {
+        this.currentPet = currentPet;
+    }
+
+    public PetNbtObject getCurrentPet() {
+        return this.currentPet;
+    }
+
+    public boolean hasPet() {
+        return this.currentPet.getItemStack() != ItemStack.EMPTY;
+    }
     //endregion
 
     //region Methods
     public void tick() {
         if(minecraftClient.player != null) {
             ItemStack fishingRod = minecraftClient.player.getInventory().main.getFirst();
-            if(!ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
+            if(!fishingRod.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
                 Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
                 if(validatedFishingRod.v1()) {
                     this.setCurrentFishingRod(validatedFishingRod.v2());
-                    LoggerHandler.info("Item Changed");
                 }
+            }
+
+            if(ProfileDataHandler.instance().getProfileData().activePetSlot != -1) {
+                ItemStack pet = minecraftClient.player.getInventory().main.get(ProfileDataHandler.instance().getProfileData().activePetSlot);
+                if(!pet.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentPet.getItemStack(), pet)) {
+                    Pair<Boolean, @Nullable PetNbtObject> validatedPet = ValidateItem.isPet(pet);
+                    if(validatedPet.v1()) {
+                        this.setCurrentPet(validatedPet.v2());
+                    }
+                }
+            } else if(ProfileDataHandler.instance().getProfileData().activePetSlot == -1
+                    && currentPet.getItemStack() != ItemStack.EMPTY
+            ) {
+                currentPet = PetNbtObject.empty();
             }
         }
     }

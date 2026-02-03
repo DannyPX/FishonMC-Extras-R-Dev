@@ -1,10 +1,7 @@
 package dannypx.foe;
 
-import dannypx.foe.common.handler.fetch.BossBarHandler;
+import dannypx.foe.common.handler.fetch.*;
 import dannypx.foe.common.handler.logic.*;
-import dannypx.foe.common.handler.fetch.ClientPlayerHandler;
-import dannypx.foe.common.handler.fetch.ScoreboardHandler;
-import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
@@ -13,6 +10,7 @@ import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.hud.HudRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
@@ -25,6 +23,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -39,9 +38,14 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
+        ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
+    }
+
+    private void receiveGameMessage(Text text, boolean overlay) {
+        ChatHandler.instance().onReceiveMessage(text);
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {

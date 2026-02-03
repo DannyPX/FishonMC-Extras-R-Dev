@@ -58,7 +58,7 @@ public class HUDConfig extends Config {
     public ValidatedChoice<Alignment> locationElementAlignment = new ValidatedChoice<>(Alignment.TOP_RIGHT, Alignment.getTopCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Name("Hotbar Element")
-    @Desc("§7This the hotbar element.")
+    @Desc("§7This the hotbar element")
     public ConfigGroup hotbarElementGroup = new ConfigGroup("hotbar_element_group");
 
     @Name("Show Hotbar Element")
@@ -68,13 +68,13 @@ public class HUDConfig extends Config {
     public ValidatedInt hotbarElementXPosition = new ValidatedInt(50, 100, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Y Position in %")
-    public ValidatedInt hotbarElementYPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedInt hotbarElementYPosition = new ValidatedInt(2, 100, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Anchor point")
     public ValidatedChoice<Alignment> hotbarElementAlignment = new ValidatedChoice<>(Alignment.BOTTOM, Alignment.getBottom(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Name("Hotbar Options")
-    @Desc("§7Options for the hotbar.")
+    @Desc("§7Options for the hotbar")
     public ConfigGroup hotbarOptions = new ConfigGroup("hotbar_options_group");
 
     @Name("Show Armor")
@@ -87,6 +87,23 @@ public class HUDConfig extends Config {
     @ConfigGroup.Pop
     @Name("Show Active Bait")
     public ValidatedBoolean showHotbarBait = new ValidatedBoolean(true);
+
+    @Name("Pet Element")
+    @Desc("§7This is your pet shown on the hud. (Name, Level, Picture)")
+    public ConfigGroup petElementGroup = new ConfigGroup("pet_element_group");
+
+    @Name("Show Pet Element")
+    public ValidatedBoolean showPetElement = new ValidatedBoolean(true);
+
+    @Name("X Position in %")
+    public ValidatedInt petElementXPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Y Position in %")
+    public ValidatedInt petElementYPosition = new ValidatedInt(20, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @Name("Anchor point")
+    public ValidatedChoice<Alignment> petElementAlignment = new ValidatedChoice<>(Alignment.TOP_LEFT, Alignment.getTopCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Override
     public @NotNull FileType fileType() {

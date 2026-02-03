@@ -2,10 +2,7 @@ package dannypx.foe.screens;
 
 import dannypx.foe.common.type.Alignment;
 import dannypx.foe.config.Configs;
-import dannypx.foe.screens.element.HotbarElement;
-import dannypx.foe.screens.element.LocationElement;
-import dannypx.foe.screens.element.ProfileElement;
-import dannypx.foe.screens.element._DebugField;
+import dannypx.foe.screens.element.*;
 import dannypx.foe.screens.widget.MovableBoxWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -73,6 +70,16 @@ public class MoveElementScreen extends Screen {
                     Configs.hudConfig.hotbarElementYPosition.accept(yPercent);
                     Configs.hudConfig.hotbarElementAlignment.accept(alignment);
                     Configs.hudConfig.save();
+                }));
+
+        widgets.add(new MovableBoxWidget(minecraftClient,
+                new PetElement(minecraftClient, true),
+                Alignment.getTopCorners(),
+                Configs.hudConfig.showPetElement.translationKey(),
+                (xPercent, yPercent, alignment) -> {
+                    Configs.hudConfig.petElementXPosition.accept(xPercent);
+                    Configs.hudConfig.petElementYPosition.accept(yPercent);
+                    Configs.hudConfig.petElementAlignment.accept(alignment);
                 }));
 
         if(Configs.debugConfig.debugMode.get()) {

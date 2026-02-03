@@ -56,11 +56,23 @@ public class ProfileDataHandler {
     private void setUUID(UUID uuid) {
         this.profileData.uuid = uuid;
     }
+
+    public void updatePet(boolean enablePet) {
+        if (minecraftClient.player != null) {
+            if(enablePet) {
+                profileData.activePetSlot = minecraftClient.player.getInventory().selectedSlot;
+            } else {
+                profileData.activePetSlot = -1;
+            }
+        }
+    }
     //endregion
 
     //region Model
     public static class ProfileDataModel extends DataModels.DataModel {
         private static final String PROFILE_DATA_MODEL_VERSION = "0";
+
+        public int activePetSlot = -1;
 
         public ProfileDataModel() {
             super(PROFILE_DATA_MODEL_VERSION, null);
@@ -68,6 +80,7 @@ public class ProfileDataHandler {
 
         public ProfileDataModel(ProfileDataModel oldData) {
             super(oldData.version, oldData.uuid);
+            this.activePetSlot = oldData.activePetSlot;
         }
 
         @Override
@@ -75,7 +88,8 @@ public class ProfileDataHandler {
             if(obj == this) return true;
 
             return obj instanceof ProfileDataModel oldStatsData
-                    && this.uuid.equals(oldStatsData.uuid);
+                    && this.uuid.equals(oldStatsData.uuid)
+                    && this.activePetSlot == oldStatsData.activePetSlot;
         }
 
         public ProfileDataModel copy() {

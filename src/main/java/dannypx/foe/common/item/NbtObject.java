@@ -1,9 +1,12 @@
 package dannypx.foe.common.item;
 
 import com.mojang.serialization.DataResult;
+import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.ItemStackHelper;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
@@ -23,6 +26,10 @@ public class NbtObject {
     public static final String COUNTER = "counter";
     public static final String TYPE = "type";
     public static final String RARITY = "rarity";
+
+    public static final int RARITY_LINE = 1;
+    public static final int RARITY_SIBLING = 1;
+
     protected final NbtCompound nbtCompound;
     protected final ItemStack itemStack;
 
@@ -80,6 +87,22 @@ public class NbtObject {
             return this.nbtCompound.getString(RARITY);
         }
         return null;
+    }
+
+    public String getRarityText() {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+            List<Text> textList = this.getLore();
+            Text rarity = textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
+            return rarity.getString();
+        }
+        return "";
+    }
+
+    public List<Text> getLore() {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+            return Objects.requireNonNull(this.itemStack.get(DataComponentTypes.LORE)).lines();
+        }
+        return List.of();
     }
 
     public ItemStack getItemStack() {

@@ -45,8 +45,7 @@ public class StatsDataHandler {
         this.statsDataOld = statsData.copy();
         DataFileHandler.instance().saveToFile(DataModels.DataModelType.STATS_DATA);
     }
-
-        //endregion
+    //endregion
 
     //region Methods
     public void tick() {
@@ -66,14 +65,14 @@ public class StatsDataHandler {
     public void setFish(FishNbtObject fish) {
         statsData.fishTotal++;
 
-        Data<String, Integer> rarityDrystreak = this.updateFishData(FishNbtObject.RARITY, fish.getRarity(), 1);
-        Data<String, Integer> variantDrystreak = this.updateFishData(FishNbtObject.VARIANT, fish.getVariant(), 1);
-        Data<String, Integer> sizeDryStreak = this.updateFishData(FishNbtObject.SIZE, fish.getSize(), 1);
+        Data<String, Integer> rarityDrystreak = this.updateFishData(statsData, FishNbtObject.RARITY, fish.getRarity(), 1);
+        Data<String, Integer> variantDrystreak = this.updateFishData(statsData, FishNbtObject.VARIANT, fish.getVariant(), 1);
+        Data<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishNbtObject.SIZE, fish.getSize(), 1);
         //TODO Notify Fish
     }
 
     // Field, Old Drystreak
-    private Data<String, Integer> updateFishData(String category, String field, int valueToAdd) {
+    private Data<String, Integer> updateFishData(StatsDataModel statsData, String category, String field, int valueToAdd) {
         Map<String, Data<Integer, Integer>> categoryMapData = statsData.fishData.getOrDefault(category, new HashMap<>());
         Data<Integer, Integer> fieldData = categoryMapData.getOrDefault(field, Data.of(0, statsData.fishTotal));
 
@@ -93,13 +92,13 @@ public class StatsDataHandler {
     private void setPet(PetNbtObject pet) {
         statsData.petTotal++;
 
-        Data<String, Integer> rarityDrystreak = this.updatePetData(NbtObject.RARITY, pet.getRarity(), 1);
+        Data<String, Integer> rarityDrystreak = this.updatePetData(statsData, NbtObject.RARITY, pet.getRarity(), 1);
         //TODO Rating
         //TODO Notify Pet
     }
 
     // Field, Old Drystreak
-    private Data<String, Integer> updatePetData(String category, String field, int valueToAdd) {
+    private Data<String, Integer> updatePetData(StatsDataModel statsData, String category, String field, int valueToAdd) {
         Map<String, Data<Integer, Integer>> categoryMapData = statsData.petData.getOrDefault(category, new HashMap<>());
         Data<Integer, Integer> fieldData = categoryMapData.getOrDefault(field, Data.of(0, statsData.fishTotal));
 
@@ -111,11 +110,11 @@ public class StatsDataHandler {
     }
 
     private void setOtherItem(NbtObject item, int count) {
-        Data<String, Integer> itemDrystreak = this.updateOtherItemData(item.getType(), count);
+        Data<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
         //TODO Notify Item
     }
 
-    private Data<String, Integer> updateOtherItemData(String item, int valueToAdd) {
+    private Data<String, Integer> updateOtherItemData(StatsDataModel statsData, String item, int valueToAdd) {
         Data<Integer, Integer> itemData = statsData.itemData.getOrDefault(item, Data.of(0, statsData.fishTotal));
 
         Data<Integer, Integer> newItemData = Data.of(itemData.amount() + valueToAdd, statsData.fishTotal);

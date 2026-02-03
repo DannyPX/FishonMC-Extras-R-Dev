@@ -40,6 +40,7 @@ public class HudRenderHandler {
         elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
         elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
         elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraftClient)));
+        elements.add(Pair.of("pet_hud", new PetElement(minecraftClient)));
         elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
 
         elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
