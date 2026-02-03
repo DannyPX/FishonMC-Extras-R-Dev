@@ -122,32 +122,38 @@ public class LocationElement extends Element {
                 DrawHelper.drawText(drawContext, textRenderer,
                         weather,
                         x + text1x - (weatherWidth / 2), y + text1y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         locationTotal,
                         x + text2x, y + text2y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         timeText,
                         x + text3x, y + text3y,
+                        true,
                         true);
             }
             case TOP_RIGHT -> {
                 DrawHelper.drawText(drawContext, textRenderer,
                         weather,
                         x - text1x - (weatherWidth / 2), y + text1y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         locationTotal,
                         x - text2x - locationWidth, y + text2y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         timeText,
                         x - text3x - timeWidth, y + text3y,
+                        true,
                         true);
             }
         }

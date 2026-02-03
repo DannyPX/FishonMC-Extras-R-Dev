@@ -14,31 +14,25 @@ import java.util.Objects;
 public class ValidateItem {
     private static final String PET = "pet";
 
-    public static Pair<Boolean, NbtCompound> isServerItem(ItemStack itemStack) {
+    public static Pair<Boolean, NbtObject> isServerItem(ItemStack itemStack) {
         return isValidItem(itemStack);
     }
 
-    public static Pair<Boolean, NbtCompound> isServerItem(ItemStack itemStack, Item itemType) {
-        Pair<Boolean, NbtCompound> item = isValidItem(itemStack);
-
+    public static Pair<Boolean, NbtObject> isServerItem(ItemStack itemStack, Item itemType) {
         //isValidItem
-        if(item.v1() && itemStack.getItem() == itemType) {
-            return item;
-        } else {
-            return Pair.ofFalse();
-        }
+        return Pair.of(itemStack.getItem() == itemType, isValidItem(itemStack).v2());
     }
 
-    private static Pair<Boolean, @Nullable NbtCompound> isValidItem(ItemStack itemStack) {
+    private static Pair<Boolean, NbtObject> isValidItem(ItemStack itemStack) {
         if(!itemStack.isEmpty()) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
             return Pair.of(hasLore(itemStack)
                             && hasCustomData(itemStack)
                             && !isShopItem(nbtCompound)
                             && (isType(nbtCompound) || isFish(nbtCompound) || isOther(itemStack)),
-                    nbtCompound);
+                    NbtObject.of(nbtCompound, itemStack));
         }
-        return Pair.ofFalse();
+        return Pair.ofFalse(NbtObject.of(new NbtCompound(), itemStack));
     }
 
     private static boolean isType(NbtCompound nbtCompound) {
@@ -60,22 +54,19 @@ public class ValidateItem {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
             return Pair.of(!isShopItem(nbtCompound) && isType(nbtCompound), NbtObject.of(nbtCompound, itemStack));
         }
-        return Pair.ofFalse();
+        return Pair.ofFalse(NbtObject.of(new NbtCompound(), itemStack));
     }
 
     public static Pair<Boolean, PetNbtObject> isPet(ItemStack itemStack) {
-        Pair<Boolean, @Nullable NbtObject> validatedItem = isType(itemStack);
-        if(validatedItem.v1() && validatedItem.v2() != null) {
+        Pair<Boolean, NbtObject> validatedItem = isType(itemStack);
+        if(validatedItem.v1()) {
             return isPet(validatedItem.v2());
         }
-        return Pair.ofFalse();
+        return Pair.ofFalse(PetNbtObject.of(validatedItem.v2().nbtCompound, validatedItem.v2().itemStack));
     }
 
     public static Pair<Boolean, PetNbtObject> isPet(NbtObject item) {
-        if(Objects.equals(item.getType(), PET)) {
-            return Pair.of(true, PetNbtObject.of(item.nbtCompound, item.itemStack));
-        }
-        return Pair.ofFalse();
+        return Pair.of(Objects.equals(item.getType(), PET), PetNbtObject.of(item.nbtCompound, item.itemStack));
     }
 
     public static Pair<Boolean, FishNbtObject> isFish(ItemStack itemStack) {
@@ -85,12 +76,12 @@ public class ValidateItem {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
             return Pair.of(!isShopItem(nbtCompound) && isFish(nbtCompound), FishNbtObject.of(nbtCompound, itemStack));
         }
-        return Pair.ofFalse();
+        return Pair.ofFalse(FishNbtObject.of(new NbtCompound(), itemStack));
     }
 
     public static Pair<Boolean, FishingRodNbtObject> isFishingRod(ItemStack itemStack) {
-        Pair<Boolean, NbtCompound> serverItem = isServerItem(itemStack, Items.FISHING_ROD);
-        return serverItem.v1() ? Pair.of(true, FishingRodNbtObject.of(serverItem.v2(), itemStack)) : Pair.ofFalse();
+        Pair<Boolean, NbtObject> serverItem = isServerItem(itemStack, Items.FISHING_ROD);
+        return Pair.of(serverItem.v1(), FishingRodNbtObject.of(serverItem.v2().nbtCompound, serverItem.v2().getItemStack()));
     }
 
     private static boolean hasLore(ItemStack itemStack) {

@@ -80,6 +80,7 @@ public class MoveElementScreen extends Screen {
                     Configs.hudConfig.petElementXPosition.accept(xPercent);
                     Configs.hudConfig.petElementYPosition.accept(yPercent);
                     Configs.hudConfig.petElementAlignment.accept(alignment);
+                    Configs.hudConfig.save();
                 }));
 
         if(Configs.debugConfig.debugMode.get()) {

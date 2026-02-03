@@ -102,16 +102,16 @@ public class _DebugField extends Element {
 
         switch (Configs.debugConfig.debugFieldAlignment.get()) {
             case TOP_LEFT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y, true);
+                DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y, true, true);
             }
             case TOP_RIGHT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y, true);
+                DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y, true, true);
             }
             case BOTTOM_LEFT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y - height, true);
+                DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y - height, true, true);
             }
             case BOTTOM_RIGHT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y - height, true);
+                DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y - height, true, true);
             }
         }
     }

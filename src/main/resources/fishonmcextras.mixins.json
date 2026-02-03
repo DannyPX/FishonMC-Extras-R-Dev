@@ -14,6 +14,7 @@
     "accessor.BossBarHudAccessor",
     "accessor.PlayerListHudAccessor",
     "inject.BossBarHudMixin",
+    "inject.DrawContextMixin",
     "inject.InGameHudMixin"
   ]
 }

@@ -3,6 +3,7 @@ package dannypx.foe.common.item;
 import dannypx.foe.common.helper.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
 
 public class PetNbtObject extends NbtObject {
 
@@ -30,7 +31,7 @@ public class PetNbtObject extends NbtObject {
         return 0f;
     }
 
-    public static PetNbtObject of(NbtCompound nbtCompound, ItemStack itemStack) {
+    public static PetNbtObject of(@NotNull NbtCompound nbtCompound, @NotNull ItemStack itemStack) {
         return new PetNbtObject(nbtCompound, itemStack);
     }
 

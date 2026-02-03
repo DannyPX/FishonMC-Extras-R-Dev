@@ -192,16 +192,19 @@ public class ProfileElement extends Element {
                 DrawHelper.drawText(drawContext, textRenderer,
                         levelText,
                         x + text2x, y + text2y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         walletText,
                         x + text3x, y + text3y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         creditsText,
                         x + text4x, y + text4y,
+                        true,
                         true);
             }
             case TOP_RIGHT -> {
@@ -214,16 +217,19 @@ public class ProfileElement extends Element {
                 DrawHelper.drawText(drawContext, textRenderer,
                         levelText,
                         x - text2x - levelWidth, y + text2y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         walletText,
                         x - text3x - walletWidth, y + text3y,
+                        true,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         creditsText,
                         x - text4x - creditsWidth, y + text4y,
+                        true,
                         true);
             }
         }

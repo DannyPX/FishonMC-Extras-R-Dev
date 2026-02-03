@@ -19,7 +19,7 @@ public class ItemStackHelper {
 
     public static NbtCompound getNbt(ItemStack stack) {
         NbtComponent component = stack.get(DataComponentTypes.CUSTOM_DATA);
-        return component != null ? component.copyNbt() : null;
+        return component != null ? component.copyNbt() : new NbtCompound();
     }
 
     public static ItemStack jsonToItemStack(String json) {

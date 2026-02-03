@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class NbtObject {
         this.itemStack = ItemStack.EMPTY;
     }
 
-    protected NbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
+    protected NbtObject(@NotNull NbtCompound nbtCompound, ItemStack itemStack) {
         this.nbtCompound = nbtCompound;
         this.itemStack = itemStack.copy();
     }
@@ -124,7 +125,7 @@ public class NbtObject {
     }
     //endregion
 
-    public static NbtObject of(NbtCompound nbtCompound, ItemStack itemStack) {
+    public static NbtObject of(@NotNull NbtCompound nbtCompound, @NotNull ItemStack itemStack) {
         return new NbtObject(nbtCompound, itemStack);
     }
 

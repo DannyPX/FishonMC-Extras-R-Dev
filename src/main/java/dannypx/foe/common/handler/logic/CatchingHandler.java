@@ -106,7 +106,7 @@ public class CatchingHandler {
         FishNbtObject worldFish = this.findFishInWorld();
         if(worldFish != null) return Pair.of(true, worldFish);
 
-        return Pair.ofFalse();
+        return Pair.ofFalse(FishNbtObject.empty());
     }
 
     private FishNbtObject findFishInInventory() {

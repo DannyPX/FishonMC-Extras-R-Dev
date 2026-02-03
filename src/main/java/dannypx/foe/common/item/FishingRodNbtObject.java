@@ -3,6 +3,7 @@ package dannypx.foe.common.item;
 import dannypx.foe.common.helper.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class FishingRodNbtObject extends NbtObject {
         return this.tackleBox;
     }
 
-    public static FishingRodNbtObject of(NbtCompound nbtCompound, ItemStack itemStack) {
+    public static FishingRodNbtObject of(@NotNull NbtCompound nbtCompound, @NotNull ItemStack itemStack) {
         return new FishingRodNbtObject(nbtCompound, itemStack);
     }
 

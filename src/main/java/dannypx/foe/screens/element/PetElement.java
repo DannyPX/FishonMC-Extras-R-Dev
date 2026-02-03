@@ -143,6 +143,7 @@ public class PetElement extends Element {
                             petRarity,
                             x + text1x, y + text1y,
                             true,
+                            true,
                             true);
 
                     drawContext.drawText(textRenderer,
@@ -154,6 +155,7 @@ public class PetElement extends Element {
                     DrawHelper.drawText(drawContext, textRenderer,
                             levelText,
                             x + text2x, y + text2y,
+                            true,
                             true);
                 }
                 case TOP_RIGHT -> {
@@ -161,6 +163,7 @@ public class PetElement extends Element {
                             textRenderer,
                             petRarity,
                             x - text1x - petRarityWidth - petWidth, y + text1y,
+                            true,
                             true,
                             true);
 
@@ -173,6 +176,7 @@ public class PetElement extends Element {
                     DrawHelper.drawText(drawContext, textRenderer,
                             levelText,
                             x - text2x - levelWidth, y + text2y,
+                            true,
                             true);
                 }
             }

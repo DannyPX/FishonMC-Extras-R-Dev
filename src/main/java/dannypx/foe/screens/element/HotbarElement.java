@@ -7,6 +7,8 @@ import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishingRodNbtObject;
 import dannypx.foe.common.item.NbtObject;
+import dannypx.foe.common.item.ValidateItem;
+import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -128,9 +130,10 @@ public class HotbarElement extends Element {
 
             for(int i = 0; i < 9; i++) {
                 ItemStack item = minecraftClient.player.getInventory().main.get(i);
+                Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(item);
 
-                int count = item.getCount();
-                Text countText = TextHelper.literal(TextHelper.smallText(String.valueOf(count)));
+                int count = validatedItem.v2().getCount();
+                Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                 int countWidth = textRenderer.getWidth(countText);
 
                 drawContext.drawItem(item, x + itemX + (18 * i), y + itemY);
@@ -139,6 +142,7 @@ public class HotbarElement extends Element {
                 drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
                 if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                         x + countX + (18 * i) - countWidth, y + countY,
+                        true,
                         true);
                 drawContext.getMatrices().pop();
             }
@@ -273,13 +277,13 @@ public class HotbarElement extends Element {
                 Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                 int countWidth = textRenderer.getWidth(countText);
 
-
                 drawContext.drawItem(bait.getItemStack(), x + partsX, y + partsY);
 
                 drawContext.getMatrices().push();
                 drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
                 if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                         x + countX - countWidth, y + countY,
+                        true,
                         true);
                 drawContext.getMatrices().pop();
             }

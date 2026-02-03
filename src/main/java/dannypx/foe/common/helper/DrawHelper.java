@@ -14,23 +14,23 @@ import java.util.stream.Collectors;
  */
 public class DrawHelper {
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y) {
-        drawText(drawContext, textRenderer, text, x, y, false, false);
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow) {
+        drawText(drawContext, textRenderer, text, x, y, shadow, false, false);
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean middle) {
-        drawText(drawContext, textRenderer, text, x, y, middle, false);
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow, boolean middle) {
+        drawText(drawContext, textRenderer, text, x, y, middle, shadow,false);
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean middle, boolean hasCustomFont) {
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow, boolean middle, boolean hasCustomFont) {
         AtomicInteger translateX = new AtomicInteger(0);
         text.getSiblings().forEach(t -> {
-            drawText(drawContext, textRenderer, t.getString(), x + translateX.get(), y, t.getStyle(), middle, hasCustomFont);
+            drawText(drawContext, textRenderer, t.getString(), x + translateX.get(), y, t.getStyle(), shadow, middle, hasCustomFont);
             translateX.addAndGet(textRenderer.getWidth(t));
         });
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, int x, int y, Style style, boolean middle, boolean hasCustomFont) {
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont) {
         drawText(drawContext, textRenderer, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, middle, hasCustomFont);
     }
 
