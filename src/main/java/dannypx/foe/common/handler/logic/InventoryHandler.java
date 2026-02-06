@@ -142,7 +142,8 @@ public class InventoryHandler {
                 "snapshotInventory", Pair.of(Text.literal("[snapshotInventory]"), TextHelper.literal(
                         ItemStackHelper.itemStackListToJson(getSnapshotInventory())
                 )),
-                "currentFishingRod", Pair.of(Text.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack()))
+                "currentFishingRod", Pair.of(Text.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack())),
+                "currentPet", Pair.of(Text.literal("[currentPet]"), TextHelper.literal(getCurrentPet().getItemStack()))
 
         );
     }

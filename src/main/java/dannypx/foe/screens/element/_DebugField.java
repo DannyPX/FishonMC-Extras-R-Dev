@@ -101,18 +101,10 @@ public class _DebugField extends Element {
         int height = textRenderer.fontHeight;
 
         switch (Configs.debugConfig.debugFieldAlignment.get()) {
-            case TOP_LEFT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y, true, true, false, false);
-            }
-            case TOP_RIGHT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y, true, true, false, false);
-            }
-            case BOTTOM_LEFT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y - height, true, true, false, false);
-            }
-            case BOTTOM_RIGHT -> {
-                DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y - height, true, true, false, false);
-            }
+            case TOP_LEFT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y, true, true, false, false);
+            case TOP_RIGHT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y, true, true, false, false);
+            case BOTTOM_LEFT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y - height, true, true, false, false);
+            case BOTTOM_RIGHT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y - height, true, true, false, false);
         }
     }
     //endregion

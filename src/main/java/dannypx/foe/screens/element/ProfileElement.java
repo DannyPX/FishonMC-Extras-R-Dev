@@ -244,20 +244,16 @@ public class ProfileElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.profileElementAlignment.get()) {
-            case TOP_LEFT -> {
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                        PROFILE_TEXTURE,
-                        x, y,
-                        width, height
-                );
-            }
-            case TOP_RIGHT -> {
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                        PROFILE_TEXTURE_FLIP,
-                        x - width, y,
-                        width, height
-                );
-            }
+            case TOP_LEFT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                    PROFILE_TEXTURE,
+                    x, y,
+                    width, height
+            );
+            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                    PROFILE_TEXTURE_FLIP,
+                    x - width, y,
+                    width, height
+            );
         }
     }
     //endregion

@@ -175,46 +175,36 @@ public class PetElement extends Element {
             int petWidth = textRenderer.getWidth(TextHelper.smallText(pet.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
-                case TOP_LEFT -> {
-                    DrawHelper.drawText(drawContext, textRenderer,
-                            pet,
-                            x + text1x, y + text1y,
-                            true,
-                            true,
-                            false,
-                            true);
-
-                }
-                case TOP_RIGHT -> {
-                    DrawHelper.drawText(drawContext, textRenderer,
-                            pet,
-                            x - text1x - petWidth, y + text1y,
-                            true,
-                            true,
-                            false,
-                            true);
-
-                }
+                case TOP_LEFT -> DrawHelper.drawText(drawContext, textRenderer,
+                        pet,
+                        x + text1x, y + text1y,
+                        true,
+                        true,
+                        false,
+                        true);
+                case TOP_RIGHT -> DrawHelper.drawText(drawContext, textRenderer,
+                        pet,
+                        x - text1x - petWidth, y + text1y,
+                        true,
+                        true,
+                        false,
+                        true);
             }
         }
     }
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.petElementAlignment.get()) {
-            case TOP_LEFT -> {
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                        PET_TEXTURE,
-                        x, y,
-                        width, height
-                );
-            }
-            case TOP_RIGHT -> {
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                        PET_TEXTURE_FLIP,
-                        x - width, y,
-                        width, height
-                );
-            }
+            case TOP_LEFT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                    PET_TEXTURE,
+                    x, y,
+                    width, height
+            );
+            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                    PET_TEXTURE_FLIP,
+                    x - width, y,
+                    width, height
+            );
         }
     }
     //endregion

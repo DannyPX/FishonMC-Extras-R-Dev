@@ -169,20 +169,16 @@ public class LocationElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case TOP_LEFT -> {
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                        LOCATION_TEXTURE,
-                        x, y,
-                        width, height
-                );
-            }
-            case TOP_RIGHT -> {
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                        LOCATION_TEXTURE_FLIP,
-                        x - width, y,
-                        width, height
-                );
-            }
+            case TOP_LEFT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                    LOCATION_TEXTURE,
+                    x, y,
+                    width, height
+            );
+            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                    LOCATION_TEXTURE_FLIP,
+                    x - width, y,
+                    width, height
+            );
         }
     }
     //endregion

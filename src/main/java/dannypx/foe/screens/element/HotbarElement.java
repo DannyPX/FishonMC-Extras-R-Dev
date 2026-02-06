@@ -98,8 +98,8 @@ public class HotbarElement extends Element {
             this.renderSelector(drawContext, x, y);
             this.renderItems(drawContext, textRenderer, x, y);
             this.renderSelectedItemName(drawContext, textRenderer, x, y);
-            if(Configs.hudConfig.showHotbarParts.get()) this.renderParts(drawContext, textRenderer, x, y);
-            if(Configs.hudConfig.showHotbarArmor.get()) this.renderArmor(drawContext, textRenderer, x, y);
+            if(Configs.hudConfig.showHotbarParts.get()) this.renderParts(drawContext, x, y);
+            if(Configs.hudConfig.showHotbarArmor.get()) this.renderArmor(drawContext, x, y);
             if(Configs.hudConfig.showHotbarBait.get()) this.renderBait(drawContext, textRenderer, x, y);
         }
     }
@@ -197,7 +197,7 @@ public class HotbarElement extends Element {
         }
     }
 
-    private void renderParts(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
+    private void renderParts(DrawContext drawContext, int x, int y) {
         //region Texture
         int gearX = 35;
 
@@ -225,7 +225,7 @@ public class HotbarElement extends Element {
         //endregion
     }
 
-    private void renderArmor(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
+    private void renderArmor(DrawContext drawContext, int x, int y) {
         //region Texture
         int gearX = 125;
 

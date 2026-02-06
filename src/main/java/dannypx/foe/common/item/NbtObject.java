@@ -1,9 +1,7 @@
 package dannypx.foe.common.item;
 
 import com.mojang.serialization.DataResult;
-import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.ItemStackHelper;
-import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;

@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.screens.MainScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;

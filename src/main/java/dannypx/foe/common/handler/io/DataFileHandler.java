@@ -132,7 +132,7 @@ public class DataFileHandler {
                     StatsDataHandler.instance().setStatsData(gson.fromJson(json, StatsDataHandler.StatsDataModel.class));
             case CONSTANT_DATA ->
                     ConstantDataHandler.instance().setConstantData(gson.fromJson(json, ConstantDataHandler.ConstantDataModel.class));
-        };
+        }
     }
     //endregion
 
