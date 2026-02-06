@@ -13,41 +13,52 @@ import java.util.stream.Collectors;
  * Only use drawText() when using text that also has small text in it
  */
 public class DrawHelper {
-
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow) {
-        drawText(drawContext, textRenderer, text, x, y, shadow, false, false);
+    private static final AtomicInteger translationX = new AtomicInteger(0);
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+        translationX.set(x);
+        drawText(drawContext, textRenderer, text, y, shadow, middle, hasCustomFont, smallText);
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow, boolean middle) {
-        drawText(drawContext, textRenderer, text, x, y, middle, shadow,false);
+    private static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+        List<Text> siblings = text.getSiblings();
+
+        if(siblings.isEmpty()) {
+            drawText(drawContext, textRenderer, text.getString(), translationX.get(), y, text.getStyle(), shadow, middle, hasCustomFont, smallText);
+
+            int width = textRenderer.getWidth(text);
+            if(smallText) {
+                width = textRenderer.getWidth(Text.literal(TextHelper.smallText(text.getString())).setStyle(text.getStyle()));
+            }
+
+            translationX.set(translationX.get() + width);
+        } else {
+            siblings.forEach(text1 -> {
+                drawText(drawContext, textRenderer, text1, y, shadow, middle, hasCustomFont, smallText);
+            });
+        }
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, int x, int y, boolean shadow, boolean middle, boolean hasCustomFont) {
-        AtomicInteger translateX = new AtomicInteger(0);
-        text.getSiblings().forEach(t -> {
-            drawText(drawContext, textRenderer, t.getString(), x + translateX.get(), y, t.getStyle(), shadow, middle, hasCustomFont);
-            translateX.addAndGet(textRenderer.getWidth(t));
-        });
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+        drawText(drawContext, textRenderer, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, shadow, middle, hasCustomFont, smallText);
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont) {
-        drawText(drawContext, textRenderer, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, middle, hasCustomFont);
-    }
-
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, List<Character> text, int x, int y, Style style, boolean middle, boolean hasCustomFont) {
+    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, List<Character> text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
         if (!text.isEmpty()) {
             char c = text.getFirst();
+            if(smallText) {
+                c = TextHelper.smallChar(c);
+            }
             text.removeFirst();
             int cWidth = textRenderer.getWidth(String.valueOf(c));
             int translateY = middle ? -1 : 0;
             if (TextHelper.isSmallNumber(c)) {
-                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y - 1 + translateY, 0xFFFFFF, true);
+                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y - 1 + translateY, 0xFFFFFF, shadow);
             } else if (TextHelper.isSmallLetter(c) || (hasCustomFont && TextHelper.isCustomFont(c))) {
-                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y + translateY, 0xFFFFFF, true);
+                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y + translateY, 0xFFFFFF, shadow);
             } else {
-                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y, 0xFFFFFF, true);
+                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y, 0xFFFFFF, shadow);
             }
-            drawText(drawContext, textRenderer, text, x + cWidth, y, style, true, middle);
+            drawText(drawContext, textRenderer, text, x + cWidth, y, style, shadow, middle, hasCustomFont, smallText);
         }
     }
 

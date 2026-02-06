@@ -1,17 +1,25 @@
 package dannypx.foe.common.item;
 
 import dannypx.foe.common.helper.ItemStackHelper;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
+import java.util.List;
 
 public class FishNbtObject extends NbtObject {
 
     public static final String FISH = "fish";
-    public static final String SIZE = "size";
+    public static final String FISH_SIZE = "size";
     public static final String VARIANT = "variant";
+
+    public static final int FISH_SIZE_LINE = 7;
+    public static final int FISH_SIZE_SIBLING = 2;
+
+    public static final int VARIANT_LINE = 1;
+    public static final int VARIANT_SIBLING = 2;
 
     public FishNbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
         super(nbtCompound, itemStack);
@@ -25,8 +33,24 @@ public class FishNbtObject extends NbtObject {
         return this.nbtCompound.getString(VARIANT);
     }
 
-    public String getSize() {
-        return this.nbtCompound.getString(SIZE);
+    public Text getVariantText() {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+            List<Text> textList = this.getLore();
+            return textList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
+        }
+        return Text.empty();
+    }
+
+    public String getFishSize() {
+        return this.nbtCompound.getString(FISH_SIZE);
+    }
+
+    public Text getFishSizeText() {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+            List<Text> textList = this.getLore();
+            return textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
+        }
+        return Text.empty();
     }
 
     public static FishNbtObject of(@NotNull NbtCompound nbtCompound, @NotNull ItemStack itemStack) {

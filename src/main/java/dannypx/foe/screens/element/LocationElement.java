@@ -82,40 +82,36 @@ public class LocationElement extends Element {
         Text weather = TextHelper.concat(
                 BossBarHandler.instance().getWeather(),
                 Text.literal(" "),
-                Text.literal(TextHelper.smallText(temperature.getString())).setStyle(temperature.getStyle())
+                temperature
         );
-        int weatherWidth = textRenderer.getWidth(weather);
+        int weatherWidth = textRenderer.getWidth(TextHelper.smallText(weather.getString()));
 
         int text2x = 52;
         int text2y = 7;
 
-        Text location = BossBarHandler.instance().getLocation();
-        Text locationText = Text.literal(TextHelper.smallText(location.getString())).setStyle(location.getStyle());
+        Text locationText = BossBarHandler.instance().getLocation();
         Text subLocation = BossBarHandler.instance().getSubLocation();
-        Text subLocationText = Text.literal(TextHelper.smallText(subLocation.getString()))
-                .setStyle(subLocation.getStyle());
 
         Text locationTotal = switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case TOP_LEFT -> subLocationText.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
+            case TOP_LEFT -> subLocation.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
                     locationText,
                     Text.literal(" | ").formatted(Formatting.DARK_GRAY),
-                    subLocationText
+                    subLocation
             );
-            case TOP_RIGHT -> subLocationText.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
-                    subLocationText,
+            case TOP_RIGHT -> subLocation.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
+                    subLocation,
                     Text.literal(" | ").formatted(Formatting.DARK_GRAY),
                     locationText
             );
             default -> Text.empty();
         };
-        int locationWidth = textRenderer.getWidth(locationTotal);
+        int locationWidth = textRenderer.getWidth(TextHelper.smallText(locationTotal.getString()));
 
         int text3x = 16;
         int text3y = 26;
 
-        Text time = BossBarHandler.instance().getTime();
-        Text timeText = TextHelper.concat(Text.literal(TextHelper.smallText(time.getString())).setStyle(time.getStyle()));
-        int timeWidth = textRenderer.getWidth(timeText);
+        Text timeText = BossBarHandler.instance().getTime();
+        int timeWidth = textRenderer.getWidth(TextHelper.smallText(timeText.getString()));
 
         switch (Configs.hudConfig.locationElementAlignment.get()) {
             case TOP_LEFT -> {
@@ -123,18 +119,24 @@ public class LocationElement extends Element {
                         weather,
                         x + text1x - (weatherWidth / 2), y + text1y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         locationTotal,
                         x + text2x, y + text2y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         timeText,
                         x + text3x, y + text3y,
                         true,
+                        true,
+                        false,
                         true);
             }
             case TOP_RIGHT -> {
@@ -142,18 +144,24 @@ public class LocationElement extends Element {
                         weather,
                         x - text1x - (weatherWidth / 2), y + text1y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         locationTotal,
                         x - text2x - locationWidth, y + text2y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         timeText,
                         x - text3x - timeWidth, y + text3y,
                         true,
+                        true,
+                        false,
                         true);
             }
         }

@@ -34,6 +34,8 @@ public abstract class DrawContextMixin {
         if(count > 1) DrawHelper.drawText((DrawContext) (Object) this, textRenderer, countText,
                 x + 19 - 2 - countWidth, y + 6 + 4,
                 true,
+                true,
+                false,
                 true
         );
         this.getMatrices().pop();

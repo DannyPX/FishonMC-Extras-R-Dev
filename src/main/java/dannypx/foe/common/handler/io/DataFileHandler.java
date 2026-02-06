@@ -4,10 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.LoggerHandler;
+import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
+import dannypx.foe.common.type.type_adapter.TextAdapter;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -40,11 +44,13 @@ public class DataFileHandler {
     public void tick() {
         ProfileDataHandler.instance().tick();
         StatsDataHandler.instance().tick();
+        ConstantDataHandler.instance().tick();
     }
 
     public void init() {
         loadDataToMemory(DataModels.DataModelType.PROFILE_DATA);
         loadDataToMemory(DataModels.DataModelType.STATS_DATA);
+        loadDataToMemory(DataModels.DataModelType.CONSTANT_DATA);
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -98,7 +104,11 @@ public class DataFileHandler {
     }
 
     private String dataModelToJson(DataModels.DataModel dataModel) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                .registerTypeAdapter(Text.class, new TextAdapter())
+                .create();
         return gson.toJson(dataModel);
     }
 
@@ -106,16 +116,22 @@ public class DataFileHandler {
         return switch (dataModelType) {
             case PROFILE_DATA -> ProfileDataHandler.instance().getProfileData();
             case STATS_DATA -> StatsDataHandler.instance().getStatsData();
+            case CONSTANT_DATA -> ConstantDataHandler.instance().getConstantData();
         };
     }
 
     private void setData(DataModels.DataModelType dataModelType, String json) {
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                .registerTypeAdapter(Text.class, new TextAdapter())
+                .create();
         switch (dataModelType) {
             case PROFILE_DATA ->
                     ProfileDataHandler.instance().setProfileData(gson.fromJson(json, ProfileDataHandler.ProfileDataModel.class));
             case STATS_DATA ->
                     StatsDataHandler.instance().setStatsData(gson.fromJson(json, StatsDataHandler.StatsDataModel.class));
+            case CONSTANT_DATA ->
+                    ConstantDataHandler.instance().setConstantData(gson.fromJson(json, ConstantDataHandler.ConstantDataModel.class));
         };
     }
     //endregion

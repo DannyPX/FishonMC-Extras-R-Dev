@@ -16,7 +16,8 @@ public class DataModels {
 
     public enum DataModelType {
         PROFILE_DATA("profile"),
-        STATS_DATA("stats");
+        STATS_DATA("stats"),
+        CONSTANT_DATA("constant");
 
         public final String FILENAME;
 

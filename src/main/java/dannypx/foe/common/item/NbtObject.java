@@ -90,13 +90,12 @@ public class NbtObject {
         return null;
     }
 
-    public String getRarityText() {
+    public Text getRarityText() {
         if(this.itemStack.get(DataComponentTypes.LORE) != null) {
             List<Text> textList = this.getLore();
-            Text rarity = textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
-            return rarity.getString();
+            return textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
         }
-        return "";
+        return Text.empty();
     }
 
     public List<Text> getLore() {

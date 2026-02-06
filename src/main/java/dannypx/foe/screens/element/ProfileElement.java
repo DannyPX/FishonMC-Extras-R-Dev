@@ -146,14 +146,14 @@ public class ProfileElement extends Element {
                 .formatted(Formatting.STRIKETHROUGH, Formatting.DARK_GRAY);
 
         Text levelText = TextHelper.concat(
-                Text.literal(TextHelper.smallText("LV. ")).formatted(Formatting.GRAY),
-                Text.literal(TextHelper.smallText(level.getString())).setStyle(level.getStyle()),
+                Text.literal("LV. ").formatted(Formatting.GRAY),
+                level,
                 Text.literal(" [").formatted(Formatting.DARK_GRAY),
                 progressText,
                 progressLeftText,
                 Text.literal("]").formatted(Formatting.DARK_GRAY)
         );
-        int levelWidth = textRenderer.getWidth(levelText);
+        int levelWidth = textRenderer.getWidth(TextHelper.smallText(levelText.getString()));
 
         int text3x = 48;
         int text3y = 34;
@@ -162,24 +162,19 @@ public class ProfileElement extends Element {
         Text walletText = !wallet.getString().isEmpty()
                 ? TextHelper.concat(
                         Text.literal("\uF012 "),
-                        Text.literal(TextHelper.smallText(wallet.getString().substring(1)))
-                                .withColor(wallet.getStyle().getColor() != null
-                                        ? wallet.getStyle().getColor().getRgb() : 0xFFFFFF)
+                        wallet
                 )
                 : Text.empty().append("\uF012 ");
-        int walletWidth = textRenderer.getWidth(walletText);
+        int walletWidth = textRenderer.getWidth(TextHelper.smallText(walletText.getString()));
 
         int text4x = 110;
         int text4y = 34;
 
-        Text credits = ScoreboardHandler.instance().getCredits();
         Text creditsText = TextHelper.concat(
                 Text.literal("\uF00C "),
-                Text.literal(TextHelper.smallText(credits.getString()))
-                        .withColor(credits.getStyle().getColor() != null
-                                ? credits.getStyle().getColor().getRgb() : 0xFFFFFF)
+                ScoreboardHandler.instance().getCredits()
         );
-        int creditsWidth = textRenderer.getWidth(creditsText);
+        int creditsWidth = textRenderer.getWidth(TextHelper.smallText(creditsText.getString()));
 
         switch (Configs.hudConfig.profileElementAlignment.get()) {
             case TOP_LEFT -> {
@@ -193,18 +188,24 @@ public class ProfileElement extends Element {
                         levelText,
                         x + text2x, y + text2y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         walletText,
                         x + text3x, y + text3y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         creditsText,
                         x + text4x, y + text4y,
                         true,
+                        true,
+                        false,
                         true);
             }
             case TOP_RIGHT -> {
@@ -218,18 +219,24 @@ public class ProfileElement extends Element {
                         levelText,
                         x - text2x - levelWidth, y + text2y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         walletText,
                         x - text3x - walletWidth, y + text3y,
                         true,
+                        true,
+                        false,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
                         creditsText,
                         x - text4x - creditsWidth, y + text4y,
                         true,
+                        true,
+                        false,
                         true);
             }
         }

@@ -143,7 +143,9 @@ public class HotbarElement extends Element {
                 if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                         x + countX + (18 * i) - countWidth, y + countY,
                         true,
-                        true);
+                        true,
+                        false,
+                        false);
                 drawContext.getMatrices().pop();
             }
         }
@@ -284,6 +286,8 @@ public class HotbarElement extends Element {
                 if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                         x + countX - countWidth, y + countY,
                         true,
+                        true,
+                        false,
                         true);
                 drawContext.getMatrices().pop();
             }

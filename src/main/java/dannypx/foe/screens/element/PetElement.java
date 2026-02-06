@@ -103,14 +103,11 @@ public class PetElement extends Element {
         int text1y = 9;
 
         if(InventoryHandler.instance().hasPet()) {
-            Text petRarity = TextHelper.concat(
-                    Text.literal(InventoryHandler.instance().getCurrentPet().getRarityText()),
-                    Text.literal(" ")
-            );
-            int petRarityWidth = textRenderer.getWidth(petRarity);
-
-            Text pet = TextHelper.literal(InventoryHandler.instance().getCurrentPet().getName());
-            int petWidth = textRenderer.getWidth(pet);
+            Text pet = TextHelper.concat(
+                    InventoryHandler.instance().getCurrentPet().getRarityText(),
+                    Text.literal(" "),
+                    InventoryHandler.instance().getCurrentPet().getName());
+            int petWidth = textRenderer.getWidth(TextHelper.smallText(pet.getString()));
 
             int text2x = 40;
             int text2y = 21;
@@ -127,77 +124,74 @@ public class PetElement extends Element {
                     .formatted(Formatting.STRIKETHROUGH, Formatting.DARK_GRAY);
 
             Text levelText = TextHelper.concat(
-                    Text.literal(TextHelper.smallText("LV. ")).formatted(Formatting.GRAY),
-                    Text.literal(TextHelper.smallText(level.getString())).setStyle(level.getStyle()),
+                    Text.literal("LV. ").formatted(Formatting.GRAY),
+                    level,
                     Text.literal(" [").formatted(Formatting.DARK_GRAY),
                     progressText,
                     progressLeftText,
                     Text.literal("]").formatted(Formatting.DARK_GRAY)
             );
-            int levelWidth = textRenderer.getWidth(levelText);
+            int levelWidth = textRenderer.getWidth(TextHelper.smallText(levelText.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
                 case TOP_LEFT -> {
-                    DrawHelper.drawText(drawContext,
-                            textRenderer,
-                            petRarity,
+
+                    DrawHelper.drawText(drawContext, textRenderer,
+                            pet,
                             x + text1x, y + text1y,
                             true,
                             true,
-                            true);
-
-                    drawContext.drawText(textRenderer,
-                            pet,
-                            x + text1x + petRarityWidth, y + text1y,
-                            0xFFFFFF,
+                            true,
                             true);
 
                     DrawHelper.drawText(drawContext, textRenderer,
                             levelText,
                             x + text2x, y + text2y,
                             true,
+                            true,
+                            false,
                             true);
                 }
                 case TOP_RIGHT -> {
-                    DrawHelper.drawText(drawContext,
-                            textRenderer,
-                            petRarity,
-                            x - text1x - petRarityWidth - petWidth, y + text1y,
-                            true,
-                            true,
-                            true);
-
-                    drawContext.drawText(textRenderer,
+                    DrawHelper.drawText(drawContext, textRenderer,
                             pet,
                             x - text1x - petWidth, y + text1y,
-                            0xFFFFFF,
+                            true,
+                            true,
+                            true,
                             true);
 
                     DrawHelper.drawText(drawContext, textRenderer,
                             levelText,
                             x - text2x - levelWidth, y + text2y,
                             true,
+                            true,
+                            false,
                             true);
                 }
             }
         } else {
-            Text pet = TextHelper.literal("No pet equipped").formatted(Formatting.GRAY);
-            int petWidth = textRenderer.getWidth(pet);
+            Text pet = Text.literal("No pet equipped").formatted(Formatting.GRAY);
+            int petWidth = textRenderer.getWidth(TextHelper.smallText(pet.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
                 case TOP_LEFT -> {
-                    drawContext.drawText(textRenderer,
+                    DrawHelper.drawText(drawContext, textRenderer,
                             pet,
                             x + text1x, y + text1y,
-                            0xFFFFFF,
+                            true,
+                            true,
+                            false,
                             true);
 
                 }
                 case TOP_RIGHT -> {
-                    drawContext.drawText(textRenderer,
+                    DrawHelper.drawText(drawContext, textRenderer,
                             pet,
                             x - text1x - petWidth, y + text1y,
-                            0xFFFFFF,
+                            true,
+                            true,
+                            false,
                             true);
 
                 }

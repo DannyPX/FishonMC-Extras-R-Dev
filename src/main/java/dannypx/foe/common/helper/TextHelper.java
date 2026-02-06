@@ -1,10 +1,15 @@
 package dannypx.foe.common.helper;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
+import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
+import dannypx.foe.common.type.type_adapter.TextAdapter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -27,7 +32,11 @@ public class TextHelper {
     }
 
     public static MutableText literal(DataModels.DataModel dataModel) {
-        return Text.literal(gson.setPrettyPrinting().create().toJson(dataModel));
+        return Text.literal(gson
+                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                .registerTypeAdapter(Text.class, new TextAdapter())
+                .setPrettyPrinting()
+                .create().toJson(dataModel));
     }
 
     public static MutableText literal(int i) {
@@ -68,6 +77,16 @@ public class TextHelper {
 
     public static String smallText(String string) {
         return smallLetter(smallNumber(string));
+    }
+
+    public static char smallChar(char c) {
+        if(isNumber(c)) {
+            return smallNumber(c);
+        } else if(isLetter(c)) {
+            return smallLetter(c);
+        } else {
+            return c;
+        }
     }
 
     public static String smallNumber(String string) {
@@ -158,18 +177,29 @@ public class TextHelper {
     }
 
     public static String shortenNumber(float d, int decimals) {
-        if(d > 1000 && d < 1000000) {
+        if(d >= 1000 && d < 1000000) {
             String s = String.format("%." + decimals + "f", d / 1000);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "K";
-        } else if (d > 1000000 && d < 1000000000 ){
+        } else if (d >= 1000000 && d < 1000000000 ){
             String s = String.format("%." + decimals + "f", d / 1000000);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "M";
-        } else if (d > 1000000000) {
+        } else if (d >= 1000000000) {
             String s = String.format("%." + decimals + "f", d / 1000000000);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "B";
         } else {
             String s = String.format("%.0f", d);
             return s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s;
+        }
+    }
+
+    public static int toIntFromString(String value) {
+        value = value.trim();
+        if(value.contains("K")) {
+            return (int) (Float.parseFloat(value.substring(0, value.indexOf("K"))) * 1000f);
+        } else if(value.contains("M")) {
+            return (int) (Float.parseFloat(value.substring(0, value.indexOf("M"))) * 1000000f);
+        } else {
+            return Integer.parseInt(value);
         }
     }
 
@@ -181,7 +211,14 @@ public class TextHelper {
         return gson.create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
     }
 
-    public static  String textToJsonPretty(Text text) {
+    public static String textToJsonPretty(Text text) {
         return gson.setPrettyPrinting().create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
+    }
+
+    public static Text jsonToText(String json) {
+        return TextCodecs.CODEC
+                .decode(JsonOps.INSTANCE, gson.create().fromJson(json, JsonElement.class))
+                .mapOrElse((Pair::getFirst), (pairError -> Text.empty()));
+
     }
 }

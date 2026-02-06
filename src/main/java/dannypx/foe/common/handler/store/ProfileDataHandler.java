@@ -9,7 +9,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class ProfileDataHandler {
@@ -25,7 +24,7 @@ public class ProfileDataHandler {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private ProfileDataModel profileData = new ProfileDataModel();
-    private ProfileDataModel profileDataOld = new ProfileDataModel();
+    private boolean needsUpdate = false;
 
     public ProfileDataModel getProfileData() {
         return profileData;
@@ -33,19 +32,21 @@ public class ProfileDataHandler {
 
     public void setProfileData(ProfileDataModel profileData) {
         this.profileData = profileData;
-        this.updateProfileData(profileData);
+        this.updateProfileData();
     }
 
-    private void updateProfileData(ProfileDataModel profileData) {
-        this.profileDataOld = profileData.copy();
+    private void updateProfileData() {
+        this.needsUpdate = false;
         DataFileHandler.instance().saveToFile(DataModels.DataModelType.PROFILE_DATA);
     }
     //endregion
 
     //region Methods
     public void tick() {
-        if(!profileDataOld.equals(profileData)) {
-            this.updateProfileData(profileData);
+        if(profileData.uuid == null && minecraftClient.player != null) {
+            profileData.uuid = minecraftClient.player.getUuid();
+        } else if(profileData.uuid != null && this.needsUpdate) {
+            this.updateProfileData();
         }
     }
 
@@ -64,36 +65,20 @@ public class ProfileDataHandler {
             } else {
                 profileData.activePetSlot = -1;
             }
+
+            this.needsUpdate = true;
         }
     }
     //endregion
 
     //region Model
     public static class ProfileDataModel extends DataModels.DataModel {
-        private static final String PROFILE_DATA_MODEL_VERSION = "0";
+        private static final String PROFILE_DATA_MODEL_VERSION = "0.1";
 
         public int activePetSlot = -1;
 
         public ProfileDataModel() {
             super(PROFILE_DATA_MODEL_VERSION, null);
-        }
-
-        public ProfileDataModel(ProfileDataModel oldData) {
-            super(oldData.version, oldData.uuid);
-            this.activePetSlot = oldData.activePetSlot;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(obj == this) return true;
-
-            return obj instanceof ProfileDataModel oldStatsData
-                    && this.uuid.equals(oldStatsData.uuid)
-                    && this.activePetSlot == oldStatsData.activePetSlot;
-        }
-
-        public ProfileDataModel copy() {
-            return new ProfileDataModel(this);
         }
     }
     //endregion

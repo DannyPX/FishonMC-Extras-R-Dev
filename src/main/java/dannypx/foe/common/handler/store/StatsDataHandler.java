@@ -30,7 +30,7 @@ public class StatsDataHandler {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private StatsDataModel statsData = new StatsDataModel();
-    private StatsDataModel statsDataOld = new StatsDataModel();
+    private boolean needsUpdate = false;
 
     public StatsDataModel getStatsData() {
         return statsData;
@@ -38,19 +38,21 @@ public class StatsDataHandler {
 
     public void setStatsData(StatsDataModel statsData) {
         this.statsData = statsData;
-        this.updateStatsData(statsData);
+        this.updateStatsData();
     }
 
-    private void updateStatsData(StatsDataModel statsData) {
-        this.statsDataOld = statsData.copy();
+    private void updateStatsData() {
+        this.needsUpdate = false;
         DataFileHandler.instance().saveToFile(DataModels.DataModelType.STATS_DATA);
     }
     //endregion
 
     //region Methods
     public void tick() {
-        if(!statsDataOld.equals(statsData)) {
-            this.updateStatsData(statsData);
+        if(statsData.uuid == null && minecraftClient.player != null) {
+            statsData.uuid = minecraftClient.player.getUuid();
+        } else if(statsData.uuid != null && needsUpdate) {
+            this.updateStatsData();
         }
     }
 
@@ -65,26 +67,33 @@ public class StatsDataHandler {
     public void setFish(FishNbtObject fish) {
         statsData.fishTotal++;
 
-        Data<String, Integer> rarityDrystreak = this.updateFishData(statsData, FishNbtObject.RARITY, fish.getRarity(), 1);
-        Data<String, Integer> variantDrystreak = this.updateFishData(statsData, FishNbtObject.VARIANT, fish.getVariant(), 1);
-        Data<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishNbtObject.SIZE, fish.getSize(), 1);
+        Stat<String, Integer> rarityDrystreak = this.updateFishData(statsData, FishNbtObject.RARITY, fish.getRarity(), 1);
+        ConstantDataHandler.instance().updateFishData(FishNbtObject.RARITY, fish.getRarity(), fish.getRarityText());
+
+        Stat<String, Integer> variantDrystreak = this.updateFishData(statsData, FishNbtObject.VARIANT, fish.getVariant(), 1);
+        ConstantDataHandler.instance().updateFishData(FishNbtObject.VARIANT, fish.getVariant(), fish.getVariantText());
+
+        Stat<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishNbtObject.FISH_SIZE, fish.getFishSize(), 1);
+        ConstantDataHandler.instance().updateFishData(FishNbtObject.FISH_SIZE, fish.getFishSize(), fish.getFishSizeText());
+
         //TODO Notify Fish
     }
 
     // Field, Old Drystreak
-    private Data<String, Integer> updateFishData(StatsDataModel statsData, String category, String field, int valueToAdd) {
-        Map<String, Data<Integer, Integer>> categoryMapData = statsData.fishData.getOrDefault(category, new HashMap<>());
-        Data<Integer, Integer> fieldData = categoryMapData.getOrDefault(field, Data.of(0, statsData.fishTotal));
+    private Stat<String, Integer> updateFishData(StatsDataModel statsData, String category, String field, int valueToAdd) {
+        Map<String, Stat<Integer, Integer>> categoryMapData = statsData.fishData.getOrDefault(category, new HashMap<>());
+        Stat<Integer, Integer> fieldStat = categoryMapData.getOrDefault(field, Stat.of(0, statsData.fishTotal));
 
-        Data<Integer, Integer> newFieldData = Data.of(fieldData.amount() + valueToAdd, statsData.fishTotal);
-        categoryMapData.put(field, newFieldData);
+        Stat<Integer, Integer> newFieldStat = Stat.of(fieldStat.amount() + valueToAdd, statsData.fishTotal);
+        categoryMapData.put(field, newFieldStat);
         statsData.fishData.put(category, categoryMapData);
+        this.needsUpdate = true;
 
-        return Data.of(field, statsData.fishTotal - fieldData.caughtOn());
+        return Stat.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
     public void setItem(NbtObject item, int count) {
-        Pair<Boolean, @Nullable PetNbtObject> isPet = ValidateItem.isPet(item);
+        Pair<Boolean, PetNbtObject> isPet = ValidateItem.isPet(item);
         if(isPet.v1()) setPet(isPet.v2());
         else setOtherItem(item, count);
     }
@@ -92,41 +101,49 @@ public class StatsDataHandler {
     private void setPet(PetNbtObject pet) {
         statsData.petTotal++;
 
-        Data<String, Integer> rarityDrystreak = this.updatePetData(statsData, NbtObject.RARITY, pet.getRarity(), 1);
-        //TODO Rating
+        Stat<String, Integer> rarityDrystreak = this.updatePetData(statsData, PetNbtObject.RARITY, pet.getRarity(), 1);
+        ConstantDataHandler.instance().updatePetData(PetNbtObject.RARITY, pet.getRarity(), pet.getRarityText());
+
+        Stat<String, Integer> ratingDrystreak = this.updatePetData(statsData, PetNbtObject.RATING, pet.getRatingText().getString(), 1);
+        ConstantDataHandler.instance().updatePetData(PetNbtObject.RATING, pet.getRatingText().getString(), pet.getRatingText());
+
         //TODO Notify Pet
     }
 
     // Field, Old Drystreak
-    private Data<String, Integer> updatePetData(StatsDataModel statsData, String category, String field, int valueToAdd) {
-        Map<String, Data<Integer, Integer>> categoryMapData = statsData.petData.getOrDefault(category, new HashMap<>());
-        Data<Integer, Integer> fieldData = categoryMapData.getOrDefault(field, Data.of(0, statsData.fishTotal));
+    private Stat<String, Integer> updatePetData(StatsDataModel statsData, String category, String field, int valueToAdd) {
+        Map<String, Stat<Integer, Integer>> categoryMapData = statsData.petData.getOrDefault(category, new HashMap<>());
+        Stat<Integer, Integer> fieldStat = categoryMapData.getOrDefault(field, Stat.of(0, statsData.fishTotal));
 
-        Data<Integer, Integer> newFieldData = Data.of(fieldData.amount() + valueToAdd, statsData.fishTotal);
-        categoryMapData.put(field, newFieldData);
+        Stat<Integer, Integer> newFieldStat = Stat.of(fieldStat.amount() + valueToAdd, statsData.fishTotal);
+        categoryMapData.put(field, newFieldStat);
         statsData.petData.put(category, categoryMapData);
+        this.needsUpdate = true;
 
-        return Data.of(field, statsData.fishTotal - fieldData.caughtOn());
+        return Stat.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
     private void setOtherItem(NbtObject item, int count) {
-        Data<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
+        Stat<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
+        ConstantDataHandler.instance().updateItemData(item.getType(), item.getItemStack());
+
         //TODO Notify Item
     }
 
-    private Data<String, Integer> updateOtherItemData(StatsDataModel statsData, String item, int valueToAdd) {
-        Data<Integer, Integer> itemData = statsData.itemData.getOrDefault(item, Data.of(0, statsData.fishTotal));
+    private Stat<String, Integer> updateOtherItemData(StatsDataModel statsData, String item, int valueToAdd) {
+        Stat<Integer, Integer> itemStat = statsData.itemData.getOrDefault(item, Stat.of(0, statsData.fishTotal));
 
-        Data<Integer, Integer> newItemData = Data.of(itemData.amount() + valueToAdd, statsData.fishTotal);
-        statsData.itemData.put(item, newItemData);
+        Stat<Integer, Integer> newItemStat = Stat.of(itemStat.amount() + valueToAdd, statsData.fishTotal);
+        statsData.itemData.put(item, newItemStat);
+        this.needsUpdate = true;
 
-        return Data.of(item, statsData.fishTotal - itemData.caughtOn());
+        return Stat.of(item, statsData.fishTotal - itemStat.caughtOn());
     }
     //endregion
 
     //region Model
     public static class StatsDataModel extends DataModels.DataModel {
-        public static final String STATS_DATA_MODEL_VERSION = "0";
+        public static final String STATS_DATA_MODEL_VERSION = "0.2";
 
         /**
          * Fish
@@ -135,7 +152,7 @@ public class StatsDataHandler {
          * - Variants
          * Pair: Amount, Drystreak
          */
-        public Map<String, Map<String, Data<Integer, Integer>>> fishData = new HashMap<>();
+        public Map<String, Map<String, Stat<Integer, Integer>>> fishData = new HashMap<>();
         public int fishTotal = 0;
 
         /**
@@ -144,42 +161,16 @@ public class StatsDataHandler {
          * - Rating
          * Pair: Amount, Drystreak
          */
-        public Map<String, Map<String, Data<Integer, Integer>>> petData = new HashMap<>();
+        public Map<String, Map<String, Stat<Integer, Integer>>> petData = new HashMap<>();
         public int petTotal = 0;
 
         /**
          * Other items
          */
-        public Map<String, Data<Integer, Integer>> itemData = new HashMap<>();
+        public Map<String, Stat<Integer, Integer>> itemData = new HashMap<>();
 
         public StatsDataModel() {
             super(STATS_DATA_MODEL_VERSION, null);
-        }
-
-        public StatsDataModel(StatsDataModel oldData) {
-            super(oldData.version, oldData.uuid);
-            this.fishData = new HashMap<>(oldData.fishData);
-            this.fishTotal = oldData.fishTotal;
-            this.petData = new HashMap<>(oldData.petData);
-            this.petTotal = oldData.petTotal;
-            this.itemData = new HashMap<>(oldData.itemData);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(obj == this) return true;
-
-            return obj instanceof StatsDataModel oldStatsData
-                    && this.uuid.equals(oldStatsData.uuid)
-                    && this.fishData.equals(oldStatsData.fishData)
-                    && this.fishTotal == oldStatsData.fishTotal
-                    && this.petData.equals(oldStatsData.petData)
-                    && this.petTotal == oldStatsData.petTotal
-                    && this.itemData.equals(oldStatsData.itemData);
-        }
-
-        public StatsDataModel copy() {
-            return new StatsDataModel(this);
         }
     }
     //endregion

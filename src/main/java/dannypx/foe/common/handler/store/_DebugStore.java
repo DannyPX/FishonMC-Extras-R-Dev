@@ -10,7 +10,8 @@ public class _DebugStore {
     public static List<String> _getHandlers() {
         return List.of(
                 ProfileDataHandler.class.getName(),
-                StatsDataHandler.class.getName()
+                StatsDataHandler.class.getName(),
+                ConstantDataHandler.class.getName()
         );
     }
 
@@ -18,7 +19,8 @@ public class _DebugStore {
     public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
         return Map.of(
                 ProfileDataHandler.class.getName(), ProfileDataHandler.instance()._getFields(),
-                StatsDataHandler.class.getName(), StatsDataHandler.instance()._getFields()
+                StatsDataHandler.class.getName(), StatsDataHandler.instance()._getFields(),
+                ConstantDataHandler.class.getName(), ConstantDataHandler.instance()._getFields()
         );
     }
 }

@@ -1,7 +1,9 @@
 package dannypx.foe;
 
+import dannypx.foe.common.command.CommandRegistry;
 import dannypx.foe.common.handler.fetch.*;
 import dannypx.foe.common.handler.logic.*;
+import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
@@ -58,7 +60,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         //TODO
         // Check if screen is instance of x (e.g. InventoryScreen), then call the register
         if(screen instanceof InventoryScreen) {
-            // ScreenEvents.afterRender(screen).register(InventoryScreenHandler.instance().afterRender());
+             // ScreenEvents.afterRender(screen).register(InventoryHandler.instance()::afterRender);
         }
     }
 
@@ -77,6 +79,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onInit() {
+        CommandRegistry.init();
         KeyBindHandler.instance().init();
     }
 
@@ -91,6 +94,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         if(ConnectionHandler.instance().isOnServer()) {
             ProfileDataHandler.instance().init();
             StatsDataHandler.instance().init();
+            ConstantDataHandler.instance().init();
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
         }
