@@ -1,4 +1,4 @@
-package dannypx.foe.screens.element;
+package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.fetch.BossBarHandler;
@@ -6,6 +6,7 @@ import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.config.Configs;
 import dannypx.foe.common.helper.DrawHelper;
+import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -57,17 +58,17 @@ public class LocationElement extends Element {
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showLocationElement.get()) {
             // Position
             if(!isCopy) {
-                xPercent = Configs.hudConfig.locationElementXPosition.get() / 100f;
-                yPercent = Configs.hudConfig.locationElementYPosition.get() / 100f;
+                xPos = Configs.hudConfig.locationElementXPosition.get() / 100f;
+                yPos = Configs.hudConfig.locationElementYPosition.get() / 100f;
             }
 
             int x = switch (Configs.hudConfig.locationElementAlignment.get()) {
-                case TOP_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                case TOP_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
                 case TOP_RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
                 default -> 0;
             };
-            int y = Math.round(minecraftClient.getWindow().getScaledHeight() * yPercent);
+            int y = Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
 
             this.renderTexture(drawContext, x, y);
             this.renderText(drawContext, textRenderer, x, y);

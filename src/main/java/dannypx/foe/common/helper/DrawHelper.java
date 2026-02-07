@@ -49,7 +49,7 @@ public class DrawHelper {
                 c = TextHelper.smallChar(c);
             }
             text.removeFirst();
-            int cWidth = textRenderer.getWidth(String.valueOf(c));
+            int cWidth = textRenderer.getWidth(Text.literal(String.valueOf(c)).setStyle(style));
             int translateY = middle ? -1 : 0;
             if (TextHelper.isSmallNumber(c)) {
                 drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y - 1 + translateY, 0xFFFFFF, shadow);

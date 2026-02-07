@@ -12,7 +12,8 @@ public enum Alignment implements EnumTranslatable {
     TOP_LEFT,
     TOP_RIGHT,
     BOTTOM_LEFT,
-    BOTTOM_RIGHT;
+    BOTTOM_RIGHT,
+    CENTER;
 
     public static List<Alignment> getHorizontal() {
         return List.of(LEFT, RIGHT);

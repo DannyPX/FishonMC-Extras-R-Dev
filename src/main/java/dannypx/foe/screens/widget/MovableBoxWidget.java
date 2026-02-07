@@ -45,17 +45,17 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
         switch (element.alignment) {
             case LEFT, TOP_LEFT, BOTTOM_LEFT -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPercent));
+                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
                 this.originalX = this.getX();
             }
             case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> {
                 this.setX(minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPercent));
+                        - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
                 this.originalX = minecraftClient.getWindow().getScaledWidth() - this.getX();
                 this.setX(this.getX() - element.width);
             }
             case TOP, BOTTOM -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPercent));
+                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
                 this.originalX = this.getX();
                 this.setX(this.getX() - (element.width / 2));
             }
@@ -63,17 +63,17 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
         switch (element.alignment) {
             case TOP_LEFT, TOP, TOP_RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPercent));
+                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
                 this.originalY = this.getY();
             }
             case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> {
                 this.setY(minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPercent));
+                        - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
                 this.originalY = minecraftClient.getWindow().getScaledHeight() - this.getY();
                 this.setY(this.getY() - element.height);
             }
             case LEFT, RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPercent));
+                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
                 this.originalY = this.getY();
                 this.setY(this.getY() - (element.height / 2));
             }
@@ -157,9 +157,9 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
             List<Text> text = List.of(
                     Text.literal(element.message.getString()).formatted(Formatting.BOLD, Formatting.GOLD),
                     TextHelper.concat(Text.literal("X Position: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(Math.round(element.xPercent * 100f)))),
+                            Text.literal(String.valueOf(Math.round(element.xPos * 100f)))),
                     TextHelper.concat(Text.literal("Y Position: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(Math.round(element.yPercent * 100f)))),
+                            Text.literal(String.valueOf(Math.round(element.yPos * 100f)))),
                     TextHelper.concat(Text.literal("Alignment: ").formatted(Formatting.GRAY),
                             Text.literal(element.alignment.toString())),
                     Text.empty(),
@@ -221,8 +221,8 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                 element.alignment = this.nextAlignment();
                 this.setup(element);
 
-                callback.onRelease(Math.round(element.xPercent * 100f),
-                        Math.round(element.yPercent * 100f), element.alignment);
+                callback.onRelease(Math.round(element.xPos * 100f),
+                        Math.round(element.yPos * 100f), element.alignment);
                 return false;
             } else if (button == 2) {
                 ConfigApiJava.INSTANCE.openScreen(this.config);
@@ -265,29 +265,29 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
         switch (element.alignment) {
             case LEFT, TOP_LEFT, BOTTOM_LEFT -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPercent));
+                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
             }
             case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> {
                 this.setX(minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPercent)
+                        - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos)
                         - element.width);
             }
             case TOP, BOTTOM -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPercent) - (element.width / 2));
+                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos) - (element.width / 2));
             }
         }
 
         switch (element.alignment) {
             case TOP_LEFT, TOP, TOP_RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPercent));
+                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
             }
             case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> {
                 this.setY(minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPercent)
+                        - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos)
                         - element.height);
             }
             case LEFT, RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPercent) - (element.height / 2));
+                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos) - (element.height / 2));
             }
         }
     }
@@ -323,8 +323,8 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
         this.deltaX = 0;
         this.deltaY = 0;
 
-        this.callback.onRelease(Math.round(element.xPercent * 100f),
-                Math.round(element.yPercent * 100f),
+        this.callback.onRelease(Math.round(element.xPos * 100f),
+                Math.round(element.yPos * 100f),
                 element.alignment);
     }
 

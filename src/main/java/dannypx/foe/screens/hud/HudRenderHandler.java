@@ -3,16 +3,14 @@ package dannypx.foe.screens.hud;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class HudRenderHandler {
     private static HudRenderHandler INSTANCE = new HudRenderHandler();
@@ -36,6 +34,7 @@ public class HudRenderHandler {
     }
 
     private void addElements(LayeredDrawerWrapper layeredDrawerWrapper) {
+        elements.clear();
         elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
         elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
         elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraftClient)));
@@ -44,15 +43,6 @@ public class HudRenderHandler {
 
         elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
                 Identifier.of(FishOnMCExtras.MOD_ID, element.v1()), element.v2()::render));
-    }
-    //endregion
-
-    //region Dev
-    /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
-        return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
-        );
     }
     //endregion
 }

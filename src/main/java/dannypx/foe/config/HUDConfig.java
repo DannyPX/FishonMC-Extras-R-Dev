@@ -105,6 +105,23 @@ public class HUDConfig extends Config {
     @Name("Anchor point")
     public ValidatedChoice<Alignment> petElementAlignment = new ValidatedChoice<>(Alignment.TOP_LEFT, Alignment.getTopCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
+    @Name("Notifier Element")
+    @Desc("§7Options for the notifier")
+    public ConfigGroup notifierElementGroup = new ConfigGroup("notifier_element_group");
+
+    @Name("Show Notifier Element")
+    public ValidatedBoolean showNotifierElement = new ValidatedBoolean(true);
+
+    @Name("X Position in %")
+    public ValidatedInt notifierElementXPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Y Position in %")
+    public ValidatedInt notifierElementYPosition = new ValidatedInt(2, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @Name("Anchor point")
+    public ValidatedChoice<Alignment> notifierElementAlignment = new ValidatedChoice<>(Alignment.BOTTOM_RIGHT, Alignment.getCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+
     @Override
     public @NotNull FileType fileType() {
         return FileType.JSON5;

@@ -10,6 +10,7 @@ import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.hud.HudRenderHandler;
+import dannypx.foe.screens.inventory.InventoryRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -18,6 +19,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
@@ -57,10 +59,10 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onAfterInitScreen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
-        //TODO
-        // Check if screen is instance of x (e.g. InventoryScreen), then call the register
         if(screen instanceof InventoryScreen) {
-             // ScreenEvents.afterRender(screen).register(InventoryHandler.instance()::afterRender);
+            InventoryRenderHandler.instance().init(screen);
+            ScreenEvents.afterRender(screen).register(InventoryRenderHandler.instance()::render);
+            ScreenMouseEvents.afterMouseScroll(screen).register(InventoryRenderHandler.instance()::onMouseScrolled);
         }
     }
 

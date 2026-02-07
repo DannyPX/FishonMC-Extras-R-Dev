@@ -9,16 +9,16 @@ public abstract class Element {
     public int width;
     public int height;
     public Alignment alignment;
-    public float xPercent;
-    public float yPercent;
+    public float xPos;
+    public float yPos;
     public Text message;
     public final boolean isCopy;
 
-    protected Element(int width, int height, float xPercent, float yPercent, Alignment alignment, Text message, boolean isCopy) {
+    protected Element(int width, int height, float xPos, float yPos, Alignment alignment, Text message, boolean isCopy) {
         this.width = width;
         this.height = height;
-        this.xPercent = xPercent;
-        this.yPercent = yPercent;
+        this.xPos = xPos;
+        this.yPos = yPos;
         this.alignment = alignment;
         this.message = message;
         this.isCopy = isCopy;
@@ -27,10 +27,10 @@ public abstract class Element {
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {};
 
     public void setXPercent(float percent) {
-        xPercent = percent;
+        xPos = percent;
     };
 
     public void setYPercent(float percent) {
-        yPercent = percent;
+        yPos = percent;
     };
 }

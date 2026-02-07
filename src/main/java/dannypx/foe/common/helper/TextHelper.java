@@ -49,6 +49,7 @@ public class TextHelper {
         return concat(text);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> MutableText literal(List<T> list) {
         if(!list.isEmpty()) {
             Object first = list.getFirst();

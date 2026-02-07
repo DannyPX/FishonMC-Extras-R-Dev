@@ -98,7 +98,7 @@ public class ConstantDataHandler {
          * - Size
          * - Variants
          */
-        private Map<String, Map<String, Text>> fishData = new HashMap<>(
+        public Map<String, Map<String, Text>> fishData = new HashMap<>(
                 Map.of(
                         "size", Map.of(
                                 "baby", Text.literal("ʙᴀʙʏ").withColor(0x468CE7),
@@ -108,7 +108,7 @@ public class ConstantDataHandler {
                                 "gigantic", Text.literal("ɢɪɢᴀɴᴛɪᴄ").withColor(0xAF3333)
                         ),
                         "variant", Map.of(
-                                "normal", Text.literal("").formatted(Formatting.WHITE),
+                                "normal", Text.literal("\uF040").formatted(Formatting.WHITE),
                                 "albino", Text.literal("\uF041").formatted(Formatting.WHITE),
                                 "melanistic", Text.literal("\uF042").formatted(Formatting.WHITE),
                                 "trophy", Text.literal("\uF043").formatted(Formatting.WHITE),
@@ -129,9 +129,9 @@ public class ConstantDataHandler {
          * - Rarities
          * - Rating
          */
-        private Map<String, Map<String, Text>> petData = new HashMap<>();
+        public Map<String, Map<String, Text>> petData = new HashMap<>();
 
-        private Map<String, List<ItemStack>> itemData = new HashMap<>();
+        public Map<String, List<ItemStack>> itemData = new HashMap<>();
 
         public ConstantDataModel() {
             super(CONSTANT_DATA_MODEL_VERSION, null);

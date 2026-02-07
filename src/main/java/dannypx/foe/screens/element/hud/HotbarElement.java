@@ -1,4 +1,4 @@
-package dannypx.foe.screens.element;
+package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.InventoryHandler;
@@ -10,6 +10,7 @@ import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -80,19 +81,19 @@ public class HotbarElement extends Element {
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showHotbarElement.get()) {
             // Position
             if(!isCopy) {
-                xPercent = Configs.hudConfig.hotbarElementXPosition.get() / 100f;
-                yPercent = Configs.hudConfig.hotbarElementYPosition.get() / 100f;
+                xPos = Configs.hudConfig.hotbarElementXPosition.get() / 100f;
+                yPos = Configs.hudConfig.hotbarElementYPosition.get() / 100f;
             }
 
             int x = switch (Configs.hudConfig.hotbarElementAlignment.get()) {
-                case BOTTOM_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
-                case BOTTOM -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent) - WIDTH / 2;
+                case BOTTOM_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
+                case BOTTOM -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos) - WIDTH / 2;
                 case BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent) - WIDTH;
+                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos) - WIDTH;
                 default -> 0;
             };
             int y = minecraftClient.getWindow().getScaledHeight()
-                    - Math.round(minecraftClient.getWindow().getScaledHeight() * yPercent) - HEIGHT;
+                    - Math.round(minecraftClient.getWindow().getScaledHeight() * yPos) - HEIGHT;
 
             this.renderHotbar(drawContext, x, y);
             this.renderSelector(drawContext, x, y);
@@ -116,8 +117,6 @@ public class HotbarElement extends Element {
         );
         //endregion
     }
-
-
 
     private void renderItems(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
         //region Items

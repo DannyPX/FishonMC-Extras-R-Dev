@@ -1,4 +1,4 @@
-package dannypx.foe.screens.element;
+package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.common.handler.debug._DebugHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
@@ -6,6 +6,7 @@ import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Quartet;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -56,21 +57,21 @@ public class _DebugField extends Element {
         ) {
             // Position
             if(!isCopy) {
-                xPercent = Configs.debugConfig.debugFieldXPosition.get() / 100f;
-                yPercent = Configs.debugConfig.debugFieldYPosition.get() / 100f;
+                xPos = Configs.debugConfig.debugFieldXPosition.get() / 100f;
+                yPos = Configs.debugConfig.debugFieldYPosition.get() / 100f;
             }
 
             int x = switch (Configs.debugConfig.debugFieldAlignment.get()) {
-                case TOP_LEFT, BOTTOM_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                case TOP_LEFT, BOTTOM_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
                 case TOP_RIGHT, BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPercent);
+                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
                 default -> 0;
             };
 
             int y = switch (Configs.debugConfig.debugFieldAlignment.get()) {
-                case TOP_LEFT, TOP_RIGHT -> Math.round(minecraftClient.getWindow().getScaledHeight() * yPercent);
+                case TOP_LEFT, TOP_RIGHT -> Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
                 case BOTTOM_LEFT, BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * yPercent);
+                        - Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
                 default -> 0;
             };
 

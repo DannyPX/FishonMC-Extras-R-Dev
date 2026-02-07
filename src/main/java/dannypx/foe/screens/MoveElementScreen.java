@@ -2,7 +2,7 @@ package dannypx.foe.screens;
 
 import dannypx.foe.common.type.Alignment;
 import dannypx.foe.config.Configs;
-import dannypx.foe.screens.element.*;
+import dannypx.foe.screens.element.hud.*;
 import dannypx.foe.screens.widget.MovableBoxWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
