@@ -5,7 +5,7 @@ import java.util.UUID;
 public class DataModels {
 
     public static abstract class DataModel {
-        public final String version;
+        public String version;
         public UUID uuid;
 
         protected DataModel(String version, UUID uuid) {
@@ -17,7 +17,8 @@ public class DataModels {
     public enum DataModelType {
         PROFILE_DATA("profile"),
         STATS_DATA("stats"),
-        CONSTANT_DATA("constant");
+        CONSTANT_DATA("constant"),
+        QUEST_DATA("quest");
 
         public final String FILENAME;
 

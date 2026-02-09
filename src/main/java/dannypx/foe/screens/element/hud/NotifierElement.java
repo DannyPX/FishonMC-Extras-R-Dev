@@ -115,9 +115,6 @@ public class NotifierElement extends Element implements ScreenConstants {
             ));
         });
 
-        //TODO
-        // int sum = lst.stream().filter(o -> o.getField() > 10).mapToInt(o -> o.getField()).sum();
-
         return Pair.of(WIDTH, notificationElements.stream().mapToInt(n -> n.height).sum() + PADDING_QUART * notificationElements.size() - PADDING_QUART);
     }
     //endregion

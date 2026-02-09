@@ -6,6 +6,7 @@ import dannypx.foe.common.handler.logic.*;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
+import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
@@ -24,6 +25,7 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +33,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
 
@@ -63,6 +67,13 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             InventoryRenderHandler.instance().init(screen);
             ScreenEvents.afterRender(screen).register(InventoryRenderHandler.instance()::render);
             ScreenMouseEvents.afterMouseScroll(screen).register(InventoryRenderHandler.instance()::onMouseScrolled);
+        } else if(screen instanceof GenericContainerScreen genericContainerScreen) {
+            AtomicInteger delay = new AtomicInteger(3);
+            ScreenEvents.afterTick(screen).register(s -> {
+                if (delay.decrementAndGet() == 0) {
+                    GenericContainerScreenHandler.instance().onInit(genericContainerScreen);
+                }
+            });
         }
     }
 
@@ -97,6 +108,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             ProfileDataHandler.instance().init();
             StatsDataHandler.instance().init();
             ConstantDataHandler.instance().init();
+            QuestDataHandler.instance().init();
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
         }

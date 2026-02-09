@@ -6,6 +6,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
+import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
@@ -45,12 +46,14 @@ public class DataFileHandler {
         ProfileDataHandler.instance().tick();
         StatsDataHandler.instance().tick();
         ConstantDataHandler.instance().tick();
+        QuestDataHandler.instance().tick();
     }
 
     public void init() {
         loadDataToMemory(DataModels.DataModelType.PROFILE_DATA);
         loadDataToMemory(DataModels.DataModelType.STATS_DATA);
         loadDataToMemory(DataModels.DataModelType.CONSTANT_DATA);
+        loadDataToMemory(DataModels.DataModelType.QUEST_DATA);
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -117,6 +120,7 @@ public class DataFileHandler {
             case PROFILE_DATA -> ProfileDataHandler.instance().getProfileData();
             case STATS_DATA -> StatsDataHandler.instance().getStatsData();
             case CONSTANT_DATA -> ConstantDataHandler.instance().getConstantData();
+            case QUEST_DATA -> QuestDataHandler.instance().getQuestData();
         };
     }
 
@@ -125,6 +129,9 @@ public class DataFileHandler {
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                 .registerTypeAdapter(Text.class, new TextAdapter())
                 .create();
+
+        LoggerHandler.info("Setting data from: " + dataModelType.FILENAME + ".json");
+
         switch (dataModelType) {
             case PROFILE_DATA ->
                     ProfileDataHandler.instance().setProfileData(gson.fromJson(json, ProfileDataHandler.ProfileDataModel.class));
@@ -132,6 +139,8 @@ public class DataFileHandler {
                     StatsDataHandler.instance().setStatsData(gson.fromJson(json, StatsDataHandler.StatsDataModel.class));
             case CONSTANT_DATA ->
                     ConstantDataHandler.instance().setConstantData(gson.fromJson(json, ConstantDataHandler.ConstantDataModel.class));
+            case QUEST_DATA ->
+                    QuestDataHandler.instance().setQuestData(gson.fromJson(json, QuestDataHandler.QuestDataModel.class));
         }
     }
     //endregion

@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.fetch.TitleHandler;
+import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
@@ -51,6 +52,7 @@ public class CatchingHandler {
 
                 // Store to Stats
                 StatsDataHandler.instance().setFish(foundFish.v2());
+                QuestDataHandler.instance().setFish(foundFish.v2());
                 LoggerHandler.info("Found Fish: " + foundFish.v2().getName().getString());
 
                 this.checkForCaughtItems();

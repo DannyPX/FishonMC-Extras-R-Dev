@@ -36,8 +36,10 @@ public class ProfileDataHandler {
     }
 
     private void updateProfileData() {
+        if(needsUpdate) {
+            DataFileHandler.instance().saveToFile(DataModels.DataModelType.PROFILE_DATA);
+        }
         this.needsUpdate = false;
-        DataFileHandler.instance().saveToFile(DataModels.DataModelType.PROFILE_DATA);
     }
     //endregion
 
@@ -47,6 +49,9 @@ public class ProfileDataHandler {
             profileData.uuid = minecraftClient.player.getUuid();
         } else if(profileData.uuid != null && this.needsUpdate) {
             this.updateProfileData();
+        } else if(!ProfileDataModel.PROFILE_DATA_MODEL_VERSION.equals(profileData.version)) {
+            profileData.version = ProfileDataModel.PROFILE_DATA_MODEL_VERSION;
+            needsUpdate = true;
         }
     }
 

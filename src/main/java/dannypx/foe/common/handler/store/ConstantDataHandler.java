@@ -37,8 +37,10 @@ public class ConstantDataHandler {
     }
 
     private void updateConstantData() {
+        if(needsUpdate) {
+            DataFileHandler.instance().saveToFile(DataModels.DataModelType.CONSTANT_DATA);
+        }
         this.needsUpdate = false;
-        DataFileHandler.instance().saveToFile(DataModels.DataModelType.CONSTANT_DATA);
     }
     //endregion
 
@@ -48,6 +50,9 @@ public class ConstantDataHandler {
             constantData.uuid = minecraftClient.player.getUuid();
         } else if(constantData.uuid != null && this.needsUpdate) {
             this.updateConstantData();
+        } else if(!ConstantDataModel.CONSTANT_DATA_MODEL_VERSION.equals(constantData.version)) {
+            constantData.version = ConstantDataModel.CONSTANT_DATA_MODEL_VERSION;
+            needsUpdate = true;
         }
     }
 

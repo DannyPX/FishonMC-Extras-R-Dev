@@ -42,8 +42,10 @@ public class StatsDataHandler {
     }
 
     private void updateStatsData() {
+        if(needsUpdate) {
+            DataFileHandler.instance().saveToFile(DataModels.DataModelType.STATS_DATA);
+        }
         this.needsUpdate = false;
-        DataFileHandler.instance().saveToFile(DataModels.DataModelType.STATS_DATA);
     }
     //endregion
 
@@ -53,6 +55,9 @@ public class StatsDataHandler {
             statsData.uuid = minecraftClient.player.getUuid();
         } else if(statsData.uuid != null && needsUpdate) {
             this.updateStatsData();
+        } else if(!StatsDataModel.STATS_DATA_MODEL_VERSION.equals(statsData.version)) {
+            statsData.version = StatsDataModel.STATS_DATA_MODEL_VERSION;
+            needsUpdate = true;
         }
     }
 

@@ -145,7 +145,7 @@ public class NotifierHandler {
     }
     //endregion
 
-    //region NotifyObject
+    //region Notification Object
     public static class Notification {
         public final ItemStack item;
         public final int rows;
