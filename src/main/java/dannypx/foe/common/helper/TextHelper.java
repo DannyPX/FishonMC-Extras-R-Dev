@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -204,6 +205,30 @@ public class TextHelper {
 
     public static String shortenNumber(int i, int decimals) {
         return shortenNumber((float) i, decimals);
+    }
+
+    public static String floatToString(float f, int decimals) {
+        return String.format("%." + decimals + "f", f);
+    }
+
+    public static float lbToKg(float f) {
+        return f * 0.4535924f;
+    }
+
+    public static float inchToCm(float f) {
+        return f * 2.54f;
+    }
+
+    public static String capitalize(String s) {
+        return StringUtils.capitalize(s);
+    }
+
+    public static String splitTitleCase(String s) {
+        return String.join(" ", s.split("(?<!^)(?=[A-Z])"));
+    }
+
+    public static String convertField(String s) {
+        return splitTitleCase(capitalize(s));
     }
 
     public static String textToJson(Text text) {

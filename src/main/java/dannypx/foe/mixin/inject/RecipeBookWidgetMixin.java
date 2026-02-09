@@ -1,5 +1,6 @@
 package dannypx.foe.mixin.inject;
 
+import dannypx.foe.common.handler.logic.ConnectionHandler;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class RecipeBookWidgetMixin {
     @Inject(method = "isOpen", at = @At("HEAD"), cancellable = true)
     private void injectIsOpen(CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(false);
+        if(ConnectionHandler.instance().isOnServer()) {
+            cir.setReturnValue(false);
+        }
     }
 }

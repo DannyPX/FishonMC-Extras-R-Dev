@@ -2,19 +2,20 @@ package dannypx.foe.common.handler.store;
 
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
+import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class StatsDataHandler {
     private static StatsDataHandler INSTANCE = new StatsDataHandler();
@@ -66,20 +67,23 @@ public class StatsDataHandler {
     public void setFish(FishNbtObject fish) {
         statsData.fishTotal++;
 
-        Stat<String, Integer> rarityDrystreak = this.updateFishData(statsData, FishNbtObject.RARITY, fish.getRarity(), 1);
+        Pair<String, Integer> rarityDrystreak = this.updateFishData(statsData, FishNbtObject.RARITY, fish.getRarity(), 1);
         ConstantDataHandler.instance().updateFishData(FishNbtObject.RARITY, fish.getRarity(), fish.getRarityText());
 
-        Stat<String, Integer> variantDrystreak = this.updateFishData(statsData, FishNbtObject.VARIANT, fish.getVariant(), 1);
+        Pair<String, Integer> variantDrystreak = this.updateFishData(statsData, FishNbtObject.VARIANT, fish.getVariant(), 1);
         ConstantDataHandler.instance().updateFishData(FishNbtObject.VARIANT, fish.getVariant(), fish.getVariantText());
 
-        Stat<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishNbtObject.FISH_SIZE, fish.getFishSize(), 1);
+        Pair<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishNbtObject.FISH_SIZE, fish.getFishSize(), 1);
         ConstantDataHandler.instance().updateFishData(FishNbtObject.FISH_SIZE, fish.getFishSize(), fish.getFishSizeText());
 
-        //TODO Notify Fish
+        // Notify Fish
+        NotifierHandler.instance().notifyFish(fish, rarityDrystreak, variantDrystreak, sizeDryStreak);
     }
 
+
+
     // Field, Old Drystreak
-    private Stat<String, Integer> updateFishData(StatsDataModel statsData, String category, String field, int valueToAdd) {
+    private Pair<String, Integer> updateFishData(StatsDataModel statsData, String category, String field, int valueToAdd) {
         Map<String, Stat<Integer, Integer>> categoryMapData = statsData.fishData.getOrDefault(category, new HashMap<>());
         Stat<Integer, Integer> fieldStat = categoryMapData.getOrDefault(field, Stat.of(0, statsData.fishTotal));
 
@@ -88,7 +92,7 @@ public class StatsDataHandler {
         statsData.fishData.put(category, categoryMapData);
         this.needsUpdate = true;
 
-        return Stat.of(field, statsData.fishTotal - fieldStat.caughtOn());
+        return Pair.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
     public void setItem(NbtObject item, int count) {
@@ -100,17 +104,18 @@ public class StatsDataHandler {
     private void setPet(PetNbtObject pet) {
         statsData.petTotal++;
 
-        Stat<String, Integer> rarityDrystreak = this.updatePetData(statsData, PetNbtObject.RARITY, pet.getRarity(), 1);
+        Pair<String, Integer> rarityDrystreak = this.updatePetData(statsData, PetNbtObject.RARITY, pet.getRarity(), 1);
         ConstantDataHandler.instance().updatePetData(PetNbtObject.RARITY, pet.getRarity(), pet.getRarityText());
 
-        Stat<String, Integer> ratingDrystreak = this.updatePetData(statsData, PetNbtObject.RATING, pet.getRatingText().getString(), 1);
+        Pair<String, Integer> ratingDrystreak = this.updatePetData(statsData, PetNbtObject.RATING, pet.getRatingText().getString(), 1);
         ConstantDataHandler.instance().updatePetData(PetNbtObject.RATING, pet.getRatingText().getString(), pet.getRatingText());
 
-        //TODO Notify Pet
+        // Notify Pet
+        NotifierHandler.instance().notifyPet(pet, rarityDrystreak, ratingDrystreak);
     }
 
     // Field, Old Drystreak
-    private Stat<String, Integer> updatePetData(StatsDataModel statsData, String category, String field, int valueToAdd) {
+    private Pair<String, Integer> updatePetData(StatsDataModel statsData, String category, String field, int valueToAdd) {
         Map<String, Stat<Integer, Integer>> categoryMapData = statsData.petData.getOrDefault(category, new HashMap<>());
         Stat<Integer, Integer> fieldStat = categoryMapData.getOrDefault(field, Stat.of(0, statsData.fishTotal));
 
@@ -119,24 +124,25 @@ public class StatsDataHandler {
         statsData.petData.put(category, categoryMapData);
         this.needsUpdate = true;
 
-        return Stat.of(field, statsData.fishTotal - fieldStat.caughtOn());
+        return Pair.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
     private void setOtherItem(NbtObject item, int count) {
-        Stat<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
+        Pair<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
         ConstantDataHandler.instance().updateItemData(item.getType(), item.getItemStack());
 
-        //TODO Notify Item
+        // Notify Item
+        NotifierHandler.instance().notifyItem(item, count, itemDrystreak);
     }
 
-    private Stat<String, Integer> updateOtherItemData(StatsDataModel statsData, String item, int valueToAdd) {
+    private Pair<String, Integer> updateOtherItemData(StatsDataModel statsData, String item, int valueToAdd) {
         Stat<Integer, Integer> itemStat = statsData.itemData.getOrDefault(item, Stat.of(0, statsData.fishTotal));
 
         Stat<Integer, Integer> newItemStat = Stat.of(itemStat.amount() + valueToAdd, statsData.fishTotal);
         statsData.itemData.put(item, newItemStat);
         this.needsUpdate = true;
 
-        return Stat.of(item, statsData.fishTotal - itemStat.caughtOn());
+        return Pair.of(item, statsData.fishTotal - itemStat.caughtOn());
     }
     //endregion
 

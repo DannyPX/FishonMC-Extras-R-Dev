@@ -66,6 +66,9 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles key binds")
     public ValidatedBoolean keyBindHandler = new ValidatedBoolean(true);
 
+    @Desc("§7Handles the notifier")
+    public ValidatedBoolean notifierHandler = new ValidatedBoolean(true);
+
     @Name("Logic Handlers")
     @Desc("§7Handles logic of fishing")
     public ConfigGroup catchingLogicGroup = new ConfigGroup("fishing_logic_group");
@@ -73,6 +76,8 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles fishing")
     public ValidatedBoolean catchingHandler = new ValidatedBoolean(true);
 
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
     @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
     public ValidatedInt catchingStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion

@@ -118,9 +118,31 @@ public class HUDConfig extends Config {
     @Name("Y Position in %")
     public ValidatedInt notifierElementYPosition = new ValidatedInt(2, 100, 0, ValidatedNumber.WidgetType.SLIDER);
 
-    @ConfigGroup.Pop
     @Name("Anchor point")
     public ValidatedChoice<Alignment> notifierElementAlignment = new ValidatedChoice<>(Alignment.BOTTOM_RIGHT, Alignment.getCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+
+    @Name("Notifications Options")
+    @Desc("§7Options for the notifications")
+    public ConfigGroup notificationOptions = new ConfigGroup("notifications_options_group");
+
+    @Name("Catch Notification")
+    @Desc("§7Options for the notifications when catching")
+    public ConfigGroup catchingOptions = new ConfigGroup("catching_options_group");
+
+    @Name("Fish dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt fishDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Pet dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt petDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Name("Other items dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt otherDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @Override
     public @NotNull FileType fileType() {

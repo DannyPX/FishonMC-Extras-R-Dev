@@ -117,6 +117,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
                 if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
                 if(Configs.handlerConfig.inventoryHandler.get()) InventoryHandler.instance().tick();
+                if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
 
                 // IO
                 if(Configs.handlerConfig.dataFileHandler.get()) DataFileHandler.instance().tick();

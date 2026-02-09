@@ -58,7 +58,9 @@ public class InventoryRenderHandler {
         }
 
         elements.forEach(element -> element.v2().render(drawContext, MinecraftClient.getInstance().getRenderTickCounter()));
-        this.statList.render(drawContext, mouseX, mouseY, tickDelta);
+        if(this.statList != null) {
+            this.statList.render(drawContext, mouseX, mouseY, tickDelta);
+        }
         this.renderStatBoxHeaderText(drawContext);
     }
 
@@ -78,6 +80,10 @@ public class InventoryRenderHandler {
     }
 
     private void initWidgets(Screen screen) {
+        if(!LoadingHandler.instance().isLoadingDone()) {
+            return;
+        }
+
         List<ClickableWidget> widgets = new ArrayList<>();
 
         widgets.add(getStatList());
@@ -104,6 +110,14 @@ public class InventoryRenderHandler {
         // Fish Data
         statList.addEntry(new StatListWidget.StatEntry(Text.literal("-- Fishes --").styled(style -> style.withBold(true)), true));
         statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), Text.literal("Caught").formatted(Formatting.GRAY), Text.empty(), Text.literal("Dryst.").formatted(Formatting.GRAY), List.of(), false));
+        statList.addEntry(new StatListWidget.StatEntry(
+                Text.literal(""),
+                Text.literal("Total"),
+                TextHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal),
+                Text.literal(""),
+                List.of(),
+                false));
+        statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), true));
         StatsDataHandler.instance().getStatsData().fishData.forEach((category, fieldStats) -> {
             fieldStats.forEach((field, stat) -> {
                 statList.addEntry(new StatListWidget.StatEntry(Text.literal(category),
@@ -114,12 +128,20 @@ public class InventoryRenderHandler {
                         false
                 ));
             });
-            statList.addEntry(new StatListWidget.StatEntry(Text.literal("").formatted(Formatting.GRAY), true));
+            statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), true));
         });
 
-        statList.addEntry(new StatListWidget.StatEntry(Text.literal("").formatted(Formatting.GRAY), true));
+        statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), true));
         statList.addEntry(new StatListWidget.StatEntry(Text.literal("-- Pets --").styled(style -> style.withBold(true)), true));
         statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), Text.literal("Caught").formatted(Formatting.GRAY), Text.empty(), Text.literal("Dryst.").formatted(Formatting.GRAY), List.of(), false));
+        statList.addEntry(new StatListWidget.StatEntry(
+                Text.literal(""),
+                Text.literal("Total"),
+                TextHelper.literal(StatsDataHandler.instance().getStatsData().petTotal),
+                Text.literal(""),
+                List.of(),
+                false));
+        statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), true));
         StatsDataHandler.instance().getStatsData().petData.forEach((category, fieldStats) -> {
             fieldStats.forEach((field, stat) -> {
                 statList.addEntry(new StatListWidget.StatEntry(Text.literal(category),

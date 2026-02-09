@@ -14,6 +14,8 @@ public class FishNbtObject extends NbtObject {
     public static final String FISH = "fish";
     public static final String FISH_SIZE = "size";
     public static final String VARIANT = "variant";
+    public static final String LENGTH = "length";
+    public static final String WEIGHT = "weight";
 
     public static final int FISH_SIZE_LINE = 7;
     public static final int FISH_SIZE_SIBLING = 2;
@@ -27,6 +29,13 @@ public class FishNbtObject extends NbtObject {
 
     public String getFish() {
         return this.nbtCompound.getString(FISH);
+    }
+
+    public float getLength() {
+        return this.nbtCompound.getFloat(LENGTH);
+    }
+    public float getWeight() {
+        return this.nbtCompound.getFloat(WEIGHT);
     }
 
     public String getVariant() {

@@ -1,5 +1,6 @@
 package dannypx.foe.mixin.inject;
 
+import dannypx.foe.common.handler.logic.ConnectionHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
@@ -22,24 +23,25 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawStackCount", at = @At("HEAD"), cancellable = true)
     private void drawStackCountInject(TextRenderer textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
+        if(ConnectionHandler.instance().isOnServer()) {
+            Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
 
-        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
+            int count = validatedItem.v2().getCount();
+            Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
+            int countWidth = textRenderer.getWidth(countText);
 
-        int count = validatedItem.v2().getCount();
-        Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
-        int countWidth = textRenderer.getWidth(countText);
+            this.getMatrices().push();
+            this.getMatrices().translate(0.0F, 0.0F, 200.0F);
+            if(count > 1) DrawHelper.drawText((DrawContext) (Object) this, textRenderer, countText,
+                    x + 19 - 2 - countWidth, y + 6 + 4,
+                    true,
+                    true,
+                    false,
+                    true
+            );
+            this.getMatrices().pop();
 
-        this.getMatrices().push();
-        this.getMatrices().translate(0.0F, 0.0F, 200.0F);
-        if(count > 1) DrawHelper.drawText((DrawContext) (Object) this, textRenderer, countText,
-                x + 19 - 2 - countWidth, y + 6 + 4,
-                true,
-                true,
-                false,
-                true
-        );
-        this.getMatrices().pop();
-
-        ci.cancel();
+            ci.cancel();
+        }
     }
 }
