@@ -68,7 +68,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             ScreenEvents.afterRender(screen).register(InventoryRenderHandler.instance()::render);
             ScreenMouseEvents.afterMouseScroll(screen).register(InventoryRenderHandler.instance()::onMouseScrolled);
         } else if(screen instanceof GenericContainerScreen genericContainerScreen) {
-            AtomicInteger delay = new AtomicInteger(3);
+            AtomicInteger delay = new AtomicInteger(2);
             ScreenEvents.afterTick(screen).register(s -> {
                 if (delay.decrementAndGet() == 0) {
                     GenericContainerScreenHandler.instance().onInit(genericContainerScreen);

@@ -42,6 +42,10 @@ public enum Alignment implements EnumTranslatable {
         return List.of(TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT);
     }
 
+    public static List<Alignment> getVerticalSides() {
+        return List.of(TOP_LEFT, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT, LEFT);
+    }
+
     public static List<Alignment> getSides() {
         return List.of(LEFT, TOP, RIGHT, BOTTOM);
     }

@@ -24,8 +24,8 @@ public class LocationElement extends Element {
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 36;
 
-    private final Identifier LOCATION_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location");
-    private final Identifier LOCATION_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location_flip");
+    private static final Identifier LOCATION_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location");
+    private static final Identifier LOCATION_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location_flip");
     //endregion
 
     public LocationElement(MinecraftClient minecraftClient) {

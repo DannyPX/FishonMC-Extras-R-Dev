@@ -3,6 +3,8 @@ package dannypx.foe.common.handler.store;
 import dannypx.foe.common.handler.fetch.BossBarHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
+import dannypx.foe.common.handler.logic.LoggerHandler;
+import dannypx.foe.common.handler.logic.QuestHandler;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -68,6 +70,7 @@ public class QuestDataHandler {
         String location = BossBarHandler.instance().getLocation().getString();
 
         questData.questList.put(location, questList);
+        LoggerHandler.info("Quests updated");
         this.needsUpdate = true;
     }
 
@@ -78,6 +81,7 @@ public class QuestDataHandler {
                 this.needsUpdate = true;
             }
         });
+        QuestHandler.instance().checkForCompletedQuests();
     }
     //endregion
 

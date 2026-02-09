@@ -99,7 +99,7 @@ public class HUDConfig extends Config {
     public ValidatedInt petElementXPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Y Position in %")
-    public ValidatedInt petElementYPosition = new ValidatedInt(20, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedInt petElementYPosition = new ValidatedInt(15, 100, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @ConfigGroup.Pop
     @Name("Anchor point")
@@ -138,11 +138,46 @@ public class HUDConfig extends Config {
     public ValidatedInt petDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @ConfigGroup.Pop
-    @ConfigGroup.Pop
-    @ConfigGroup.Pop
     @Name("Other items dismissal time")
     @Desc("§7How long in seconds, before the notification dismisses")
     public ValidatedInt otherDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Quest Notification")
+    @Desc("§7Options for the notifications when questing")
+    public ConfigGroup questOptions = new ConfigGroup("quest_options_group");
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Name("Quest completion dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt questDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Sidebar Element")
+    @Desc("§7Options for the sidebar")
+    public ConfigGroup sidebarElementGroup = new ConfigGroup("notifier_element_group");
+
+    @Name("Show Sidebar Element")
+    public ValidatedBoolean showSidebarElement = new ValidatedBoolean(true);
+
+    @Name("X Position in %")
+    public ValidatedInt sidebarElementXPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Y Position in %")
+    public ValidatedInt sidebarElementYPosition = new ValidatedInt(15, 100, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Anchor point")
+    public ValidatedChoice<Alignment> sidebarElementAlignment = new ValidatedChoice<>(Alignment.TOP_RIGHT, Alignment.getVerticalSides(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+
+    @Name("Sidebar Options")
+    @Desc("§7Options for the elements in the sidebar")
+    public ConfigGroup sidebarOptions = new ConfigGroup("sidebar_options_group");
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Name("Show quests in Sidebar")
+    public ValidatedBoolean showQuest = new ValidatedBoolean(true);
+
 
     @Override
     public @NotNull FileType fileType() {

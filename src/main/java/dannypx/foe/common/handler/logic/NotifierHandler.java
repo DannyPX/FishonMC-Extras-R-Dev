@@ -1,5 +1,7 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.store.ConstantDataHandler;
+import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.Stat;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
@@ -138,8 +140,27 @@ public class NotifierHandler {
         this.addNotification(
                 new Notification(item.getItemStack(),
                         4, 1,
-                        Configs.hudConfig.petDismissalTime.get(),
+                        Configs.hudConfig.otherDismissalTime.get(),
                         notifTextList
+                )
+        );
+    }
+
+    public void notifyQuest(QuestDataHandler.Quest quest) {
+        Text completionText = Text.literal("Completed quest").formatted(Formatting.GREEN);
+        Text goalText = TextHelper.concat(
+                ConstantDataHandler.instance().getConstantFishText(quest.goal),
+                Text.literal(" "),
+                TextHelper.literal(quest.current).formatted(Formatting.YELLOW),
+                Text.literal("/").formatted(Formatting.GRAY),
+                TextHelper.literal(quest.max).formatted(Formatting.WHITE)
+        );
+
+        this.addNotification(
+                new Notification(
+                        2, 1,
+                        Configs.hudConfig.questDismissalTime.get(),
+                        Arrays.asList(completionText, goalText)
                 )
         );
     }

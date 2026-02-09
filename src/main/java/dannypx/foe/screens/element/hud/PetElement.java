@@ -25,8 +25,8 @@ public class PetElement extends Element {
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 37;
 
-    private final Identifier PET_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/pet");
-    private final Identifier PET_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/pet_flip");
+    private static final Identifier PET_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/pet");
+    private static final Identifier PET_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/pet_flip");
     //endregion
 
     public PetElement(MinecraftClient minecraftClient) {

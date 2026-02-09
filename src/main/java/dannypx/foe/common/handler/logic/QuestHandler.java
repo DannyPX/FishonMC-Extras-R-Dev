@@ -9,8 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -73,6 +71,16 @@ public class QuestHandler {
             }
         }
         return null;
+    }
+
+    public void checkForCompletedQuests() {
+        List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.get(BossBarHandler.instance().getLocation().getString());
+
+        quests.forEach(quest -> {
+            if(quest.isDone()) {
+                NotifierHandler.instance().notifyQuest(quest);
+            }
+        });
     }
 
     //region Dev

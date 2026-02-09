@@ -31,21 +31,21 @@ public class HotbarElement extends Element {
     private static final int WIDTH = 220;
     private static final int HEIGHT = 51;
 
-    private final Identifier HOTBAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/hotbar");
-    private final int HOTBAR_WIDTH = 170;
-    private final int HOTBAR_HEIGHT = 26;
+    private static final Identifier HOTBAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/hotbar");
+    private static final int HOTBAR_WIDTH = 170;
+    private static final int HOTBAR_HEIGHT = 26;
 
-    private final Identifier GEAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/gear");
-    private final int GEAR_WIDTH = 60;
-    private final int GEAR_HEIGHT = 24;
+    private static final Identifier GEAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/gear");
+    private static final int GEAR_WIDTH = 60;
+    private static final int GEAR_HEIGHT = 24;
 
-    private final Identifier SLOT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/slot");
-    private final int SLOT_WIDTH = 24;
-    private final int SLOT_HEIGHT = 24;
+    private static final Identifier SLOT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/slot");
+    private static final int SLOT_WIDTH = 24;
+    private static final int SLOT_HEIGHT = 24;
 
-    private final Identifier SELECTOR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/selector");
-    private final int SELECTOR_WIDTH = 20;
-    private final int SELECTOR_HEIGHT = 24;
+    private static final Identifier SELECTOR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/selector");
+    private static final int SELECTOR_WIDTH = 20;
+    private static final int SELECTOR_HEIGHT = 24;
 
     private int selectedSlot = -1;
     private long heldItemTooltipFade = 0L;

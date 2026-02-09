@@ -26,8 +26,8 @@ public class ProfileElement extends Element {
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 44;
 
-    private final Identifier PROFILE_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile");
-    private final Identifier PROFILE_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile_flip");
+    private static final Identifier PROFILE_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile");
+    private static final Identifier PROFILE_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/profile_flip");
     //endregion
 
     public ProfileElement(MinecraftClient minecraftClient) {

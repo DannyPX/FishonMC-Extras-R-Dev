@@ -94,6 +94,17 @@ public class MoveElementScreen extends Screen {
                     Configs.hudConfig.save();
                 }));
 
+        widgets.add(new MovableBoxWidget(minecraftClient,
+                new SidebarElement(minecraftClient, true),
+                Alignment.getVerticalSides(),
+                Configs.hudConfig.showSidebarElement.translationKey(),
+                (xPercent, yPercent, alignment) -> {
+                    Configs.hudConfig.sidebarElementXPosition.accept(xPercent);
+                    Configs.hudConfig.sidebarElementYPosition.accept(yPercent);
+                    Configs.hudConfig.sidebarElementAlignment.accept(alignment);
+                    Configs.hudConfig.save();
+                }));
+
         if(Configs.debugConfig.debugMode.get()) {
             widgets.add(new MovableBoxWidget(minecraftClient,
                     new _DebugField(minecraftClient, true),

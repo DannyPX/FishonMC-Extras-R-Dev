@@ -31,9 +31,9 @@ public class NotificationElement extends Element implements ScreenConstants {
     private final int contentHeight;
     private final int contentWidth;
 
-    private final Identifier BOX_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
-    private final int LINE_HEIGHT = 1;
-    private final int BOX_PADDING = 5 + PADDING_QUART;
+    private static final Identifier BOX_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
+    private static final int LINE_HEIGHT = 1;
+    private static final int BOX_PADDING = 5 + PADDING_QUART;
 
     private boolean isError = false;
     //endregion

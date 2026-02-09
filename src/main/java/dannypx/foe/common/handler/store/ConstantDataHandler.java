@@ -11,6 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ConstantDataHandler {
     private static ConstantDataHandler INSTANCE = new ConstantDataHandler();
@@ -90,6 +91,19 @@ public class ConstantDataHandler {
             this.constantData.itemData.put(category, categoryData);
             this.needsUpdate = true;
         }
+    }
+
+    public Text getConstantFishText(String field) {
+        AtomicReference<Text> fieldText = new AtomicReference<>(Text.empty());
+        this.getConstantData().fishData.forEach((key, mapFields) -> {
+            Text result = mapFields.getOrDefault(field, Text.empty());
+
+            if(!Objects.equals(result, Text.empty())) {
+                fieldText.set(result);
+            }
+        });
+
+        return fieldText.get();
     }
     //endregion
 
