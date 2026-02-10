@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.common.handler.fetch.StatsScreenHandler;
+import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.screens.MainScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
@@ -22,9 +24,14 @@ public class CommandRegistry {
     }
 
     public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(command("foe")
+        dispatcher.register(
+                command("foe")
                 .then(command("config").executes(Command::openConfig))
                 .then(command("main").executes(Command::openMainScreen))
+                .then(command("stats")
+                        .then(command("import").executes(Command::importStats))
+                        .then(command("cancel").executes(Command::cancelStats))
+                )
                 .executes(Command::openMainScreen)
         );
     }
@@ -36,6 +43,19 @@ public class CommandRegistry {
 
         public static int openMainScreen(CommandContext<FabricClientCommandSource> context) {
             return executeCommand(() -> MinecraftClient.getInstance().setScreen(new MainScreen(MinecraftClient.getInstance().currentScreen)));
+        }
+
+        public static int importStats(CommandContext<FabricClientCommandSource> context) {
+            StatsScreenHandler.instance().setImportStats(true);
+            return executeCommand(() -> {
+                if (MinecraftClient.getInstance().player != null) {
+                    MinecraftClient.getInstance().player.networkHandler.sendChatCommand("stats");
+                }
+            });
+        }
+
+        public static int cancelStats(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(() -> ProfileDataHandler.instance().updateImportStats(true));
         }
     }
 

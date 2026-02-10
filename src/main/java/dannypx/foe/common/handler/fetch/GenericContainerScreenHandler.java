@@ -1,7 +1,5 @@
 package dannypx.foe.common.handler.fetch;
 
-import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.handler.logic.QuestHandler;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.text.MutableText;
@@ -21,6 +19,11 @@ public class GenericContainerScreenHandler {
     }
 
     //region Fields
+    private String lastContainerScreen = "";
+
+    public String getLastContainerScreen() {
+        return lastContainerScreen;
+    }
     //endregion
 
     //region Methods
@@ -29,8 +32,12 @@ public class GenericContainerScreenHandler {
     }
 
     private void checkIsOfTitle(GenericContainerScreen genericContainerScreen) {
+        this.lastContainerScreen = genericContainerScreen.getTitle().getString();
+
         if(Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD539")) {
-            QuestHandler.instance().checkQuests(genericContainerScreen.getScreenHandler());
+            QuestScreenHandler.instance().checkQuests(genericContainerScreen.getScreenHandler());
+        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD532")) {
+            StatsScreenHandler.instance().checkStats(genericContainerScreen.getScreenHandler());
         }
     }
     //endregion
@@ -39,7 +46,7 @@ public class GenericContainerScreenHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "lastContainerScreen", Pair.of(Text.literal(getLastContainerScreen()), Text.empty())
         );
     }
     //endregion

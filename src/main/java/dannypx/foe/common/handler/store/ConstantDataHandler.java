@@ -12,6 +12,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 public class ConstantDataHandler {
     private static ConstantDataHandler INSTANCE = new ConstantDataHandler();
@@ -104,6 +105,14 @@ public class ConstantDataHandler {
         });
 
         return fieldText.get();
+    }
+
+    public static Stream<String> keysFromField(Map<String, Text> map, String value) {
+        return map
+                .entrySet()
+                .stream()
+                .filter(entry -> value.equals(entry.getValue().getString()))
+                .map(Map.Entry::getKey);
     }
     //endregion
 

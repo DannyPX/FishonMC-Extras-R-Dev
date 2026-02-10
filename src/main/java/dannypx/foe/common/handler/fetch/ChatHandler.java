@@ -40,7 +40,6 @@ public class ChatHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
         );
     }
     //endregion

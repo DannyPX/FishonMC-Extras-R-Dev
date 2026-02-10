@@ -6,6 +6,7 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,7 +24,7 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawStackCount", at = @At("HEAD"), cancellable = true)
     private void drawStackCountInject(TextRenderer textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
-        if(ConnectionHandler.instance().isOnServer()) {
+        if(ConnectionHandler.instance().isOnServer() && Configs.mainConfig.enableMod.get()) {
             Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
 
             int count = validatedItem.v2().getCount();

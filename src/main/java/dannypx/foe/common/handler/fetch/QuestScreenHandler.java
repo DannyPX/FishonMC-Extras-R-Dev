@@ -1,6 +1,6 @@
-package dannypx.foe.common.handler.logic;
+package dannypx.foe.common.handler.fetch;
 
-import dannypx.foe.common.handler.fetch.BossBarHandler;
+import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class QuestHandler {
-    private static QuestHandler INSTANCE = new QuestHandler();
+public class QuestScreenHandler {
+    private static QuestScreenHandler INSTANCE = new QuestScreenHandler();
 
-    public static QuestHandler instance() {
+    public static QuestScreenHandler instance() {
         if (INSTANCE == null) {
-            INSTANCE = new QuestHandler();
+            INSTANCE = new QuestScreenHandler();
         }
         return INSTANCE;
     }
@@ -87,7 +87,6 @@ public class QuestHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
         );
     }
     //endregion

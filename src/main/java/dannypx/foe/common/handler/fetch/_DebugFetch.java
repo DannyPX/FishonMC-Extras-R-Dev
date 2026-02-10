@@ -13,7 +13,8 @@ public class _DebugFetch {
                 ClientPlayerHandler.class.getName(),
                 ScoreboardHandler.class.getName(),
                 BossBarHandler.class.getName(),
-                TitleHandler.class.getName()
+                TitleHandler.class.getName(),
+                GenericContainerScreenHandler.class.getName()
         );
     }
 
@@ -24,7 +25,8 @@ public class _DebugFetch {
                 ClientPlayerHandler.class.getName(), ClientPlayerHandler.instance()._getFields(),
                 ScoreboardHandler.class.getName(), ScoreboardHandler.instance()._getFields(),
                 BossBarHandler.class.getName(), BossBarHandler.instance()._getFields(),
-                TitleHandler.class.getName(), TitleHandler.instance()._getFields()
+                TitleHandler.class.getName(), TitleHandler.instance()._getFields(),
+                GenericContainerScreenHandler.class.getName(), GenericContainerScreenHandler.instance()._getFields()
         );
     }
 }

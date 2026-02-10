@@ -4,11 +4,10 @@ import dannypx.foe.common.handler.fetch.BossBarHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.handler.logic.QuestHandler;
+import dannypx.foe.common.handler.fetch.QuestScreenHandler;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.BossBarHud;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -81,7 +80,7 @@ public class QuestDataHandler {
                 this.needsUpdate = true;
             }
         });
-        QuestHandler.instance().checkForCompletedQuests();
+        QuestScreenHandler.instance().checkForCompletedQuests();
     }
     //endregion
 

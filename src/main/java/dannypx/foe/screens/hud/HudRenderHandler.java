@@ -1,6 +1,7 @@
 package dannypx.foe.screens.hud;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.screens.element.hud.*;
@@ -43,8 +44,12 @@ public class HudRenderHandler {
         elements.add(Pair.of("sidebar_hud", new SidebarElement(minecraftClient)));
         elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
 
-        elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
-                Identifier.of(FishOnMCExtras.MOD_ID, element.v1()), element.v2()::render));
+        elements.forEach(element -> {
+            layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
+                    Identifier.of(FishOnMCExtras.MOD_ID, element.v1()), (drawContext, tickCounter) -> {
+                        if (Configs.mainConfig.enableMod.get()) element.v2().render(drawContext, tickCounter);
+                    });
+        });
     }
     //endregion
 }

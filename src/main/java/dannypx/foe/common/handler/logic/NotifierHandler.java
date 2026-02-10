@@ -1,6 +1,8 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.fetch.StatsScreenHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
+import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.Stat;
 import dannypx.foe.common.helper.TextHelper;
@@ -29,6 +31,9 @@ public class NotifierHandler {
     //region Fields
     private final List<Notification> notifications = new ArrayList<>();
     private final List<UUID> removeQueue = new ArrayList<>();
+    private final Map<String, UUID> persistentNotifications = new HashMap<>();
+
+    public static final String IMPORT_STATS_KEY = "importStatsKey";
 
     public List<Notification> getNotifications() {
         return notifications;
@@ -36,6 +41,12 @@ public class NotifierHandler {
     //endregion
 
     //region Methods
+    public void init() {
+        if(!ProfileDataHandler.instance().getProfileData().hasImportedStats) {
+            this.notifyImportStats();
+        }
+    }
+
     public void tick() {
         boolean isRemoved = notifications.removeIf(notification -> removeQueue.contains(notification.uuid));
         if(isRemoved) removeQueue.clear();
@@ -54,6 +65,13 @@ public class NotifierHandler {
 
     public void removeNotification(UUID uuid) {
         removeQueue.add(uuid);
+    }
+
+    public void removeNotification(String key) {
+        if(persistentNotifications.containsKey(key)) {
+            UUID uuid = persistentNotifications.remove(key);
+            this.removeNotification(uuid);
+        }
     }
 
     public void notifyFish(
@@ -161,6 +179,53 @@ public class NotifierHandler {
                         2, 1,
                         Configs.hudConfig.questDismissalTime.get(),
                         Arrays.asList(completionText, goalText)
+                )
+        );
+    }
+
+    public void notifyImportStats() {
+        UUID importStatsUUID = this.addNotification(
+                new Notification(11, 1,
+                        Arrays.asList(
+                                Text.literal("You have yet to import your stats").formatted(Formatting.GOLD),
+                                Text.empty(),
+                                TextHelper.concat(
+                                        Text.literal("Do "),
+                                        Text.literal("/foe stats import ").formatted(Formatting.GREEN),
+                                        Text.literal("to import")
+                                ),
+                                Text.literal("your stats"),
+                                Text.literal("This will open the stats screen").formatted(Formatting.GRAY, Formatting.ITALIC),
+                                Text.literal("and import your stats").formatted(Formatting.GRAY, Formatting.ITALIC),
+                                Text.empty(),
+                                TextHelper.concat(
+                                        Text.literal("Do "),
+                                        Text.literal("/foe stats cancel ").formatted(Formatting.GREEN),
+                                        Text.literal("to cancel")
+                                ),
+                                Text.literal("this notification"),
+                                TextHelper.concat(
+                                        Text.literal("You can still do ").formatted(Formatting.GRAY, Formatting.ITALIC),
+                                        Text.literal("/foe stats ").formatted(Formatting.GREEN, Formatting.ITALIC)
+                                ),
+                                TextHelper.concat(
+                                        Text.literal("import ").formatted(Formatting.GREEN, Formatting.ITALIC),
+                                        Text.literal("to import at a later time").formatted(Formatting.GRAY, Formatting.ITALIC)
+                                )
+                        )
+                )
+        );
+
+        this.persistentNotifications.put(IMPORT_STATS_KEY, importStatsUUID);
+    }
+
+    public void notifyImportStatsCompleted() {
+        this.addNotification(
+                new Notification(1, 1,
+                        15,
+                        Collections.singletonList(
+                                Text.literal("✔ Stats imported successfully").formatted(Formatting.GREEN)
+                        )
                 )
         );
     }

@@ -13,6 +13,7 @@ import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.hud.HudRenderHandler;
 import dannypx.foe.screens.inventory.InventoryRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -33,6 +34,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,6 +44,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     public void onInitializeClient() {
         this.onInit();
 
+        ClientLifecycleEvents.CLIENT_STARTED.register(this::onClientStarted);
         ScreenEvents.BEFORE_INIT.register(this::onBeforeInitScreen);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
@@ -50,6 +53,14 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
+    }
+
+    private void onClientStarted(MinecraftClient minecraftClient) {
+        if(minecraftClient.options.getGuiScale().getValue() == 0) {
+            minecraftClient.options.getGuiScale().setValue(3);
+            minecraftClient.options.write();
+            minecraftClient.onResolutionChanged();
+        }
     }
 
     private void receiveGameMessage(Text text, boolean overlay) {
@@ -111,6 +122,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             QuestDataHandler.instance().init();
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
+
+            NotifierHandler.instance().init();
         }
     }
 

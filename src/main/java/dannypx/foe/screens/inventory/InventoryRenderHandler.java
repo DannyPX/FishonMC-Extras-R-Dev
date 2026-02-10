@@ -39,7 +39,7 @@ public class InventoryRenderHandler {
     List<Pair<String, Element>> elements = new ArrayList<>();
 
     private StatListWidget statList;
-    private final int STAT_WIDTH = 150;
+    private final int STAT_WIDTH = 160;
 
     private final int INVENTORY_TRANSLATION = 94;
     private final int INVENTORY_TOP = 83;

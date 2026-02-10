@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Version(version = 0)
 @Translatable.Name("Debug Configuration")
+@Translatable.Desc("§4WARNING §7Debugging only. Do not touch these unless you know what you are doing")
 public class _DebugConfig extends Config {
     public _DebugConfig() {
         super(Identifier.of(FishOnMCExtras.MOD_ID, "debug_config"));

@@ -149,6 +149,12 @@ public class StatsDataHandler {
 
         return Pair.of(item, statsData.fishTotal - itemStat.caughtOn());
     }
+
+    public void updateImportStats(boolean updatedStats) {
+        if(updatedStats) {
+            this.needsUpdate = true;
+        }
+    }
     //endregion
 
     //region Model

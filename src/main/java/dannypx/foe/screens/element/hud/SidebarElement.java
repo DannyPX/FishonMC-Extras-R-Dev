@@ -94,7 +94,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
             contentDimensions = this.assembleSidebarElements();
             boxWidth = contentDimensions.v1() + BOX_PADDING * 2 + PADDING * 2;
-            boxHeight = contentDimensions.v2() + BOX_PADDING * 2 + PADDING * 2;
+            boxHeight = contentDimensions.v2() + BOX_PADDING * 2 + PADDING_QUART * 2;
             if(textLines.isEmpty()) {
                 return;
             }
@@ -117,7 +117,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
     private void renderText(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {
         int textX = x + PADDING + BOX_PADDING;
-        int textY = y + PADDING + BOX_PADDING;
+        int textY = y + PADDING_QUART + BOX_PADDING;
 
         AtomicInteger line = new AtomicInteger(0);
         textLines.forEach(text -> {
