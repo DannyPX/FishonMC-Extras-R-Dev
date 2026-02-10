@@ -34,6 +34,7 @@ public class NotifierHandler {
     private final Map<String, UUID> persistentNotifications = new HashMap<>();
 
     public static final String IMPORT_STATS_KEY = "importStatsKey";
+    public static final String EMPTY_SLOTS_KEY = "emptySlotsKey";
 
     public List<Notification> getNotifications() {
         return notifications;
@@ -80,6 +81,10 @@ public class NotifierHandler {
             Pair<String, Integer> variantDrystreak,
             Pair<String, Integer> sizeDryStreak
     ) {
+        if(!Configs.hudConfig.showFishCatchNotification.get()) {
+            return;
+        }
+
         Text tagText = !Objects.equals(fish.getVariant(), "normal")
                 ? TextHelper.concat(fish.getVariantText(), fish.getRarityText())
                 : TextHelper.concat(fish.getRarityText());
@@ -113,9 +118,11 @@ public class NotifierHandler {
             notifTextList.add(Text.empty());
         }
 
+        int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : Objects.equals(fish.getVariant(), "normal") ? 7 : 8;
+
         this.addNotification(
                 new NotifierHandler.Notification(fish.getItemStack(),
-                        Objects.equals(fish.getVariant(), "normal") ? 7 : 8, 1,
+                        rows, 1,
                         Configs.hudConfig.fishDismissalTime.get(),
                         notifTextList
                 )
@@ -123,6 +130,10 @@ public class NotifierHandler {
     }
 
     public void notifyPet(PetNbtObject pet, Pair<String, Integer> rarityDrystreak, Pair<String, Integer> ratingDrystreak) {
+        if(!Configs.hudConfig.showPetCatchNotification.get()) {
+            return;
+        }
+
         Text petText = TextHelper.concat(pet.getRarityText(), pet.getName());
 
         List<Text> notifTextList = Arrays.asList(
@@ -134,9 +145,11 @@ public class NotifierHandler {
                 TextHelper.concat(pet.getRatingText(), TextHelper.literal(ratingDrystreak.v2()))
         );
 
+        int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : 6;
+
         this.addNotification(
                 new Notification(pet.getItemStack(),
-                        6, 1,
+                        rows, 1,
                         Configs.hudConfig.petDismissalTime.get(),
                         notifTextList
                 )
@@ -144,6 +157,10 @@ public class NotifierHandler {
     }
 
     public void notifyItem(NbtObject item, int count, Pair<String, Integer> itemDrystreak) {
+        if(!Configs.hudConfig.showOtherItemCatchNotification.get()) {
+            return;
+        }
+
         Text itemText = TextHelper.concat(item.getName(), Text.literal(" "), TextHelper.literal(count), Text.literal("x").formatted(Formatting.GRAY));
         Text typeText = Text.literal(TextHelper.convertField(itemDrystreak.v1()));
 
@@ -155,9 +172,11 @@ public class NotifierHandler {
                 TextHelper.concat(typeText, Text.literal(" ") ,TextHelper.literal(itemDrystreak.v2()))
         );
 
+        int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : 4;
+
         this.addNotification(
                 new Notification(item.getItemStack(),
-                        4, 1,
+                        rows, 1,
                         Configs.hudConfig.otherDismissalTime.get(),
                         notifTextList
                 )
@@ -165,6 +184,10 @@ public class NotifierHandler {
     }
 
     public void notifyQuest(QuestDataHandler.Quest quest) {
+        if(!Configs.hudConfig.showQuestCompletionNotification.get()) {
+            return;
+        }
+
         Text completionText = Text.literal("Completed quest").formatted(Formatting.GREEN);
         Text goalText = TextHelper.concat(
                 ConstantDataHandler.instance().getConstantFishText(quest.goal),
@@ -228,6 +251,33 @@ public class NotifierHandler {
                         )
                 )
         );
+    }
+
+    public void notifyEmptySlots(int currentEmptySlots) {
+        this.removeNotification(EMPTY_SLOTS_KEY);
+
+        if(!Configs.hudConfig.showEmptySlotsNotification.get()) {
+            return;
+        }
+
+        if(currentEmptySlots <= Configs.hudConfig.showNotificationAtEmptySlots.get()) {
+            Text notifText = currentEmptySlots == 0
+                    ? Text.literal("You have a full inventory!").formatted(Formatting.DARK_RED)
+                    : Text.literal("You nearly have a full inventory").formatted(Formatting.RED);
+
+            UUID emptySlotsUUID = this.addNotification(new Notification(
+                2, 1,
+                    Arrays.asList(
+                            notifText,
+                            TextHelper.concat(
+                                    Text.literal("Slots left: ").formatted(Formatting.GRAY),
+                                    TextHelper.literal(currentEmptySlots)
+                            )
+                    )
+            ));
+
+            this.persistentNotifications.put(EMPTY_SLOTS_KEY, emptySlotsUUID);
+        }
     }
     //endregion
 
@@ -307,7 +357,7 @@ public class NotifierHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "notifications", Pair.of(Text.literal("[notifications]]"), TextHelper.literal(getNotifications()))
         );
     }
     //endregion

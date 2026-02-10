@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -28,6 +29,10 @@ public class GenericContainerScreenHandler {
 
     //region Methods
     public void onInit(GenericContainerScreen genericContainerScreen) {
+        if(!Configs.handlerConfig.genericContainerScreenHandler.get()) {
+            return;
+        }
+
         this.checkIsOfTitle(genericContainerScreen);
     }
 

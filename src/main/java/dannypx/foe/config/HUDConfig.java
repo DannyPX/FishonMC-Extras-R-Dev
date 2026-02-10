@@ -129,13 +129,31 @@ public class HUDConfig extends Config {
     @Desc("§7Options for the notifications when catching")
     public ConfigGroup catchingOptions = new ConfigGroup("catching_options_group");
 
+    @Name("Show notification when catching fish")
+    public ValidatedBoolean showFishCatchNotification = new ValidatedBoolean(true);
+
+    @Name("Show drystreak in notification when catching fish")
+    public ValidatedBoolean showFishDrystreakNotification = new ValidatedBoolean(true);
+
     @Name("Fish dismissal time")
     @Desc("§7How long in seconds, before the notification dismisses")
     public ValidatedInt fishDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
 
+    @Name("Show notification when catching pets")
+    public ValidatedBoolean showPetCatchNotification = new ValidatedBoolean(true);
+
+    @Name("Show drystreak in notification when catching pets")
+    public ValidatedBoolean showPetsDrystreakNotification = new ValidatedBoolean(true);
+
     @Name("Pet dismissal time")
     @Desc("§7How long in seconds, before the notification dismisses")
     public ValidatedInt petDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Show notification when catching other items")
+    public ValidatedBoolean showOtherItemCatchNotification = new ValidatedBoolean(true);
+
+    @Name("Show drystreak in notification when catching other items")
+    public ValidatedBoolean showOtherItemDrystreakNotification = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
     @Name("Other items dismissal time")
@@ -146,12 +164,28 @@ public class HUDConfig extends Config {
     @Desc("§7Options for the notifications when questing")
     public ConfigGroup questOptions = new ConfigGroup("quest_options_group");
 
-    @ConfigGroup.Pop
-    @ConfigGroup.Pop
+    @Name("Show notification when completing quests")
+    public ValidatedBoolean showQuestCompletionNotification = new ValidatedBoolean(true);
+
     @ConfigGroup.Pop
     @Name("Quest completion dismissal time")
     @Desc("§7How long in seconds, before the notification dismisses")
     public ValidatedInt questDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Empty Slots Notification")
+    @Desc("§7Options for empty slots notifications")
+    public ConfigGroup emptySlotsOptions = new ConfigGroup("empty_slots_options_group");
+
+    @Name("Show notification when nearing full inventory")
+    public ValidatedBoolean showEmptySlotsNotification = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Name("Show notification when empty slots left")
+    @Desc("§7How many empty slots before it shows the notification")
+    public ValidatedInt showNotificationAtEmptySlots = new ValidatedInt(3, 36, 0, ValidatedNumber.WidgetType.SLIDER);
+
 
     @Name("Sidebar Element")
     @Desc("§7Options for the sidebar")
@@ -177,7 +211,6 @@ public class HUDConfig extends Config {
     @ConfigGroup.Pop
     @Name("Show quests in Sidebar")
     public ValidatedBoolean showQuest = new ValidatedBoolean(true);
-
 
     @Override
     public @NotNull FileType fileType() {

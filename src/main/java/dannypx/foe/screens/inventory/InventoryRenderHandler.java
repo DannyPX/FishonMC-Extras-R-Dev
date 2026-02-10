@@ -6,6 +6,7 @@ import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.StatListWidget;
@@ -53,7 +54,10 @@ public class InventoryRenderHandler {
     }
 
     public void render(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-        if(!LoadingHandler.instance().isLoadingDone()) {
+        if(!LoadingHandler.instance().isLoadingDone()
+                && Configs.inventoryScreenConfig.showStatsElement.get()
+                && Configs.mainConfig.enableMod.get()
+        ) {
             return;
         }
 
@@ -80,7 +84,10 @@ public class InventoryRenderHandler {
     }
 
     private void initWidgets(Screen screen) {
-        if(!LoadingHandler.instance().isLoadingDone()) {
+        if(!LoadingHandler.instance().isLoadingDone()
+                && Configs.inventoryScreenConfig.showStatsElement.get()
+                && Configs.mainConfig.enableMod.get()
+        ) {
             return;
         }
 

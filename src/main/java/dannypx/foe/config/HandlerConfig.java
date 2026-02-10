@@ -39,9 +39,20 @@ public class HandlerConfig extends Config {
     @Desc("§7Data from Player Inventory")
     public ValidatedBoolean inventoryHandler = new ValidatedBoolean(true);
 
-    @ConfigGroup.Pop
     @Desc("§7Data from Boss Bar")
     public ValidatedBoolean bossBarHandler = new ValidatedBoolean(true);
+
+    @Name("Screen Handlers")
+    @Desc("§7Handles fetching of screen data")
+    public ConfigGroup screenFetchGroup = new ConfigGroup("screen_fetch_group");
+
+    @Desc("§7Data from Screens")
+    public ValidatedBoolean genericContainerScreenHandler = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Desc("§7The delay in ticks before any data is fetched")
+    public ValidatedInt screenDelayFetch = new ValidatedInt(2, 100, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
     //region IO Handler Group
@@ -69,9 +80,9 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles the notifier")
     public ValidatedBoolean notifierHandler = new ValidatedBoolean(true);
 
-    @Name("Logic Handlers")
+    @Name("Catching Handler")
     @Desc("§7Handles logic of fishing")
-    public ConfigGroup catchingLogicGroup = new ConfigGroup("fishing_logic_group");
+    public ConfigGroup catchingLogicGroup = new ConfigGroup("catching_logic_group");
 
     @Desc("§7Handles fishing")
     public ValidatedBoolean catchingHandler = new ValidatedBoolean(true);

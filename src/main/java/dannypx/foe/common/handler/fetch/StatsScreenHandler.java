@@ -18,6 +18,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,14 @@ public class StatsScreenHandler {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private boolean importStats = false;
+    private List<Text> statsLore = new ArrayList<>();
 
     public void setImportStats(boolean importStats) {
         this.importStats = importStats;
+    }
+
+    public List<Text> getStatsLore() {
+        return statsLore;
     }
 
 
@@ -62,6 +68,7 @@ public class StatsScreenHandler {
     private boolean extractData(ItemStack stack) {
         if(stack.get(DataComponentTypes.LORE) != null) {
             List<Text> lines = stack.get(DataComponentTypes.LORE).lines();
+            this.statsLore = lines;
             if(lines.size() > 7) {
                 int totalFish = this.extractTotal(lines.get(5));
                 StatsDataHandler.instance().getStatsData().fishTotal = totalFish;
@@ -140,6 +147,7 @@ public class StatsScreenHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
+                "statsLore", Pair.of(Text.literal("[statsLore]"), TextHelper.literal(getStatsLore()))
         );
     }
     //endregion

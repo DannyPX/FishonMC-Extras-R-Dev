@@ -5,6 +5,7 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.fetch.QuestScreenHandler;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
@@ -74,7 +75,7 @@ public class QuestDataHandler {
     }
 
     public void setFish(FishNbtObject fishNbtObject) {
-        questData.questList.get(BossBarHandler.instance().getLocation().getString()).forEach(quest -> {
+        questData.questList.getOrDefault(BossBarHandler.instance().getLocation().getString(), new ArrayList<>()).forEach(quest -> {
             if(Objects.equals(quest.goal, fishNbtObject.getFishSize()) || Objects.equals(quest.goal, fishNbtObject.getRarity())) {
                 quest.addCurrent();
                 this.needsUpdate = true;
@@ -126,7 +127,7 @@ public class QuestDataHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "questData", Pair.of(Text.literal("[questData]"), TextHelper.literal(getQuestData()))
         );
     }
     //endregion

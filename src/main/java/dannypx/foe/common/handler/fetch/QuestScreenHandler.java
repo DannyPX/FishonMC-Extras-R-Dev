@@ -74,7 +74,7 @@ public class QuestScreenHandler {
     }
 
     public void checkForCompletedQuests() {
-        List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.get(BossBarHandler.instance().getLocation().getString());
+        List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.getOrDefault(BossBarHandler.instance().getLocation().getString(), new ArrayList<>());
 
         quests.forEach(quest -> {
             if(quest.isDone()) {

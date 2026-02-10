@@ -5,6 +5,7 @@ import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
+import dannypx.foe.screens.element.NotificationElement;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

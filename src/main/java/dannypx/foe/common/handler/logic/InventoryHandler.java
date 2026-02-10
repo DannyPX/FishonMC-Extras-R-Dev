@@ -38,6 +38,8 @@ public class InventoryHandler {
     private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
     private PetNbtObject currentPet = PetNbtObject.empty();
 
+    private int currentEmptySlots = 27;
+
     public List<UUID> getTrackedFish() {
         return trackedFish;
     }
@@ -70,26 +72,49 @@ public class InventoryHandler {
     //region Methods
     public void tick() {
         if(minecraftClient.player != null) {
-            ItemStack fishingRod = minecraftClient.player.getInventory().main.getFirst();
-            if(!fishingRod.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
-                Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
-                if(validatedFishingRod.v1()) {
-                    this.setCurrentFishingRod(validatedFishingRod.v2());
+            this.snapshotFishingRod();
+            this.snapshotPet();
+            this.snapshotEmptySlots();
+        }
+    }
+
+    private void snapshotEmptySlots() {
+        int empty = 0;
+
+        for (ItemStack stack : minecraftClient.player.getInventory().main) {
+            if (stack.isEmpty()) {
+                empty++;
+            }
+        }
+
+        if(currentEmptySlots != empty) {
+            currentEmptySlots = empty;
+            NotifierHandler.instance().notifyEmptySlots(currentEmptySlots);
+        }
+    }
+
+    private void snapshotPet() {
+        if(ProfileDataHandler.instance().getProfileData().activePetSlot != -1) {
+            ItemStack pet = minecraftClient.player.getInventory().main.get(ProfileDataHandler.instance().getProfileData().activePetSlot);
+            if(!pet.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentPet.getItemStack(), pet)) {
+                Pair<Boolean, @Nullable PetNbtObject> validatedPet = ValidateItem.isPet(pet);
+                if(validatedPet.v1()) {
+                    this.setCurrentPet(validatedPet.v2());
                 }
             }
+        } else if(ProfileDataHandler.instance().getProfileData().activePetSlot == -1
+                && currentPet.getItemStack() != ItemStack.EMPTY
+        ) {
+            currentPet = PetNbtObject.empty();
+        }
+    }
 
-            if(ProfileDataHandler.instance().getProfileData().activePetSlot != -1) {
-                ItemStack pet = minecraftClient.player.getInventory().main.get(ProfileDataHandler.instance().getProfileData().activePetSlot);
-                if(!pet.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentPet.getItemStack(), pet)) {
-                    Pair<Boolean, @Nullable PetNbtObject> validatedPet = ValidateItem.isPet(pet);
-                    if(validatedPet.v1()) {
-                        this.setCurrentPet(validatedPet.v2());
-                    }
-                }
-            } else if(ProfileDataHandler.instance().getProfileData().activePetSlot == -1
-                    && currentPet.getItemStack() != ItemStack.EMPTY
-            ) {
-                currentPet = PetNbtObject.empty();
+    private void snapshotFishingRod() {
+        ItemStack fishingRod = minecraftClient.player.getInventory().main.getFirst();
+        if(!fishingRod.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
+            Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
+            if(validatedFishingRod.v1()) {
+                this.setCurrentFishingRod(validatedFishingRod.v2());
             }
         }
     }

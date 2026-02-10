@@ -1,9 +1,8 @@
-package dannypx.foe.screens.element.hud;
+package dannypx.foe.screens.element;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.DrawHelper;
-import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

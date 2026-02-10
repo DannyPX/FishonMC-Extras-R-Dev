@@ -55,7 +55,13 @@ public class TextHelper {
         if(!list.isEmpty()) {
             Object first = list.getFirst();
             if(first instanceof ItemStack) return Text.empty().append(ItemStackHelper.itemStackListToJson((List<ItemStack>) list));
-            return Text.literal(gson.setPrettyPrinting().create().toJson(list));
+            return Text.literal(
+                    gson.setPrettyPrinting()
+                            .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                            .registerTypeAdapter(Text.class, new TextAdapter())
+                            .create()
+                            .toJson(list)
+            );
         }
         return Text.empty();
     }
