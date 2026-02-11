@@ -47,7 +47,7 @@ public class ItemRendererHandler {
             Text rarityText = Text.literal(validateItem.v2().getRarityText().getString());
 
             int markerX = x;
-            int markerY = y;
+            int markerY = y - 1;
 
             drawContext.getMatrices().push();
             drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
@@ -55,30 +55,30 @@ public class ItemRendererHandler {
             //TOP
             int bgX = markerX;
             int bgY = markerY - 1;
-            drawContext.enableScissor(bgX, bgY + 1, bgX + 2, bgY + 3);
+            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
             drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
             drawContext.disableScissor();
 
             //BOTTOM
             bgY = markerY + 1;
-            drawContext.enableScissor(bgX, bgY + 1, bgX + 2, bgY + 3);
+            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
             drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
             drawContext.disableScissor();
 
             //LEFT
             bgX = markerX - 1;
             bgY = markerY;
-            drawContext.enableScissor(bgX, bgY + 1, bgX + 2, bgY + 3);
+            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
             drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
             drawContext.disableScissor();
 
             //RIGHT
             bgX = markerX + 1;
-            drawContext.enableScissor(bgX, bgY + 1, bgX + 2, bgY + 3);
+            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
             drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
             drawContext.disableScissor();
 
-            drawContext.enableScissor(markerX, bgY + 1, markerX + 2, bgY + 3);
+            drawContext.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
             drawContext.drawText(textRenderer, rarityText, markerX, markerY, 0xFFFFFF, false);
             drawContext.disableScissor();
 

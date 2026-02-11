@@ -56,11 +56,13 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
+        ClientReceiveMessageEvents.MODIFY_GAME.register(this::modifyGameMessage);
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
     }
+
 
     private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> texts) {
         TooltipHandler.instance().fetchTooltip(itemStack, tooltipContext, tooltipType, texts);
@@ -76,6 +78,10 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
     private void receiveGameMessage(Text text, boolean overlay) {
         ChatHandler.instance().onReceiveMessage(text);
+    }
+
+    private Text modifyGameMessage(Text text, boolean over) {
+        return ChatHandler.instance().onModifyMessage(text);
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {

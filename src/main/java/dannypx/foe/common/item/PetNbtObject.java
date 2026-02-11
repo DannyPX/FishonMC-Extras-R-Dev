@@ -24,10 +24,10 @@ public class PetNbtObject extends NbtObject {
     public static final int RATING_LINE = 15;
     public static final int RATING_SIBLING = 2;
 
-    public static final int C_BASE_LUCK_TOOLTIP_LINE = 8;
-    public static final int C_BASE_SCALE_TOOLTIP_LINE = 9;
-    public static final int L_BASE_LUCK_TOOLTIP_LINE = 12;
-    public static final int L_BASE_SCALE_TOOLTIP_LINE = 13;
+    public static final int C_BASE_LUCK_LINE = 8;
+    public static final int C_BASE_SCALE_LINE = 9;
+    public static final int L_BASE_LUCK_LINE = 12;
+    public static final int L_BASE_SCALE_LINE = 13;
 
     public PetNbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
         super(nbtCompound, itemStack);

@@ -20,13 +20,5 @@ public class LoggerHandler {
     public static void info(Text m) {
         LoggerHandler.info(m.getString());
     }
-
-    public static void info(Object o) {
-        if(o instanceof String s) {
-            info(s);
-        } else if(o instanceof Text t) {
-            info(t);
-        }
-    }
     //endregion
 }

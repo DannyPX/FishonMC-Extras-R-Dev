@@ -37,21 +37,21 @@ public class TooltipHandler {
     }
 
     private void setPetPercentages(PetNbtObject pet, List<Text> texts) {
-        Text cBaseLuckText = TextHelper.concat(texts.get(PetNbtObject.C_BASE_LUCK_TOOLTIP_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getClimatePercentMaxLuck(), 1)));
-        Text cBaseScaleText = TextHelper.concat(texts.get(PetNbtObject.C_BASE_SCALE_TOOLTIP_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getClimatePercentMaxScale(), 1)));
-        Text lBaseLuckText = TextHelper.concat(texts.get(PetNbtObject.L_BASE_LUCK_TOOLTIP_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getLocationPercentMaxLuck(), 1)));
-        Text lBaseScaleText = TextHelper.concat(texts.get(PetNbtObject.L_BASE_SCALE_TOOLTIP_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getLocationPercentMaxScale(), 1)));
+        Text cBaseLuckText = TextHelper.concat(texts.get(PetNbtObject.C_BASE_LUCK_LINE + 1),
+                this.getPercentText(MathHelper.percentToString(pet.getClimatePercentMaxLuck(), 1))).formatted(Formatting.DARK_GRAY);
+        Text cBaseScaleText = TextHelper.concat(texts.get(PetNbtObject.C_BASE_SCALE_LINE + 1),
+                this.getPercentText(MathHelper.percentToString(pet.getClimatePercentMaxScale(), 1))).formatted(Formatting.DARK_GRAY);
+        Text lBaseLuckText = TextHelper.concat(texts.get(PetNbtObject.L_BASE_LUCK_LINE + 1),
+                this.getPercentText(MathHelper.percentToString(pet.getLocationPercentMaxLuck(), 1))).formatted(Formatting.DARK_GRAY);
+        Text lBaseScaleText = TextHelper.concat(texts.get(PetNbtObject.L_BASE_SCALE_LINE + 1),
+                this.getPercentText(MathHelper.percentToString(pet.getLocationPercentMaxScale(), 1))).formatted(Formatting.DARK_GRAY);
         Text totalText = TextHelper.concat(texts.get(PetNbtObject.RATING_LINE + 1),
                 this.getPercentText(MathHelper.percentToString(pet.getTotalPercent(), 1)));
 
-        texts.set(PetNbtObject.C_BASE_LUCK_TOOLTIP_LINE + 1, cBaseLuckText);
-        texts.set(PetNbtObject.C_BASE_SCALE_TOOLTIP_LINE + 1, cBaseScaleText);
-        texts.set(PetNbtObject.L_BASE_LUCK_TOOLTIP_LINE + 1, lBaseLuckText);
-        texts.set(PetNbtObject.L_BASE_SCALE_TOOLTIP_LINE + 1, lBaseScaleText);
+        texts.set(PetNbtObject.C_BASE_LUCK_LINE + 1, cBaseLuckText);
+        texts.set(PetNbtObject.C_BASE_SCALE_LINE + 1, cBaseScaleText);
+        texts.set(PetNbtObject.L_BASE_LUCK_LINE + 1, lBaseLuckText);
+        texts.set(PetNbtObject.L_BASE_SCALE_LINE + 1, lBaseScaleText);
         texts.set(PetNbtObject.RATING_LINE + 1, totalText);
     }
 
@@ -61,7 +61,7 @@ public class TooltipHandler {
                 Text.literal(percent),
                 Text.literal("%)")
 
-        ).formatted(Formatting.DARK_GRAY);
+        );
     }
     //endregion
 
