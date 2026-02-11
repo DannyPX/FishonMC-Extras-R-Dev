@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -27,6 +26,7 @@ public class ValidateItem {
         if(!itemStack.isEmpty()) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
             return Pair.of(hasLore(itemStack)
+                            && !isShopItem(nbtCompound)
                             && hasCustomData(itemStack)
                             && (isType(nbtCompound) || isFish(nbtCompound) || isOther(itemStack)),
                     NbtObject.of(nbtCompound, itemStack));
@@ -51,7 +51,7 @@ public class ValidateItem {
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
-            return Pair.of(isType(nbtCompound), NbtObject.of(nbtCompound, itemStack));
+            return Pair.of(!isShopItem(nbtCompound) && isType(nbtCompound), NbtObject.of(nbtCompound, itemStack));
         }
         return Pair.ofFalse(NbtObject.of(new NbtCompound(), itemStack));
     }
@@ -73,7 +73,7 @@ public class ValidateItem {
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
-            return Pair.of(isFish(nbtCompound), FishNbtObject.of(nbtCompound, itemStack));
+            return Pair.of(!isShopItem(nbtCompound) && isFish(nbtCompound), FishNbtObject.of(nbtCompound, itemStack));
         }
         return Pair.ofFalse(FishNbtObject.of(new NbtCompound(), itemStack));
     }
@@ -89,6 +89,10 @@ public class ValidateItem {
 
     private static boolean hasCustomData(ItemStack itemStack) {
         return itemStack.get(DataComponentTypes.CUSTOM_DATA) != null;
+    }
+
+    public static boolean isAuctionItem(NbtObject nbtObject) {
+        return nbtObject.isAuctionItem();
     }
 
     private static boolean isShopItem(NbtCompound nbtCompound) {

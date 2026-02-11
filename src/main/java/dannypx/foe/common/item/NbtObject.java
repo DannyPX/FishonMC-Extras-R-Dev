@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -25,9 +26,14 @@ public class NbtObject {
     public static final String COUNTER = "counter";
     public static final String TYPE = "type";
     public static final String RARITY = "rarity";
+    public static final String RENDER_INFO = "renderInfo";
+    public static final String MONEY = "money";
 
     public static final int RARITY_LINE = 1;
     public static final int RARITY_SIBLING = 1;
+
+    //From the bottom
+    public static final int SHOP_PRICE_LINE = 5;
 
     protected final NbtCompound nbtCompound;
     protected final ItemStack itemStack;
@@ -121,6 +127,32 @@ public class NbtObject {
             }).filter(Objects::nonNull).toList();
         }
         return List.of();
+    }
+
+    public NbtList getRenderInfo() {
+        if(this.nbtCompound.contains(RENDER_INFO)) {
+            return (NbtList) this.nbtCompound.get(RENDER_INFO);
+        }
+        return new NbtList();
+    }
+
+    public float getMoney() {
+        NbtList renderInfo = this.getRenderInfo();
+        if(!renderInfo.isEmpty()) {
+            if(((NbtCompound) renderInfo.getFirst()).contains(MONEY)) {
+                return ((NbtCompound) renderInfo.getFirst()).getFloat(MONEY);
+            }
+        }
+        return 0f;
+    }
+
+    protected boolean isAuctionItem() {
+        NbtList nbtList = this.getRenderInfo();
+
+        if(!nbtList.isEmpty()) {
+            return ((NbtCompound) nbtList.getFirst()).contains(MONEY);
+        }
+        return false;
     }
     //endregion
 
