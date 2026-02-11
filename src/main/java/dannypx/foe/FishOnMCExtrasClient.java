@@ -63,7 +63,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> texts) {
-
+        TooltipHandler.instance().fetchTooltip(itemStack, tooltipContext, tooltipType, texts);
     }
 
     private void onClientStarted(MinecraftClient minecraftClient) {
@@ -134,7 +134,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             QuestDataHandler.instance().init();
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
-
             NotifierHandler.instance().init();
         }
     }

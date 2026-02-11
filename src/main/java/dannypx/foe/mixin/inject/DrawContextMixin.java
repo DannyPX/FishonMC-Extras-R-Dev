@@ -1,11 +1,7 @@
 package dannypx.foe.mixin.inject;
 
 import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.helper.DrawHelper;
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.item.NbtObject;
-import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.handler.renderer.ItemRendererHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -14,35 +10,36 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Objects;
 
 @Mixin(DrawContext.class)
 public abstract class DrawContextMixin {
     @Shadow public abstract MatrixStack getMatrices();
 
+    @Shadow public abstract int drawText(TextRenderer textRenderer, Text text, int x, int y, int color, boolean shadow);
+
     @Inject(method = "drawStackCount", at = @At("HEAD"), cancellable = true)
     private void drawStackCountInject(TextRenderer textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
-        if(ConnectionHandler.instance().isOnServer() && Configs.mainConfig.enableMod.get()) {
-            Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
-
-            int count = validatedItem.v2().getCount();
-            Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
-            int countWidth = textRenderer.getWidth(countText);
-
-            this.getMatrices().push();
-            this.getMatrices().translate(0.0F, 0.0F, 200.0F);
-            if(count > 1) DrawHelper.drawText((DrawContext) (Object) this, textRenderer, countText,
-                    x + 19 - 2 - countWidth, y + 6 + 4,
-                    true,
-                    true,
-                    false,
-                    true
-            );
-            this.getMatrices().pop();
-
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+        ) {
+            ItemRendererHandler.instance().drawStackCount((DrawContext) (Object) this, textRenderer, stack, x, y);
             ci.cancel();
         }
     }
+
+    @Inject(method = "drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V"))
+    private void drawStackOverlayInject(TextRenderer textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+        ) {
+            ItemRendererHandler.instance().drawRarityMarker((DrawContext) (Object) this, textRenderer, stack, x, y);
+        }
+    }
+
 }

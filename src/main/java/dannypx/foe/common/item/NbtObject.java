@@ -74,18 +74,20 @@ public class NbtObject {
         return false;
     }
 
-    public String getType() {
+    public @NotNull String getType() {
         if(this.nbtCompound.contains(TYPE)) {
             return this.nbtCompound.getString(TYPE);
+        } else if (this.nbtCompound.contains(FishNbtObject.FISH)) {
+            return "fish";
         }
-        return null;
+        return "";
     }
 
-    public String getRarity() {
+    public @NotNull String getRarity() {
         if(this.nbtCompound.contains(RARITY)) {
             return this.nbtCompound.getString(RARITY);
         }
-        return null;
+        return "";
     }
 
     public Text getRarityText() {

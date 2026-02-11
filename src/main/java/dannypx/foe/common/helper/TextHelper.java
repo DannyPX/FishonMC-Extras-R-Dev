@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
+import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.common.type.type_adapter.TextAdapter;
 import net.minecraft.item.ItemStack;
@@ -76,6 +77,14 @@ public class TextHelper {
 
     public static MutableText literal(ItemStack i) {
         return Text.empty().append(ItemStackHelper.itemStackToJson(i));
+    }
+
+    public static MutableText literal(NbtObject currentHeldItem) {
+        return TextHelper.concat(
+                Text.literal("name: "), currentHeldItem.getName(), Text.literal("\n"),
+                Text.literal("rarity: "), Text.literal(currentHeldItem.getRarity()), Text.literal("\n"),
+                Text.literal("type: "), Text.literal(currentHeldItem.getType())
+        );
     }
 
     public static int ordinalIndexOf(String str, String substr, int n) {

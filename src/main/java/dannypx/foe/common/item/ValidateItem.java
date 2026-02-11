@@ -28,7 +28,6 @@ public class ValidateItem {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
             return Pair.of(hasLore(itemStack)
                             && hasCustomData(itemStack)
-                            && !isShopItem(nbtCompound)
                             && (isType(nbtCompound) || isFish(nbtCompound) || isOther(itemStack)),
                     NbtObject.of(nbtCompound, itemStack));
         }
@@ -52,7 +51,7 @@ public class ValidateItem {
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
-            return Pair.of(!isShopItem(nbtCompound) && isType(nbtCompound), NbtObject.of(nbtCompound, itemStack));
+            return Pair.of(isType(nbtCompound), NbtObject.of(nbtCompound, itemStack));
         }
         return Pair.ofFalse(NbtObject.of(new NbtCompound(), itemStack));
     }
@@ -74,7 +73,7 @@ public class ValidateItem {
                 && hasLore(itemStack)
                 && hasCustomData(itemStack)) {
             NbtCompound nbtCompound = ItemStackHelper.getNbt(itemStack);
-            return Pair.of(!isShopItem(nbtCompound) && isFish(nbtCompound), FishNbtObject.of(nbtCompound, itemStack));
+            return Pair.of(isFish(nbtCompound), FishNbtObject.of(nbtCompound, itemStack));
         }
         return Pair.ofFalse(FishNbtObject.of(new NbtCompound(), itemStack));
     }

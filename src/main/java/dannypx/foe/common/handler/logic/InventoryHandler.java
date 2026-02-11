@@ -3,10 +3,7 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.item.FishNbtObject;
-import dannypx.foe.common.item.FishingRodNbtObject;
-import dannypx.foe.common.item.PetNbtObject;
-import dannypx.foe.common.item.ValidateItem;
+import dannypx.foe.common.item.*;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -157,6 +154,17 @@ public class InventoryHandler {
         }
         return false;
     }
+
+    public NbtObject getCurrentHeldItem() {
+        if(minecraftClient.player != null) {
+            ItemStack heldItem = minecraftClient.player.getInventory().getMainHandStack();
+            Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(heldItem);
+            if(validatedItem.v1()) {
+                return validatedItem.v2();
+            }
+        }
+        return NbtObject.empty();
+    }
     //endregion
 
     //region Dev
@@ -168,7 +176,8 @@ public class InventoryHandler {
                         ItemStackHelper.itemStackListToJson(getSnapshotInventory())
                 )),
                 "currentFishingRod", Pair.of(Text.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack())),
-                "currentPet", Pair.of(Text.literal("[currentPet]"), TextHelper.literal(getCurrentPet().getItemStack()))
+                "currentPet", Pair.of(Text.literal("[currentPet]"), TextHelper.literal(getCurrentPet().getItemStack())),
+                "currentHeldItem", Pair.of(Text.literal("[currentHeldItem]"), TextHelper.literal(getCurrentHeldItem()))
 
         );
     }
