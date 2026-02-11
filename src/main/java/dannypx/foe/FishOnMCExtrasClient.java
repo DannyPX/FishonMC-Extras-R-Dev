@@ -1,6 +1,7 @@
 package dannypx.foe;
 
 import dannypx.foe.common.command.CommandRegistry;
+import dannypx.foe.common.entity.FishingBobberEntityModel;
 import dannypx.foe.common.handler.fetch.*;
 import dannypx.foe.common.handler.logic.*;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
@@ -15,8 +16,10 @@ import dannypx.foe.screens.inventory.InventoryRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -30,12 +33,15 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
@@ -53,6 +59,11 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
+        ItemTooltipCallback.EVENT.register(this::onItemTooltip);
+    }
+
+    private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> texts) {
+
     }
 
     private void onClientStarted(MinecraftClient minecraftClient) {
@@ -103,6 +114,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onInit() {
+        this.registerEntityModels();
         CommandRegistry.init();
         KeyBindHandler.instance().init();
     }
@@ -155,5 +167,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();
             }
         }
+    }
+
+    private void registerEntityModels() {
+        EntityModelLayerRegistry.registerModelLayer(FishingBobberEntityModel.MODEL_LAYER, FishingBobberEntityModel::generateModel);
     }
 }

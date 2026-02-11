@@ -42,6 +42,10 @@ public class TextHelper {
         return Text.literal(Integer.toString(i));
     }
 
+    public static MutableText literal(char c) {
+        return Text.literal(String.valueOf(c));
+    }
+
     public static MutableText literal(float f) {
         return Text.literal(Float.toString(f));
     }
