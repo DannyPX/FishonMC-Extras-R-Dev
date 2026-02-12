@@ -12,6 +12,7 @@
   },
   "client": [
     "accessor.BossBarHudAccessor",
+    "accessor.ChatScreenAccessor",
     "accessor.PlayerListHudAccessor",
     "inject.BossBarHudMixin",
     "inject.DrawContextMixin",

@@ -100,23 +100,21 @@ public class SidebarElement extends Element implements ScreenConstants {
             contentDimensions = this.assembleSidebarElements();
             boxWidth = contentDimensions.v1() + BOX_PADDING * 2 + PADDING * 2;
             boxHeight = contentDimensions.v2() + BOX_PADDING * 2 + PADDING_QUART * 2;
-            if(textLines.isEmpty()) {
-                return;
+            if(!textLines.isEmpty()) {
+                x = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
+                    case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> x - boxWidth;
+                    default -> x;
+                };
+
+                y = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
+                    case BOTTOM_LEFT, BOTTOM_RIGHT -> y - boxHeight;
+                    case LEFT, RIGHT -> y - boxHeight / 2;
+                    default -> y;
+                };
+
+                this.renderBox(drawContext, tickCounter, x, y);
+                this.renderText(drawContext, tickCounter, x, y);
             }
-
-            x = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
-                case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> x - boxWidth;
-                default -> x;
-            };
-
-            y = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
-                case BOTTOM_LEFT, BOTTOM_RIGHT -> y - boxHeight;
-                case LEFT, RIGHT -> y - boxHeight / 2;
-                default -> y;
-            };
-
-            this.renderBox(drawContext, tickCounter, x, y);
-            this.renderText(drawContext, tickCounter, x, y);
         }
         drawContext.getMatrices().pop();
     }

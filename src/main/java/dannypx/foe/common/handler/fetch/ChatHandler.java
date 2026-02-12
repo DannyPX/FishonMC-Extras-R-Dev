@@ -37,6 +37,10 @@ public class ChatHandler {
             ProfileDataHandler.instance().updatePet(true);
         } else if (text.getString().startsWith("PETS » Pet unequipped!")) {
             ProfileDataHandler.instance().updatePet(false);
+        } else if(text.getString().startsWith("CREWS » Crew Chat has been enabled")) {
+            ProfileDataHandler.instance().updateCrewChat(true);
+        } else if(text.getString().startsWith("CREWS » Crew Chat has been disabled")) {
+            ProfileDataHandler.instance().updateCrewChat(false);
         }
     }
 
