@@ -53,6 +53,11 @@ public class NotifierElement extends Element implements ScreenConstants {
     //region Methods
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
+        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
+        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
+
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(Configs.hudConfig.notifierElementScale.get(), Configs.hudConfig.notifierElementScale.get(), 1f);
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showNotifierElement.get()
         ) {
@@ -63,16 +68,16 @@ public class NotifierElement extends Element implements ScreenConstants {
             }
 
             int x = switch (Configs.hudConfig.notifierElementAlignment.get()) {
-                case TOP_LEFT, BOTTOM_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
-                case TOP_RIGHT, BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
+                case TOP_LEFT, BOTTOM_LEFT -> Math.round(scaledWidth * xPos);
+                case TOP_RIGHT, BOTTOM_RIGHT -> scaledWidth
+                        - Math.round(scaledWidth * xPos);
                 default -> 0;
             };
 
             int y = switch (Configs.hudConfig.notifierElementAlignment.get()) {
-                case TOP_LEFT, TOP_RIGHT -> Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
-                case BOTTOM_LEFT, BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
+                case TOP_LEFT, TOP_RIGHT -> Math.round(scaledHeight * yPos);
+                case BOTTOM_LEFT, BOTTOM_RIGHT -> scaledHeight
+                        - Math.round(scaledHeight * yPos);
                 default -> 0;
             };
 
@@ -90,6 +95,7 @@ public class NotifierElement extends Element implements ScreenConstants {
 
             this.renderNotifications(drawContext, tickCounter, x, y);
         }
+        drawContext.getMatrices().pop();
     }
 
     private void renderNotifications(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {

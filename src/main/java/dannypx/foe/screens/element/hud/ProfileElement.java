@@ -57,6 +57,11 @@ public class ProfileElement extends Element {
     //region Methods
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
+        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.profileElementScale.get()));
+        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.profileElementScale.get()));
+
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get(), 1f);
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showProfileElement.get()) {
             // Position
             if(!isCopy) {
@@ -65,17 +70,18 @@ public class ProfileElement extends Element {
             }
 
             int x = switch (Configs.hudConfig.profileElementAlignment.get()) {
-                case TOP_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
-                case TOP_RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
+                case TOP_LEFT -> Math.round(scaledWidth * xPos);
+                case TOP_RIGHT -> scaledWidth
+                        - Math.round(scaledWidth * xPos);
                 default -> 0;
             };
-            int y = Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
+            int y = Math.round(scaledHeight * yPos);
 
             this.renderTexture(drawContext, x, y);
             this.renderText(drawContext, textRenderer, x, y);
             this.renderHead(drawContext, x, y);
         }
+        drawContext.getMatrices().pop();
     }
 
     private void renderHead(DrawContext drawContext, int x, int y) {
