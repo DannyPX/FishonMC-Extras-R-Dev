@@ -259,17 +259,6 @@ public class HotbarElement extends Element {
     }
 
     private void renderBait(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
-        //region Texture
-        int baitY = 26;
-
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
-                SLOT_TEXTURE,
-                x, y + baitY,
-                SLOT_WIDTH, SLOT_HEIGHT
-        );
-        //endregion
-
-        //region Items
         if(minecraftClient.player != null) {
             int partsX = 4;
             int partsY = 30;
@@ -281,12 +270,16 @@ public class HotbarElement extends Element {
             FishingRodNbtObject fishingRodNbtObject = InventoryHandler.instance().getCurrentFishingRod();
             NbtObject bait = fishingRodNbtObject.getTackleBox().isEmpty() ? null : fishingRodNbtObject.getTackleBox().getFirst();
             if(bait != null) {
+                //region Texture
+                int baitY = 26;
+
                 drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                         SLOT_TEXTURE,
                         x, y + baitY,
                         SLOT_WIDTH, SLOT_HEIGHT
                 );
-
+                //endregion
+                //region Items
                 int count = bait.getCount();
                 Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                 int countWidth = textRenderer.getWidth(countText);
@@ -302,9 +295,9 @@ public class HotbarElement extends Element {
                         false,
                         true);
                 drawContext.getMatrices().pop();
+                //endregion
             }
         }
-        //endregion
     }
     //endregion
 }
