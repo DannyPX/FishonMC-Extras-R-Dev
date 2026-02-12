@@ -116,7 +116,7 @@ public class NotifierHandler {
             notifTextList.add(TextHelper.concat(variantText, TextHelper.literal(variantDrystreak.v2())));
         }
 
-        int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : Objects.equals(fish.getVariant(), "normal") ? 7 : 8;
+        int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : notifTextList.size();
 
         this.addNotification(
                 new NotifierHandler.Notification(fish.getItemStack(),
@@ -143,7 +143,7 @@ public class NotifierHandler {
                 TextHelper.concat(pet.getRatingText(), Text.literal(" "), TextHelper.literal(ratingDrystreak.v2()))
         ));
 
-        int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : 6;
+        int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : notifTextList.size();
 
         this.addNotification(
                 new Notification(pet.getItemStack(),
@@ -170,7 +170,7 @@ public class NotifierHandler {
                 TextHelper.concat(typeText, Text.literal(" ") ,TextHelper.literal(itemDrystreak.v2()))
         ));
 
-        int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : 4;
+        int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : notifTextList.size();
 
         this.addNotification(
                 new Notification(item.getItemStack(),
