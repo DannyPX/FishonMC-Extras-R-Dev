@@ -30,14 +30,14 @@ public class FishingBobberEntityRendererMixin {
 
     @Inject(method = "vertex", at = @At("HEAD"), cancellable = true)
     private static void injectVertex(CallbackInfo ci) {
-        if(Configs.miscConfig.showNewBobber.get()) {
+        if(Configs.rendererConfig.showNewBobber.get()) {
             ci.cancel();
         }
     }
 
     @Inject(method = "render(Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("RETURN"))
     private void injectRender(FishingBobberEntityState fishingBobberEntityState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, CallbackInfo ci) {
-        if(Configs.miscConfig.showNewBobber.get()) {
+        if(Configs.rendererConfig.showNewBobber.get()) {
             matrixStack.push();
             matrixStack.translate(0f, -0.0075f, 0f);
             VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(FishingBobberEntityModel.TEXTURE));

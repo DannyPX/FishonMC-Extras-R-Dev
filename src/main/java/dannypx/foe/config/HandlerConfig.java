@@ -95,6 +95,6 @@ public class HandlerConfig extends Config {
 
     @Override
     public @NotNull FileType fileType() {
-        return FileType.JSON5;
+        return FileType.JSON;
     }
 }

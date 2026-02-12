@@ -45,7 +45,7 @@ public class _DebugConfig extends Config {
 
 
     @Name("Anchor point")
-    public ValidatedChoice<Alignment> debugFieldAlignment = new ValidatedChoice<>(Alignment.BOTTOM_RIGHT, Alignment.getCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+    public ValidatedChoice<Alignment> debugFieldAlignment = new ValidatedChoice<>(Alignment.BOTTOM_LEFT, Alignment.getCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
 
     @Name("Chosen Handler")
     public ValidatedChoice<String> debugFieldHandlerChoice = new ValidatedChoice<>(
@@ -64,6 +64,6 @@ public class _DebugConfig extends Config {
 
     @Override
     public @NotNull FileType fileType() {
-        return FileType.JSON5;
+        return FileType.JSON;
     }
 }

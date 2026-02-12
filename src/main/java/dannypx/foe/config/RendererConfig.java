@@ -32,8 +32,16 @@ public class RendererConfig extends Config {
     public ValidatedString blackListItems = new ValidatedString.Builder("")
             .withCorrector().build();
 
+    @Name("Entity Model Renderer")
+    @Desc("§7This is the custom model renderer for entities")
+    public ConfigGroup entityModelGroup = new ConfigGroup("entity_model_renderer_group");
+
+    @ConfigGroup.Pop
+    @Name("Use the 3D bobber texture")
+    public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
+
     @Override
     public @NotNull FileType fileType() {
-        return FileType.JSON5;
+        return FileType.JSON;
     }
 }

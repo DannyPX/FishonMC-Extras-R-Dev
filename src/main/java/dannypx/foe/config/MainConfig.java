@@ -26,6 +26,6 @@ public class MainConfig extends Config {
 
     @Override
     public @NotNull FileType fileType() {
-        return FileType.JSON5;
+        return FileType.JSON;
     }
 }

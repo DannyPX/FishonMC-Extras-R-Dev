@@ -22,6 +22,6 @@ public class InventoryScreenConfig extends Config {
 
     @Override
     public @NotNull FileType fileType() {
-        return FileType.JSON5;
+        return FileType.JSON;
     }
 }

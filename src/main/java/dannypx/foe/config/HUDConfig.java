@@ -214,6 +214,6 @@ public class HUDConfig extends Config {
 
     @Override
     public @NotNull FileType fileType() {
-        return FileType.JSON5;
+        return FileType.JSON;
     }
 }

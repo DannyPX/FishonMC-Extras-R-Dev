@@ -92,63 +92,130 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     }
 
     private void renderAlignment(DrawContext context) {
+        int screenWidth = minecraftClient.getWindow().getScaledWidth();
+        int screenHeight = minecraftClient.getWindow().getScaledHeight();
+
         switch (element.alignment) {
-            case TOP_LEFT -> context.fill(
-                    getX() - 1,
-                    getY() - 1,
-                    getX() + 1,
-                    getY() + 1,
-                    0xFFFF0000
-            );
-            case TOP_RIGHT -> context.fill(
-                    getX() - 1 + getWidth(),
-                    getY() - 1,
-                    getX() + 1 + getWidth(),
-                    getY() + 1,
-                    0xFFFF0000
-            );
-            case BOTTOM_LEFT -> context.fill(
-                    getX() - 1,
-                    getY() - 1 + getHeight(),
-                    getX() + 1,
-                    getY() + 1 + getHeight(),
-                    0xFFFF0000
-            );
-            case BOTTOM_RIGHT -> context.fill(
-                    getX() - 1 + getWidth(),
-                    getY() - 1 + getHeight(),
-                    getX() + 1 + getWidth(),
-                    getY() + 1 + getHeight(),
-                    0xFFFF0000
-            );
-            case TOP -> context.fill(
-                    getX() - 1 + (getWidth() / 2),
-                    getY() - 1,
-                    getX() + 1 + (getWidth() / 2),
-                    getY() + 1,
-                    0xFFFF0000
-            );
-            case BOTTOM -> context.fill(
-                    getX() - 1 + (getWidth() / 2),
-                    getY() - 1 + getHeight(),
-                    getX() + 1 + (getWidth() / 2),
-                    getY() + 1 + getHeight(),
-                    0xFFFF0000
-            );
-            case LEFT -> context.fill(
-                    getX() - 1,
-                    getY() - 1 + (getHeight() / 2),
-                    getX() + 1,
-                    getY() + 1 + (getHeight() / 2),
-                    0xFFFF0000
-            );
-            case RIGHT -> context.fill(
-                    getX() - 1 + getWidth(),
-                    getY() - 1 + (getHeight() / 2),
-                    getX() + 1 + getWidth(),
-                    getY() + 1 + (getHeight() / 2),
-                    0xFFFF0000
-            );
+            case TOP_LEFT -> {
+                context.fill(
+                        getX() - 1,
+                        getY() - 1,
+                        getX() + 1,
+                        getY() + 1,
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() - 1, getY() - 1,
+                        0,0,
+                        0xFFFF0000
+                );
+            }
+            case TOP_RIGHT -> {
+                context.fill(
+                        getX() - 1 + getWidth(),
+                        getY() - 1,
+                        getX() + 1 + getWidth(),
+                        getY() + 1,
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() + 1 + getWidth(), getY() - 1,
+                        screenWidth,0,
+                        0xFFFF0000
+                );
+            }
+            case BOTTOM_LEFT -> {
+                context.fill(
+                        getX() - 1,
+                        getY() - 1 + getHeight(),
+                        getX() + 1,
+                        getY() + 1 + getHeight(),
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() - 1, getY() + 1 + getHeight(),
+                        0, screenHeight,
+                        0xFFFF0000
+                );
+            }
+            case BOTTOM_RIGHT -> {
+                context.fill(
+                        getX() - 1 + getWidth(),
+                        getY() - 1 + getHeight(),
+                        getX() + 1 + getWidth(),
+                        getY() + 1 + getHeight(),
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() + 1 + getWidth(), getY() + 1 + getHeight(),
+                        screenWidth, screenHeight,
+                        0xFFFF0000
+                );
+            }
+            case TOP -> {
+                context.fill(
+                        getX() - 1 + (getWidth() / 2),
+                        getY() - 1,
+                        getX() + 1 + (getWidth() / 2),
+                        getY() + 1,
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() + (getWidth() / 2), getY() - 1,
+                        screenWidth / 2, 0,
+                        0xFFFF0000
+                );
+            }
+            case BOTTOM -> {
+                context.fill(
+                        getX() - 1 + (getWidth() / 2),
+                        getY() - 1 + getHeight(),
+                        getX() + 1 + (getWidth() / 2),
+                        getY() + 1 + getHeight(),
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() + (getWidth() / 2), getY() + 1 + getHeight(),
+                        screenWidth / 2, screenHeight,
+                        0xFFFF0000
+                );
+            }
+            case LEFT -> {
+                context.fill(
+                        getX() - 1,
+                        getY() - 1 + (getHeight() / 2),
+                        getX() + 1,
+                        getY() + 1 + (getHeight() / 2),
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() - 1, getY() + (getHeight() / 2),
+                        0, screenHeight / 2,
+                        0xFFFF0000
+                );
+            }
+            case RIGHT -> {
+                context.fill(
+                        getX() - 1 + getWidth(),
+                        getY() - 1 + (getHeight() / 2),
+                        getX() + 1 + getWidth(),
+                        getY() + 1 + (getHeight() / 2),
+                        0xFFFF0000
+                );
+
+                DrawHelper.drawLine(context,
+                        getX() + 1 + getWidth(), getY() + (getHeight() / 2),
+                        screenWidth, screenHeight / 2,
+                        0xFFFF0000
+                );
+            }
         }
     }
 
