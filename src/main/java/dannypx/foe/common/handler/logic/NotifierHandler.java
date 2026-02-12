@@ -102,7 +102,7 @@ public class NotifierHandler {
                 Text.literal("lb ").formatted(Formatting.GRAY)
         );
 
-        List<Text> notifTextList = Arrays.asList(
+        List<Text> notifTextList = new ArrayList<>(Arrays.asList(
                 tagText,
                 fish.getName(),
                 TextHelper.concat(fish.getFishSizeText(), Text.literal(" "), lengthText, Text.literal(" "), weightText),
@@ -110,15 +110,13 @@ public class NotifierHandler {
                 Text.literal(" - Drystreaks before catch").formatted(Formatting.GRAY),
                 TextHelper.concat(rarityText, TextHelper.literal(rarityDrystreak.v2())),
                 TextHelper.concat(sizeText, TextHelper.literal(sizeDryStreak.v2()))
-        );
+        ));
 
         if(!Objects.equals(fish.getVariant(), "normal")) {
             notifTextList.add(TextHelper.concat(variantText, TextHelper.literal(variantDrystreak.v2())));
-            notifTextList.add(Text.empty());
-            notifTextList.add(Text.empty());
         }
 
-        int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : Objects.equals(fish.getVariant(), "normal") ? 7 : 8;
+        int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : notifTextList.size();
 
         this.addNotification(
                 new NotifierHandler.Notification(fish.getItemStack(),
@@ -136,16 +134,16 @@ public class NotifierHandler {
 
         Text petText = TextHelper.concat(pet.getRarityText(), Text.literal(" ") , pet.getName());
 
-        List<Text> notifTextList = Arrays.asList(
+        List<Text> notifTextList =  new ArrayList<>(Arrays.asList(
                 petText,
                 pet.getRatingText(),
                 Text.empty(),
                 Text.literal(" - Drystreaks before catch").formatted(Formatting.GRAY),
                 TextHelper.concat(pet.getRarityText(), Text.literal(" "), TextHelper.literal(rarityDrystreak.v2())),
                 TextHelper.concat(pet.getRatingText(), Text.literal(" "), TextHelper.literal(ratingDrystreak.v2()))
-        );
+        ));
 
-        int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : 6;
+        int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : notifTextList.size();
 
         this.addNotification(
                 new Notification(pet.getItemStack(),
@@ -165,14 +163,14 @@ public class NotifierHandler {
         Text typeText = Text.literal(TextHelper.convertField(itemDrystreak.v1()));
 
 
-        List<Text> notifTextList = Arrays.asList(
+        List<Text> notifTextList =  new ArrayList<>(Arrays.asList(
                 itemText,
                 Text.empty(),
                 Text.literal(" - Drystreak before catch").formatted(Formatting.GRAY),
                 TextHelper.concat(typeText, Text.literal(" ") ,TextHelper.literal(itemDrystreak.v2()))
-        );
+        ));
 
-        int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : 4;
+        int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : notifTextList.size();
 
         this.addNotification(
                 new Notification(item.getItemStack(),
@@ -201,7 +199,7 @@ public class NotifierHandler {
                 new Notification(
                         2, 1,
                         Configs.hudConfig.questDismissalTime.get(),
-                        Arrays.asList(completionText, goalText)
+                        new ArrayList<>(Arrays.asList(completionText, goalText))
                 )
         );
     }
@@ -209,7 +207,7 @@ public class NotifierHandler {
     public void notifyImportStats() {
         UUID importStatsUUID = this.addNotification(
                 new Notification(11, 1,
-                        Arrays.asList(
+                        new ArrayList<>(Arrays.asList(
                                 Text.literal("You have yet to import your stats").formatted(Formatting.GOLD),
                                 Text.empty(),
                                 TextHelper.concat(
@@ -235,7 +233,7 @@ public class NotifierHandler {
                                         Text.literal("import ").formatted(Formatting.GREEN, Formatting.ITALIC),
                                         Text.literal("to import at a later time").formatted(Formatting.GRAY, Formatting.ITALIC)
                                 )
-                        )
+                        ))
                 )
         );
 
@@ -267,13 +265,13 @@ public class NotifierHandler {
 
             UUID emptySlotsUUID = this.addNotification(new Notification(
                 2, 1,
-                    Arrays.asList(
+                    new ArrayList<>(Arrays.asList(
                             notifText,
                             TextHelper.concat(
                                     Text.literal("Slots left: ").formatted(Formatting.GRAY),
                                     TextHelper.literal(currentEmptySlots)
                             )
-                    )
+                    ))
             ));
 
             this.persistentNotifications.put(EMPTY_SLOTS_KEY, emptySlotsUUID);

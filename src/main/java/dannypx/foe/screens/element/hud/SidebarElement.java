@@ -69,6 +69,11 @@ public class SidebarElement extends Element implements ScreenConstants {
     //region Methods
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
+        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.sidebarElementScale.get()));
+        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.sidebarElementScale.get()));
+
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(Configs.hudConfig.sidebarElementScale.get(), Configs.hudConfig.sidebarElementScale.get(), 1f);
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showSidebarElement.get()
         ) {
@@ -79,16 +84,16 @@ public class SidebarElement extends Element implements ScreenConstants {
             }
 
             int x = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
-                case TOP_LEFT, BOTTOM_LEFT, LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
-                case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
+                case TOP_LEFT, BOTTOM_LEFT, LEFT -> Math.round(scaledWidth * xPos);
+                case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> scaledWidth
+                        - Math.round(scaledWidth * xPos);
                 default -> 0;
             };
 
             int y = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
-                case TOP_LEFT, TOP_RIGHT, LEFT, RIGHT -> Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
-                case BOTTOM_LEFT, BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * yPos);
+                case TOP_LEFT, TOP_RIGHT, LEFT, RIGHT -> Math.round(scaledHeight * yPos);
+                case BOTTOM_LEFT, BOTTOM_RIGHT -> scaledHeight
+                        - Math.round(scaledHeight * yPos);
                 default -> 0;
             };
 
@@ -113,6 +118,7 @@ public class SidebarElement extends Element implements ScreenConstants {
             this.renderBox(drawContext, tickCounter, x, y);
             this.renderText(drawContext, tickCounter, x, y);
         }
+        drawContext.getMatrices().pop();
     }
 
     private void renderText(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {

@@ -15,6 +15,7 @@ import net.minecraft.text.TextCodecs;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 public class TextHelper {
     private static final GsonBuilder gson = new GsonBuilder();
@@ -190,16 +191,16 @@ public class TextHelper {
 
     public static String shortenNumber(float d, int decimals) {
         if(d >= 1000 && d < 1000000) {
-            String s = String.format("%." + decimals + "f", d / 1000);
+            String s = String.format("%." + decimals + "f", d / 1000, Locale.US);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "K";
         } else if (d >= 1000000 && d < 1000000000 ){
-            String s = String.format("%." + decimals + "f", d / 1000000);
+            String s = String.format("%." + decimals + "f", d / 1000000, Locale.US);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "M";
         } else if (d >= 1000000000) {
-            String s = String.format("%." + decimals + "f", d / 1000000000);
+            String s = String.format("%." + decimals + "f", d / 1000000000, Locale.US);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "B";
         } else {
-            String s = String.format("%.0f", d);
+            String s = String.format("%.0f", d, Locale.US);
             return s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s;
         }
     }
@@ -220,7 +221,7 @@ public class TextHelper {
     }
 
     public static String floatToString(float f, int decimals) {
-        return String.format("%." + decimals + "f", f);
+        return String.format("%." + decimals + "f", f, Locale.US);
     }
 
     public static float lbToKg(float f) {

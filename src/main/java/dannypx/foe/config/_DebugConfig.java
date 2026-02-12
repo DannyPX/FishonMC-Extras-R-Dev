@@ -13,6 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
@@ -46,6 +47,10 @@ public class _DebugConfig extends Config {
 
     @Name("Anchor point")
     public ValidatedChoice<Alignment> debugFieldAlignment = new ValidatedChoice<>(Alignment.BOTTOM_LEFT, Alignment.getCorners(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
+
+    @Name("Scale")
+    @Desc("§7This will scale based on the ratio. So 0.5 would be half the size")
+    public ValidatedFloat debugFieldElementScale = ValidatedNumber.withIncrement(new ValidatedFloat(1.0f, 2.0f, 0.1f), 0.05f);
 
     @Name("Chosen Handler")
     public ValidatedChoice<String> debugFieldHandlerChoice = new ValidatedChoice<>(

@@ -22,6 +22,7 @@ import net.minecraft.util.Formatting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class InventoryRenderHandler {
     private static InventoryRenderHandler INSTANCE = new InventoryRenderHandler();
@@ -127,6 +128,7 @@ public class InventoryRenderHandler {
         statList.addEntry(new StatListWidget.StatEntry(Text.literal(""), true));
         StatsDataHandler.instance().getStatsData().fishData.forEach((category, fieldStats) -> {
             fieldStats.forEach((field, stat) -> {
+                if(Objects.equals(field, "normal")) return;
                 statList.addEntry(new StatListWidget.StatEntry(Text.literal(category),
                         ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(category, new HashMap<>()).getOrDefault(field, Text.literal(field)),
                         TextHelper.literal(stat.amount()),

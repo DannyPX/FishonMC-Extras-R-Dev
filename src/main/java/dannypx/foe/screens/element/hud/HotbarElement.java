@@ -78,6 +78,12 @@ public class HotbarElement extends Element {
     //region Methods
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
+        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.hotbarElementScale.get()));
+        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.hotbarElementScale.get()));
+
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(Configs.hudConfig.hotbarElementScale.get(), Configs.hudConfig.hotbarElementScale.get(), 1f);
+
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showHotbarElement.get()) {
             // Position
             if(!isCopy) {
@@ -86,14 +92,14 @@ public class HotbarElement extends Element {
             }
 
             int x = switch (Configs.hudConfig.hotbarElementAlignment.get()) {
-                case BOTTOM_LEFT -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos);
-                case BOTTOM -> Math.round(minecraftClient.getWindow().getScaledWidth() * xPos) - WIDTH / 2;
-                case BOTTOM_RIGHT -> minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * xPos) - WIDTH;
+                case BOTTOM_LEFT -> Math.round(scaledWidth * xPos);
+                case BOTTOM -> Math.round(scaledWidth * xPos) - WIDTH / 2;
+                case BOTTOM_RIGHT -> scaledWidth
+                        - Math.round(scaledWidth * xPos) - WIDTH;
                 default -> 0;
             };
-            int y = minecraftClient.getWindow().getScaledHeight()
-                    - Math.round(minecraftClient.getWindow().getScaledHeight() * yPos) - HEIGHT;
+            int y = scaledHeight
+                    - Math.round(scaledHeight * yPos) - HEIGHT;
 
             this.renderHotbar(drawContext, x, y);
             this.renderSelector(drawContext, x, y);
@@ -103,6 +109,7 @@ public class HotbarElement extends Element {
             if(Configs.hudConfig.showHotbarArmor.get()) this.renderArmor(drawContext, x, y);
             if(Configs.hudConfig.showHotbarBait.get()) this.renderBait(drawContext, textRenderer, x, y);
         }
+        drawContext.getMatrices().pop();
     }
 
     private void renderHotbar(DrawContext drawContext, int x, int y) {
@@ -274,6 +281,12 @@ public class HotbarElement extends Element {
             FishingRodNbtObject fishingRodNbtObject = InventoryHandler.instance().getCurrentFishingRod();
             NbtObject bait = fishingRodNbtObject.getTackleBox().isEmpty() ? null : fishingRodNbtObject.getTackleBox().getFirst();
             if(bait != null) {
+                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                        SLOT_TEXTURE,
+                        x, y + baitY,
+                        SLOT_WIDTH, SLOT_HEIGHT
+                );
+
                 int count = bait.getCount();
                 Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                 int countWidth = textRenderer.getWidth(countText);

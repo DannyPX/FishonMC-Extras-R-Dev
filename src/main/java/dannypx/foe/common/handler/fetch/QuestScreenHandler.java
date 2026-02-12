@@ -63,9 +63,9 @@ public class QuestScreenHandler {
                 int max = Integer.parseInt(lines.get(6).getSiblings().get(5).getString());
                 int current = Integer.parseInt(lines.get(6).getSiblings().get(3).getString());
 
-                String location = lines.get(4).getSiblings().get(2).getString().trim();
+                String location = lines.get(4).getString();
 
-                if(location.equals(BossBarHandler.instance().getLocation().getString().trim())) {
+                if(location.contains(BossBarHandler.instance().getLocation().getString().trim())) {
                     return new QuestDataHandler.Quest(goal, max, current);
                 }
             }
