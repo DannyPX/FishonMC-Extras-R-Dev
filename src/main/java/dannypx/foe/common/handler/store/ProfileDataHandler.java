@@ -85,14 +85,23 @@ public class ProfileDataHandler {
             }
         }
     }
+
+    public void updateCrewChat(boolean isInCrewChat) {
+        if(minecraftClient.player != null) {
+            profileData.isInCrewChat = isInCrewChat;
+            this.needsUpdate = true;
+        }
+    }
     //endregion
 
     //region Model
     public static class ProfileDataModel extends DataModels.DataModel {
-        private static final String PROFILE_DATA_MODEL_VERSION = "0.2";
+        private static final String PROFILE_DATA_MODEL_VERSION = "0.3";
 
         public int activePetSlot = -1;
         public boolean hasImportedStats = false;
+
+        public boolean isInCrewChat = false;
 
         public ProfileDataModel() {
             super(PROFILE_DATA_MODEL_VERSION, null);

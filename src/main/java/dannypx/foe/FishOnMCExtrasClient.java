@@ -10,6 +10,7 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.chat.ChatRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.hud.HudRenderHandler;
 import dannypx.foe.screens.inventory.InventoryRenderHandler;
@@ -28,6 +29,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -102,6 +104,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                     GenericContainerScreenHandler.instance().onInit(genericContainerScreen);
                 }
             });
+        } else if(screen instanceof ChatScreen) {
+            ChatRenderHandler.instance().init(screen);
+            ScreenEvents.afterRender(screen).register(ChatRenderHandler.instance()::render);
         }
     }
 
