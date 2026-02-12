@@ -134,15 +134,15 @@ public class NotifierHandler {
             return;
         }
 
-        Text petText = TextHelper.concat(pet.getRarityText(), pet.getName());
+        Text petText = TextHelper.concat(pet.getRarityText(), Text.literal(" ") , pet.getName());
 
         List<Text> notifTextList = Arrays.asList(
                 petText,
                 pet.getRatingText(),
                 Text.empty(),
                 Text.literal(" - Drystreaks before catch").formatted(Formatting.GRAY),
-                TextHelper.concat(pet.getRarityText(), TextHelper.literal(rarityDrystreak.v2())),
-                TextHelper.concat(pet.getRatingText(), TextHelper.literal(ratingDrystreak.v2()))
+                TextHelper.concat(pet.getRarityText(), Text.literal(" "), TextHelper.literal(rarityDrystreak.v2())),
+                TextHelper.concat(pet.getRatingText(), Text.literal(" "), TextHelper.literal(ratingDrystreak.v2()))
         );
 
         int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : 6;
