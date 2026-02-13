@@ -139,21 +139,37 @@ public class HotbarElement extends Element {
                 ItemStack item = minecraftClient.player.getInventory().main.get(i);
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(item);
 
-                int count = validatedItem.v2().getCount();
-                Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
-                int countWidth = textRenderer.getWidth(countText);
-
                 drawContext.drawItem(item, x + itemX + (18 * i), y + itemY);
 
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
-                if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
-                        x + countX + (18 * i) - countWidth, y + countY,
-                        true,
-                        true,
-                        false,
-                        false);
-                drawContext.getMatrices().pop();
+                if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
+                    int count = validatedItem.v2().getCount();
+                    Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
+                    int countWidth = textRenderer.getWidth(countText);
+
+                    drawContext.getMatrices().push();
+                    drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+                    if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
+                            x + countX + (18 * i) - countWidth, y + countY,
+                            true,
+                            true,
+                            false,
+                            false);
+                    drawContext.getMatrices().pop();
+                } else {
+                    int count = item.getCount();
+                    Text countText = TextHelper.literal(count);
+                    int countWidth = textRenderer.getWidth(countText);
+
+                    drawContext.getMatrices().push();
+                    drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+                    if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
+                            x + countX + (18 * i) - countWidth, y + countY - 2,
+                            true,
+                            true,
+                            false,
+                            false);
+                    drawContext.getMatrices().pop();
+                }
             }
         }
         //endregion
@@ -281,21 +297,23 @@ public class HotbarElement extends Element {
                 );
                 //endregion
                 //region Items
-                int count = bait.getCount();
-                Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
-                int countWidth = textRenderer.getWidth(countText);
-
                 drawContext.drawItem(bait.getItemStack(), x + partsX, y + partsY);
 
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
-                if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
-                        x + countX - countWidth, y + countY,
-                        true,
-                        true,
-                        false,
-                        true);
-                drawContext.getMatrices().pop();
+                if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
+                    int count = bait.getCount();
+                    Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
+                    int countWidth = textRenderer.getWidth(countText);
+
+                    drawContext.getMatrices().push();
+                    drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+                    if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
+                            x + countX - countWidth, y + countY,
+                            true,
+                            true,
+                            false,
+                            true);
+                    drawContext.getMatrices().pop();
+                }
                 //endregion
             }
         }

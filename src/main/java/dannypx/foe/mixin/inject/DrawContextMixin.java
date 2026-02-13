@@ -10,12 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(DrawContext.class)
 public abstract class DrawContextMixin {
@@ -27,6 +24,8 @@ public abstract class DrawContextMixin {
     private void drawStackCountInject(TextRenderer textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.useSmallStackCountNumber.get()
+                && Configs.mixinConfig.drawContextAlterDrawStackCount.get()
         ) {
             ItemRendererHandler.instance().drawStackCount((DrawContext) (Object) this, textRenderer, stack, x, y);
             ci.cancel();
@@ -37,9 +36,9 @@ public abstract class DrawContextMixin {
     private void drawStackOverlayInject(TextRenderer textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.drawContextAlterDrawStackOverlay.get()
         ) {
             ItemRendererHandler.instance().drawRarityMarker((DrawContext) (Object) this, textRenderer, stack, x, y);
         }
     }
-
 }

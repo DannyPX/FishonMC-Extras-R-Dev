@@ -12,7 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class RecipeBookWidgetMixin {
     @Inject(method = "isOpen", at = @At("HEAD"), cancellable = true)
     private void injectIsOpen(CallbackInfoReturnable<Boolean> cir) {
-        if(ConnectionHandler.instance().isOnServer() && Configs.mainConfig.enableMod.get()) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.recipeBookWidgetIsOpen.get()
+        ) {
             cir.setReturnValue(false);
         }
     }

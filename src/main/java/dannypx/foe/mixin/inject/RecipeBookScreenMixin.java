@@ -12,7 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class RecipeBookScreenMixin {
     @Inject(method = "addRecipeBook", at = @At("HEAD"), cancellable = true)
     private void injectAddRecipeBook(CallbackInfo ci) {
-        if(ConnectionHandler.instance().isOnServer() && Configs.mainConfig.enableMod.get()) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.recipeBookScreenAddRecipeBook.get()
+        ) {
             ci.cancel();
         }
     }
