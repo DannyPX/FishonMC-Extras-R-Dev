@@ -191,16 +191,16 @@ public class TextHelper {
 
     public static String shortenNumber(float d, int decimals) {
         if(d >= 1000 && d < 1000000) {
-            String s = String.format("%." + decimals + "f", d / 1000, Locale.US);
+            String s = String.format(Locale.US, "%." + decimals + "f", d / 1000);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "K";
         } else if (d >= 1000000 && d < 1000000000 ){
-            String s = String.format("%." + decimals + "f", d / 1000000, Locale.US);
+            String s = String.format(Locale.US, "%." + decimals + "f", d / 1000000);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "M";
         } else if (d >= 1000000000) {
-            String s = String.format("%." + decimals + "f", d / 1000000000, Locale.US);
+            String s = String.format(Locale.US, "%." + decimals + "f", d / 1000000000);
             return (s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s) + "B";
         } else {
-            String s = String.format("%.0f", d, Locale.US);
+            String s = String.format(Locale.US, "%.0f", d);
             return s.contains(".") ? s.replaceAll("0*$","").replaceAll("\\.$","") : s;
         }
     }
@@ -221,7 +221,7 @@ public class TextHelper {
     }
 
     public static String floatToString(float f, int decimals) {
-        return String.format("%." + decimals + "f", f, Locale.US);
+        return String.format(Locale.US, "%." + decimals + "f", f);
     }
 
     public static float lbToKg(float f) {

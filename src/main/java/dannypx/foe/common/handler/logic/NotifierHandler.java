@@ -243,9 +243,20 @@ public class NotifierHandler {
     public void notifyImportStatsCompleted() {
         this.addNotification(
                 new Notification(1, 1,
-                        15,
+                        10,
                         Collections.singletonList(
                                 Text.literal("✔ Stats imported successfully").formatted(Formatting.GREEN)
+                        )
+                )
+        );
+    }
+
+    public void notifyImportQuestCompleted() {
+        this.addNotification(
+                new Notification(1, 1,
+                        10,
+                        Collections.singletonList(
+                                Text.literal("✔ Quests scanned successfully").formatted(Formatting.GREEN)
                         )
                 )
         );

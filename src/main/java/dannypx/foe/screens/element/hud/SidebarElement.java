@@ -2,6 +2,7 @@ package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.fetch.BossBarHandler;
+import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
@@ -76,6 +77,7 @@ public class SidebarElement extends Element implements ScreenConstants {
         drawContext.getMatrices().scale(Configs.hudConfig.sidebarElementScale.get(), Configs.hudConfig.sidebarElementScale.get(), 1f);
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showSidebarElement.get()
+                && TabHandler.instance().isInInstance()
         ) {
             // Position
             if(!isCopy) {

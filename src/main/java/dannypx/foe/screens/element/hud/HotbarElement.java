@@ -1,6 +1,7 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.logic.InventoryHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.DrawHelper;
@@ -105,9 +106,9 @@ public class HotbarElement extends Element {
             this.renderSelector(drawContext, x, y);
             this.renderItems(drawContext, textRenderer, x, y);
             this.renderSelectedItemName(drawContext, textRenderer, x, y);
-            if(Configs.hudConfig.showHotbarParts.get()) this.renderParts(drawContext, x, y);
-            if(Configs.hudConfig.showHotbarArmor.get()) this.renderArmor(drawContext, x, y);
-            if(Configs.hudConfig.showHotbarBait.get()) this.renderBait(drawContext, textRenderer, x, y);
+            if(Configs.hudConfig.showHotbarParts.get() && TabHandler.instance().isInInstance()) this.renderParts(drawContext, x, y);
+            if(Configs.hudConfig.showHotbarArmor.get() && TabHandler.instance().isInInstance()) this.renderArmor(drawContext, x, y);
+            if(Configs.hudConfig.showHotbarBait.get() && TabHandler.instance().isInInstance()) this.renderBait(drawContext, textRenderer, x, y);
         }
         drawContext.getMatrices().pop();
     }
