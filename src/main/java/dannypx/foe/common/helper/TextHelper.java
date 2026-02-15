@@ -8,8 +8,6 @@ import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.common.type.type_adapter.TextAdapter;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;

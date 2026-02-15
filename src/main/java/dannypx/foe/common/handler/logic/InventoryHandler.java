@@ -69,9 +69,39 @@ public class InventoryHandler {
     //region Methods
     public void tick() {
         if(minecraftClient.player != null) {
+            this.tickInventory();
             this.snapshotFishingRod();
             this.snapshotPet();
             this.snapshotEmptySlots();
+        }
+    }
+
+    private void tickInventory() {
+        if(!snapshotInventory.isEmpty()
+                && CatchingHandler.instance().isScanDone()
+                && minecraftClient.player.fishHook != null
+        ) {
+            DefaultedList<ItemStack> oldInventory = snapshotInventory;
+            DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().main;
+
+            for(int i = 0; i < newInventory.size(); i++) {
+                ItemStack oldStack = oldInventory.get(i);
+                ItemStack newStack = newInventory.get(i);
+
+                // New item in slot
+                if (oldStack.isEmpty() && !newStack.isEmpty()) {
+                    this.snapshotInventory();
+                }
+
+                // Same item, stack size changed
+                if (!newStack.isEmpty()
+                        && !oldStack.isEmpty()
+                        && oldStack.getCount() != newStack.getCount()) {
+                    this.snapshotInventory();
+                }
+            }
+        } else if(snapshotInventory.isEmpty()) {
+            this.snapshotInventory();
         }
     }
 
@@ -116,16 +146,8 @@ public class InventoryHandler {
         }
     }
 
-    public void onUseItem(Hand hand) {
-
-        if(minecraftClient.player != null && ValidateItem.isFishingRod(minecraftClient.player.getStackInHand(hand)).v1()) {
-            this.snapshotInventory();
-        }
-    }
-
     public void snapshotInventory() {
         if(minecraftClient.player != null) {
-
             snapshotInventory = ItemStackHelper.deepCopy(
                     minecraftClient.player.getInventory().main,
                     ItemStack.EMPTY,

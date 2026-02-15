@@ -87,8 +87,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
-        InventoryHandler.instance().onUseItem(hand);
-
         return ActionResult.PASS;
     }
 

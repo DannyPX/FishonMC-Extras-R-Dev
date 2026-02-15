@@ -3,8 +3,10 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.handler.fetch.TitleHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
+import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
+import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
@@ -36,6 +38,10 @@ public class CatchingHandler {
     private long startScanTime = 0L;
     private boolean scanDone = true;
     private String fishNameToFind = "";
+
+    public boolean isScanDone() {
+        return scanDone;
+    }
     //endregion
 
     //region Methods
@@ -47,7 +53,6 @@ public class CatchingHandler {
         if(!scanDone && System.currentTimeMillis() < startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)) {
             Pair<Boolean, FishNbtObject> foundFish = this.findFish();
             if(foundFish.v1()) {
-                this.scanDone = true;
                 InventoryHandler.instance().addToTrackedFish(foundFish.v2().getID());
 
                 // Store to Stats
@@ -56,6 +61,8 @@ public class CatchingHandler {
                 LoggerHandler.info("Found Fish: " + foundFish.v2().getName().getString());
 
                 this.checkForCaughtItems();
+
+                this.scanDone = true;
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){
             this.scanDone = true;
@@ -67,7 +74,11 @@ public class CatchingHandler {
         LoggerHandler.info("Start finding items");
         if(minecraftClient.player != null) {
             DefaultedList<ItemStack> oldInventory = InventoryHandler.instance().getSnapshotInventory();
-            DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().main;
+            DefaultedList<ItemStack> newInventory = ItemStackHelper.deepCopy(
+                    minecraftClient.player.getInventory().main,
+                    ItemStack.EMPTY,
+                    stack -> stack.isEmpty() ? ItemStack.EMPTY : stack.copy()
+            );
 
             for(int i = 0; i < newInventory.size(); i++) {
                 ItemStack oldStack = oldInventory.get(i);
