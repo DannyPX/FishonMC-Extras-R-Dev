@@ -44,7 +44,7 @@ public class ChatRenderHandler {
                 drawContext.drawText(textRenderer,
                         Text.literal(TextHelper.smallText("You are in crew chat")).formatted(Formatting.GREEN),
                         4,
-                        minecraftClient.getWindow().getScaledHeight() - textRenderer.fontHeight - 3,
+                        minecraftClient.getWindow().getScaledHeight() - textRenderer.fontHeight - 4,
                         0xFFFFFF,
                         true);
             }

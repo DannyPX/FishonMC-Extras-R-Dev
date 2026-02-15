@@ -80,6 +80,9 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles the notifier")
     public ValidatedBoolean notifierHandler = new ValidatedBoolean(true);
 
+    @Desc("§7Handles the ray cast hit results")
+    public ValidatedBoolean rayCastHandler = new ValidatedBoolean(true);
+
     @Name("Catching Handler")
     @Desc("§7Handles logic of fishing")
     public ConfigGroup catchingLogicGroup = new ConfigGroup("catching_logic_group");

@@ -87,8 +87,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
-        InventoryHandler.instance().onUseItem(hand);
-
         return ActionResult.PASS;
     }
 
@@ -172,6 +170,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 // Logic
                 if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
                 if(Configs.handlerConfig.catchingHandler.get()) CatchingHandler.instance().tick();
+                if(Configs.handlerConfig.rayCastHandler.get()) RayCastHandler.instance().tick();
 
             } else {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();

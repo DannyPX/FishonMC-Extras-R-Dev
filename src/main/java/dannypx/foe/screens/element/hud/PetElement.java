@@ -1,6 +1,7 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.logic.InventoryHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.DrawHelper;
@@ -63,6 +64,7 @@ public class PetElement extends Element {
         drawContext.getMatrices().scale(Configs.hudConfig.petElementScale.get(), Configs.hudConfig.petElementScale.get(), 1f);
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showPetElement.get()
+                && TabHandler.instance().isInInstance()
         ) {
             // Position
             if(!isCopy) {

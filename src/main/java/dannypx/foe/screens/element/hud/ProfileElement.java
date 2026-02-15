@@ -62,7 +62,10 @@ public class ProfileElement extends Element {
 
         drawContext.getMatrices().push();
         drawContext.getMatrices().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get(), 1f);
-        if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showProfileElement.get()) {
+        if(LoadingHandler.instance().isLoadingDone()
+                && Configs.hudConfig.showProfileElement.get()
+                && TabHandler.instance().isInInstance()
+        ) {
             // Position
             if(!isCopy) {
                 xPos = Configs.hudConfig.profileElementXPosition.get() / 100f;

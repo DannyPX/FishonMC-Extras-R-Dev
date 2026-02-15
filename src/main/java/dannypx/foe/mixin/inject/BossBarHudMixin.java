@@ -14,7 +14,10 @@ public class BossBarHudMixin {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void injectRender(DrawContext context, CallbackInfo ci) {
-        if(ConnectionHandler.instance().isOnServer() && Configs.mainConfig.enableMod.get()) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.bossBarDisableRender.get()
+        ) {
             ci.cancel();
         }
     }

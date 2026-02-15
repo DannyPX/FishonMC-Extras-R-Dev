@@ -40,6 +40,13 @@ public class RendererConfig extends Config {
     @Name("Use the 3D bobber texture")
     public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
 
+    @Name("Small Stack Count Number")
+    public ConfigGroup smallStackCountGroup = new ConfigGroup("small_stack_count_group");
+
+    @Name("Use Small Stack Count Number")
+    @Desc("§7Disabling this will also stop the counter from displaying on baits/lures")
+    public ValidatedBoolean useSmallStackCountNumber = new ValidatedBoolean(true);
+
     @Override
     public @NotNull FileType fileType() {
         return FileType.JSON;

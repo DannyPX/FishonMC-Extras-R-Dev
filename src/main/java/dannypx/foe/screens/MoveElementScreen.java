@@ -13,16 +13,14 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoveElementScreen extends Screen {
+public class MoveElementScreen extends DefaultModScreen {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    private final Screen parent;
     //endregion
 
     //region Methods
     public MoveElementScreen(Screen parent) {
-        super(Text.literal("Screen"));
-        this.parent = parent;
+        super(parent, Text.literal("Move Elements Screen"), true);
     }
 
     @Override
@@ -120,11 +118,5 @@ public class MoveElementScreen extends Screen {
 
         widgets.forEach(this::addDrawableChild);
     }
-
-    @Override
-    public void close() {
-        this.minecraftClient.setScreen(parent);
-    }
-
     //endregion
 }

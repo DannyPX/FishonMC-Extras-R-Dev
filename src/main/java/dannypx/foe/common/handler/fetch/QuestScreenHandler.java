@@ -51,7 +51,10 @@ public class QuestScreenHandler {
                 }
             });
 
-            if(!questList.isEmpty()) QuestDataHandler.instance().setQuest(questList);
+            if(!questList.isEmpty()) {
+                QuestDataHandler.instance().setQuest(questList);
+                NotifierHandler.instance().notifyImportQuestCompleted();
+            };
         });
     }
 
