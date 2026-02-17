@@ -8,6 +8,7 @@ import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedLong;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -90,10 +91,13 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles fishing")
     public ValidatedBoolean catchingHandler = new ValidatedBoolean(true);
 
+    @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
+    public ValidatedInt catchingStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
     @ConfigGroup.Pop
     @ConfigGroup.Pop
     @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
-    public ValidatedInt catchingStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedLong catchingItemsCheckWindow = new ValidatedLong(100L, 1000L, 0L, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
     @Override

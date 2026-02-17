@@ -86,7 +86,7 @@ public class DataFileHandler {
             String resultJson = dataModelToJson(data);
             Files.writeString(filePath, resultJson);
 
-            LoggerHandler.info("Updating file: " + dataModelType.FILENAME + ".json");
+            LoggerHandler._debug("Updating file: " + dataModelType.FILENAME + ".json");
         } catch (IOException e) {
             LoggerHandler.error(e);
         }
@@ -130,7 +130,7 @@ public class DataFileHandler {
                 .registerTypeAdapter(Text.class, new TextAdapter())
                 .create();
 
-        LoggerHandler.info("Setting data from: " + dataModelType.FILENAME + ".json");
+        LoggerHandler._debug("Setting data from: " + dataModelType.FILENAME + ".json");
 
         switch (dataModelType) {
             case PROFILE_DATA ->

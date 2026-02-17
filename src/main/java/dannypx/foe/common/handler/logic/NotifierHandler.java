@@ -1,10 +1,8 @@
 package dannypx.foe.common.handler.logic;
 
-import dannypx.foe.common.handler.fetch.StatsScreenHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
-import dannypx.foe.common.handler.store.Stat;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
@@ -246,17 +244,6 @@ public class NotifierHandler {
                         10,
                         Collections.singletonList(
                                 Text.literal("✔ Stats imported successfully").formatted(Formatting.GREEN)
-                        )
-                )
-        );
-    }
-
-    public void notifyImportQuestCompleted() {
-        this.addNotification(
-                new Notification(1, 1,
-                        10,
-                        Collections.singletonList(
-                                Text.literal("✔ Quests scanned successfully").formatted(Formatting.GREEN)
                         )
                 )
         );

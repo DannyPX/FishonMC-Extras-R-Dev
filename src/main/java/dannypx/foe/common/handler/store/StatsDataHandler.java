@@ -9,11 +9,9 @@ import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
-import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.util.*;
 
@@ -109,10 +107,10 @@ public class StatsDataHandler {
     private void setPet(PetNbtObject pet) {
         statsData.petTotal++;
 
-        Pair<String, Integer> rarityDrystreak = this.updatePetData(statsData, PetNbtObject.RARITY, pet.getRarity(), 1);
+        Pair<String, Integer> rarityDrystreak = this.updatePetData(statsData, PetNbtObject.RARITY, pet.getRarity());
         ConstantDataHandler.instance().updatePetData(PetNbtObject.RARITY, pet.getRarity(), pet.getRarityText());
 
-        Pair<String, Integer> ratingDrystreak = this.updatePetData(statsData, PetNbtObject.RATING, pet.getRatingText().getString(), 1);
+        Pair<String, Integer> ratingDrystreak = this.updatePetData(statsData, PetNbtObject.RATING, pet.getRatingText().getString());
         ConstantDataHandler.instance().updatePetData(PetNbtObject.RATING, pet.getRatingText().getString(), pet.getRatingText());
 
         // Notify Pet
@@ -120,11 +118,11 @@ public class StatsDataHandler {
     }
 
     // Field, Old Drystreak
-    private Pair<String, Integer> updatePetData(StatsDataModel statsData, String category, String field, int valueToAdd) {
+    private Pair<String, Integer> updatePetData(StatsDataModel statsData, String category, String field) {
         Map<String, Stat<Integer, Integer>> categoryMapData = statsData.petData.getOrDefault(category, new HashMap<>());
         Stat<Integer, Integer> fieldStat = categoryMapData.getOrDefault(field, Stat.of(0, statsData.fishTotal));
 
-        Stat<Integer, Integer> newFieldStat = Stat.of(fieldStat.amount() + valueToAdd, statsData.fishTotal);
+        Stat<Integer, Integer> newFieldStat = Stat.of(fieldStat.amount() + 1, statsData.fishTotal);
         categoryMapData.put(field, newFieldStat);
         statsData.petData.put(category, categoryMapData);
         this.needsUpdate = true;
