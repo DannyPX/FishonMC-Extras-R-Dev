@@ -67,6 +67,7 @@ public class _DebugConfig extends Config {
             new ValidatedString().instanceEntry(),
             ValidatedChoice.WidgetType.SCROLLABLE);
 
+
     @Override
     public @NotNull FileType fileType() {
         return FileType.JSON;

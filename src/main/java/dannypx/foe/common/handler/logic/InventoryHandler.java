@@ -5,11 +5,11 @@ import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.*;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.Triplet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +32,7 @@ public class InventoryHandler {
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final List<UUID> trackedFish = new ArrayList<>();
     private DefaultedList<ItemStack> snapshotInventory = DefaultedList.ofSize(0);
+    private List<Triplet<Long, ItemStack, Integer>> snapshottedItems = new ArrayList<>();
     private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
     private PetNbtObject currentPet = PetNbtObject.empty();
 
@@ -42,7 +43,11 @@ public class InventoryHandler {
     }
 
     public DefaultedList<ItemStack> getSnapshotInventory() {
-        return snapshotInventory;
+        return snapshotInventory.isEmpty() ? DefaultedList.ofSize(0) : snapshotInventory;
+    }
+
+    public List<Triplet<Long, ItemStack, Integer>> getSnapshottedItems() {
+        return snapshottedItems;
     }
 
     protected void setCurrentFishingRod(FishingRodNbtObject currentFishingRod) {
@@ -73,13 +78,12 @@ public class InventoryHandler {
             this.snapshotFishingRod();
             this.snapshotPet();
             this.snapshotEmptySlots();
+            this.checkSnapshottedItems();
         }
     }
 
     private void tickInventory() {
         if(!snapshotInventory.isEmpty()
-                && CatchingHandler.instance().isScanDone()
-                && minecraftClient.player.fishHook != null
         ) {
             DefaultedList<ItemStack> oldInventory = snapshotInventory;
             DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().main;
@@ -91,6 +95,8 @@ public class InventoryHandler {
                 // New item in slot
                 if (oldStack.isEmpty() && !newStack.isEmpty()) {
                     this.snapshotInventory();
+
+                    this.addToSnapshotItems(newStack, 1);
                 }
 
                 // Same item, stack size changed
@@ -98,11 +104,21 @@ public class InventoryHandler {
                         && !oldStack.isEmpty()
                         && oldStack.getCount() != newStack.getCount()) {
                     this.snapshotInventory();
+
+                    this.addToSnapshotItems(newStack, newStack.getCount() - oldStack.getCount());
                 }
             }
-        } else if(snapshotInventory.isEmpty()) {
+        } else {
             this.snapshotInventory();
         }
+    }
+
+    private void checkSnapshottedItems() {
+        snapshottedItems.removeIf(item -> item.v1() > System.currentTimeMillis() + 1000L);
+    }
+
+    private void addToSnapshotItems(ItemStack newStack, int count) {
+        snapshottedItems.add(Triplet.of(System.currentTimeMillis(), newStack, count));
     }
 
     private void snapshotEmptySlots() {
@@ -171,7 +187,7 @@ public class InventoryHandler {
                     this.addToTrackedFish(validatedItem.v2().getID());
                 }
             });
-            LoggerHandler.info("Tracked Fish: " + trackedFish.size());
+            LoggerHandler._debug("Tracked Fish: " + trackedFish.size());
             return true;
         }
         return false;

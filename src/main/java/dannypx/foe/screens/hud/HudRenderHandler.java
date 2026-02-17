@@ -1,7 +1,6 @@
 package dannypx.foe.screens.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.handler.logic.ConnectionHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.logic.RayCastHandler;
 import dannypx.foe.common.item.NbtObject;

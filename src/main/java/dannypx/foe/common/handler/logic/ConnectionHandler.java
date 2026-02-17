@@ -54,6 +54,7 @@ public class ConnectionHandler {
         ServerInfo serverEntry = minecraftClient.getCurrentServerEntry();
         if(serverEntry != null) {
             return serverEntry.address.equalsIgnoreCase("play.fishonmc.net")
+                    || serverEntry.address.equalsIgnoreCase("asia.fishonmc.net")
                     || serverEntry.address.equalsIgnoreCase("fishonmc.net");
         } return false;
     }

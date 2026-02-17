@@ -70,7 +70,7 @@ public class QuestDataHandler {
         String location = BossBarHandler.instance().getLocation().getString();
 
         questData.questList.put(location, questList);
-        LoggerHandler.info("Quests updated");
+        LoggerHandler._debug("Quests updated");
         this.needsUpdate = true;
     }
 

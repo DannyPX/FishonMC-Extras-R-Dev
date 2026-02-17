@@ -1,7 +1,12 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.config.Configs;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import java.util.List;
 
 public class LoggerHandler {
     //region Methods
@@ -19,6 +24,32 @@ public class LoggerHandler {
 
     public static void info(Text m) {
         LoggerHandler.info(m.getString());
+    }
+
+    public static void _debug(String m) {
+        _debug(Text.literal(m).formatted(Formatting.YELLOW));
+    }
+
+    public static void _debug(String m, ItemStack item) {
+        _debug(Text.literal(m).formatted(Formatting.YELLOW), item);
+    }
+
+    public static void _debug(Text m) {
+        if(Configs.debugConfig.debugMode.get()) {
+            LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
+            NotifierHandler.instance().addNotification(
+                    new NotifierHandler.Notification(1, 1, 10, List.of(m))
+            );
+        }
+    }
+
+    public static void _debug(Text m, ItemStack item) {
+        if(Configs.debugConfig.debugMode.get()) {
+            LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
+            NotifierHandler.instance().addNotification(
+                    new NotifierHandler.Notification(item, 1, 1, 10, List.of(m))
+            );
+        }
     }
     //endregion
 }

@@ -124,6 +124,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
     private void onInit() {
         this.registerEntityModels();
+        CodeExecuterHandler.init();
         CommandRegistry.init();
         KeyBindHandler.instance().init();
     }

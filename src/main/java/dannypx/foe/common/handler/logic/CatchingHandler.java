@@ -3,10 +3,8 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.handler.fetch.TitleHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
-import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
-import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
@@ -16,7 +14,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Box;
 
 import java.util.List;
@@ -58,46 +55,25 @@ public class CatchingHandler {
                 // Store to Stats
                 StatsDataHandler.instance().setFish(foundFish.v2());
                 QuestDataHandler.instance().setFish(foundFish.v2());
-                LoggerHandler.info("Found Fish: " + foundFish.v2().getName().getString());
+                LoggerHandler._debug("Found Fish: " + foundFish.v2().getName().getString());
 
-                this.checkForCaughtItems();
+                CodeExecuterHandler.runLater(1, this::checkForCaughtItems);
 
                 this.scanDone = true;
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){
             this.scanDone = true;
-            LoggerHandler.info("Did not find fish");
+            LoggerHandler._debug("Did not find fish");
         }
     }
 
     private void checkForCaughtItems() {
-        LoggerHandler.info("Start finding items");
+        LoggerHandler._debug("Start finding items");
         if(minecraftClient.player != null) {
-            DefaultedList<ItemStack> oldInventory = InventoryHandler.instance().getSnapshotInventory();
-            DefaultedList<ItemStack> newInventory = ItemStackHelper.deepCopy(
-                    minecraftClient.player.getInventory().main,
-                    ItemStack.EMPTY,
-                    stack -> stack.isEmpty() ? ItemStack.EMPTY : stack.copy()
-            );
-
-            for(int i = 0; i < newInventory.size(); i++) {
-                ItemStack oldStack = oldInventory.get(i);
-                ItemStack newStack = newInventory.get(i);
-
-                // New item in slot
-                if (oldStack.isEmpty() && !newStack.isEmpty()) {
-                    scanItem(newStack, newStack.getCount());
-                }
-
-                // Same item, stack size changed
-                if (!newStack.isEmpty()
-                        && !oldStack.isEmpty()
-                        && oldStack.getCount() != newStack.getCount()) {
-
-                    int delta = newStack.getCount() - oldStack.getCount();
-                    scanItem(newStack, delta);
-                }
-            }
+            InventoryHandler.instance().getSnapshottedItems().stream()
+                    .filter(item -> System.currentTimeMillis() - item.v1()
+                            < Configs.handlerConfig.catchingItemsCheckWindow.get())
+                    .toList().forEach(item -> scanItem(item.v2(), item.v3()));
         }
     }
 
@@ -108,7 +84,7 @@ public class CatchingHandler {
             // Store to Stats
             StatsDataHandler.instance().setItem(validatedItem.v2(), count);
 
-            LoggerHandler.info("Found Item: " + itemStack.getName().getString());
+            LoggerHandler._debug("Found Item: " + itemStack.getName().getString(), itemStack);
         }
     }
 
@@ -181,7 +157,7 @@ public class CatchingHandler {
 
         if(title.getString().charAt(0) > 0xE000 && title.getString().charAt(0) < 0xE999) {
             this.startScan();
-            LoggerHandler.info("Start finding fish");
+            LoggerHandler._debug("Start finding fish");
         }
     }
 
