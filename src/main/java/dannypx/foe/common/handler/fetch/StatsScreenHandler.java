@@ -1,6 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
-import dannypx.foe.common.handler.logic.LoggerHandler;
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
@@ -10,7 +10,6 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.common.type.Triplet;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class StatsScreenHandler {
+public class StatsScreenHandler extends Handler {
     private static StatsScreenHandler INSTANCE = new StatsScreenHandler();
 
     public static StatsScreenHandler instance() {
@@ -35,7 +34,6 @@ public class StatsScreenHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private boolean importStats = false;
     private List<Text> statsLore = new ArrayList<>();
 
@@ -46,8 +44,9 @@ public class StatsScreenHandler {
     public List<Text> getStatsLore() {
         return statsLore;
     }
+    //endregion
 
-
+    //region Methods
     public void checkStats(GenericContainerScreenHandler genericContainerScreenHandler) {
         if(this.importStats) {
             minecraftClient.execute(() -> {
@@ -138,9 +137,6 @@ public class StatsScreenHandler {
     private int extractTotal(Text text) {
         return TextHelper.toIntFromString(text.getSiblings().get(2).getString());
     }
-    //endregion
-
-    //region Methods
     //endregion
 
     //region Dev

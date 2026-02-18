@@ -21,7 +21,7 @@ public class MainConfig extends Config {
     }
 
     @Name("Enable Mod")
-    @Desc("§4WARNING §7This will turn off the mod when false")
+    @Desc("§4WARNING\nThis will turn off the mod when false. NOTHING will work when false.\nTo turn it back on, do /foe config")
     public ValidatedBoolean enableMod = new ValidatedBoolean(true);
 
     @Override

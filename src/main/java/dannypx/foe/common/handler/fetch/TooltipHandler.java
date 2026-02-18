@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.helper.MathHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
@@ -18,7 +19,7 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 import java.util.Map;
 
-public class TooltipHandler {
+public class TooltipHandler extends Handler {
     private static TooltipHandler INSTANCE = new TooltipHandler();
 
     public static TooltipHandler instance() {

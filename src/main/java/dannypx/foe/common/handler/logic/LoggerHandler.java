@@ -38,7 +38,7 @@ public class LoggerHandler {
         if(Configs.debugConfig.debugMode.get()) {
             LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
             NotifierHandler.instance().addNotification(
-                    new NotifierHandler.Notification(1, 1, 10, List.of(m))
+                    new NotifierHandler.Notification(1, 1, Configs.handlerConfig.debugDismissalTime.get(), List.of(m))
             );
         }
     }
@@ -47,7 +47,7 @@ public class LoggerHandler {
         if(Configs.debugConfig.debugMode.get()) {
             LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
             NotifierHandler.instance().addNotification(
-                    new NotifierHandler.Notification(item, 1, 1, 10, List.of(m))
+                    new NotifierHandler.Notification(item, 1, 1, Configs.handlerConfig.debugDismissalTime.get(), List.of(m))
             );
         }
     }

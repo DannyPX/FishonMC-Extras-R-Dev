@@ -1,7 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 
 import java.util.*;
 
-public class ScoreboardHandler {
+public class ScoreboardHandler extends Handler {
     private static ScoreboardHandler INSTANCE = new ScoreboardHandler();
 
     public static ScoreboardHandler instance() {
@@ -22,7 +22,6 @@ public class ScoreboardHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private List<Text> prevResult = new ArrayList<>();
 
     private MutableText date = Text.empty();

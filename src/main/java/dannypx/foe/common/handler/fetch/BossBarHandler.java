@@ -1,10 +1,10 @@
 package dannypx.foe.common.handler.fetch;
 
 import com.google.gson.*;
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.mixin.accessor.BossBarHudAccessor;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -12,7 +12,7 @@ import net.minecraft.text.TextColor;
 
 import java.util.*;
 
-public class BossBarHandler {
+public class BossBarHandler extends Handler {
     private static BossBarHandler INSTANCE = new BossBarHandler();
 
     public static BossBarHandler instance() {
@@ -23,7 +23,6 @@ public class BossBarHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private MutableText location = Text.empty();
     private MutableText weather = Text.empty();
     private MutableText time = Text.empty();

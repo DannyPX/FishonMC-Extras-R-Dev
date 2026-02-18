@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.Pair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.text.MutableText;
@@ -9,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class CodeExecuterHandler {
+public class CodeExecuterHandler extends Handler {
     private static CodeExecuterHandler INSTANCE = new CodeExecuterHandler();
 
     public static CodeExecuterHandler instance() {
@@ -22,7 +23,7 @@ public class CodeExecuterHandler {
     //region Fields
     private static final List<ScheduledTask> TASKS = new ArrayList<>();
 
-    public static void init() {
+    public void init() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             Iterator<ScheduledTask> iterator = TASKS.iterator();
             while (iterator.hasNext()) {

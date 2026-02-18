@@ -1,15 +1,15 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 
-public class ConnectionHandler {
+public class ConnectionHandler extends Handler {
     private static ConnectionHandler INSTANCE = new ConnectionHandler();
 
     public static ConnectionHandler instance() {
@@ -20,7 +20,6 @@ public class ConnectionHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private boolean isOnServer = false;
     private boolean wasOnServer = false;
 

@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
@@ -14,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class ChatHandler {
+public class ChatHandler extends Handler {
     private static ChatHandler INSTANCE = new ChatHandler();
 
     public static ChatHandler instance() {

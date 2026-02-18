@@ -1,5 +1,6 @@
-package dannypx.foe.screens.inventory;
+package dannypx.foe.common.handler.renderer;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
@@ -16,15 +17,13 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class InventoryRenderHandler {
+public class InventoryRenderHandler extends Handler {
     private static InventoryRenderHandler INSTANCE = new InventoryRenderHandler();
 
     public static InventoryRenderHandler instance() {
@@ -35,7 +34,6 @@ public class InventoryRenderHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final TextRenderer textRenderer = minecraftClient.textRenderer;
 
     List<Pair<String, Element>> elements = new ArrayList<>();
@@ -193,6 +191,16 @@ public class InventoryRenderHandler {
                 minecraftClient.getWindow().getScaledHeight() / 2 - INVENTORY_TOP,
                 STAT_WIDTH - ((STAT_WIDTH / 4) / 3), INVENTORY_HEIGHT, false)));
         // Add elements here
+    }
+    //endregion
+
+    //region Dev
+    /// Field, Pair<Value, Tooltip>
+    @Override
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+        return Map.of(
+
+        );
     }
     //endregion
 }

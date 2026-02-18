@@ -1,7 +1,8 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.Block;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -9,11 +10,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class RayCastHandler {
+public class RayCastHandler extends Handler {
     private static RayCastHandler INSTANCE = new RayCastHandler();
 
     public static RayCastHandler instance() {
@@ -24,7 +26,6 @@ public class RayCastHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private HitResult hitResult = null;
     private @Nullable BlockHitResult blockHitResult = null;
     private @Nullable EntityHitResult entityHitResult = null;
@@ -70,8 +71,18 @@ public class RayCastHandler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "entityHitResult", Pair.of(getEntityHitResult() != null ? getEntityHitResult().getEntity().getName().copy() : Text.empty(), Text.empty()),
+                "blockHitResult" , Pair.of(getBlockFromHitResult() != null ? getBlockFromHitResult() : Text.empty(), Text.empty())
         );
+    }
+
+    private MutableText getBlockFromHitResult() {
+        if(getBlockHitResult() != null && minecraftClient.world != null) {
+            BlockPos blockPos = getBlockHitResult().getBlockPos();
+            Block block = minecraftClient.world.getBlockState(blockPos).getBlock();
+            return block.getName();
+        }
+        return null;
     }
     //endregion
 }

@@ -10,10 +10,10 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.screens.chat.ChatRenderHandler;
+import dannypx.foe.common.handler.renderer.ChatRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
-import dannypx.foe.screens.hud.HudRenderHandler;
-import dannypx.foe.screens.inventory.InventoryRenderHandler;
+import dannypx.foe.common.handler.renderer.HudRenderHandler;
+import dannypx.foe.common.handler.renderer.InventoryRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -99,11 +99,10 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             AtomicInteger delay = new AtomicInteger(Configs.handlerConfig.screenDelayFetch.get());
             ScreenEvents.afterTick(screen).register(s -> {
                 if (delay.decrementAndGet() == 0) {
-                    GenericContainerScreenHandler.instance().onInit(genericContainerScreen);
+                    GenericContainerScreenHandler.instance().init(genericContainerScreen);
                 }
             });
         } else if(screen instanceof ChatScreen) {
-            ChatRenderHandler.instance().init(screen);
             ScreenEvents.afterRender(screen).register(ChatRenderHandler.instance()::render);
         }
     }
@@ -124,7 +123,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
     private void onInit() {
         this.registerEntityModels();
-        CodeExecuterHandler.init();
+        CodeExecuterHandler.instance().init();
         CommandRegistry.init();
         KeyBindHandler.instance().init();
     }

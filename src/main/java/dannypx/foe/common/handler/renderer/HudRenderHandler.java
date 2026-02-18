@@ -1,6 +1,7 @@
-package dannypx.foe.screens.hud;
+package dannypx.foe.common.handler.renderer;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.logic.RayCastHandler;
 import dannypx.foe.common.item.NbtObject;
@@ -15,12 +16,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class HudRenderHandler {
+public class HudRenderHandler extends Handler {
     private static HudRenderHandler INSTANCE = new HudRenderHandler();
 
     public static HudRenderHandler instance() {
@@ -31,8 +34,6 @@ public class HudRenderHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-
     List<Pair<String, Element>> elements = new ArrayList<>();
     //endregion
 
@@ -76,6 +77,16 @@ public class HudRenderHandler {
                 drawContext.drawItemTooltip(minecraftClient.textRenderer, validatedItem.v2().getItemStack(), itemX, itemY);
             }
         }
+    }
+    //endregion
+
+    //region Dev
+    /// Field, Pair<Value, Tooltip>
+    @Override
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+        return Map.of(
+
+        );
     }
     //endregion
 }

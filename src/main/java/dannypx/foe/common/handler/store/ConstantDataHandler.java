@@ -1,10 +1,10 @@
 package dannypx.foe.common.handler.store;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-public class ConstantDataHandler {
+public class ConstantDataHandler extends Handler {
     private static ConstantDataHandler INSTANCE = new ConstantDataHandler();
 
     public static ConstantDataHandler instance() {
@@ -25,7 +25,6 @@ public class ConstantDataHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private ConstantDataModel constantData = new ConstantDataModel();
     private boolean needsUpdate = false;
 

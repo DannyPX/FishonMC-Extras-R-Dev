@@ -84,6 +84,10 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles the ray cast hit results")
     public ValidatedBoolean rayCastHandler = new ValidatedBoolean(true);
 
+    @Name("Debug message dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt debugDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
     @Name("Catching Handler")
     @Desc("§7Handles logic of fishing")
     public ConfigGroup catchingLogicGroup = new ConfigGroup("catching_logic_group");
