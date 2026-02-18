@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.store;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.fetch.BossBarHandler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
@@ -8,13 +9,12 @@ import dannypx.foe.common.handler.fetch.QuestScreenHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.*;
 
-public class QuestDataHandler {
+public class QuestDataHandler extends Handler {
     private static QuestDataHandler INSTANCE = new QuestDataHandler();
 
     public static QuestDataHandler instance() {
@@ -25,7 +25,6 @@ public class QuestDataHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private QuestDataModel questData = new QuestDataModel();
     private boolean needsUpdate = false;
 

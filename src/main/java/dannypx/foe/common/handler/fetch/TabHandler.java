@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
 import com.mojang.authlib.GameProfile;
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class TabHandler {
+public class TabHandler extends Handler {
     private static TabHandler INSTANCE = new TabHandler();
 
     public static TabHandler instance() {
@@ -26,7 +27,6 @@ public class TabHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private Text playerName = Text.empty();
     private String instance = "";
     private boolean isInInstance = false;

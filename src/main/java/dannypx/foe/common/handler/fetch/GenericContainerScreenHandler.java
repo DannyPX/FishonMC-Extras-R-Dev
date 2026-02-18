@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -9,7 +10,7 @@ import net.minecraft.text.Text;
 import java.util.Map;
 import java.util.Objects;
 
-public class GenericContainerScreenHandler {
+public class GenericContainerScreenHandler extends Handler {
     private static GenericContainerScreenHandler INSTANCE = new GenericContainerScreenHandler();
 
     public static GenericContainerScreenHandler instance() {
@@ -28,7 +29,7 @@ public class GenericContainerScreenHandler {
     //endregion
 
     //region Methods
-    public void onInit(GenericContainerScreen genericContainerScreen) {
+    public void init(GenericContainerScreen genericContainerScreen) {
         if(!Configs.handlerConfig.genericContainerScreenHandler.get()) {
             return;
         }

@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
@@ -16,7 +17,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.*;
 
-public class NotifierHandler {
+public class NotifierHandler extends Handler {
     private static NotifierHandler INSTANCE = new NotifierHandler();
 
     public static NotifierHandler instance() {

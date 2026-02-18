@@ -1,10 +1,10 @@
-package dannypx.foe.screens.chat;
+package dannypx.foe.common.handler.renderer;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.mixin.accessor.ChatScreenAccessor;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -16,7 +16,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.Map;
 
-public class ChatRenderHandler {
+public class ChatRenderHandler extends Handler {
     private static ChatRenderHandler INSTANCE = new ChatRenderHandler();
 
     public static ChatRenderHandler instance() {
@@ -27,16 +27,10 @@ public class ChatRenderHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final TextRenderer textRenderer = minecraftClient.textRenderer;
     //endregion
 
     //region Methods
-
-    public void init(Screen screen) {
-
-    }
-
     public void render(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
         if(screen instanceof ChatScreen chatScreen) {
             TextFieldWidget textfield = ((ChatScreenAccessor) chatScreen).getChatField();
@@ -54,6 +48,7 @@ public class ChatRenderHandler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
+    @Override
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
 

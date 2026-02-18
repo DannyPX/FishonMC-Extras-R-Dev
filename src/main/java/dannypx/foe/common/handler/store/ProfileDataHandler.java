@@ -1,18 +1,18 @@
 package dannypx.foe.common.handler.store;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class ProfileDataHandler {
+public class ProfileDataHandler extends Handler {
     private static ProfileDataHandler INSTANCE = new ProfileDataHandler();
 
     public static ProfileDataHandler instance() {
@@ -23,7 +23,6 @@ public class ProfileDataHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private ProfileDataModel profileData = new ProfileDataModel();
     private boolean needsUpdate = false;
 

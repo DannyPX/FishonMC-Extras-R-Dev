@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.store;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.NotifierHandler;
@@ -9,13 +10,12 @@ import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.*;
 
-public class StatsDataHandler {
+public class StatsDataHandler extends Handler {
     private static StatsDataHandler INSTANCE = new StatsDataHandler();
 
     public static StatsDataHandler instance() {
@@ -26,7 +26,6 @@ public class StatsDataHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private StatsDataModel statsData = new StatsDataModel();
     private boolean needsUpdate = false;
 
@@ -152,6 +151,22 @@ public class StatsDataHandler {
         if(updatedStats) {
             this.needsUpdate = true;
         }
+    }
+
+
+
+    public void resetStats() {
+        this.reset();
+        this.needsUpdate = true;
+    }
+
+    private void reset() {
+        statsData.fishData = new HashMap<>();
+        statsData.petData = new HashMap<>();
+        statsData.itemData = new HashMap<>();
+        statsData.fishTotal = 0;
+        statsData.petTotal = 0;
+        this.needsUpdate = true;
     }
     //endregion
 

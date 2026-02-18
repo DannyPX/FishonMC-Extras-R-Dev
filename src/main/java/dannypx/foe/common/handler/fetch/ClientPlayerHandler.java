@@ -1,15 +1,15 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 
-public class ClientPlayerHandler {
+public class ClientPlayerHandler extends Handler {
     private static ClientPlayerHandler INSTANCE = new ClientPlayerHandler();
 
     public static ClientPlayerHandler instance() {
@@ -20,7 +20,6 @@ public class ClientPlayerHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private Text name = Text.empty();
     private int experienceLevel = 0;
     private float experienceProgress = 0f;

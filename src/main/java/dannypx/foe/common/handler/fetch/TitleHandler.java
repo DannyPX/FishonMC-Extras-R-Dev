@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.CatchingHandler;
 import dannypx.foe.common.type.Pair;
 import net.minecraft.text.MutableText;
@@ -7,7 +8,7 @@ import net.minecraft.text.Text;
 
 import java.util.Map;
 
-public class TitleHandler {
+public class TitleHandler extends Handler {
     private static TitleHandler INSTANCE = new TitleHandler();
 
     public static TitleHandler instance() {

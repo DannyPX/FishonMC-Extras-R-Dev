@@ -1,12 +1,12 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.*;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.common.type.Triplet;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class InventoryHandler {
+public class InventoryHandler extends Handler {
     private static InventoryHandler INSTANCE = new InventoryHandler();
 
     public static InventoryHandler instance() {
@@ -29,7 +29,6 @@ public class InventoryHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final List<UUID> trackedFish = new ArrayList<>();
     private DefaultedList<ItemStack> snapshotInventory = DefaultedList.ofSize(0);
     private List<Triplet<Long, ItemStack, Integer>> snapshottedItems = new ArrayList<>();
@@ -48,6 +47,10 @@ public class InventoryHandler {
 
     public List<Triplet<Long, ItemStack, Integer>> getSnapshottedItems() {
         return snapshottedItems;
+    }
+
+    public List<ItemStack> getSnapshottedItemstacks() {
+        return this.snapshottedItems.stream().map(Triplet::v2).toList();
     }
 
     protected void setCurrentFishingRod(FishingRodNbtObject currentFishingRod) {
@@ -215,8 +218,8 @@ public class InventoryHandler {
                 )),
                 "currentFishingRod", Pair.of(Text.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack())),
                 "currentPet", Pair.of(Text.literal("[currentPet]"), TextHelper.literal(getCurrentPet().getItemStack())),
-                "currentHeldItem", Pair.of(Text.literal("[currentHeldItem]"), TextHelper.literal(getCurrentHeldItem()))
-
+                "currentHeldItem", Pair.of(Text.literal("[currentHeldItem]"), TextHelper.literal(getCurrentHeldItem())),
+                "snapshottedItems", Pair.of(Text.literal("[snapshottedItems]"), TextHelper.literal(getSnapshottedItemstacks()))
         );
     }
     //endregion

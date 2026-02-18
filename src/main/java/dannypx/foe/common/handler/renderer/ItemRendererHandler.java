@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.renderer;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ItemRendererHandler {
+public class ItemRendererHandler extends Handler {
     private static ItemRendererHandler INSTANCE = new ItemRendererHandler();
 
     public static ItemRendererHandler instance() {

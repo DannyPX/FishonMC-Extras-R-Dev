@@ -1,9 +1,9 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class QuestScreenHandler {
+public class QuestScreenHandler extends Handler {
     private static QuestScreenHandler INSTANCE = new QuestScreenHandler();
 
     public static QuestScreenHandler instance() {
@@ -28,7 +28,6 @@ public class QuestScreenHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     //endregion
 
     //region Methods

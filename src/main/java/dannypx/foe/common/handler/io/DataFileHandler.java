@@ -3,6 +3,7 @@ package dannypx.foe.common.handler.io;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
@@ -22,7 +23,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 
-public class DataFileHandler {
+public class DataFileHandler extends Handler {
     private static DataFileHandler INSTANCE = new DataFileHandler();
 
     public static DataFileHandler instance() {

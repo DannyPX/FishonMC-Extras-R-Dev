@@ -1,5 +1,6 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.fetch.TitleHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
@@ -8,7 +9,6 @@ import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CatchingHandler {
+public class CatchingHandler extends Handler {
     private static CatchingHandler INSTANCE = new CatchingHandler();
 
     public static CatchingHandler instance() {
@@ -31,14 +31,9 @@ public class CatchingHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private long startScanTime = 0L;
     private boolean scanDone = true;
     private String fishNameToFind = "";
-
-    public boolean isScanDone() {
-        return scanDone;
-    }
     //endregion
 
     //region Methods

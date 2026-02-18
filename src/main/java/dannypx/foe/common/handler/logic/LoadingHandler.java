@@ -1,9 +1,9 @@
 package dannypx.foe.common.handler.logic;
 
+import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.item.FishingRodNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class LoadingHandler {
+public class LoadingHandler extends Handler {
     private static LoadingHandler INSTANCE = new LoadingHandler();
 
     public static LoadingHandler instance() {
@@ -22,7 +22,6 @@ public class LoadingHandler {
     }
 
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private boolean isLoadingDone = false;
     private boolean isError = false;
 
