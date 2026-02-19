@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.CodeExecuterHandler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.type.Pair;
@@ -34,7 +35,7 @@ public class QuestScreenHandler extends Handler {
     public void checkQuests(GenericContainerScreenHandler genericContainerScreenHandler) {
         List<QuestDataHandler.Quest> questList = new ArrayList<>();
 
-        minecraftClient.execute(() -> {
+        CodeExecuterHandler.runLater(2, () -> {
             genericContainerScreenHandler.slots.forEach(slot -> {
                 if (minecraftClient.player != null
                         && slot.inventory != minecraftClient.player.getInventory()

@@ -53,18 +53,16 @@ public class InventoryRenderHandler extends Handler {
     }
 
     public void render(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-        if(!LoadingHandler.instance().isLoadingDone()
+        if(LoadingHandler.instance().isLoadingDone()
                 && Configs.inventoryScreenConfig.showStatsElement.get()
                 && Configs.mainConfig.enableMod.get()
         ) {
-            return;
+            elements.forEach(element -> element.v2().render(drawContext, MinecraftClient.getInstance().getRenderTickCounter()));
+            if(this.statList != null) {
+                this.statList.render(drawContext, mouseX, mouseY, tickDelta);
+            }
+            this.renderStatBoxHeaderText(drawContext);
         }
-
-        elements.forEach(element -> element.v2().render(drawContext, MinecraftClient.getInstance().getRenderTickCounter()));
-        if(this.statList != null) {
-            this.statList.render(drawContext, mouseX, mouseY, tickDelta);
-        }
-        this.renderStatBoxHeaderText(drawContext);
     }
 
     private void renderStatBoxHeaderText(DrawContext drawContext) {
@@ -83,18 +81,16 @@ public class InventoryRenderHandler extends Handler {
     }
 
     private void initWidgets(Screen screen) {
-        if(!LoadingHandler.instance().isLoadingDone()
+        if(LoadingHandler.instance().isLoadingDone()
                 && Configs.inventoryScreenConfig.showStatsElement.get()
                 && Configs.mainConfig.enableMod.get()
         ) {
-            return;
+            List<ClickableWidget> widgets = new ArrayList<>();
+
+            widgets.add(getStatList());
+
+            widgets.forEach(Screens.getButtons(screen)::add);
         }
-
-        List<ClickableWidget> widgets = new ArrayList<>();
-
-        widgets.add(getStatList());
-
-        widgets.forEach(Screens.getButtons(screen)::add);
     }
 
     public void onMouseScrolled(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {

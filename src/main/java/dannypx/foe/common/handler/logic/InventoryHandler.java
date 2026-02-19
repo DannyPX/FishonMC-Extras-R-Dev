@@ -98,7 +98,6 @@ public class InventoryHandler extends Handler {
                 // New item in slot
                 if (oldStack.isEmpty() && !newStack.isEmpty()) {
                     this.snapshotInventory();
-
                     this.addToSnapshotItems(newStack, 1);
                 }
 
@@ -107,7 +106,6 @@ public class InventoryHandler extends Handler {
                         && !oldStack.isEmpty()
                         && oldStack.getCount() != newStack.getCount()) {
                     this.snapshotInventory();
-
                     this.addToSnapshotItems(newStack, newStack.getCount() - oldStack.getCount());
                 }
             }

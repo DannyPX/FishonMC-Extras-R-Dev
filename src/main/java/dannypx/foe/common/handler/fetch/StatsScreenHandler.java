@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.CodeExecuterHandler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
@@ -49,7 +50,7 @@ public class StatsScreenHandler extends Handler {
     //region Methods
     public void checkStats(GenericContainerScreenHandler genericContainerScreenHandler) {
         if(this.importStats) {
-            minecraftClient.execute(() -> {
+            CodeExecuterHandler.runLater(2, () -> {
                 Slot statSlot = genericContainerScreenHandler.getSlot(23);
                 boolean completed = this.extractData(statSlot.getStack());
 
