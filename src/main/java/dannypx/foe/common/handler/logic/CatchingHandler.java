@@ -52,7 +52,7 @@ public class CatchingHandler extends Handler {
                 QuestDataHandler.instance().setFish(foundFish.v2());
                 LoggerHandler._debug("Found Fish: " + foundFish.v2().getName().getString());
 
-                CodeExecuterHandler.runLater(1, this::checkForCaughtItems);
+                CodeExecuterHandler.runLater(Configs.handlerConfig.catchingItemsDelayCheck.get(), this::checkForCaughtItems);
 
                 this.scanDone = true;
             }
@@ -67,7 +67,7 @@ public class CatchingHandler extends Handler {
         if(minecraftClient.player != null) {
             InventoryHandler.instance().getSnapshottedItems().stream()
                     .filter(item -> System.currentTimeMillis() - item.v1()
-                            < Configs.handlerConfig.catchingItemsCheckWindow.get())
+                            < Configs.handlerConfig.catchingItemsCheckWindow.get() + (System.currentTimeMillis() - startScanTime))
                     .toList().forEach(item -> scanItem(item.v2(), item.v3()));
         }
     }

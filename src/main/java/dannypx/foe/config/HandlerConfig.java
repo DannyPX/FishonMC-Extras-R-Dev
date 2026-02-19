@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 0)
+@Version(version = 1)
 @Translatable.Name("Handlers")
 @Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")
@@ -98,10 +98,13 @@ public class HandlerConfig extends Config {
     @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
     public ValidatedInt catchingStatusCooldown = new ValidatedInt(5, 60, 0, ValidatedNumber.WidgetType.SLIDER);
 
-    @ConfigGroup.Pop
-    @ConfigGroup.Pop
-    @Desc("§7The cooldown in seconds before wasFishing() is turned to false")
+    @Desc("§7The item check window before caught fish.\nMake sure this is minimum 50 + (50 * catchingItemsDelayCheck)")
     public ValidatedLong catchingItemsCheckWindow = new ValidatedLong(100L, 1000L, 0L, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Desc("§7The delay in ticks before checking items")
+    public ValidatedInt catchingItemsDelayCheck = new ValidatedInt(1, 20, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
     @Override
