@@ -94,7 +94,9 @@ public class InventoryRenderHandler extends Handler {
     }
 
     public void onMouseScrolled(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        if(this.statList.isMouseOver(mouseX, mouseY)) {
+        if(this.statList.isMouseOver(mouseX, mouseY)
+                && Configs.inventoryScreenConfig.showStatsElement.get()
+        ) {
             this.statList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
         }
     }

@@ -64,6 +64,8 @@ public class CatchingHandler extends Handler {
 
     private void checkForCaughtItems() {
         LoggerHandler._debug("Start finding items");
+        LoggerHandler._debug("Start Time: " + System.currentTimeMillis());
+        LoggerHandler._debug("Search Window: " + (Configs.handlerConfig.catchingItemsCheckWindow.get() + (System.currentTimeMillis() - startScanTime)));
         if(minecraftClient.player != null) {
             InventoryHandler.instance().getSnapshottedItems().stream()
                     .filter(item -> System.currentTimeMillis() - item.v1()
