@@ -19,7 +19,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 0)
+@Version(version = 1)
 @Translatable.Name("Debug Configuration")
 @Translatable.Desc("§4WARNING §7Debugging only. Do not touch these unless you know what you are doing")
 public class _DebugConfig extends Config {
@@ -31,11 +31,14 @@ public class _DebugConfig extends Config {
     @Desc("§4WARNING §7This is for advanced users")
     public ValidatedBoolean debugMode = new ValidatedBoolean(false);
 
+    @Name("Enable Notifications")
+    public ValidatedBoolean showNotification = new ValidatedBoolean(false);
+
     @Name("Debug Field Element")
     @Desc("§7This is your profile shown on the hud. (Name, Level, Picture)")
     public ConfigGroup debugFieldGroup = new ConfigGroup("profile_element_group");
 
-    @Name("Show Profile Element")
+    @Name("Show Debug Field Element")
     public ValidatedBoolean debugFieldElement = new ValidatedBoolean(true);
 
     @Name("X Position in %")

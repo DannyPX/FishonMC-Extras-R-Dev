@@ -37,18 +37,26 @@ public class LoggerHandler {
     public static void _debug(Text m) {
         if(Configs.debugConfig.debugMode.get()) {
             LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
-            NotifierHandler.instance().addNotification(
-                    new NotifierHandler.Notification(1, 1, Configs.handlerConfig.debugDismissalTime.get(), List.of(m))
-            );
+
+            if(Configs.debugConfig.showNotification.get()) {
+                NotifierHandler.instance().addNotification(
+                        new NotifierHandler.Notification(1, 1, Configs.handlerConfig.debugDismissalTime.get(), List.of(m))
+                );
+            }
+
         }
     }
 
     public static void _debug(Text m, ItemStack item) {
         if(Configs.debugConfig.debugMode.get()) {
             LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
-            NotifierHandler.instance().addNotification(
-                    new NotifierHandler.Notification(item, 1, 1, Configs.handlerConfig.debugDismissalTime.get(), List.of(m))
-            );
+
+            if(Configs.debugConfig.showNotification.get()) {
+                NotifierHandler.instance().addNotification(
+                        new NotifierHandler.Notification(item, 1, 1, Configs.handlerConfig.debugDismissalTime.get(), List.of(m))
+                );
+            }
+
         }
     }
     //endregion

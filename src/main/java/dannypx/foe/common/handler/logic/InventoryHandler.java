@@ -119,6 +119,8 @@ public class InventoryHandler extends Handler {
     }
 
     private void addToSnapshotItems(ItemStack newStack, int count) {
+        LoggerHandler._debug("Snapshotted Item: " + newStack.getName().getString());
+        LoggerHandler._debug("Snapshotted Time: " + System.currentTimeMillis());
         snapshottedItems.add(Triplet.of(System.currentTimeMillis(), newStack, count));
     }
 
