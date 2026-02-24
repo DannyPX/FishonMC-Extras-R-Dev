@@ -96,9 +96,11 @@ public class InventoryHandler extends Handler {
                 ItemStack newStack = newInventory.get(i);
 
                 // New item in slot
-                if (oldStack.isEmpty() && !newStack.isEmpty()) {
+                if ((oldStack.isEmpty() && !newStack.isEmpty())
+                        || (newStack.isEmpty() && !oldStack.isEmpty())
+                ) {
                     this.snapshotInventory();
-                    this.addToSnapshotItems(newStack, 1);
+                    if(!newStack.isEmpty()) this.addToSnapshotItems(newStack, 1);
                 }
 
                 // Same item, stack size changed
