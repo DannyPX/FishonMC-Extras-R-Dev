@@ -1,6 +1,6 @@
 package dannypx.foe.common.handler.renderer;
 
-import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.ScreenHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
@@ -16,12 +16,12 @@ import net.minecraft.util.Formatting;
 
 import java.util.Map;
 
-public class ChatRenderHandler extends Handler {
-    private static ChatRenderHandler INSTANCE = new ChatRenderHandler();
+public class ChatScreenRenderHandler extends ScreenHandler {
+    private static ChatScreenRenderHandler INSTANCE = new ChatScreenRenderHandler();
 
-    public static ChatRenderHandler instance() {
+    public static ChatScreenRenderHandler instance() {
         if (INSTANCE == null) {
-            INSTANCE = new ChatRenderHandler();
+            INSTANCE = new ChatScreenRenderHandler();
         }
         return INSTANCE;
     }

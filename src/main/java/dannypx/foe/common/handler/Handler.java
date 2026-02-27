@@ -7,7 +7,7 @@ import net.minecraft.text.MutableText;
 import java.util.Map;
 
 public abstract class Handler {
-    protected final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    protected static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
     public void init() {}
     public void tick() {}

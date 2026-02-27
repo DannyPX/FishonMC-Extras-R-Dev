@@ -165,6 +165,51 @@ public class TextHelper {
         };
     }
 
+    public static String normalLetter(String string) {
+        // based on numeric ping
+        char[] characters = new char[string.length()];
+
+        for (int index = 0; index < string.length(); index++) {
+            characters[index] = string.charAt(index);
+
+            characters[index] = normalLetter(characters[index]);
+        }
+
+        return String.valueOf(characters);
+    }
+
+    public static char normalLetter(char c) {
+        return switch (c) {
+            case 'ᴀ' -> 'a';
+            case 'ʙ' -> 'b';
+            case 'ᴄ' -> 'c';
+            case 'ᴅ' -> 'd';
+            case 'ᴇ' -> 'e';
+            case 'ꜰ' -> 'f';
+            case 'ɢ' -> 'g';
+            case 'ʜ' -> 'h';
+            case 'ɪ' -> 'i';
+            case 'ᴊ' -> 'j';
+            case 'ᴋ' -> 'k';
+            case 'ʟ' -> 'l';
+            case 'ᴍ' -> 'm';
+            case 'ɴ' -> 'n';
+            case 'ᴏ' -> 'o';
+            case 'ᴘ' -> 'p';
+            case 'ꞯ' -> 'q';
+            case 'ʀ' -> 'r';
+            case 'ꜱ' -> 's';
+            case 'ᴛ' -> 't';
+            case 'ᴜ' -> 't';
+            case 'ᴠ' -> 'v';
+            case 'ᴡ' -> 'w';
+            case 'x' -> 'x';
+            case 'ʏ' -> 'y';
+            case 'ᴢ' -> 'z';
+            default -> c;
+        };
+    }
+
     public static boolean isNumber(char c) {
         return (c >= '0' && c <= '9');
     }

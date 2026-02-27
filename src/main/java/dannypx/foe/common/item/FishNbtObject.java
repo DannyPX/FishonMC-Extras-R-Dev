@@ -28,18 +28,30 @@ public class FishNbtObject extends NbtObject {
     }
 
     public String getFish() {
-        return this.nbtCompound.getString(FISH);
+        if(this.contains(FISH)) {
+            return this.nbtCompound.getString(FISH);
+        }
+        return "";
     }
 
     public float getLength() {
-        return this.nbtCompound.getFloat(LENGTH);
+        if(this.contains(LENGTH)) {
+            return this.nbtCompound.getFloat(LENGTH);
+        }
+        return 0f;
     }
     public float getWeight() {
-        return this.nbtCompound.getFloat(WEIGHT);
+        if(this.contains(WEIGHT)) {
+            return this.nbtCompound.getFloat(WEIGHT);
+        }
+        return 0f;
     }
 
     public String getVariant() {
-        return this.nbtCompound.getString(VARIANT);
+        if(this.contains(VARIANT)) {
+            return this.nbtCompound.getString(VARIANT);
+        }
+        return "";
     }
 
     public Text getVariantText() {

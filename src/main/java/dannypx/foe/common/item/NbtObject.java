@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.Text;
@@ -48,15 +49,49 @@ public class NbtObject {
         this.itemStack = itemStack.copy();
     }
 
+    //region Generics
+    public boolean contains(String key) {
+        return this.nbtCompound.contains(key);
+    }
+
+    public int getInt(String key) {
+        return this.nbtCompound.getInt(key);
+    }
+
+    public float getFloat(String key) {
+        return this.nbtCompound.getFloat(key);
+    }
+
+    public String getString(String key) {
+        return this.nbtCompound.getString(key);
+    }
+
+    public boolean getBoolean(String key) {
+        return this.nbtCompound.getBoolean(key);
+    }
+
+    public UUID getUuid(String key) {
+        return this.nbtCompound.getUuid(key);
+    }
+
+    public NbtElement get(String key) {
+        return this.nbtCompound.get(key);
+    }
+
+    public byte getType(String key) {
+        return this.nbtCompound.getType(key);
+    }
+    //endregion
+
     public UUID getID() {
-        return this.nbtCompound.getUuid(ID);
+        return this.getUuid(ID);
     }
 
     public UUID getPlayerUUID() {
-        if(this.nbtCompound.contains(CATCHER)) {
-            return this.nbtCompound.getUuid(CATCHER);
-        } else if (this.nbtCompound.contains(UUID)) {
-            return this.nbtCompound.getUuid(UUID);
+        if(this.contains(CATCHER)) {
+            return this.getUuid(CATCHER);
+        } else if (this.contains(UUID)) {
+            return this.getUuid(UUID);
         }
         return null;
     }
@@ -67,8 +102,8 @@ public class NbtObject {
     }
 
     public int getCount() {
-        if(this.nbtCompound.contains(COUNTER)) {
-            return this.nbtCompound.getInt(COUNTER);
+        if(this.contains(COUNTER)) {
+            return this.getInt(COUNTER);
         }
         return this.itemStack.getCount();
     }
@@ -81,17 +116,17 @@ public class NbtObject {
     }
 
     public @NotNull String getType() {
-        if(this.nbtCompound.contains(TYPE)) {
-            return this.nbtCompound.getString(TYPE);
-        } else if (this.nbtCompound.contains(FishNbtObject.FISH)) {
+        if(this.contains(TYPE)) {
+            return this.getString(TYPE);
+        } else if (this.contains(FishNbtObject.FISH)) {
             return "fish";
         }
         return "";
     }
 
     public @NotNull String getRarity() {
-        if(this.nbtCompound.contains(RARITY)) {
-            return this.nbtCompound.getString(RARITY);
+        if(this.contains(RARITY)) {
+            return this.getString(RARITY);
         }
         return "";
     }
@@ -116,9 +151,9 @@ public class NbtObject {
     }
 
     protected List<NbtObject> getItemStackList(String key) {
-        if(this.nbtCompound.contains(key)) {
+        if(this.contains(key)) {
             DataResult<List<ItemStack>> result =
-                    ItemStack.CODEC.listOf().parse(NbtOps.INSTANCE, this.nbtCompound.get(key));
+                    ItemStack.CODEC.listOf().parse(NbtOps.INSTANCE, this.get(key));
             List<ItemStack> itemStackList = result.result().orElse(List.of());
 
             return itemStackList.stream().map(item -> {
@@ -130,8 +165,8 @@ public class NbtObject {
     }
 
     public NbtList getRenderInfo() {
-        if(this.nbtCompound.contains(RENDER_INFO)) {
-            return (NbtList) this.nbtCompound.get(RENDER_INFO);
+        if(this.contains(RENDER_INFO)) {
+            return (NbtList) this.get(RENDER_INFO);
         }
         return new NbtList();
     }

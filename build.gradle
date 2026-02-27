@@ -20,11 +20,6 @@ repositories {
 		name = "FzzyMaven"
 		url = uri("https://maven.fzzyhmstrs.me/")
 	}
-
-	maven {
-		name = "Terraformers"
-		url = "https://maven.terraformersmc.com/"
-	}
 }
 
 dependencies {
@@ -37,7 +32,6 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Mod Dependencies.
-	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 	modImplementation("me.fzzyhmstrs:fzzy_config:${project.fzzy_version}")
 	
 }
