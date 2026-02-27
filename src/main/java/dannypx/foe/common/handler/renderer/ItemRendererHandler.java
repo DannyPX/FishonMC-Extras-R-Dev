@@ -1,6 +1,7 @@
 package dannypx.foe.common.handler.renderer;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.SearchHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import java.util.Arrays;
 import java.util.List;
@@ -112,6 +114,18 @@ public class ItemRendererHandler extends Handler {
                 true
         );
         drawContext.getMatrices().pop();
+    }
+
+    public void drawSearchItem(DrawContext drawContext, ItemStack stack, int x, int y) {
+        if(SearchHandler.instance().isOnScreen()
+                && SearchHandler.instance().filterItem(stack)) {
+            drawContext.getMatrices().push();
+            drawContext.getMatrices().translate(0.0F, 0.0F, 180.0F);
+
+            drawContext.drawBorder(x, y, 16, 16, Colors.RED);
+
+            drawContext.getMatrices().pop();
+        }
     }
     //endregion
 

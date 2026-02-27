@@ -1,6 +1,9 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.renderer.AuctionHouseScreenRenderHandler;
+import dannypx.foe.common.handler.renderer.ChestScreenRenderHandler;
+import dannypx.foe.common.handler.renderer.PersonalVaultScreenRenderHandler;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -44,6 +47,12 @@ public class GenericContainerScreenHandler extends Handler {
             QuestScreenHandler.instance().checkQuests(genericContainerScreen.getScreenHandler());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD532")) {
             StatsScreenHandler.instance().checkStats(genericContainerScreen.getScreenHandler());
+        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD543")) {
+            AuctionHouseScreenRenderHandler.instance().init(genericContainerScreen);
+        } else if (genericContainerScreen.getTitle().getString().startsWith("Personal Vault #")) {
+            PersonalVaultScreenRenderHandler.instance().init(genericContainerScreen);
+        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), " ")) {
+            ChestScreenRenderHandler.instance().init(genericContainerScreen);
         }
     }
     //endregion

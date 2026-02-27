@@ -20,6 +20,7 @@ public class PetNbtObject extends NbtObject {
     public static final String LOCATION_BASE = "lbase";
     public static final String CLIMATE_BASE = "cbase";
     public static final String PERCENT_MAX_BASE = "percent_max";
+    public static final String MAX_BASE = "cur_max";
 
     public static final int RATING_LINE = 15;
     public static final int RATING_SIBLING = 2;
@@ -34,14 +35,14 @@ public class PetNbtObject extends NbtObject {
     }
 
     public int getLevel() {
-        if(this.nbtCompound.contains(LEVEL)) {
+        if(this.contains(LEVEL)) {
             return this.nbtCompound.getInt(LEVEL);
         }
         return 0;
     }
 
     public float getProgress() {
-        if(this.nbtCompound.contains(XP_NEED) && this.nbtCompound.contains(XP_CURRENT)) {
+        if(this.contains(XP_NEED) && this.contains(XP_CURRENT)) {
             float neededXP = this.nbtCompound.getFloat(XP_NEED);
             float currentXP = this.nbtCompound.getFloat(XP_CURRENT);
             return Math.min(currentXP / neededXP, 1f);
@@ -58,14 +59,14 @@ public class PetNbtObject extends NbtObject {
     }
 
     public NbtList getLocationBase() {
-        if(this.nbtCompound.contains(LOCATION_BASE)) {
+        if(this.contains(LOCATION_BASE)) {
             return this.nbtCompound.getList(LOCATION_BASE, NbtElement.COMPOUND_TYPE);
         }
         return new NbtList();
     }
 
     public NbtList getClimateBase() {
-        if(this.nbtCompound.contains(CLIMATE_BASE)) {
+        if(this.contains(CLIMATE_BASE)) {
             return this.nbtCompound.getList(CLIMATE_BASE, NbtElement.COMPOUND_TYPE);
         }
         return new NbtList();
@@ -110,6 +111,50 @@ public class PetNbtObject extends NbtObject {
             NbtCompound compound = base.getCompound(1);
             if(compound.contains(PERCENT_MAX_BASE)) {
                 return compound.getFloat(PERCENT_MAX_BASE);
+            }
+        }
+        return 0f;
+    }
+
+    public float getLocationMaxLuck() {
+        NbtList base = this.getLocationBase();
+        if(!base.isEmpty()) {
+            NbtCompound compound = base.getCompound(0);
+            if(compound.contains(MAX_BASE)) {
+                return compound.getInt(MAX_BASE);
+            }
+        }
+        return 0f;
+    }
+
+    public float getLocationMaxScale() {
+        NbtList base = this.getLocationBase();
+        if(!base.isEmpty()) {
+            NbtCompound compound = base.getCompound(1);
+            if(compound.contains(MAX_BASE)) {
+                return compound.getInt(MAX_BASE);
+            }
+        }
+        return 0f;
+    }
+
+    public float getClimateMaxLuck() {
+        NbtList base = this.getClimateBase();
+        if(!base.isEmpty()) {
+            NbtCompound compound = base.getCompound(0);
+            if(compound.contains(MAX_BASE)) {
+                return compound.getInt(MAX_BASE);
+            }
+        }
+        return 0f;
+    }
+
+    public float getClimateMaxScale() {
+        NbtList base = this.getClimateBase();
+        if(!base.isEmpty()) {
+            NbtCompound compound = base.getCompound(1);
+            if(compound.contains(MAX_BASE)) {
+                return compound.getInt(MAX_BASE);
             }
         }
         return 0f;

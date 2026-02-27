@@ -10,10 +10,10 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.common.handler.renderer.ChatRenderHandler;
+import dannypx.foe.common.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.common.handler.renderer.HudRenderHandler;
-import dannypx.foe.common.handler.renderer.InventoryRenderHandler;
+import dannypx.foe.common.handler.renderer.InventoryScreenRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -44,7 +44,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
 
@@ -91,14 +90,17 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onAfterInitScreen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
+        SearchHandler.instance().setFocused(false);
+        SearchHandler.instance().setOnScreen(false);
+
         if(screen instanceof InventoryScreen) {
-            InventoryRenderHandler.instance().init(screen);
-            ScreenEvents.afterRender(screen).register(InventoryRenderHandler.instance()::render);
-            ScreenMouseEvents.afterMouseScroll(screen).register(InventoryRenderHandler.instance()::onMouseScrolled);
+            InventoryScreenRenderHandler.instance().init(screen);
+            ScreenEvents.afterRender(screen).register(InventoryScreenRenderHandler.instance()::render);
+            ScreenMouseEvents.afterMouseScroll(screen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
         } else if(screen instanceof GenericContainerScreen genericContainerScreen) {
             GenericContainerScreenHandler.instance().init(genericContainerScreen);
         } else if(screen instanceof ChatScreen) {
-            ScreenEvents.afterRender(screen).register(ChatRenderHandler.instance()::render);
+            ScreenEvents.afterRender(screen).register(ChatScreenRenderHandler.instance()::render);
         }
     }
 

@@ -1,6 +1,6 @@
 package dannypx.foe.common.handler.renderer;
 
-import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.ScreenHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
@@ -23,12 +23,12 @@ import net.minecraft.util.Formatting;
 
 import java.util.*;
 
-public class InventoryRenderHandler extends Handler {
-    private static InventoryRenderHandler INSTANCE = new InventoryRenderHandler();
+public class InventoryScreenRenderHandler extends ScreenHandler {
+    private static InventoryScreenRenderHandler INSTANCE = new InventoryScreenRenderHandler();
 
-    public static InventoryRenderHandler instance() {
+    public static InventoryScreenRenderHandler instance() {
         if (INSTANCE == null) {
-            INSTANCE = new InventoryRenderHandler();
+            INSTANCE = new InventoryScreenRenderHandler();
         }
         return INSTANCE;
     }
@@ -82,12 +82,11 @@ public class InventoryRenderHandler extends Handler {
 
     private void initWidgets(Screen screen) {
         if(LoadingHandler.instance().isLoadingDone()
-                && Configs.inventoryScreenConfig.showStatsElement.get()
                 && Configs.mainConfig.enableMod.get()
         ) {
             List<ClickableWidget> widgets = new ArrayList<>();
 
-            widgets.add(getStatList());
+            if(Configs.inventoryScreenConfig.showStatsElement.get()) widgets.add(getStatList());
 
             widgets.forEach(Screens.getButtons(screen)::add);
         }

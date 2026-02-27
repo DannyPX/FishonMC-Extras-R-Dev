@@ -14,7 +14,8 @@ public class _DebugLogic {
                 KeyBindHandler.class.getName(),
                 InventoryHandler.class.getName(),
                 NotifierHandler.class.getName(),
-                RayCastHandler.class.getName()
+                RayCastHandler.class.getName(),
+                SearchHandler.class.getName()
         );
     }
 
@@ -26,7 +27,8 @@ public class _DebugLogic {
                 KeyBindHandler.class.getName(), KeyBindHandler.instance()._getFields(),
                 InventoryHandler.class.getName(), InventoryHandler.instance()._getFields(),
                 NotifierHandler.class.getName(), NotifierHandler.instance()._getFields(),
-                RayCastHandler.class.getName(), RayCastHandler.instance()._getFields()
+                RayCastHandler.class.getName(), RayCastHandler.instance()._getFields(),
+                SearchHandler.class.getName(), SearchHandler.instance()._getFields()
         );
     }
 }

@@ -39,6 +39,7 @@ public abstract class DrawContextMixin {
                 && Configs.mixinConfig.drawContextAlterDrawStackOverlay.get()
         ) {
             ItemRendererHandler.instance().drawRarityMarker((DrawContext) (Object) this, textRenderer, stack, x, y);
+            ItemRendererHandler.instance().drawSearchItem((DrawContext) (Object) this, stack, x, y);
         }
     }
 }

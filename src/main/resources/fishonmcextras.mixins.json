@@ -17,6 +17,7 @@
     "inject.BossBarHudMixin",
     "inject.DrawContextMixin",
     "inject.FishingBobberEntityRendererMixin",
+    "inject.HandledScreenMixin",
     "inject.InGameHudMixin",
     "inject.RecipeBookScreenMixin",
     "inject.RecipeBookWidgetMixin"
