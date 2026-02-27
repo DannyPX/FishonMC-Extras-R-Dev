@@ -200,7 +200,7 @@ public class TextHelper {
             case 'ʀ' -> 'r';
             case 'ꜱ' -> 's';
             case 'ᴛ' -> 't';
-            case 'ᴜ' -> 't';
+            case 'ᴜ' -> 'u';
             case 'ᴠ' -> 'v';
             case 'ᴡ' -> 'w';
             case 'x' -> 'x';
