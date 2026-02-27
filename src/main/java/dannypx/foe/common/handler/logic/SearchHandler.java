@@ -278,16 +278,27 @@ public class SearchHandler extends Handler {
                             List<Text> textList = itemStack.get(DataComponentTypes.LORE).lines();
                             AtomicBoolean hasText = new AtomicBoolean(false);
                             textList.forEach(text -> {
-                                if(text.getString().toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US))) hasText.set(true);
+                                String convertedText = TextHelper.normalLetter(text.getString());
+                                if(convertedText.toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US))) hasText.set(true);
                             });
                             yield hasText.get();
+                        } else {
+                            yield false;
                         }
+                    } else {
+                        yield false;
                     }
-                    yield false;
+                } else {
+                    yield true;
                 }
-                yield true;
             }
-            default -> true;
+            default -> {
+                if(searchFilter.key.equalsIgnoreCase("tooltip")) {
+                    yield false;
+                } else {
+                    yield true;
+                }
+            }
         };
     }
 
@@ -299,21 +310,34 @@ public class SearchHandler extends Handler {
         return switch (searchFilter.value) {
             case StringValue str -> {
                 if(searchFilter.key.equalsIgnoreCase("type")) {
-                    if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
+                    if(searchFilter.operator == Operator.SHORT_EQUAL) {
                         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
-                        if(!validatedItem.v1()) {
-                            yield false;
+                        if(validatedItem.v2().getType().toLowerCase(Locale.US).contains(str.value().toLowerCase(Locale.US))) {
+                            yield true;
                         } else {
-                            if(!validatedItem.v2().getType().toLowerCase(Locale.US).contains(str.value().toLowerCase(Locale.US))) {
-                                yield false;
-                            }
+                            yield false;
                         }
+                    } else if (searchFilter.operator == Operator.EQUAL) {
+                        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
+                        if(validatedItem.v2().getType().toLowerCase(Locale.US).equalsIgnoreCase(str.value().toLowerCase(Locale.US))) {
+                            yield true;
+                        } else {
+                            yield false;
+                        }
+                    } else {
+                        yield false;
                     }
-                    yield false;
+                } else {
+                    yield true;
                 }
-                yield true;
             }
-            default -> true;
+            default -> {
+                if(searchFilter.key.equalsIgnoreCase("type")) {
+                    yield false;
+                } else {
+                    yield true;
+                }
+            }
         };
     }
 
@@ -381,10 +405,15 @@ public class SearchHandler extends Handler {
 
         return switch (searchFilter.value) {
             case StringValue stringValue -> {
-                if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
+                if(searchFilter.operator == Operator.SHORT_EQUAL) {
                     Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
                     if(validatedItem.v1() && validatedItem.v2().contains(searchFilter.key)) {
                         yield validatedItem.v2().getString(searchFilter.key).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US));
+                    }
+                } else if(searchFilter.operator == Operator.EQUAL) {
+                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    if(validatedItem.v1() && validatedItem.v2().contains(searchFilter.key)) {
+                        yield validatedItem.v2().getString(searchFilter.key).toLowerCase(Locale.US).equalsIgnoreCase(stringValue.value().toLowerCase(Locale.US));
                     }
                 }
                 yield false;
