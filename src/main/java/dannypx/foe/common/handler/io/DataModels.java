@@ -18,7 +18,8 @@ public class DataModels {
         PROFILE_DATA("profile"),
         STATS_DATA("stats"),
         CONSTANT_DATA("constant"),
-        QUEST_DATA("quest");
+        QUEST_DATA("quest"),
+        CUSTOM_HUD_DATA("custom_hud");
 
         public final String FILENAME;
 

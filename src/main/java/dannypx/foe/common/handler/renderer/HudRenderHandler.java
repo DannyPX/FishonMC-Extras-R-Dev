@@ -4,6 +4,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.logic.RayCastHandler;
+import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.config.Configs;
@@ -17,6 +18,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -35,11 +37,23 @@ public class HudRenderHandler extends Handler {
 
     //region Fields
     List<Pair<String, Element>> elements = new ArrayList<>();
+    List<Pair<String, Element>> customHudElements = new ArrayList<>();
     //endregion
 
     //region Methods
     public void init(LayeredDrawerWrapper layeredDrawerWrapper) {
         addElements(layeredDrawerWrapper);
+    }
+
+    public void tick() {
+        if(CustomHudDataHandler.instance().needsRenderUpdate) {
+            customHudElements.clear();
+            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> {
+                customHudElements.add(Pair.of(key, new CustomHudElement(minecraftClient, hud, Text.literal(key))));
+            });
+
+            CustomHudDataHandler.instance().needsRenderUpdate = false;
+        }
     }
 
     private void addElements(LayeredDrawerWrapper layeredDrawerWrapper) {
@@ -49,7 +63,6 @@ public class HudRenderHandler extends Handler {
         elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraftClient)));
         elements.add(Pair.of("pet_hud", new PetElement(minecraftClient)));
         elements.add(Pair.of("notifier_hud", new NotifierElement(minecraftClient)));
-        elements.add(Pair.of("sidebar_hud", new SidebarElement(minecraftClient)));
         elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
 
         elements.forEach(element -> {
@@ -59,10 +72,16 @@ public class HudRenderHandler extends Handler {
                     });
         });
 
-        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen"), this::render);
+        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen"), this::render);
+
+        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), this::renderAfterSubtitles);
     }
 
     private void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {
+        customHudElements.forEach(element -> element.v2().render(drawContext, renderTickCounter));
+    }
+
+    private void renderAfterSubtitles(DrawContext drawContext, RenderTickCounter renderTickCounter) {
         this.renderTooltip(drawContext);
     }
 

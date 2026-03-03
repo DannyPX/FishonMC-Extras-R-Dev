@@ -1,7 +1,11 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -10,6 +14,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class ScoreboardHandler extends Handler {
     private static ScoreboardHandler INSTANCE = new ScoreboardHandler();
@@ -87,6 +92,32 @@ public class ScoreboardHandler extends Handler {
     public MutableText getDate() {
         return date;
     }
+
+    public Pair<Boolean, CustomTextValue> getScoreboard(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(level|wallet|credits|catches|location_min|location_max|catch_rate|crew|crew_nearby|version|date)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "level" -> PlaceholderHandler.getTextValue(new TextValue(getLevel()));
+                    case "wallet" -> PlaceholderHandler.getTextValue(new StringValue(getWallet().getString()));
+                    case "credits" -> PlaceholderHandler.getTextValue(new StringValue(getCredits().getString()));
+                    case "catches" -> PlaceholderHandler.getTextValue(new StringValue(getCatches().getString()));
+                    case "location_min" -> PlaceholderHandler.getTextValue(new StringValue(getLocationMin().getString()));
+                    case "location_max" -> PlaceholderHandler.getTextValue(new StringValue(getLocationMax().getString()));
+                    case "catch_rate" -> PlaceholderHandler.getTextValue(new StringValue(getCatchRate().getString()));
+                    case "crew" -> PlaceholderHandler.getTextValue(new StringValue(getCrew().getString()));
+                    case "crew_nearby" -> PlaceholderHandler.getTextValue(new TextValue(isCrewNearby()));
+                    case "version" -> PlaceholderHandler.getTextValue(new StringValue(getVersion().getString()));
+                    case "date" -> PlaceholderHandler.getTextValue(new StringValue(getDate().getString()));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
+    }
     //endregion
 
     //region Methods
@@ -137,22 +168,6 @@ public class ScoreboardHandler extends Handler {
 
     private boolean checkText(Text text, String valueToMatch) {
         return text.getString().contains(valueToMatch);
-    }
-
-    private String getSubString(Text text, int beginIndex) {
-        return text.getString().substring(beginIndex);
-    }
-
-    private String getSubString(Text text, int beginIndex, int lastIndex) {
-        return text.getString().substring(beginIndex, lastIndex);
-    }
-
-    private int getIndexString(Text text, String valueToFind) {
-        return text.getString().indexOf(valueToFind);
-    }
-
-    private int getLastIndexString(Text text, String valueToFind) {
-        return text.getString().lastIndexOf(valueToFind);
     }
 
     private Pair<Boolean, List<Text>> extractLines(ScoreboardObjective objective) {

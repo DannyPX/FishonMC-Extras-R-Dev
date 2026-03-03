@@ -16,7 +16,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 0)
+@Version(version = 1)
 @Translatable.Name("HUD Configuration")
 @Translatable.Desc("§7Configure HUD elements")
 public class HUDConfig extends Config {
@@ -206,36 +206,6 @@ public class HUDConfig extends Config {
     @Name("Show notification when empty slots left")
     @Desc("§7How many empty slots before it shows the notification")
     public ValidatedInt showNotificationAtEmptySlots = new ValidatedInt(3, 36, 0, ValidatedNumber.WidgetType.SLIDER);
-
-
-    @Name("Sidebar Element")
-    @Desc("§7Options for the sidebar")
-    public ConfigGroup sidebarElementGroup = new ConfigGroup("notifier_element_group");
-
-    @Name("Show Sidebar Element")
-    public ValidatedBoolean showSidebarElement = new ValidatedBoolean(true);
-
-    @Name("X Position in %")
-    public ValidatedInt sidebarElementXPosition = new ValidatedInt(1, 100, 0, ValidatedNumber.WidgetType.SLIDER);
-
-    @Name("Y Position in %")
-    public ValidatedInt sidebarElementYPosition = new ValidatedInt(15, 100, 0, ValidatedNumber.WidgetType.SLIDER);
-
-    @Name("Anchor point")
-    public ValidatedChoice<Alignment> sidebarElementAlignment = new ValidatedChoice<>(Alignment.TOP_RIGHT, Alignment.getVerticalSides(), new ValidatedEnum<>(Alignment.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING);
-
-    @Name("Scale")
-    @Desc("§7This will scale based on the ratio. So 0.5 would be half the size")
-    public ValidatedFloat sidebarElementScale = ValidatedNumber.withIncrement(new ValidatedFloat(1.0f, 2.0f, 0.1f), 0.05f);
-
-    @Name("Sidebar Options")
-    @Desc("§7Options for the elements in the sidebar")
-    public ConfigGroup sidebarOptions = new ConfigGroup("sidebar_options_group");
-
-    @ConfigGroup.Pop
-    @ConfigGroup.Pop
-    @Name("Show quests in Sidebar")
-    public ValidatedBoolean showQuest = new ValidatedBoolean(true);
 
     @Override
     public @NotNull FileType fileType() {

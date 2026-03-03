@@ -32,7 +32,7 @@ public class NotifierElement extends Element implements ScreenConstants {
                 Configs.hudConfig.notifierElementXPosition.get() / 100f,
                 Configs.hudConfig.notifierElementYPosition.get() / 100f,
                 Configs.hudConfig.notifierElementAlignment.get(),
-                Configs.hudConfig.notifierElementGroup.translation("NotifierElement"),
+                Configs.hudConfig.notifierElementGroup.translation("Notifier Element"),
                 false);
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;
@@ -44,7 +44,7 @@ public class NotifierElement extends Element implements ScreenConstants {
                 Configs.hudConfig.notifierElementXPosition.get() / 100f,
                 Configs.hudConfig.notifierElementYPosition.get() / 100f,
                 Configs.hudConfig.notifierElementAlignment.get(),
-                Configs.hudConfig.notifierElementGroup.translation("NotifierElement"),
+                Configs.hudConfig.notifierElementGroup.translation("Notifier Element"),
                 isCopy);
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;

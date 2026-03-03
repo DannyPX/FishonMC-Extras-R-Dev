@@ -8,14 +8,18 @@ import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.CustomHudMakerScreen;
+import dannypx.foe.screens.MainScreen;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.screens.interfaces.ScreenConstants;
+import dannypx.foe.screens.widget.SmallButtonWidget;
 import dannypx.foe.screens.widget.StatListWidget;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -87,6 +91,30 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
             List<ClickableWidget> widgets = new ArrayList<>();
 
             if(Configs.inventoryScreenConfig.showStatsElement.get()) widgets.add(getStatList());
+
+            widgets.add(new SmallButtonWidget(
+                    minecraftClient.getWindow().getScaledWidth() / 2 + 66,
+                    minecraftClient.getWindow().getScaledHeight() / 2 - 23,
+                    14, 14,
+                    "F",
+                    Tooltip.of(Text.literal("Open FOER Menu")),
+                    Text.literal("FOER Button"),
+                    (button) -> {
+                        minecraftClient.setScreen(new MainScreen(minecraftClient.currentScreen));
+                    }
+            ));
+
+            widgets.add(new SmallButtonWidget(
+                    minecraftClient.getWindow().getScaledWidth() / 2 + 50,
+                    minecraftClient.getWindow().getScaledHeight() / 2 - 23,
+                    14, 14,
+                    "H",
+                    Tooltip.of(Text.literal("Edit Custom HUDs")),
+                    Text.literal("Custom HUDs Button"),
+                    (button) -> {
+                        minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen));
+                    }
+            ));
 
             widgets.forEach(Screens.getButtons(screen)::add);
         }

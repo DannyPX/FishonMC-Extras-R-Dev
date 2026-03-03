@@ -2,8 +2,12 @@ package dannypx.foe.common.handler.fetch;
 
 import com.google.gson.*;
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import dannypx.foe.mixin.accessor.BossBarHudAccessor;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.text.MutableText;
@@ -11,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class BossBarHandler extends Handler {
     private static BossBarHandler INSTANCE = new BossBarHandler();
@@ -48,6 +53,26 @@ public class BossBarHandler extends Handler {
 
     public MutableText getSubLocation() {
         return subLocation;
+    }
+
+    public Pair<Boolean, CustomTextValue> getBossBar(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(location|weather|time|temperature|sub_location)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "location" -> PlaceholderHandler.getTextValue(new TextValue(getLocation()));
+                    case "weather" -> PlaceholderHandler.getTextValue(new TextValue(getWeather()));
+                    case "time" -> PlaceholderHandler.getTextValue(new TextValue(getTime()));
+                    case "temperature" -> PlaceholderHandler.getTextValue(new TextValue(getTemperature()));
+                    case "sub_location" -> Pair.of(true, new TextValue(getSubLocation()));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

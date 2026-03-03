@@ -1,15 +1,14 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.handler.fetch.BossBarHandler;
 import dannypx.foe.common.handler.fetch.TabHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
-import dannypx.foe.common.handler.store.ConstantDataHandler;
-import dannypx.foe.common.handler.store.QuestDataHandler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
+import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
-import dannypx.foe.config.Configs;
+import dannypx.foe.common.type.Triplet;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
@@ -17,98 +16,87 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SidebarElement extends Element implements ScreenConstants {
+public class CustomHudElement extends Element implements ScreenConstants {
     //region Fields
     private final MinecraftClient minecraftClient;
     private final TextRenderer textRenderer;
 
-    // isCentre, Line
-    private List<Pair<Boolean, Text>> textLines = new ArrayList<>();
+    // isCentre, isSmall, Line
+    private List<Triplet<Boolean, Boolean, Text>> textLines = new ArrayList<>();
     private Pair<Integer, Integer> contentDimensions = Pair.of(0, 0);
 
     private int boxWidth = 0;
     private int boxHeight = 0;
 
-    private static final Identifier SIDEBAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/sidebar_atlas.png");
+    private CustomHudDataHandler.CustomHud customHud;
+
+    private static final Identifier BOX_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/sidebar_atlas.png");
     private static final int TEXTURE_WIDTH = 17;
     private static final int TEXTURE_HEIGHT = 11;
     private static final int BOX_PADDING = 5;
     private static final int MIN_WIDTH = 75;
+    private static final int LINE_HEIGHT = MinecraftClient.getInstance().textRenderer.fontHeight + 1;
     //endregion
 
-    public SidebarElement(MinecraftClient minecraftClient) {
+    public CustomHudElement(MinecraftClient minecraftClient, CustomHudDataHandler.CustomHud customHud, Text message) {
         super(75,
                 50,
-                Configs.hudConfig.sidebarElementXPosition.get() / 100f,
-                Configs.hudConfig.sidebarElementYPosition.get() / 100f,
-                Configs.hudConfig.sidebarElementAlignment.get(),
-                Configs.hudConfig.sidebarElementGroup.translation("SideBarElement"),
+                customHud.xPos / 100f,
+                customHud.yPos / 100f,
+                customHud.alignment,
+                message,
                 false);
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;
-    }
-
-    public SidebarElement(MinecraftClient minecraftClient, boolean isCopy) {
-        super(75,
-                50,
-                Configs.hudConfig.sidebarElementXPosition.get() / 100f,
-                Configs.hudConfig.sidebarElementYPosition.get() / 100f,
-                Configs.hudConfig.sidebarElementAlignment.get(),
-                Configs.hudConfig.sidebarElementGroup.translation("SideBarElement"),
-                isCopy);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.customHud = customHud;
     }
 
     //region Methods
     @Override
     public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.sidebarElementScale.get()));
-        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.sidebarElementScale.get()));
+        if(!customHud.showElement) { return; }
+
+        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / customHud.scale));
+        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / customHud.scale));
 
         drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.hudConfig.sidebarElementScale.get(), Configs.hudConfig.sidebarElementScale.get(), 1f);
+        drawContext.getMatrices().scale(customHud.scale, customHud.scale, 1f);
         if(LoadingHandler.instance().isLoadingDone()
-                && Configs.hudConfig.showSidebarElement.get()
                 && TabHandler.instance().isInInstance()
         ) {
-            // Position
-            if(!isCopy) {
-                xPos = Configs.hudConfig.sidebarElementXPosition.get() / 100f;
-                yPos = Configs.hudConfig.sidebarElementYPosition.get() / 100f;
-            }
-
-            int x = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
+            int x = switch (customHud.alignment) {
                 case TOP_LEFT, BOTTOM_LEFT, LEFT -> Math.round(scaledWidth * xPos);
                 case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> scaledWidth
                         - Math.round(scaledWidth * xPos);
                 default -> 0;
             };
 
-            int y = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
+            int y = switch (customHud.alignment) {
                 case TOP_LEFT, TOP_RIGHT, LEFT, RIGHT -> Math.round(scaledHeight * yPos);
                 case BOTTOM_LEFT, BOTTOM_RIGHT -> scaledHeight
                         - Math.round(scaledHeight * yPos);
                 default -> 0;
             };
 
-            contentDimensions = this.assembleSidebarElements();
+            contentDimensions = this.assembleHud();
             boxWidth = contentDimensions.v1() + BOX_PADDING * 2 + PADDING * 2;
             boxHeight = contentDimensions.v2() + BOX_PADDING * 2 + PADDING_QUART * 2;
             if(!textLines.isEmpty()) {
-                x = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
+                x = switch (customHud.alignment) {
                     case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> x - boxWidth;
                     default -> x;
                 };
 
-                y = switch (Configs.hudConfig.sidebarElementAlignment.get()) {
+                y = switch (customHud.alignment) {
                     case BOTTOM_LEFT, BOTTOM_RIGHT -> y - boxHeight;
                     case LEFT, RIGHT -> y - boxHeight / 2;
                     default -> y;
@@ -128,16 +116,16 @@ public class SidebarElement extends Element implements ScreenConstants {
         AtomicInteger line = new AtomicInteger(0);
         textLines.forEach(text -> {
             if(text.v1()) {
-                DrawHelper.drawText(drawContext, textRenderer, text.v2(),
-                        x + (boxWidth / 2) - textRenderer.getWidth(Text.literal(TextHelper.smallText(text.v2().getString())).setStyle(text.v2().getStyle())) / 2,
-                        textY + line.getAndIncrement() * textRenderer.fontHeight,
-                        true, true, true, true
+                DrawHelper.drawText(drawContext, textRenderer, text.v3(),
+                        x + (boxWidth / 2) - TextHelper.getWidth(textRenderer, text.v3(), text.v2()) / 2,
+                        textY + line.getAndIncrement() * LINE_HEIGHT,
+                        true, text.v2(), true, text.v2()
                         );
             } else {
-                DrawHelper.drawText(drawContext, textRenderer, text.v2(),
+                DrawHelper.drawText(drawContext, textRenderer, text.v3(),
                         textX,
-                        textY + line.getAndIncrement() * textRenderer.fontHeight,
-                        true, true, true, true
+                        textY + line.getAndIncrement() * LINE_HEIGHT,
+                        true, text.v2(), true, text.v2()
                 );
             }
         });
@@ -158,7 +146,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
         // Top Left
         drawContext.drawTexture(RenderLayer::getGuiTextured,
-                SIDEBAR_TEXTURE,
+                BOX_TEXTURE,
                 x, y,
                 0, NIB_HEIGHT,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -168,7 +156,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
         // Top
         drawContext.drawTexture(RenderLayer::getGuiTextured,
-                SIDEBAR_TEXTURE,
+                BOX_TEXTURE,
                 x + ATLAS_CORNER, y,
                 ATLAS_CORNER, NIB_HEIGHT,
                 this.boxWidth - ATLAS_CORNER * 2, ATLAS_BAR_HEIGHT,
@@ -178,7 +166,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
         // Top Right
         drawContext.drawTexture(RenderLayer::getGuiTextured,
-                SIDEBAR_TEXTURE,
+                BOX_TEXTURE,
                 x + this.boxWidth - ATLAS_CORNER, y,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, NIB_HEIGHT,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -188,7 +176,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
         // Bottom Left
         drawContext.drawTexture(RenderLayer::getGuiTextured,
-                SIDEBAR_TEXTURE,
+                BOX_TEXTURE,
                 x, y + this.boxHeight - ATLAS_CORNER,
                 0, 0,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -198,7 +186,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
         // Bottom
         drawContext.drawTexture(RenderLayer::getGuiTextured,
-                SIDEBAR_TEXTURE,
+                BOX_TEXTURE,
                 x + ATLAS_CORNER, y + this.boxHeight - ATLAS_CORNER + NIB_HEIGHT,
                 ATLAS_CORNER, NIB_HEIGHT,
                 this.boxWidth - ATLAS_CORNER * 2, ATLAS_BAR_HEIGHT,
@@ -208,7 +196,7 @@ public class SidebarElement extends Element implements ScreenConstants {
 
         // Bottom Right
         drawContext.drawTexture(RenderLayer::getGuiTextured,
-                SIDEBAR_TEXTURE,
+                BOX_TEXTURE,
                 x + this.boxWidth - ATLAS_CORNER, y + this.boxHeight - ATLAS_CORNER,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, 0,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -217,45 +205,32 @@ public class SidebarElement extends Element implements ScreenConstants {
         );
     }
 
-    private Pair<Integer, Integer> assembleSidebarElements() {
+    private Pair<Integer, Integer> assembleHud() {
         textLines.clear();
-        if(Configs.hudConfig.showQuest.get()) {
 
-            List<QuestDataHandler.Quest> questList = QuestDataHandler.instance().getQuestData().questList.getOrDefault(BossBarHandler.instance().getLocation().getString(), new ArrayList<>());
-            if(!questList.isEmpty()) {
-                textLines.add(Pair.of(true, TextHelper.concat(
-                        Text.literal("-- ").formatted(Formatting.BOLD, Formatting.GRAY),
-                        Text.literal("Quests ").formatted(Formatting.BOLD),
-                        Text.literal("--").formatted(Formatting.BOLD, Formatting.GRAY)
-                ).formatted(Formatting.BOLD)));
-                textLines.add(Pair.of(true, Text.empty()));
-                questList.forEach(quest -> {
-                    Text goal = ConstantDataHandler.instance().getConstantFishText(quest.goal);
-                    if(Objects.equals(goal, Text.empty())) {
-                        goal = Text.literal(TextHelper.capitalize(quest.goal));
-                    }
-                    if(quest.isDone()) {
-                        textLines.add(Pair.of(false, TextHelper.concat(
-                                goal,
-                                Text.literal(" "),
-                                Text.literal("completed").formatted(Formatting.GREEN)
-                        )));
-                    } else {
-                        textLines.add(Pair.of(false, TextHelper.concat(
-                                goal,
-                                Text.literal(" "),
-                                TextHelper.literal(quest.current).formatted(Formatting.YELLOW),
-                                Text.literal("/").formatted(Formatting.GRAY),
-                                TextHelper.literal(quest.max).formatted(Formatting.WHITE)
-                        )));
-                    }
-                });
+        AtomicBoolean hasData = new AtomicBoolean(false);
+
+        customHud.textLines.forEach(line -> {
+            String textString = line.v1().replace("&", "§");
+            Pair<Boolean, MutableText> textLine = PlaceholderHandler.parsePlaceholderFromString(textString);
+            if(textLine.v1()) {
+                textLines.add(Triplet.of(line.v2(), line.v3(), textLine.v2()));
             }
+            if(textLine.v1() && !textLine.v2().getString().isBlank()) {
+                hasData.set(true);
+            }
+        });
+
+        if(!hasData.get()) {
+            textLines.clear();
         }
 
         return Pair.of(
-                Math.max(MIN_WIDTH, textLines.stream().mapToInt(line -> textRenderer.getWidth(TextHelper.smallText(line.v2().getString()))).max().orElse(0)),
-                textRenderer.fontHeight * textLines.size()
+                Math.max(MIN_WIDTH, textLines.stream()
+                        .mapToInt(
+                                line -> TextHelper.getWidth(textRenderer, line.v3(), line.v2())
+                        ).max().orElse(0)),
+                LINE_HEIGHT * textLines.size()
         );
     }
     //endregion

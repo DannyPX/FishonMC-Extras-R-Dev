@@ -54,6 +54,11 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         return super.addEntry(entry);
     }
 
+    @Override
+    public boolean removeEntry(ButtonEntry entry) {
+        return super.removeEntry(entry);
+    }
+
     public static class ButtonEntry extends ElementListWidget.Entry<ButtonEntry> {
 
         private final ButtonWidget button;

@@ -3,8 +3,12 @@ package dannypx.foe.common.handler.fetch;
 import com.mojang.authlib.GameProfile;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoggerHandler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import dannypx.foe.mixin.accessor.PlayerListHudAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.PlayerListHud;
@@ -15,6 +19,7 @@ import net.minecraft.text.Text;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class TabHandler extends Handler {
     private static TabHandler INSTANCE = new TabHandler();
@@ -41,6 +46,24 @@ public class TabHandler extends Handler {
 
     public boolean isInInstance() {
         return isInInstance;
+    }
+
+    public Pair<Boolean, CustomTextValue> getTab(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(player_name|instance|is_in_instance)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "player_name" -> PlaceholderHandler.getTextValue(new TextValue(getPlayerName().copy()));
+                    case "instance" -> PlaceholderHandler.getTextValue(new StringValue(getInstance()));
+                    case "is_in_instance" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isInInstance())));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

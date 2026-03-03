@@ -2,6 +2,9 @@ package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.block.Block;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.item.ItemStack;
@@ -14,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class RayCastHandler extends Handler {
     private static RayCastHandler INSTANCE = new RayCastHandler();
@@ -43,6 +47,39 @@ public class RayCastHandler extends Handler {
     public @Nullable ItemStack getItemFrameItem() {
         return itemFrameItem;
     }
+
+    public Pair<Boolean, CustomTextValue> getRayCast(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(block_hit_result|entity_hit_result|item_frame_item)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "block_hit_result" -> {
+                        if(getBlockHitResult() != null && !getBlockFromHitResult().getString().contains("Air")) {
+                            yield PlaceholderHandler.getTextValue(new TextValue(getBlockFromHitResult()));
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    case "entity_hit_result" -> {
+                        if(getEntityHitResult() != null && !getEntityHitResult().getEntity().getName().getString().isBlank()) {
+                            yield PlaceholderHandler.getTextValue(new TextValue(getEntityHitResult().getEntity().getName().copy()));
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    case "item_frame_item" -> {
+                        if(getItemFrameItem() != ItemStack.EMPTY) {
+                            yield PlaceholderHandler.getTextValue(new TextValue(getItemFrameItem().getName().copy()));
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
+    }
     //endregion
 
     //region Methods
@@ -65,16 +102,6 @@ public class RayCastHandler extends Handler {
             itemFrameItem = ItemStack.EMPTY;
         }
     }
-    //endregion
-
-    //region Dev
-    /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
-        return Map.of(
-                "entityHitResult", Pair.of(getEntityHitResult() != null ? getEntityHitResult().getEntity().getName().copy() : Text.empty(), Text.empty()),
-                "blockHitResult" , Pair.of(getBlockFromHitResult() != null ? getBlockFromHitResult() : Text.empty(), Text.empty())
-        );
-    }
 
     private MutableText getBlockFromHitResult() {
         if(getBlockHitResult() != null && minecraftClient.world != null) {
@@ -83,6 +110,16 @@ public class RayCastHandler extends Handler {
             return block.getName();
         }
         return null;
+    }
+    //endregion
+
+    //region Dev
+    /// Field, Pair<Value, Tooltip>
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+        return Map.of(
+                "entityHitResult", Pair.of(getEntityHitResult() != null ? getEntityHitResult().getEntity().getName().copy() : Text.empty(), Text.empty()),
+                "blockHitResult" , Pair.of(getBlockHitResult() != null ? getBlockFromHitResult() : Text.empty(), Text.empty())
+        );
     }
     //endregion
 }

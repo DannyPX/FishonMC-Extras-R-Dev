@@ -11,7 +11,9 @@ public class _DebugStore {
         return List.of(
                 ProfileDataHandler.class.getName(),
                 StatsDataHandler.class.getName(),
-                ConstantDataHandler.class.getName()
+                ConstantDataHandler.class.getName(),
+                QuestDataHandler.class.getName(),
+                CustomHudDataHandler.class.getName()
         );
     }
 
@@ -20,7 +22,9 @@ public class _DebugStore {
         return Map.of(
                 ProfileDataHandler.class.getName(), ProfileDataHandler.instance()._getFields(),
                 StatsDataHandler.class.getName(), StatsDataHandler.instance()._getFields(),
-                ConstantDataHandler.class.getName(), ConstantDataHandler.instance()._getFields()
+                ConstantDataHandler.class.getName(), ConstantDataHandler.instance()._getFields(),
+                QuestDataHandler.class.getName(), QuestDataHandler.instance()._getFields(),
+                CustomHudDataHandler.class.getName(), CustomHudDataHandler.instance()._getFields()
         );
     }
 }

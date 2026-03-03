@@ -7,7 +7,11 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.*;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.common.type.Triplet;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class InventoryHandler extends Handler {
     private static InventoryHandler INSTANCE = new InventoryHandler();
@@ -71,6 +76,100 @@ public class InventoryHandler extends Handler {
 
     public boolean hasPet() {
         return this.currentPet.getItemStack() != ItemStack.EMPTY;
+    }
+
+    public Pair<Boolean, CustomTextValue> getInventory(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet)$");
+
+            if(fieldPattern.matcher(params[0]).matches()) {
+                return switch(params[0]) {
+                    case "fishing_rod" -> {
+                        if(params.length == 2) {
+                            yield switch(params[1]) {
+                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentFishingRod().getName().copy()));
+                                case "line" -> {
+                                    List<NbtObject> list = getCurrentFishingRod().getLineItem();
+                                    if(!list.isEmpty()) {
+                                        yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
+                                    }
+                                    yield Pair.of(false, new StringValue(""));
+
+                                }
+                                case "reel" -> {
+                                    List<NbtObject> list = getCurrentFishingRod().getReelItem();
+                                    if(!list.isEmpty()) {
+                                        yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
+                                    }
+                                    yield Pair.of(false, new StringValue(""));
+
+                                }
+                                case "pole" -> {
+                                    List<NbtObject> list = getCurrentFishingRod().getPoleItem();
+                                    if(!list.isEmpty()) {
+                                        yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
+                                    }
+                                    yield Pair.of(false, new StringValue(""));
+
+                                }
+                                default -> {
+                                    if(getCurrentFishingRod().contains(params[1])) {
+                                        NbtElement data = getCurrentFishingRod().get(params[1]);
+                                        yield switch (data.getType()) {
+                                            case 1 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getBoolean(params[1]))));
+                                            case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getInt(params[1]))));
+                                            case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getFloat(params[1]))));
+                                            case 8 -> PlaceholderHandler.getTextValue(new StringValue(getCurrentFishingRod().getString(params[1])));
+                                            default -> Pair.of(false, new StringValue(""));
+                                        };
+                                    }
+                                    yield Pair.of(false, new StringValue(""));
+                                }
+                            };
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    case "pet" -> {
+                        if(params.length == 2
+                                && hasPet()
+                        ) {
+                            yield switch(params[1]) {
+                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getName().copy()));
+                                case "level" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getLevel())));
+                                case "level_progress" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getProgress() * 100, 2)));
+                                case "rating" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRatingText().copy()));
+                                case "rating_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getTotalPercent() * 100, 2)));
+                                case "rarity" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRarityText().copy()));
+                                case "location_luck_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxLuck() * 100, 2)));
+                                case "location_scale_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxScale() * 100, 2)));
+                                case "climate_luck_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxLuck() * 100, 2)));
+                                case "climate_scale_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxScale() * 100, 2)));
+                                case "location_luck" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationMaxLuck(), 0)));
+                                case "location_scale" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
+                                case "climate_luck" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
+                                case "climate_scale" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
+                                default -> {
+                                    if(getCurrentPet().contains(params[1])) {
+                                        NbtElement data = getCurrentPet().get(params[1]);
+                                        yield switch (data.getType()) {
+                                            case 1 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getBoolean(params[1]))));
+                                            case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getInt(params[1]))));
+                                            case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getFloat(params[1]))));
+                                            case 8 -> PlaceholderHandler.getTextValue(new StringValue(getCurrentPet().getString(params[1])));
+                                            default -> Pair.of(false, new StringValue(""));
+                                        };
+                                    }
+                                    yield Pair.of(false, new StringValue(""));
+                                }
+                            };
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 
