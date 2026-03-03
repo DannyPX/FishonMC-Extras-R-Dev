@@ -4,16 +4,20 @@ import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.NotifierHandler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class StatsDataHandler extends Handler {
     private static StatsDataHandler INSTANCE = new StatsDataHandler();
@@ -43,6 +47,57 @@ public class StatsDataHandler extends Handler {
             DataFileHandler.instance().saveToFile(DataModels.DataModelType.STATS_DATA);
         }
         this.needsUpdate = false;
+    }
+
+    public Pair<Boolean, CustomTextValue> getStatsData(String[] params) {
+        if(params.length > 0) {
+            Pattern categoryPattern = Pattern.compile("^(fish|pet|item)$");
+
+            if(Objects.equals(params[0], "data")
+                    && params.length >= 3 || params.length <= 5
+                    && categoryPattern.matcher(params[1]).matches()
+            ) {
+                return switch (params[1]) {
+                    case "fish" -> {
+                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getStatsData().fishTotal)));
+                        Map<String, Map<String, Stat<Integer, Integer>>> fishData = getStatsData().fishData;
+                        yield getStatsData(fishData, params[2], params[3], params[4], getStatsData().fishTotal);
+                    }
+                    case "pet" -> {
+                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getStatsData().petTotal)));
+                        Map<String, Map<String, Stat<Integer, Integer>>> petData = getStatsData().petData;
+                        yield getStatsData(petData, params[2], params[3], params[4], getStatsData().fishTotal);
+                    }
+                    case "item" -> {
+                        Map<String, Stat<Integer, Integer>> itemData = getStatsData().itemData;
+                        yield getStatsData(itemData, params[2], params[3], getStatsData().fishTotal);
+                    }
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
+    }
+
+    private Pair<Boolean, CustomTextValue> getStatsData(Map<String, Map<String, Stat<Integer, Integer>>> category, String subCategory, String field, String type, int total) {
+        if(Objects.equals(subCategory, "rating")) field = TextHelper.smallText(field);
+        Map<String, Stat<Integer, Integer>> subCatMap = category.getOrDefault(subCategory, null);
+        if(subCatMap != null) {
+            return getStatsData(subCatMap, field, type, total);
+        }
+        return Pair.of(false, new StringValue(""));
+    }
+
+    private Pair<Boolean, CustomTextValue> getStatsData(Map<String, Stat<Integer, Integer>> subCategory, String field, String type, int total) {
+        Stat<Integer, Integer> stat = subCategory.getOrDefault(field, null);
+        if(stat != null) {
+            return switch (type) {
+                case "count" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(stat.amount())));
+                case "dry_streak" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(total - stat.caughtOn())));
+                default -> Pair.of(false, new StringValue(""));
+            };
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

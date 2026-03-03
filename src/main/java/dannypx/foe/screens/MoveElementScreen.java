@@ -1,9 +1,13 @@
 package dannypx.foe.screens;
 
+import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.common.type.Alignment;
+import dannypx.foe.common.type.Pair;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.element.hud.*;
 import dannypx.foe.screens.widget.MovableBoxWidget;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,6 +20,8 @@ import java.util.List;
 public class MoveElementScreen extends DefaultModScreen {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+
+    List<Pair<String, Element>> customHudElements = new ArrayList<>();
     //endregion
 
     //region Methods
@@ -26,7 +32,15 @@ public class MoveElementScreen extends DefaultModScreen {
     @Override
     protected void init() {
         super.init();
+        this.assembleCustomHudElements();
         this.renderWidgets();
+    }
+
+    private void assembleCustomHudElements() {
+        customHudElements.clear();
+        CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> {
+            customHudElements.add(Pair.of(key, new CustomHudElement(minecraftClient, hud, Text.literal(key))));
+        });
     }
 
     @Override
@@ -40,81 +54,138 @@ public class MoveElementScreen extends DefaultModScreen {
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new ProfileElement(minecraftClient, true),
                 Alignment.getTopCorners(),
-                Configs.hudConfig.showProfileElement.translationKey(),
-                (xPercent, yPercent, alignment) -> {
-                    Configs.hudConfig.profileElementXPosition.accept(xPercent);
-                    Configs.hudConfig.profileElementYPosition.accept(yPercent);
-                    Configs.hudConfig.profileElementAlignment.accept(alignment);
-                    Configs.hudConfig.save();
-        }));
+                new MovableBoxWidget.Callback() {
+                    @Override
+                    public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                        Configs.hudConfig.profileElementXPosition.accept(xPercent);
+                        Configs.hudConfig.profileElementYPosition.accept(yPercent);
+                        Configs.hudConfig.profileElementAlignment.accept(alignment);
+                        Configs.hudConfig.save();
+                    }
+
+                    @Override
+                    public void onConfig() {
+                        ConfigApiJava.INSTANCE.openScreen(Configs.hudConfig.showProfileElement.translationKey());
+                    }
+                }
+        ));
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new LocationElement(minecraftClient, true),
                 Alignment.getTopCorners(),
-                Configs.hudConfig.showLocationElement.translationKey(),
-                (xPercent, yPercent, alignment) -> {
-                    Configs.hudConfig.locationElementXPosition.accept(xPercent);
-                    Configs.hudConfig.locationElementYPosition.accept(yPercent);
-                    Configs.hudConfig.locationElementAlignment.accept(alignment);
-                    Configs.hudConfig.save();
-                }));
+                new MovableBoxWidget.Callback() {
+                    @Override
+                    public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                        Configs.hudConfig.locationElementXPosition.accept(xPercent);
+                        Configs.hudConfig.locationElementYPosition.accept(yPercent);
+                        Configs.hudConfig.locationElementAlignment.accept(alignment);
+                        Configs.hudConfig.save();
+                    }
+
+                    @Override
+                    public void onConfig() {
+                        ConfigApiJava.INSTANCE.openScreen(Configs.hudConfig.showLocationElement.translationKey());
+                    }
+                }
+        ));
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new HotbarElement(minecraftClient, true),
                 Alignment.getBottom(),
-                Configs.hudConfig.showHotbarElement.translationKey(),
-                (xPercent, yPercent, alignment) -> {
-                    Configs.hudConfig.hotbarElementXPosition.accept(xPercent);
-                    Configs.hudConfig.hotbarElementYPosition.accept(yPercent);
-                    Configs.hudConfig.hotbarElementAlignment.accept(alignment);
-                    Configs.hudConfig.save();
-                }));
+                new MovableBoxWidget.Callback() {
+                    @Override
+                    public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                        Configs.hudConfig.hotbarElementXPosition.accept(xPercent);
+                        Configs.hudConfig.hotbarElementYPosition.accept(yPercent);
+                        Configs.hudConfig.hotbarElementAlignment.accept(alignment);
+                        Configs.hudConfig.save();
+                    }
+
+                    @Override
+                    public void onConfig() {
+                        ConfigApiJava.INSTANCE.openScreen(Configs.hudConfig.showHotbarElement.translationKey());
+                    }
+                }
+        ));
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new PetElement(minecraftClient, true),
                 Alignment.getTopCorners(),
-                Configs.hudConfig.showPetElement.translationKey(),
-                (xPercent, yPercent, alignment) -> {
-                    Configs.hudConfig.petElementXPosition.accept(xPercent);
-                    Configs.hudConfig.petElementYPosition.accept(yPercent);
-                    Configs.hudConfig.petElementAlignment.accept(alignment);
-                    Configs.hudConfig.save();
-                }));
+                new MovableBoxWidget.Callback() {
+                    @Override
+                    public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                        Configs.hudConfig.petElementXPosition.accept(xPercent);
+                        Configs.hudConfig.petElementYPosition.accept(yPercent);
+                        Configs.hudConfig.petElementAlignment.accept(alignment);
+                        Configs.hudConfig.save();
+                    }
+
+                    @Override
+                    public void onConfig() {
+                        ConfigApiJava.INSTANCE.openScreen(Configs.hudConfig.showPetElement.translationKey());
+                    }
+                }
+        ));
 
         widgets.add(new MovableBoxWidget(minecraftClient,
                 new NotifierElement(minecraftClient, true),
                 Alignment.getCorners(),
-                Configs.hudConfig.showNotifierElement.translationKey(),
-                (xPercent, yPercent, alignment) -> {
-                    Configs.hudConfig.notifierElementXPosition.accept(xPercent);
-                    Configs.hudConfig.notifierElementYPosition.accept(yPercent);
-                    Configs.hudConfig.notifierElementAlignment.accept(alignment);
-                    Configs.hudConfig.save();
-                }));
+                new MovableBoxWidget.Callback() {
+                    @Override
+                    public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                        Configs.hudConfig.notifierElementXPosition.accept(xPercent);
+                        Configs.hudConfig.notifierElementYPosition.accept(yPercent);
+                        Configs.hudConfig.notifierElementAlignment.accept(alignment);
+                        Configs.hudConfig.save();
+                    }
 
-        widgets.add(new MovableBoxWidget(minecraftClient,
-                new SidebarElement(minecraftClient, true),
-                Alignment.getVerticalSides(),
-                Configs.hudConfig.showSidebarElement.translationKey(),
-                (xPercent, yPercent, alignment) -> {
-                    Configs.hudConfig.sidebarElementXPosition.accept(xPercent);
-                    Configs.hudConfig.sidebarElementYPosition.accept(yPercent);
-                    Configs.hudConfig.sidebarElementAlignment.accept(alignment);
-                    Configs.hudConfig.save();
-                }));
+                    @Override
+                    public void onConfig() {
+                        ConfigApiJava.INSTANCE.openScreen(Configs.hudConfig.showNotifierElement.translationKey());
+                    }
+                }
+        ));
+
+        customHudElements.forEach(element -> {
+            widgets.add(new MovableBoxWidget(minecraftClient,
+                    element.v2(),
+                    Alignment.getCorners(),
+                    new MovableBoxWidget.Callback() {
+                        @Override
+                        public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                            CustomHudDataHandler.instance().updateHud(element.v1(), xPercent, yPercent, alignment);
+                        }
+
+                        @Override
+                        public void onConfig() {
+                            minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen));
+                        }
+                    }
+            ));
+        });
 
         if(Configs.debugConfig.debugMode.get()) {
             widgets.add(new MovableBoxWidget(minecraftClient,
                     new _DebugField(minecraftClient, true),
                     Alignment.getCorners(),
-                    Configs.debugConfig.debugFieldElement.translationKey(),
-                    (xPercent, yPercent, alignment) -> {
-                        Configs.debugConfig.debugFieldXPosition.accept(xPercent);
-                        Configs.debugConfig.debugFieldYPosition.accept(yPercent);
-                        Configs.debugConfig.debugFieldAlignment.accept(alignment);
-                        Configs.debugConfig.save();
-                    }));
+                    new MovableBoxWidget.Callback() {
+                        @Override
+                        public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                            Configs.debugConfig.debugFieldXPosition.accept(xPercent);
+                            Configs.debugConfig.debugFieldYPosition.accept(yPercent);
+                            Configs.debugConfig.debugFieldAlignment.accept(alignment);
+                            Configs.debugConfig.save();
+                        }
+
+                        @Override
+                        public void onConfig() {
+                            ConfigApiJava.INSTANCE.openScreen(Configs.debugConfig.debugFieldElement.translationKey());
+                        }
+                    }
+            ));
         }
+
+
 
         widgets.forEach(this::addDrawableChild);
     }

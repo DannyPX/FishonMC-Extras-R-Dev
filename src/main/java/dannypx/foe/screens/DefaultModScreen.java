@@ -45,7 +45,7 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
     private ButtonWidget backButton() {
         return !isMiddle ? ButtonWidget.builder(Text.literal("Return"), button ->
                         this.close())
-                .position(width - PADDING - 50, height - PADDING - BUTTON_HEIGHT)
+                .position(width - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(50, BUTTON_HEIGHT)
                 .build()
                 : ButtonWidget.builder(Text.literal("Return"), button ->

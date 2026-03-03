@@ -107,6 +107,16 @@ public class HandlerConfig extends Config {
     public ValidatedInt catchingItemsDelayCheck = new ValidatedInt(1, 20, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
+    //region Renderer Handler Group
+    @Name("Renderer Handlers")
+    @Desc("§7Handles rendering")
+    public ConfigGroup rendererGroup = new ConfigGroup("renderer_group");
+
+    @ConfigGroup.Pop
+    @Desc("§7Handles HUD rendering")
+    public ValidatedBoolean hudRenderHandler = new ValidatedBoolean(true);
+    //endregion
+
     @Override
     public @NotNull FileType fileType() {
         return FileType.JSON;

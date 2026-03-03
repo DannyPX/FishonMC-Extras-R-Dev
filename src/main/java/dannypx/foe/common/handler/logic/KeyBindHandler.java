@@ -4,6 +4,8 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.AdvancedKeyBinding;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.screens.MainScreen;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -12,6 +14,7 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class KeyBindHandler extends Handler {
     private static KeyBindHandler INSTANCE = new KeyBindHandler();
@@ -28,6 +31,22 @@ public class KeyBindHandler extends Handler {
             new AdvancedKeyBinding("key." + FishOnMCExtras.MOD_ID + ".openmain",
                     GLFW.GLFW_KEY_O,
                     "category." + FishOnMCExtras.MOD_ID + ".general");
+
+    public Pair<Boolean, CustomTextValue> getKeyBind(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(open_main_keybind)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "open_main_keybind" -> PlaceholderHandler.getTextValue(new StringValue(openMainKeybind.getBoundKeyTranslationKey()));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
+    }
     //endregion
 
     //region Methods

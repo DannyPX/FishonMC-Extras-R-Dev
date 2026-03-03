@@ -5,7 +5,6 @@ import dannypx.foe.common.type.Alignment;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -19,7 +18,6 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     private final MinecraftClient minecraftClient;
     private final Callback callback;
     private final List<Alignment> alignmentList;
-    private final String config;
     private Element element;
 
     private double deltaX = 0;
@@ -30,13 +28,11 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     public MovableBoxWidget(MinecraftClient minecraftClient,
                             Element element,
                             List<Alignment> alignmentList,
-                            String config,
                             Callback callback) {
         super(1, 1, 1, 1, element.message);
         this.minecraftClient = minecraftClient;
         this.callback = callback;
         this.alignmentList = alignmentList;
-        this.config = config;
         setup(element);
     }
 
@@ -292,7 +288,7 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         Math.round(element.yPos * 100f), element.alignment);
                 return false;
             } else if (button == 2) {
-                ConfigApiJava.INSTANCE.openScreen(this.config);
+                callback.onConfig();
             }
         }
         return false;
@@ -397,6 +393,7 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
     public interface Callback {
         void onRelease(int xPercent, int yPercent, Alignment alignment);
+        void onConfig();
     }
 
     private Alignment nextAlignment() {

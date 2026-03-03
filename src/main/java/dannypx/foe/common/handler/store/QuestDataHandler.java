@@ -6,13 +6,18 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.fetch.QuestScreenHandler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class QuestDataHandler extends Handler {
     private static QuestDataHandler INSTANCE = new QuestDataHandler();
@@ -30,6 +35,32 @@ public class QuestDataHandler extends Handler {
 
     public QuestDataModel getQuestData() {
         return questData;
+    }
+
+    public Pair<Boolean, CustomTextValue> getQuestData(String[] params) {
+        if(params.length > 0) {
+            Pattern intPattern = Pattern.compile("^-?\\d+$");
+            Pattern questPattern = Pattern.compile("^(goal|max|current)$");
+
+            if(Objects.equals(params[0], "data")
+                    && params.length == 3
+                    && intPattern.matcher(params[1]).matches()
+                    && questPattern.matcher(params[2]).matches()
+            ) {
+                String location = BossBarHandler.instance().getLocation().getString();
+                List<Quest> questData = this.getQuestData().questList.getOrDefault(location, new ArrayList<>());
+                int index = Integer.parseInt(params[1]);
+                if(questData.size() > index) {
+                    return switch (params[2]) {
+                        case "goal" -> PlaceholderHandler.getTextValue(new TextValue(ConstantDataHandler.instance().getConstantFishText(questData.get(index).goal).copy()));
+                        case "max" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).max)));
+                        case "current" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).current)));
+                        default -> Pair.of(false, new StringValue(""));
+                    };
+                }
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
 
     public void setQuestData(QuestDataModel questData) {

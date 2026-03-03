@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.handler.store.ConstantDataHandler;
-import dannypx.foe.common.handler.store.ProfileDataHandler;
-import dannypx.foe.common.handler.store.QuestDataHandler;
-import dannypx.foe.common.handler.store.StatsDataHandler;
+import dannypx.foe.common.handler.store.*;
 import dannypx.foe.common.type.Pair;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.common.type.type_adapter.TextAdapter;
@@ -48,6 +45,7 @@ public class DataFileHandler extends Handler {
         StatsDataHandler.instance().tick();
         ConstantDataHandler.instance().tick();
         QuestDataHandler.instance().tick();
+        CustomHudDataHandler.instance().tick();
     }
 
     public void init() {
@@ -55,6 +53,7 @@ public class DataFileHandler extends Handler {
         loadDataToMemory(DataModels.DataModelType.STATS_DATA);
         loadDataToMemory(DataModels.DataModelType.CONSTANT_DATA);
         loadDataToMemory(DataModels.DataModelType.QUEST_DATA);
+        loadDataToMemory(DataModels.DataModelType.CUSTOM_HUD_DATA);
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -122,6 +121,7 @@ public class DataFileHandler extends Handler {
             case STATS_DATA -> StatsDataHandler.instance().getStatsData();
             case CONSTANT_DATA -> ConstantDataHandler.instance().getConstantData();
             case QUEST_DATA -> QuestDataHandler.instance().getQuestData();
+            case CUSTOM_HUD_DATA -> CustomHudDataHandler.instance().getCustomHudData();
         };
     }
 
@@ -142,6 +142,8 @@ public class DataFileHandler extends Handler {
                     ConstantDataHandler.instance().setConstantData(gson.fromJson(json, ConstantDataHandler.ConstantDataModel.class));
             case QUEST_DATA ->
                     QuestDataHandler.instance().setQuestData(gson.fromJson(json, QuestDataHandler.QuestDataModel.class));
+            case CUSTOM_HUD_DATA ->
+                    CustomHudDataHandler.instance().setCustomHudData(gson.fromJson(json, CustomHudDataHandler.CustomHudDataModel.class));
         }
     }
     //endregion

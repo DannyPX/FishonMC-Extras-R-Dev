@@ -2,11 +2,16 @@ package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.CatchingHandler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class TitleHandler extends Handler {
     private static TitleHandler INSTANCE = new TitleHandler();
@@ -28,6 +33,23 @@ public class TitleHandler extends Handler {
 
     public MutableText getSubTitle() {
         return subTitle;
+    }
+
+    public Pair<Boolean, CustomTextValue> getTitle(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(title|sub_title)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "title" -> PlaceholderHandler.getTextValue(new TextValue(getTitle()));
+                    case "sub_title" -> PlaceholderHandler.getTextValue(new TextValue(getSubTitle()));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

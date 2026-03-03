@@ -1,13 +1,17 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ClientPlayerHandler extends Handler {
     private static ClientPlayerHandler INSTANCE = new ClientPlayerHandler();
@@ -34,6 +38,24 @@ public class ClientPlayerHandler extends Handler {
 
     public float getExperienceProgress() {
         return experienceProgress;
+    }
+
+    public Pair<Boolean, CustomTextValue> getClientPlayer(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(name|level|level_progress)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "name" -> PlaceholderHandler.getTextValue(new StringValue(getName().getString()));
+                    case "level" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getExperienceLevel())));
+                    case "level_progress" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getExperienceProgress() * 100, 2)));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

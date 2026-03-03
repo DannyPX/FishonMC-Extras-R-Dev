@@ -4,11 +4,8 @@ import dannypx.foe.common.command.CommandRegistry;
 import dannypx.foe.common.entity.FishingBobberEntityModel;
 import dannypx.foe.common.handler.fetch.*;
 import dannypx.foe.common.handler.logic.*;
-import dannypx.foe.common.handler.store.ConstantDataHandler;
-import dannypx.foe.common.handler.store.ProfileDataHandler;
+import dannypx.foe.common.handler.store.*;
 import dannypx.foe.common.handler.io.DataFileHandler;
-import dannypx.foe.common.handler.store.QuestDataHandler;
-import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.common.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
@@ -134,10 +131,13 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ConnectionHandler.instance().init();
         //onJoin when on server
         if(ConnectionHandler.instance().isOnServer()) {
+
             ProfileDataHandler.instance().init();
             StatsDataHandler.instance().init();
             ConstantDataHandler.instance().init();
             QuestDataHandler.instance().init();
+            CustomHudDataHandler.instance().init();
+
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
             NotifierHandler.instance().init();
@@ -168,6 +168,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
                 if(Configs.handlerConfig.catchingHandler.get()) CatchingHandler.instance().tick();
                 if(Configs.handlerConfig.rayCastHandler.get()) RayCastHandler.instance().tick();
+
+                // Renderer
+                if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();
 
             } else {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();

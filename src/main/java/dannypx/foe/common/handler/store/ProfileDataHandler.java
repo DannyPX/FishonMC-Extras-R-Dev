@@ -4,13 +4,16 @@ import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.NotifierHandler;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class ProfileDataHandler extends Handler {
     private static ProfileDataHandler INSTANCE = new ProfileDataHandler();
@@ -40,6 +43,25 @@ public class ProfileDataHandler extends Handler {
             DataFileHandler.instance().saveToFile(DataModels.DataModelType.PROFILE_DATA);
         }
         this.needsUpdate = false;
+    }
+
+    public Pair<Boolean, CustomTextValue> getProfileData(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(active_pet_slot|has_imported_stats|is_in_crew_chat)$");
+
+            if(Objects.equals(params[0], "data")
+                    && params.length == 3
+                    && fieldPattern.matcher(params[1]).matches()
+            ) {
+                return switch(params[1]) {
+                    case "active_pet_slot" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().activePetSlot)));
+                    case "has_imported_stats" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().hasImportedStats)));
+                    case "is_in_crew_chat" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().isInCrewChat)));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

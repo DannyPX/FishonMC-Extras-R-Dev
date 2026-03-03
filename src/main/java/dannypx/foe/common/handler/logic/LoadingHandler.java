@@ -4,12 +4,15 @@ import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.item.FishingRodNbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class LoadingHandler extends Handler {
     private static LoadingHandler INSTANCE = new LoadingHandler();
@@ -35,6 +38,23 @@ public class LoadingHandler extends Handler {
 
     public void setError(boolean error) {
         isError = error;
+    }
+
+    public Pair<Boolean, CustomTextValue> getLoading(String[] params) {
+        if(params.length > 0) {
+            Pattern fieldPattern = Pattern.compile("^(is_loading_done|is_error)$");
+
+            if(fieldPattern.matcher(params[0]).matches()
+                    && params.length == 1
+            ) {
+                return switch(params[0]) {
+                    case "is_loading_done" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isLoadingDone())));
+                    case "is_error" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isError())));
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

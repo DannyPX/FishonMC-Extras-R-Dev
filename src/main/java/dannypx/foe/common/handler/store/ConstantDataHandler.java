@@ -3,8 +3,12 @@ package dannypx.foe.common.handler.store;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
+import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.custom_text.CustomTextValue;
+import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -12,6 +16,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class ConstantDataHandler extends Handler {
@@ -42,6 +47,44 @@ public class ConstantDataHandler extends Handler {
             DataFileHandler.instance().saveToFile(DataModels.DataModelType.CONSTANT_DATA);
         }
         this.needsUpdate = false;
+    }
+
+    public Pair<Boolean, CustomTextValue> getConstantData(String[] params) {
+        if(params.length > 0) {
+            Pattern categoryPattern = Pattern.compile("^(fish|pet)$");
+
+            if(Objects.equals(params[0], "data")
+                    && categoryPattern.matcher(params[1]).matches()
+                    && params.length == 4
+            ) {
+                return switch (params[1]) {
+                    case "fish" -> {
+                        Map<String, Text> subCat = getConstantData().fishData.getOrDefault(params[2], null);
+                        if(subCat != null) {
+                            Text field = subCat.getOrDefault(params[3], Text.empty());
+                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field.copy()));
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    case "pet" -> {
+                        Map<String, Text> subCat = getConstantData().petData.getOrDefault(params[2], null);
+                        if(subCat != null) {
+                            String param = params[3];
+
+                            if(Objects.equals(params[2], "rating")) {
+                                param = TextHelper.smallText(params[3]);
+                            }
+
+                            Text field = subCat.getOrDefault(param, Text.empty());
+                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field.copy()));
+                        }
+                        yield Pair.of(false, new StringValue(""));
+                    }
+                    default -> Pair.of(false, new StringValue(""));
+                };
+            }
+        }
+        return Pair.of(false, new StringValue(""));
     }
     //endregion
 

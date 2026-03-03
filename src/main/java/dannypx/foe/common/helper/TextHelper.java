@@ -8,14 +8,19 @@ import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.common.type.type_adapter.TextAdapter;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.*;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class TextHelper {
     private static final GsonBuilder gson = new GsonBuilder();
@@ -289,12 +294,64 @@ public class TextHelper {
         return splitTitleCase(capitalize(s));
     }
 
+    public static int getWidth(TextRenderer textRenderer, Text text, boolean isSmall) {
+        AtomicInteger width = new AtomicInteger(0);
+        if(text.getSiblings().isEmpty()) {
+            int calculatedWidth = textRenderer.getWidth(text);
+            if(isSmall) {
+                calculatedWidth = textRenderer.getWidth(Text.literal(TextHelper.smallText(text.getString())).setStyle(text.getStyle()));
+            }
+            width.set(width.get() + calculatedWidth);
+        } else {
+            text.getSiblings().forEach(text1 -> {
+                int calculatedWidth = getWidth(textRenderer, text1, isSmall);
+                width.set(width.get() + calculatedWidth);
+            });
+        }
+        return width.get();
+    }
+
     public static String textToJson(Text text) {
         return gson.create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
     }
 
     public static String textToJsonPretty(Text text) {
         return gson.setPrettyPrinting().create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
+    }
+
+    public static byte[] compress(final String str) throws IOException {
+        if ((str == null) || (str.length() == 0)) {
+            return null;
+        }
+        ByteArrayOutputStream obj = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(obj);
+        gzip.write(str.getBytes("UTF-8"));
+        gzip.flush();
+        gzip.close();
+        return obj.toByteArray();
+    }
+
+    public static String decompress(final byte[] compressed) throws IOException {
+        final StringBuilder outStr = new StringBuilder();
+        if ((compressed == null) || (compressed.length == 0)) {
+            return "";
+        }
+        if (isCompressed(compressed)) {
+            final GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(compressed));
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                outStr.append(line);
+            }
+        } else {
+            outStr.append(compressed);
+        }
+        return outStr.toString();
+    }
+
+    public static boolean isCompressed(final byte[] compressed) {
+        return (compressed[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressed[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
     }
 
     public static Text jsonToText(String json) {
