@@ -45,7 +45,6 @@ public class ChatHandler extends Handler {
         }
     }
 
-
     public Text onModifyMessage(Text text) {
         text = this.modifyPetMessageWithPercentage(text);
         return text;

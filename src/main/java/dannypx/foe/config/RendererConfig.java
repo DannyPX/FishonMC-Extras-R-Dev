@@ -33,12 +33,15 @@ public class RendererConfig extends Config {
             .withCorrector().build();
 
     @Name("Entity Model Renderer")
-    @Desc("§7This is the custom model renderer for entities")
+    @Desc("§7This is the model renderer for entities")
     public ConfigGroup entityModelGroup = new ConfigGroup("entity_model_renderer_group");
 
-    @ConfigGroup.Pop
     @Name("Use the 3D bobber texture")
     public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @Name("Hide armor on players")
+    public ValidatedBoolean hideArmor = new ValidatedBoolean(false);
 
     @Name("Small Stack Count Number")
     public ConfigGroup smallStackCountGroup = new ConfigGroup("small_stack_count_group");

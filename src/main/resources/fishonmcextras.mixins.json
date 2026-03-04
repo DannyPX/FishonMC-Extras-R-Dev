@@ -14,6 +14,7 @@
     "accessor.BossBarHudAccessor",
     "accessor.ChatScreenAccessor",
     "accessor.PlayerListHudAccessor",
+    "inject.ArmorFeatureRendererMixin",
     "inject.BossBarHudMixin",
     "inject.DrawContextMixin",
     "inject.FishingBobberEntityRendererMixin",
