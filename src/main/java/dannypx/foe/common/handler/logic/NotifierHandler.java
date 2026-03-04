@@ -85,7 +85,7 @@ public class NotifierHandler extends Handler {
         }
 
         Text tagText = !Objects.equals(fish.getVariant(), "normal")
-                ? TextHelper.concat(fish.getVariantText(), fish.getRarityText())
+                ? TextHelper.concat(fish.getVariantText(), Text.literal(" "), fish.getRarityText())
                 : TextHelper.concat(fish.getRarityText());
         Text rarityText = fish.getRarityText();
         Text variantText = fish.getVariantText();
@@ -112,7 +112,7 @@ public class NotifierHandler extends Handler {
         ));
 
         if(!Objects.equals(fish.getVariant(), "normal")) {
-            notifTextList.add(TextHelper.concat(variantText, TextHelper.literal(variantDrystreak.v2())));
+            notifTextList.add(TextHelper.concat(variantText, Text.literal(" "), TextHelper.literal(variantDrystreak.v2())));
         }
 
         int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : notifTextList.size();

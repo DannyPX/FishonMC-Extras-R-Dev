@@ -32,6 +32,7 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -83,6 +84,15 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
+
+        if (stack.getItem() instanceof FishingRodItem) {
+            if (player.fishHook == null) {
+                LoggerHandler._debug("Cast");
+                InventoryHandler.instance().trackAllFish();
+            }
+        }
+
         return ActionResult.PASS;
     }
 

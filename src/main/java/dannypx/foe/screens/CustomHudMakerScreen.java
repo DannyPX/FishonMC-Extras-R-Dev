@@ -245,6 +245,24 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     private ButtonWidget saveBackButton() {
         return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
                     if(editFieldListWidget.hasSelectedHud) {
+                        if(editFieldListWidget.newName.isBlank()) {
+                            SystemToast.add(minecraftClient.getToastManager(),
+                                    SystemToast.Type.PERIODIC_NOTIFICATION,
+                                    Text.literal("Fish On Extras Rebirth"),
+                                    Text.literal("HUD name is empty"));
+
+                            return;
+                        }
+
+                        if(CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editFieldListWidget.newName)) {
+                            SystemToast.add(minecraftClient.getToastManager(),
+                                    SystemToast.Type.PERIODIC_NOTIFICATION,
+                                    Text.literal("Fish On Extras Rebirth"),
+                                    Text.literal("HUD name already exist"));
+
+                            return;
+                        }
+
                         CustomHudDataHandler.instance().updateHud(
                                 editFieldListWidget.currentSelectedHud,
                                 editFieldListWidget.newName,
