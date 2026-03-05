@@ -1,7 +1,7 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.Handler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.text.MutableText;
 

@@ -6,7 +6,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.store.*;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.common.type.type_adapter.TextAdapter;
 import net.fabricmc.loader.api.FabricLoader;

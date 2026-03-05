@@ -8,7 +8,7 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -107,12 +107,12 @@ public class NotifierHandler extends Handler {
                 TextHelper.concat(fish.getFishSizeText(), Text.literal(" "), lengthText, Text.literal(" "), weightText),
                 Text.empty(),
                 Text.literal(" - Drystreaks before catch").formatted(Formatting.GRAY),
-                TextHelper.concat(rarityText, TextHelper.literal(rarityDrystreak.v2())),
-                TextHelper.concat(sizeText, TextHelper.literal(sizeDryStreak.v2()))
+                TextHelper.concat(rarityText, TextHelper.literal(rarityDrystreak.value2())),
+                TextHelper.concat(sizeText, TextHelper.literal(sizeDryStreak.value2()))
         ));
 
         if(!Objects.equals(fish.getVariant(), "normal")) {
-            notifTextList.add(TextHelper.concat(variantText, Text.literal(" "), TextHelper.literal(variantDrystreak.v2())));
+            notifTextList.add(TextHelper.concat(variantText, Text.literal(" "), TextHelper.literal(variantDrystreak.value2())));
         }
 
         int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : notifTextList.size();
@@ -138,8 +138,8 @@ public class NotifierHandler extends Handler {
                 pet.getRatingText(),
                 Text.empty(),
                 Text.literal(" - Drystreaks before catch").formatted(Formatting.GRAY),
-                TextHelper.concat(pet.getRarityText(), Text.literal(" "), TextHelper.literal(rarityDrystreak.v2())),
-                TextHelper.concat(pet.getRatingText(), Text.literal(" "), TextHelper.literal(ratingDrystreak.v2()))
+                TextHelper.concat(pet.getRarityText(), Text.literal(" "), TextHelper.literal(rarityDrystreak.value2())),
+                TextHelper.concat(pet.getRatingText(), Text.literal(" "), TextHelper.literal(ratingDrystreak.value2()))
         ));
 
         int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : notifTextList.size();
@@ -159,14 +159,14 @@ public class NotifierHandler extends Handler {
         }
 
         Text itemText = TextHelper.concat(item.getName(), Text.literal(" "), TextHelper.literal(count), Text.literal("x").formatted(Formatting.GRAY));
-        Text typeText = Text.literal(TextHelper.convertField(itemDrystreak.v1()));
+        Text typeText = Text.literal(TextHelper.convertField(itemDrystreak.value1()));
 
 
         List<Text> notifTextList =  new ArrayList<>(Arrays.asList(
                 itemText,
                 Text.empty(),
                 Text.literal(" - Drystreak before catch").formatted(Formatting.GRAY),
-                TextHelper.concat(typeText, Text.literal(" ") ,TextHelper.literal(itemDrystreak.v2()))
+                TextHelper.concat(typeText, Text.literal(" ") ,TextHelper.literal(itemDrystreak.value2()))
         ));
 
         int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : notifTextList.size();

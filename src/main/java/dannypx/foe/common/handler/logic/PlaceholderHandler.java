@@ -6,7 +6,7 @@ import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -66,8 +66,8 @@ public class PlaceholderHandler extends Handler {
             if (matcher.start() > lastEnd) {
                 String before = input.substring(lastEnd, matcher.start());
                 Pair<MutableText, Style> parsed = parseLegacyWithStyle(before, activeStyle);
-                result.append(parsed.v1());
-                activeStyle = parsed.v2();
+                result.append(parsed.value1());
+                activeStyle = parsed.value2();
             }
 
             String full = matcher.group(1);
@@ -79,10 +79,10 @@ public class PlaceholderHandler extends Handler {
 
             if (function != null) {
                 Pair<Boolean, CustomTextValue> functionResult = function.apply(parameters);
-                if (functionResult.v1()) {
+                if (functionResult.value1()) {
                     Pair<MutableText, Style> parsed;
 
-                    switch (functionResult.v2()) {
+                    switch (functionResult.value2()) {
                         case StringValue stringValue -> {
                             parsed = parseLegacyWithStyle(stringValue.value(), activeStyle);
                         }
@@ -91,8 +91,8 @@ public class PlaceholderHandler extends Handler {
                         }
                     }
 
-                    result.append(parsed.v1());
-                    activeStyle = parsed.v2();
+                    result.append(parsed.value1());
+                    activeStyle = parsed.value2();
                 } else {
                     result.append(Text.literal(matcher.group()).setStyle(activeStyle));
                     hasFullData = false;
@@ -107,7 +107,7 @@ public class PlaceholderHandler extends Handler {
         if (lastEnd < input.length()) {
             String remaining = input.substring(lastEnd);
             Pair<MutableText, Style> parsed = parseLegacyWithStyle(remaining, activeStyle);
-            result.append(parsed.v1());
+            result.append(parsed.value1());
         }
 
         return Pair.of(hasFullData, result);
@@ -148,16 +148,24 @@ public class PlaceholderHandler extends Handler {
     }
 
     public static Pair<Boolean, CustomTextValue> getTextValue(CustomTextValue customTextValue) {
+        return getTextValue(customTextValue, false);
+    }
+
+    public static Pair<Boolean, CustomTextValue> getTextValue(CustomTextValue customTextValue, Boolean noHide) {
         switch (customTextValue) {
             case StringValue stringValue -> {
-                if(!stringValue.value().isBlank()) return Pair.of(true, stringValue);
-                return Pair.of(false, stringValue);
+                if(!stringValue.value().isBlank()) return Pair.of(stringValue);
+                return noHide ? Pair.of(stringValue) : Pair.ofFalse(stringValue);
             }
             case TextValue textValue -> {
-                if(!textValue.value().getString().isBlank()) return Pair.of(true, textValue);
-                return Pair.of(false, textValue);
+                if(!textValue.value().getString().isBlank()) return Pair.of(textValue);
+                return noHide ? Pair.of(textValue) : Pair.ofFalse(textValue);
             }
         }
+    }
+
+    public static Pair<Boolean, CustomTextValue> noResult() {
+        return Pair.ofFalse(new StringValue(""));
     }
     //endregion
 

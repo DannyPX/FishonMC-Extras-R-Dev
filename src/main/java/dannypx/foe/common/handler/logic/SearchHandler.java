@@ -5,7 +5,7 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.search.*;
 import dannypx.foe.screens.widget.SearchBarWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -312,14 +312,14 @@ public class SearchHandler extends Handler {
                 if(searchFilter.key.equalsIgnoreCase("type")) {
                     if(searchFilter.operator == Operator.SHORT_EQUAL) {
                         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
-                        if(validatedItem.v2().getType().toLowerCase(Locale.US).contains(str.value().toLowerCase(Locale.US))) {
+                        if(validatedItem.value2().getType().toLowerCase(Locale.US).contains(str.value().toLowerCase(Locale.US))) {
                             yield true;
                         } else {
                             yield false;
                         }
                     } else if (searchFilter.operator == Operator.EQUAL) {
                         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
-                        if(validatedItem.v2().getType().toLowerCase(Locale.US).equalsIgnoreCase(str.value().toLowerCase(Locale.US))) {
+                        if(validatedItem.value2().getType().toLowerCase(Locale.US).equalsIgnoreCase(str.value().toLowerCase(Locale.US))) {
                             yield true;
                         } else {
                             yield false;
@@ -347,13 +347,13 @@ public class SearchHandler extends Handler {
         }
 
         Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(itemStack);
-        if(validatedPet.v1()) {
+        if(validatedPet.value1()) {
             return switch (searchFilter.value) {
                 // Rating
                 case StringValue stringValue -> {
                     if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
                         if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
-                            yield TextHelper.normalLetter(validatedPet.v2().getRatingText().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
+                            yield TextHelper.normalLetter(validatedPet.value2().getRatingText().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
                         }
                         yield "false";
                     }
@@ -363,23 +363,23 @@ public class SearchHandler extends Handler {
                 case FloatValue floatValue -> {
                     // in percent
                     if(searchFilter.key.equalsIgnoreCase("lluck_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getLocationPercentMaxLuck() * 100f) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxLuck() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("lscale_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getLocationPercentMaxScale() * 100f) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxScale() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cluck_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getClimatePercentMaxLuck() * 100f) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxLuck() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cscale_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getClimatePercentMaxScale() * 100f) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxScale() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("lluck")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getLocationMaxLuck()) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxLuck()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("lscale")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getLocationMaxScale()) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxScale()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cluck")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getClimateMaxLuck()) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxLuck()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cscale")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getClimateMaxScale()) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxScale()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.v2().getTotalPercent() * 100f) ? "true_pet" : "false";
+                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getTotalPercent() * 100f) ? "true_pet" : "false";
                     }
                     yield "true";
                 }
@@ -407,13 +407,13 @@ public class SearchHandler extends Handler {
             case StringValue stringValue -> {
                 if(searchFilter.operator == Operator.SHORT_EQUAL) {
                     Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
-                    if(validatedItem.v1() && validatedItem.v2().contains(searchFilter.key)) {
-                        yield validatedItem.v2().getString(searchFilter.key).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US));
+                    if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                        yield validatedItem.value2().getString(searchFilter.key).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US));
                     }
                 } else if(searchFilter.operator == Operator.EQUAL) {
                     Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
-                    if(validatedItem.v1() && validatedItem.v2().contains(searchFilter.key)) {
-                        yield validatedItem.v2().getString(searchFilter.key).toLowerCase(Locale.US).equalsIgnoreCase(stringValue.value().toLowerCase(Locale.US));
+                    if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                        yield validatedItem.value2().getString(searchFilter.key).toLowerCase(Locale.US).equalsIgnoreCase(stringValue.value().toLowerCase(Locale.US));
                     }
                 }
                 yield false;
@@ -421,18 +421,18 @@ public class SearchHandler extends Handler {
             case BooleanValue booleanValue -> {
                 if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
                     Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
-                    if(validatedItem.v1() && validatedItem.v2().contains(searchFilter.key)) {
-                        yield validatedItem.v2().getBoolean(searchFilter.key) == booleanValue.value();
+                    if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                        yield validatedItem.value2().getBoolean(searchFilter.key) == booleanValue.value();
                     }
                 }
                 yield false;
             }
             case FloatValue floatValue -> {
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
-                if(validatedItem.v1() && validatedItem.v2().contains(searchFilter.key)) {
-                    yield switch (validatedItem.v2().getType(searchFilter.key)) {
-                        case 3 -> this.checkOperation(searchFilter, floatValue, validatedItem.v2().getInt(searchFilter.key));
-                        case 5 -> this.checkOperation(searchFilter, floatValue, validatedItem.v2().getFloat(searchFilter.key));
+                if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                    yield switch (validatedItem.value2().getType(searchFilter.key)) {
+                        case 3 -> this.checkOperation(searchFilter, floatValue, validatedItem.value2().getInt(searchFilter.key));
+                        case 5 -> this.checkOperation(searchFilter, floatValue, validatedItem.value2().getFloat(searchFilter.key));
                         default -> false;
                     };
                 }

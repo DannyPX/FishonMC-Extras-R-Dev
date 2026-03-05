@@ -3,7 +3,7 @@ package dannypx.foe.common.handler.fetch;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.CatchingHandler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -45,11 +45,11 @@ public class TitleHandler extends Handler {
                 return switch(params[0]) {
                     case "title" -> PlaceholderHandler.getTextValue(new TextValue(getTitle()));
                     case "sub_title" -> PlaceholderHandler.getTextValue(new TextValue(getSubTitle()));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

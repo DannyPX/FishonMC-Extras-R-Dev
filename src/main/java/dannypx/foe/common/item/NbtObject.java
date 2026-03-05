@@ -2,7 +2,7 @@ package dannypx.foe.common.item;
 
 import com.mojang.serialization.DataResult;
 import dannypx.foe.common.helper.ItemStackHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -158,7 +158,7 @@ public class NbtObject {
 
             return itemStackList.stream().map(item -> {
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(item);
-                return validatedItem.v2();
+                return validatedItem.value2();
             }).filter(Objects::nonNull).toList();
         }
         return List.of();

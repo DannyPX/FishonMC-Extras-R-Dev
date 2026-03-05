@@ -7,7 +7,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Triplet;
+import dannypx.foe.common.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditFieldListWidget;
@@ -127,7 +127,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                 Gson gson = new GsonBuilder().create();
                                 Triplet<String, CustomHudDataHandler.CustomHud, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomHudDataHandler.CustomHud.class, Integer.class).getType());
 
-                                if(data.v3() > FishOnMCExtras.HUD_VERSION) {
+                                if(data.value3() > FishOnMCExtras.HUD_VERSION) {
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
                                             Text.literal("Fish On Extras Rebirth"),
@@ -136,13 +136,13 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                     return;
                                 }
 
-                                if(CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(data.v1())) {
-                                    data = Triplet.of(data.v1() + " (Duplicate)", data.v2(), data.v3());
+                                if(CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(data.value1())) {
+                                    data = Triplet.of(data.value1() + " (Duplicate)", data.value2(), data.value3());
                                 }
 
-                                String id = data.v1();
+                                String id = data.value1();
 
-                                CustomHudDataHandler.instance().createNewCustomHud(id, data.v2());
+                                CustomHudDataHandler.instance().createNewCustomHud(id, data.value2());
 
                                 ButtonListWidget.ButtonEntry buttonEntry = createHudEntry(id);
 
@@ -254,7 +254,10 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                             return;
                         }
 
-                        if(CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editFieldListWidget.newName)) {
+                        if(
+                                !Objects.equals(editFieldListWidget.currentSelectedHud, editFieldListWidget.newName)
+                                && CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editFieldListWidget.newName)
+                        ) {
                             SystemToast.add(minecraftClient.getToastManager(),
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
                                     Text.literal("Fish On Extras Rebirth"),

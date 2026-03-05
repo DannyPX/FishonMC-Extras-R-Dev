@@ -1,7 +1,7 @@
 package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.Handler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -60,25 +60,25 @@ public class RayCastHandler extends Handler {
                         if(getBlockHitResult() != null && !getBlockFromHitResult().getString().contains("Air")) {
                             yield PlaceholderHandler.getTextValue(new TextValue(getBlockFromHitResult()));
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
                     case "entity_hit_result" -> {
                         if(getEntityHitResult() != null && !getEntityHitResult().getEntity().getName().getString().isBlank()) {
                             yield PlaceholderHandler.getTextValue(new TextValue(getEntityHitResult().getEntity().getName().copy()));
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
                     case "item_frame_item" -> {
                         if(getItemFrameItem() != ItemStack.EMPTY) {
                             yield PlaceholderHandler.getTextValue(new TextValue(getItemFrameItem().getName().copy()));
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

@@ -6,7 +6,7 @@ import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.CustomHudMakerScreen;
 import dannypx.foe.screens.MainScreen;
@@ -61,7 +61,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                 && Configs.inventoryScreenConfig.showStatsElement.get()
                 && Configs.mainConfig.enableMod.get()
         ) {
-            elements.forEach(element -> element.v2().render(drawContext, MinecraftClient.getInstance().getRenderTickCounter()));
+            elements.forEach(element -> element.value2().render(drawContext, MinecraftClient.getInstance().getRenderTickCounter()));
             if(this.statList != null) {
                 this.statList.render(drawContext, mouseX, mouseY, tickDelta);
             }
@@ -209,12 +209,12 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         elements.add(Pair.of("header_box", new BoxElement(minecraftClient,
                 minecraftClient.getWindow().getScaledWidth() / 2 + INVENTORY_TRANSLATION + (STAT_WIDTH - ((STAT_WIDTH / 4) / 3)) / 2 - 65,
                 minecraftClient.getWindow().getScaledHeight() / 2 - INVENTORY_TOP - 20 + 4,
-                130, 20, true)));
+                130, 20, true, false)));
 
         elements.add(Pair.of("stat_box", new BoxElement(minecraftClient,
                 minecraftClient.getWindow().getScaledWidth() / 2 + INVENTORY_TRANSLATION,
                 minecraftClient.getWindow().getScaledHeight() / 2 - INVENTORY_TOP,
-                STAT_WIDTH - ((STAT_WIDTH / 4) / 3), INVENTORY_HEIGHT, false)));
+                STAT_WIDTH - ((STAT_WIDTH / 4) / 3), INVENTORY_HEIGHT, false, false)));
         // Add elements here
     }
     //endregion

@@ -2,7 +2,7 @@ package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.element.NotificationElement;
@@ -84,12 +84,12 @@ public class NotifierElement extends Element implements ScreenConstants {
             Pair<Integer, Integer> dimensions = this.assembleNotificationElements();
 
             x = switch (Configs.hudConfig.notifierElementAlignment.get()) {
-                case TOP_RIGHT, BOTTOM_RIGHT -> x - dimensions.v1();
+                case TOP_RIGHT, BOTTOM_RIGHT -> x - dimensions.value1();
                 default -> x;
             };
 
             y = switch (Configs.hudConfig.notifierElementAlignment.get()) {
-                case BOTTOM_LEFT, BOTTOM_RIGHT -> y - dimensions.v2();
+                case BOTTOM_LEFT, BOTTOM_RIGHT -> y - dimensions.value2();
                 default -> y;
             };
 

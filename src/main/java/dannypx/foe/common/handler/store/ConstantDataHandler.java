@@ -5,7 +5,7 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -64,7 +64,7 @@ public class ConstantDataHandler extends Handler {
                             Text field = subCat.getOrDefault(params[3], Text.empty());
                             if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field.copy()));
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
                         Map<String, Text> subCat = getConstantData().petData.getOrDefault(params[2], null);
@@ -78,13 +78,13 @@ public class ConstantDataHandler extends Handler {
                             Text field = subCat.getOrDefault(param, Text.empty());
                             if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field.copy()));
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

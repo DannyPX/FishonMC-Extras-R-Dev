@@ -7,7 +7,7 @@ import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
@@ -44,13 +44,13 @@ public class CatchingHandler extends Handler {
     private void scanFish() {
         if(!scanDone && System.currentTimeMillis() < startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)) {
             Pair<Boolean, FishNbtObject> foundFish = this.findFish();
-            if(foundFish.v1()) {
-                InventoryHandler.instance().addToTrackedFish(foundFish.v2().getID());
+            if(foundFish.value1()) {
+                InventoryHandler.instance().addToTrackedFish(foundFish.value2().getID());
 
                 // Store to Stats
-                StatsDataHandler.instance().setFish(foundFish.v2());
-                QuestDataHandler.instance().setFish(foundFish.v2());
-                LoggerHandler._debug("Found Fish: " + foundFish.v2().getName().getString());
+                StatsDataHandler.instance().setFish(foundFish.value2());
+                QuestDataHandler.instance().setFish(foundFish.value2());
+                LoggerHandler._debug("Found Fish: " + foundFish.value2().getName().getString());
 
                 CodeExecuterHandler.runLater(Configs.handlerConfig.catchingItemsDelayCheck.get(), this::checkForCaughtItems);
 
@@ -68,18 +68,18 @@ public class CatchingHandler extends Handler {
         LoggerHandler._debug("Search Window: " + (Configs.handlerConfig.catchingItemsCheckWindow.get() + (System.currentTimeMillis() - startScanTime)));
         if(minecraftClient.player != null) {
             InventoryHandler.instance().getSnapshottedItems().stream()
-                    .filter(item -> System.currentTimeMillis() - item.v1()
+                    .filter(item -> System.currentTimeMillis() - item.value1()
                             < Configs.handlerConfig.catchingItemsCheckWindow.get() + (System.currentTimeMillis() - startScanTime))
-                    .toList().forEach(item -> scanItem(item.v2(), item.v3()));
+                    .toList().forEach(item -> scanItem(item.value2(), item.value3()));
         }
     }
 
     private void scanItem(ItemStack itemStack, int count) {
         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
 
-        if(validatedItem.v1()) {
+        if(validatedItem.value1()) {
             // Store to Stats
-            StatsDataHandler.instance().setItem(validatedItem.v2(), count);
+            StatsDataHandler.instance().setItem(validatedItem.value2(), count);
 
             LoggerHandler._debug("Found Item: " + itemStack.getName().getString(), itemStack);
         }
@@ -87,10 +87,10 @@ public class CatchingHandler extends Handler {
 
     private Pair<Boolean, FishNbtObject> findFish() {
         FishNbtObject inventoryFish = this.findFishInInventory();
-        if(inventoryFish != null) return Pair.of(true, inventoryFish);
+        if(inventoryFish != null) return Pair.of(inventoryFish);
 
         FishNbtObject worldFish = this.findFishInWorld();
-        if(worldFish != null) return Pair.of(true, worldFish);
+        if(worldFish != null) return Pair.of(worldFish);
 
         return Pair.ofFalse(FishNbtObject.empty());
     }
@@ -125,7 +125,7 @@ public class CatchingHandler extends Handler {
             );
 
             if(!itemEntities.isEmpty() && foundItemStack.get() == null) {
-                foundItemStack.set(ValidateItem.isFish(itemEntities.getFirst().getStack()).v2());
+                foundItemStack.set(ValidateItem.isFish(itemEntities.getFirst().getStack()).value2());
             }
         }
         return foundItemStack.get();
@@ -134,12 +134,12 @@ public class CatchingHandler extends Handler {
     private FishNbtObject validateFish(ItemStack itemStack) {
         if(!itemStack.isEmpty()) {
             Pair<Boolean, FishNbtObject> validatedFish = ValidateItem.isFish(itemStack);
-            if(validatedFish.v1()
-                    && validatedFish.v2().isOwn()
-                    && !InventoryHandler.instance().getTrackedFish().contains(validatedFish.v2().getID())
+            if(validatedFish.value1()
+                    && validatedFish.value2().isOwn()
+                    && !InventoryHandler.instance().getTrackedFish().contains(validatedFish.value2().getID())
                     && fishNameToFind.contains(itemStack.getName().getString())
             ) {
-                return validatedFish.v2();
+                return validatedFish.value2();
             }
         }
         return null;

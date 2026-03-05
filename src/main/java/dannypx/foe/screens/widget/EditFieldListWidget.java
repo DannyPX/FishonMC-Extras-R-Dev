@@ -124,9 +124,9 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
 
         customHud.textLines.forEach(line -> {
             this.addEntry(new EditFieldListWidget.LineEntry(
-                    line.v1(),
-                    line.v2(),
-                    line.v3(),
+                    line.value1(),
+                    line.value2(),
+                    line.value3(),
                     getDefaultCallback()
             ));
         });

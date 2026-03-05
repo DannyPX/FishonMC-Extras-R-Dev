@@ -5,8 +5,8 @@ import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.ItemStackHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.*;
-import dannypx.foe.common.type.Pair;
-import dannypx.foe.common.type.Triplet;
+import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.common.type.tuple.Triplet;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -55,7 +55,7 @@ public class InventoryHandler extends Handler {
     }
 
     public List<ItemStack> getSnapshottedItemstacks() {
-        return this.snapshottedItems.stream().map(Triplet::v2).toList();
+        return this.snapshottedItems.stream().map(Triplet::value2).toList();
     }
 
     protected void setCurrentFishingRod(FishingRodNbtObject currentFishingRod) {
@@ -93,7 +93,7 @@ public class InventoryHandler extends Handler {
                                     if(!list.isEmpty()) {
                                         yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
                                     }
-                                    yield Pair.of(false, new StringValue(""));
+                                    yield PlaceholderHandler.noResult();
 
                                 }
                                 case "reel" -> {
@@ -101,7 +101,7 @@ public class InventoryHandler extends Handler {
                                     if(!list.isEmpty()) {
                                         yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
                                     }
-                                    yield Pair.of(false, new StringValue(""));
+                                    yield PlaceholderHandler.noResult();
 
                                 }
                                 case "pole" -> {
@@ -109,7 +109,7 @@ public class InventoryHandler extends Handler {
                                     if(!list.isEmpty()) {
                                         yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
                                     }
-                                    yield Pair.of(false, new StringValue(""));
+                                    yield PlaceholderHandler.noResult();
 
                                 }
                                 default -> {
@@ -120,14 +120,14 @@ public class InventoryHandler extends Handler {
                                             case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getInt(params[1]))));
                                             case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getFloat(params[1]))));
                                             case 8 -> PlaceholderHandler.getTextValue(new StringValue(getCurrentFishingRod().getString(params[1])));
-                                            default -> Pair.of(false, new StringValue(""));
+                                            default -> PlaceholderHandler.noResult();
                                         };
                                     }
-                                    yield Pair.of(false, new StringValue(""));
+                                    yield PlaceholderHandler.noResult();
                                 }
                             };
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
                         if(params.length == 2
@@ -156,20 +156,20 @@ public class InventoryHandler extends Handler {
                                             case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getInt(params[1]))));
                                             case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getFloat(params[1]))));
                                             case 8 -> PlaceholderHandler.getTextValue(new StringValue(getCurrentPet().getString(params[1])));
-                                            default -> Pair.of(false, new StringValue(""));
+                                            default -> PlaceholderHandler.noResult();
                                         };
                                     }
-                                    yield Pair.of(false, new StringValue(""));
+                                    yield PlaceholderHandler.noResult();
                                 }
                             };
                         }
-                        yield Pair.of(false, new StringValue(""));
+                        yield PlaceholderHandler.noResult();
                     }
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 
@@ -216,7 +216,7 @@ public class InventoryHandler extends Handler {
     }
 
     private void checkSnapshottedItems() {
-        snapshottedItems.removeIf(item -> item.v1() > System.currentTimeMillis() + 1000L);
+        snapshottedItems.removeIf(item -> item.value1() > System.currentTimeMillis() + 1000L);
     }
 
     private void addToSnapshotItems(ItemStack newStack, int count) {
@@ -245,8 +245,8 @@ public class InventoryHandler extends Handler {
             ItemStack pet = minecraftClient.player.getInventory().main.get(ProfileDataHandler.instance().getProfileData().activePetSlot);
             if(!pet.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentPet.getItemStack(), pet)) {
                 Pair<Boolean, @Nullable PetNbtObject> validatedPet = ValidateItem.isPet(pet);
-                if(validatedPet.v1()) {
-                    this.setCurrentPet(validatedPet.v2());
+                if(validatedPet.value1()) {
+                    this.setCurrentPet(validatedPet.value2());
                 }
             }
         } else if(ProfileDataHandler.instance().getProfileData().activePetSlot == -1
@@ -260,8 +260,8 @@ public class InventoryHandler extends Handler {
         ItemStack fishingRod = minecraftClient.player.getInventory().main.getFirst();
         if(!fishingRod.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
             Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
-            if(validatedFishingRod.v1()) {
-                this.setCurrentFishingRod(validatedFishingRod.v2());
+            if(validatedFishingRod.value1()) {
+                this.setCurrentFishingRod(validatedFishingRod.value2());
             }
         }
     }
@@ -287,8 +287,8 @@ public class InventoryHandler extends Handler {
             trackedFish.clear();
             minecraftClient.player.getInventory().main.forEach(itemStack -> {
                 Pair<Boolean, FishNbtObject> validatedItem = ValidateItem.isFish(itemStack);
-                if(validatedItem.v1() && validatedItem.v2().isOwn()) {
-                    this.addToTrackedFish(validatedItem.v2().getID());
+                if(validatedItem.value1() && validatedItem.value2().isOwn()) {
+                    this.addToTrackedFish(validatedItem.value2().getID());
                 }
             });
             LoggerHandler._debug("Tracked Fish: " + trackedFish.size());
@@ -301,8 +301,8 @@ public class InventoryHandler extends Handler {
         if(minecraftClient.player != null) {
             ItemStack heldItem = minecraftClient.player.getInventory().getMainHandStack();
             Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(heldItem);
-            if(validatedItem.v1()) {
-                return validatedItem.v2();
+            if(validatedItem.value1()) {
+                return validatedItem.value2();
             }
         }
         return NbtObject.empty();

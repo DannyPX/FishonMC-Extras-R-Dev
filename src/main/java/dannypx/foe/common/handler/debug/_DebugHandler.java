@@ -4,8 +4,8 @@ import dannypx.foe.common.handler.fetch._DebugFetch;
 import dannypx.foe.common.handler.logic._DebugLogic;
 import dannypx.foe.common.handler.io._DebugIO;
 import dannypx.foe.common.handler.store._DebugStore;
-import dannypx.foe.common.type.Pair;
-import dannypx.foe.common.type.Quartet;
+import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.common.type.tuple.Quartet;
 import net.minecraft.text.MutableText;
 
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class _DebugHandler {
 
     //region Methods
     public List<String> _getHandlerNames() {
-        return Stream.of(debugFetch().v1(), debugLogic().v1(), debugIO().v1(), debugStore().v1())
+        return Stream.of(debugFetch().value1(), debugLogic().value1(), debugIO().value1(), debugStore().value1())
                 .flatMap(Collection::stream).toList();
     }
 
@@ -57,8 +57,8 @@ public class _DebugHandler {
     }
 
     public Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
-        return Stream.of(debugFetch().v2(), debugLogic().v2(),
-                        debugIO().v2(), debugStore().v2())
+        return Stream.of(debugFetch().value2(), debugLogic().value2(),
+                        debugIO().value2(), debugStore().value2())
                 .flatMap(m -> m.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
@@ -68,7 +68,7 @@ public class _DebugHandler {
         if(fetchedHandler != null) {
             Pair<MutableText, MutableText> fetchedField = fetchedHandler.getOrDefault(field, null);
             if(fetchedField != null) {
-                return Quartet.of(handler, field, fetchedField.v1(), fetchedField.v2());
+                return Quartet.of(handler, field, fetchedField.value1(), fetchedField.value2());
             }
         }
         return null;

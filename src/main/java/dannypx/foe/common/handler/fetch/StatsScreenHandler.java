@@ -9,8 +9,8 @@ import dannypx.foe.common.handler.store.Stat;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
-import dannypx.foe.common.type.Pair;
-import dannypx.foe.common.type.Triplet;
+import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.common.type.tuple.Triplet;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -79,10 +79,10 @@ public class StatsScreenHandler extends Handler {
                     Triplet<Boolean, String, Integer> data =
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishNbtObject.RARITY, new HashMap<>()), line);
 
-                    if(data.v1()) {
+                    if(data.value1()) {
                         StatsDataHandler.instance().getStatsData().fishData
                                 .getOrDefault(FishNbtObject.RARITY, new HashMap<>())
-                                .put(data.v2(), new Stat<>(data.v3(), totalFish));
+                                .put(data.value2(), new Stat<>(data.value3(), totalFish));
                     }
                 }
 
@@ -92,10 +92,10 @@ public class StatsScreenHandler extends Handler {
                     Triplet<Boolean, String, Integer> data =
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>()), line);
 
-                    if(data.v1()) {
+                    if(data.value1()) {
                         StatsDataHandler.instance().getStatsData().fishData
                                 .getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>())
-                                .put(data.v2(), new Stat<>(data.v3(), totalFish));
+                                .put(data.value2(), new Stat<>(data.value3(), totalFish));
                     }
                 }
 
@@ -106,11 +106,11 @@ public class StatsScreenHandler extends Handler {
                     Triplet<Boolean, String, Integer> data =
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishNbtObject.VARIANT, new HashMap<>()), line);
 
-                    if(data.v1()) {
-                        normalCount.set(normalCount.get() - data.v3());
+                    if(data.value1()) {
+                        normalCount.set(normalCount.get() - data.value3());
                         StatsDataHandler.instance().getStatsData().fishData
                                 .getOrDefault(FishNbtObject.VARIANT, new HashMap<>())
-                                .put(data.v2(), new Stat<>(data.v3(), totalFish));
+                                .put(data.value2(), new Stat<>(data.value3(), totalFish));
                     }
                 }
                 StatsDataHandler.instance().getStatsData().fishData
@@ -129,7 +129,7 @@ public class StatsScreenHandler extends Handler {
             if(key != null) {
                 int amount = TextHelper.toIntFromString(line.getSiblings().get(2).getString());
 
-                return Triplet.of(true, key, amount);
+                return Triplet.of(key, amount);
             }
         }
         return Triplet.ofFalse("", 0);
