@@ -6,7 +6,7 @@ import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -41,13 +41,13 @@ public class ItemRendererHandler extends Handler {
 
         Pair<Boolean, NbtObject> validateItem = ValidateItem.isServerItem(stack);
 
-        if(validateItem.v1()
-                && !this.checkIfBlacklisted(validateItem.v2())
-                && !validateItem.v2().getRarity().isBlank()
-                && !Objects.equals(validateItem.v2().getRarityText(), Text.empty())
-                && !validateItem.v2().getRarityText().getString().isBlank()
+        if(validateItem.value1()
+                && !this.checkIfBlacklisted(validateItem.value2())
+                && !validateItem.value2().getRarity().isBlank()
+                && !Objects.equals(validateItem.value2().getRarityText(), Text.empty())
+                && !validateItem.value2().getRarityText().getString().isBlank()
         ) {
-            Text rarityText = Text.literal(validateItem.v2().getRarityText().getString());
+            Text rarityText = Text.literal(validateItem.value2().getRarityText().getString());
 
             int markerX = x;
             int markerY = y - 1;
@@ -100,7 +100,7 @@ public class ItemRendererHandler extends Handler {
     public void drawStackCount(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, int x, int y) {
         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
 
-        int count = validatedItem.v2().getCount();
+        int count = validatedItem.value2().getCount();
         Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
         int countWidth = textRenderer.getWidth(countText);
 

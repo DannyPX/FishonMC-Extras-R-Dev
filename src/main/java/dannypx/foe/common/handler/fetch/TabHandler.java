@@ -5,7 +5,7 @@ import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -59,11 +59,11 @@ public class TabHandler extends Handler {
                     case "player_name" -> PlaceholderHandler.getTextValue(new TextValue(getPlayerName().copy()));
                     case "instance" -> PlaceholderHandler.getTextValue(new StringValue(getInstance()));
                     case "is_in_instance" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isInInstance())));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

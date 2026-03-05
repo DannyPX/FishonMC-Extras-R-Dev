@@ -1,6 +1,6 @@
 package dannypx.foe.common.handler;
 
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 

@@ -4,7 +4,7 @@ import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.CodeExecuterHandler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

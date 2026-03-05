@@ -6,7 +6,7 @@ import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.text.MutableText;
@@ -57,11 +57,11 @@ public class ProfileDataHandler extends Handler {
                     case "active_pet_slot" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().activePetSlot)));
                     case "has_imported_stats" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().hasImportedStats)));
                     case "is_in_crew_chat" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().isInCrewChat)));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

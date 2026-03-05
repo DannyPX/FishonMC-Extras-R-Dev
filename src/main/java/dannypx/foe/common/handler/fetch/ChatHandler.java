@@ -3,7 +3,7 @@ package dannypx.foe.common.handler.fetch;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;

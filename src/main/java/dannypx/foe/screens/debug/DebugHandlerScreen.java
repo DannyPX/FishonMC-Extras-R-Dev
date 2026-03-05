@@ -2,7 +2,7 @@ package dannypx.foe.screens.debug;
 
 import dannypx.foe.common.handler.debug._DebugHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
@@ -103,7 +103,7 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
                 Text text = TextHelper.concat(
                         Text.literal(name).formatted(Formatting.BOLD),
                         Text.literal(": "),
-                        value.v1()
+                        value.value1()
                 );
                 // Get Text Coordinates and Bounds
                 int textx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
@@ -118,8 +118,8 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
                 // Draw Tooltip
                 if(mouseX >= textx && mouseX <= textx + textwidth
                         && mouseY >= texty && mouseY <= texty + textHeight) {
-                    if(!Objects.equals(value.v2(), Text.empty())) {
-                        context.drawTooltip(textRenderer, Tooltip.of(value.v2()).getLines(minecraftClient), HoveredTooltipPositioner.INSTANCE, mouseX, mouseY);
+                    if(!Objects.equals(value.value2(), Text.empty())) {
+                        context.drawTooltip(textRenderer, Tooltip.of(value.value2()).getLines(minecraftClient), HoveredTooltipPositioner.INSTANCE, mouseX, mouseY);
                     }
 
                     hoveredName = name;
@@ -135,10 +135,10 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
 
         if(ctrl && key == GLFW.GLFW_KEY_C) {
             String json;
-            if(Objects.equals(hoveredValue.v2(), Text.empty())) {
-                json = TextHelper.textToJsonPretty(hoveredValue.v1());
+            if(Objects.equals(hoveredValue.value2(), Text.empty())) {
+                json = TextHelper.textToJsonPretty(hoveredValue.value1());
             } else {
-                json = hoveredValue.v2().getString();
+                json = hoveredValue.value2().getString();
             }
 
             minecraftClient.keyboard.setClipboard(json);

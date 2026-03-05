@@ -4,7 +4,7 @@ import dannypx.foe.common.handler.debug._DebugHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Quartet;
+import dannypx.foe.common.type.tuple.Quartet;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
@@ -98,9 +98,9 @@ public class _DebugField extends Element {
         } else {
             fieldText = TextHelper.concat(
                     Text.literal(TextHelper.smallText("DEBUG ")).formatted(Formatting.RED),
-                    Text.literal(field.v2()).formatted(Formatting.GRAY),
+                    Text.literal(field.value2()).formatted(Formatting.GRAY),
                     Text.literal(": ").formatted(Formatting.DARK_GRAY),
-                    field.v3()
+                    field.value3()
             );
         }
 

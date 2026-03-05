@@ -3,7 +3,7 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.AdvancedKeyBinding;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.screens.MainScreen;
@@ -41,11 +41,11 @@ public class KeyBindHandler extends Handler {
             ) {
                 return switch(params[0]) {
                     case "open_main_keybind" -> PlaceholderHandler.getTextValue(new StringValue(openMainKeybind.getBoundKeyTranslationKey()));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

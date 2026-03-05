@@ -3,7 +3,7 @@ package dannypx.foe.common.handler.renderer;
 import dannypx.foe.common.handler.ScreenHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.mixin.accessor.ChatScreenAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

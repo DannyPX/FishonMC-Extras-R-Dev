@@ -6,7 +6,7 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,14 +35,14 @@ public class TooltipHandler extends Handler {
     //region Methods
     public void fetchTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> texts) {
         Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
-        if(validatedItem.v1()) {
-            Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(validatedItem.v2());
-            if(validatedPet.v1()) this.setPetPercentages(validatedPet.v2(), texts);
+        if(validatedItem.value1()) {
+            Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(validatedItem.value2());
+            if(validatedPet.value1()) this.setPetPercentages(validatedPet.value2(), texts);
 
-            if(ValidateItem.isAuctionItem(validatedItem.v2())) {
-                this.setPricesPerItem(validatedItem.v2(), texts);
+            if(ValidateItem.isAuctionItem(validatedItem.value2())) {
+                this.setPricesPerItem(validatedItem.value2(), texts);
             } else if(this.isTackleShopItem(texts)) {
-                this.setPricesPerItemRaw(validatedItem.v2(), texts);
+                this.setPricesPerItemRaw(validatedItem.value2(), texts);
             }
         }
     }

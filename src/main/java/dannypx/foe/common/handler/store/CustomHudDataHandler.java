@@ -5,8 +5,8 @@ import dannypx.foe.common.handler.io.DataFileHandler;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.Alignment;
-import dannypx.foe.common.type.Pair;
-import dannypx.foe.common.type.Triplet;
+import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.common.type.tuple.Triplet;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 

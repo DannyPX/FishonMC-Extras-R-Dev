@@ -7,8 +7,8 @@ import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
-import dannypx.foe.common.type.Triplet;
+import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.common.type.tuple.Triplet;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
@@ -88,8 +88,8 @@ public class CustomHudElement extends Element implements ScreenConstants {
             };
 
             contentDimensions = this.assembleHud();
-            boxWidth = contentDimensions.v1() + BOX_PADDING * 2 + PADDING * 2;
-            boxHeight = contentDimensions.v2() + BOX_PADDING * 2 + PADDING_QUART * 2;
+            boxWidth = contentDimensions.value1() + BOX_PADDING * 2 + PADDING * 2;
+            boxHeight = contentDimensions.value2() + BOX_PADDING * 2 + PADDING_QUART * 2;
             if(!textLines.isEmpty()) {
                 x = switch (customHud.alignment) {
                     case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> x - boxWidth;
@@ -115,17 +115,17 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
         AtomicInteger line = new AtomicInteger(0);
         textLines.forEach(text -> {
-            if(text.v1()) {
-                DrawHelper.drawText(drawContext, textRenderer, text.v3(),
-                        x + (boxWidth / 2) - TextHelper.getWidth(textRenderer, text.v3(), text.v2()) / 2,
+            if(text.value1()) {
+                DrawHelper.drawText(drawContext, textRenderer, text.value3(),
+                        x + (boxWidth / 2) - TextHelper.getWidth(textRenderer, text.value3(), text.value2()) / 2,
                         textY + line.getAndIncrement() * LINE_HEIGHT,
-                        true, text.v2(), true, text.v2()
+                        true, text.value2(), true, text.value2()
                         );
             } else {
-                DrawHelper.drawText(drawContext, textRenderer, text.v3(),
+                DrawHelper.drawText(drawContext, textRenderer, text.value3(),
                         textX,
                         textY + line.getAndIncrement() * LINE_HEIGHT,
-                        true, text.v2(), true, text.v2()
+                        true, text.value2(), true, text.value2()
                 );
             }
         });
@@ -211,12 +211,12 @@ public class CustomHudElement extends Element implements ScreenConstants {
         AtomicBoolean hasData = new AtomicBoolean(false);
 
         customHud.textLines.forEach(line -> {
-            String textString = line.v1().replace("&", "§");
+            String textString = line.value1().replace("&", "§");
             Pair<Boolean, MutableText> textLine = PlaceholderHandler.parsePlaceholderFromString(textString);
-            if(textLine.v1()) {
-                textLines.add(Triplet.of(line.v2(), line.v3(), textLine.v2()));
+            if(textLine.value1()) {
+                textLines.add(Triplet.of(line.value2(), line.value3(), textLine.value2()));
             }
-            if(textLine.v1() && !textLine.v2().getString().isBlank()) {
+            if(textLine.value1() && !textLine.value2().getString().isBlank()) {
                 hasData.set(true);
             }
         });
@@ -228,7 +228,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         return Pair.of(
                 Math.max(MIN_WIDTH, textLines.stream()
                         .mapToInt(
-                                line -> TextHelper.getWidth(textRenderer, line.v3(), line.v2())
+                                line -> TextHelper.getWidth(textRenderer, line.value3(), line.value2())
                         ).max().orElse(0)),
                 LINE_HEIGHT * textLines.size()
         );

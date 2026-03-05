@@ -9,7 +9,7 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishingRodNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
@@ -142,7 +142,7 @@ public class HotbarElement extends Element {
                 drawContext.drawItem(item, x + itemX + (18 * i), y + itemY);
 
                 if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
-                    int count = validatedItem.v2().getCount();
+                    int count = validatedItem.value2().getCount();
                     Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                     int countWidth = textRenderer.getWidth(countText);
 

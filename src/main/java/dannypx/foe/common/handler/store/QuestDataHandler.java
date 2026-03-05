@@ -9,7 +9,7 @@ import dannypx.foe.common.handler.fetch.QuestScreenHandler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -55,12 +55,12 @@ public class QuestDataHandler extends Handler {
                         case "goal" -> PlaceholderHandler.getTextValue(new TextValue(ConstantDataHandler.instance().getConstantFishText(questData.get(index).goal).copy()));
                         case "max" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).max)));
                         case "current" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).current)));
-                        default -> Pair.of(false, new StringValue(""));
+                        default -> PlaceholderHandler.noResult();
                     };
                 }
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
 
     public void setQuestData(QuestDataModel questData) {

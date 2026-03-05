@@ -2,7 +2,7 @@ package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
@@ -112,11 +112,11 @@ public class ScoreboardHandler extends Handler {
                     case "crew_nearby" -> PlaceholderHandler.getTextValue(new TextValue(isCrewNearby()));
                     case "version" -> PlaceholderHandler.getTextValue(new StringValue(getVersion().getString()));
                     case "date" -> PlaceholderHandler.getTextValue(new StringValue(getDate().getString()));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 
@@ -131,10 +131,10 @@ public class ScoreboardHandler extends Handler {
             if(objective == null) return;
 
             Pair<Boolean, List<Text>> extractedText = this.extractLines(objective);
-            noScoreboard = extractedText.v2().isEmpty();
+            noScoreboard = extractedText.value2().isEmpty();
 
-            if(!noScoreboard && extractedText.v1()) {
-                this.extractData(extractedText.v2());
+            if(!noScoreboard && extractedText.value1()) {
+                this.extractData(extractedText.value2());
             }
         }
     }
@@ -178,9 +178,9 @@ public class ScoreboardHandler extends Handler {
                 .toList();
         if(!Objects.equals(prevResult, textList)) {
             prevResult = textList;
-            return Pair.of(true, prevResult);
+            return Pair.of(prevResult);
         }
-        return Pair.of(false, prevResult);
+        return Pair.ofFalse(prevResult);
     }
 
     private ScoreboardObjective getObjective() {

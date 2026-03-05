@@ -9,7 +9,7 @@ import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.ValidateItem;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.*;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
@@ -67,8 +67,8 @@ public class HudRenderHandler extends Handler {
 
         elements.forEach(element -> {
             layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
-                    Identifier.of(FishOnMCExtras.MOD_ID, element.v1()), (drawContext, tickCounter) -> {
-                        if (Configs.mainConfig.enableMod.get()) element.v2().render(drawContext, tickCounter);
+                    Identifier.of(FishOnMCExtras.MOD_ID, element.value1()), (drawContext, tickCounter) -> {
+                        if (Configs.mainConfig.enableMod.get()) element.value2().render(drawContext, tickCounter);
                     });
         });
 
@@ -78,7 +78,7 @@ public class HudRenderHandler extends Handler {
     }
 
     private void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {
-        customHudElements.forEach(element -> element.v2().render(drawContext, renderTickCounter));
+        customHudElements.forEach(element -> element.value2().render(drawContext, renderTickCounter));
     }
 
     private void renderAfterSubtitles(DrawContext drawContext, RenderTickCounter renderTickCounter) {
@@ -90,10 +90,10 @@ public class HudRenderHandler extends Handler {
                 && LoadingHandler.instance().isLoadingDone()
                 && RayCastHandler.instance().getItemFrameItem() != ItemStack.EMPTY) {
             Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(RayCastHandler.instance().getItemFrameItem());
-            if (validatedItem.v1()) {
+            if (validatedItem.value1()) {
                 int itemX = MinecraftClient.getInstance().getWindow().getScaledWidth() / 2;
                 int itemY = MinecraftClient.getInstance().getWindow().getScaledHeight() / 2;
-                drawContext.drawItemTooltip(minecraftClient.textRenderer, validatedItem.v2().getItemStack(), itemX, itemY);
+                drawContext.drawItemTooltip(minecraftClient.textRenderer, validatedItem.value2().getItemStack(), itemX, itemY);
             }
         }
     }

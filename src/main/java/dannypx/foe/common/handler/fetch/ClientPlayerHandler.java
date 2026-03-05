@@ -3,7 +3,7 @@ package dannypx.foe.common.handler.fetch;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -51,11 +51,11 @@ public class ClientPlayerHandler extends Handler {
                     case "name" -> PlaceholderHandler.getTextValue(new StringValue(getName().getString()));
                     case "level" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getExperienceLevel())));
                     case "level_progress" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getExperienceProgress() * 100, 2)));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

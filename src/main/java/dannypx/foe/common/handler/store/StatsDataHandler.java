@@ -10,7 +10,7 @@ import dannypx.foe.common.item.FishNbtObject;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.item.PetNbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.text.MutableText;
@@ -72,11 +72,11 @@ public class StatsDataHandler extends Handler {
                         Map<String, Stat<Integer, Integer>> itemData = getStatsData().itemData;
                         yield getStatsData(itemData, params[2], params[3], getStatsData().fishTotal);
                     }
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
 
     private Pair<Boolean, CustomTextValue> getStatsData(Map<String, Map<String, Stat<Integer, Integer>>> category, String subCategory, String field, String type, int total) {
@@ -85,7 +85,7 @@ public class StatsDataHandler extends Handler {
         if(subCatMap != null) {
             return getStatsData(subCatMap, field, type, total);
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
 
     private Pair<Boolean, CustomTextValue> getStatsData(Map<String, Stat<Integer, Integer>> subCategory, String field, String type, int total) {
@@ -94,10 +94,10 @@ public class StatsDataHandler extends Handler {
             return switch (type) {
                 case "count" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(stat.amount())));
                 case "dry_streak" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(total - stat.caughtOn())));
-                default -> Pair.of(false, new StringValue(""));
+                default -> PlaceholderHandler.noResult();
             };
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 
@@ -154,7 +154,7 @@ public class StatsDataHandler extends Handler {
 
     public void setItem(NbtObject item, int count) {
         Pair<Boolean, PetNbtObject> isPet = ValidateItem.isPet(item);
-        if(isPet.v1()) setPet(isPet.v2());
+        if(isPet.value1()) setPet(isPet.value2());
         else setOtherItem(item, count);
     }
 

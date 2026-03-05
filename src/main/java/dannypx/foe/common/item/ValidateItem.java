@@ -1,7 +1,7 @@
 package dannypx.foe.common.item;
 
 import dannypx.foe.common.helper.ItemStackHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,7 +19,7 @@ public class ValidateItem {
 
     public static Pair<Boolean, NbtObject> isServerItem(ItemStack itemStack, Item itemType) {
         //isValidItem
-        return Pair.of(itemStack.getItem() == itemType, isValidItem(itemStack).v2());
+        return Pair.of(itemStack.getItem() == itemType, isValidItem(itemStack).value2());
     }
 
     private static Pair<Boolean, NbtObject> isValidItem(ItemStack itemStack) {
@@ -58,10 +58,10 @@ public class ValidateItem {
 
     public static Pair<Boolean, PetNbtObject> isPet(ItemStack itemStack) {
         Pair<Boolean, NbtObject> validatedItem = isType(itemStack);
-        if(validatedItem.v1()) {
-            return isPet(validatedItem.v2());
+        if(validatedItem.value1()) {
+            return isPet(validatedItem.value2());
         }
-        return Pair.ofFalse(PetNbtObject.of(validatedItem.v2().nbtCompound, validatedItem.v2().itemStack));
+        return Pair.ofFalse(PetNbtObject.of(validatedItem.value2().nbtCompound, validatedItem.value2().itemStack));
     }
 
     public static Pair<Boolean, PetNbtObject> isPet(NbtObject item) {
@@ -80,7 +80,7 @@ public class ValidateItem {
 
     public static Pair<Boolean, FishingRodNbtObject> isFishingRod(ItemStack itemStack) {
         Pair<Boolean, NbtObject> serverItem = isServerItem(itemStack, Items.FISHING_ROD);
-        return Pair.of(serverItem.v1(), FishingRodNbtObject.of(serverItem.v2().nbtCompound, serverItem.v2().getItemStack()));
+        return Pair.of(serverItem.value1(), FishingRodNbtObject.of(serverItem.value2().nbtCompound, serverItem.value2().getItemStack()));
     }
 
     private static boolean hasLore(ItemStack itemStack) {

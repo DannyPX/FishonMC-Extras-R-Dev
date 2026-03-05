@@ -4,7 +4,7 @@ import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.renderer.AuctionHouseScreenRenderHandler;
 import dannypx.foe.common.handler.renderer.ChestScreenRenderHandler;
 import dannypx.foe.common.handler.renderer.PersonalVaultScreenRenderHandler;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.text.MutableText;

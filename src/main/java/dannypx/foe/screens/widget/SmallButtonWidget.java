@@ -2,7 +2,7 @@ package dannypx.foe.screens.widget;
 
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
@@ -22,6 +22,9 @@ public class SmallButtonWidget extends ClickableWidget {
 
     private final ClickCallback clickCallback;
     private final String icon;
+    Pair<String, Element> box;
+    Pair<String, Element> box_hover;
+
     List<Pair<String, Element>> elements = new ArrayList<>();
 
     public SmallButtonWidget(int x, int y, int width, int height, String icon, @Nullable Tooltip tooltip, Text message, ClickCallback clickCallback) {
@@ -30,6 +33,16 @@ public class SmallButtonWidget extends ClickableWidget {
         this.clickCallback = clickCallback;
         this.setTooltip(tooltip);
         this.init();
+
+        box = Pair.of("button_box", new BoxElement(minecraftClient,
+                getX(),
+                getY(),
+                width, height, true, false));
+
+        box_hover = Pair.of("button_hover_box", new BoxElement(minecraftClient,
+                getX(),
+                getY(),
+                width, height, true, true));
     }
 
     private void init() {
@@ -38,10 +51,6 @@ public class SmallButtonWidget extends ClickableWidget {
 
     private void initElements() {
         elements.clear();
-        elements.add(Pair.of("button_box", new BoxElement(minecraftClient,
-                getX(),
-                getY(),
-                width, height, true)));
     }
 
     @Override
@@ -51,7 +60,7 @@ public class SmallButtonWidget extends ClickableWidget {
     }
 
     private void renderBox(DrawContext context) {
-        elements.forEach(element -> element.v2().render(context, minecraftClient.getRenderTickCounter()));
+        (hovered ? box_hover : box).value2().render(context, minecraftClient.getRenderTickCounter());
     }
 
     private void renderIcon(DrawContext context) {

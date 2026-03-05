@@ -17,14 +17,17 @@ public class BoxElement extends Element {
 
     private final Identifier BOX_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
     private final Identifier BOX_SOLID_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_atlas.png");
+    private final Identifier BOX_ALT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_alt_atlas.png");
+    private final Identifier BOX_SOLID_ALT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_alt_atlas.png");
 
     private final boolean isSolid;
+    private final boolean isAlt;
     private final int x;
     private final int y;
     private final int z;
     //endregion
 
-    public BoxElement(MinecraftClient minecraftClient, int x, int y, int width, int height, boolean isSolid) {
+    public BoxElement(MinecraftClient minecraftClient, int x, int y, int width, int height, boolean isSolid, boolean isAlt) {
         super(width,
                 height,
                 x,
@@ -35,12 +38,13 @@ public class BoxElement extends Element {
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;
         this.isSolid = isSolid;
+        this.isAlt = isAlt;
         this.x = x;
         this.y = y;
         this.z = -1;
     }
 
-    public BoxElement(MinecraftClient minecraftClient, int x, int y, int z, int width, int height, boolean isSolid) {
+    public BoxElement(MinecraftClient minecraftClient, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt) {
         super(width,
                 height,
                 x,
@@ -51,6 +55,7 @@ public class BoxElement extends Element {
         this.minecraftClient = minecraftClient;
         this.textRenderer = minecraftClient.textRenderer;
         this.isSolid = isSolid;
+        this.isAlt = isAlt;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -63,7 +68,7 @@ public class BoxElement extends Element {
     }
 
     private void renderBox(DrawContext drawContext) {
-        Identifier TEXTURE = isSolid ? BOX_SOLID_TEXTURE : BOX_TEXTURE;
+        Identifier TEXTURE = isAlt ? (isSolid ? BOX_SOLID_ALT_TEXTURE : BOX_ALT_TEXTURE) : (isSolid ? BOX_SOLID_TEXTURE : BOX_TEXTURE);
         if(this.z != -1) {
             drawContext.getMatrices().push();
             drawContext.getMatrices().translate(0.0f, 0.0f, this.z);

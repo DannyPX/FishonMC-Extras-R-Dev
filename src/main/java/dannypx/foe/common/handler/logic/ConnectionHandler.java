@@ -2,7 +2,7 @@ package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.client.network.ServerInfo;
@@ -44,11 +44,11 @@ public class ConnectionHandler extends Handler {
                 return switch(params[0]) {
                     case "is_on_server" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isOnServer())));
                     case "was_on_server" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(wasOnServer())));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

@@ -3,7 +3,7 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.item.FishingRodNbtObject;
 import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.Pair;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.item.ItemStack;
@@ -50,11 +50,11 @@ public class LoadingHandler extends Handler {
                 return switch(params[0]) {
                     case "is_loading_done" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isLoadingDone())));
                     case "is_error" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isError())));
-                    default -> Pair.of(false, new StringValue(""));
+                    default -> PlaceholderHandler.noResult();
                 };
             }
         }
-        return Pair.of(false, new StringValue(""));
+        return PlaceholderHandler.noResult();
     }
     //endregion
 
@@ -83,8 +83,8 @@ public class LoadingHandler extends Handler {
     private boolean checkFishingRodLoaded(ItemStack itemStack) {
         Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(itemStack);
 
-        if(validatedFishingRod.v1()) {
-            InventoryHandler.instance().setCurrentFishingRod(validatedFishingRod.v2());
+        if(validatedFishingRod.value1()) {
+            InventoryHandler.instance().setCurrentFishingRod(validatedFishingRod.value2());
             return true;
         }
         return false;
