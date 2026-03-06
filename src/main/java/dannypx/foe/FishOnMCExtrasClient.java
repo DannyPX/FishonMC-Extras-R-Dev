@@ -84,15 +84,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
-
-        if (stack.getItem() instanceof FishingRodItem) {
-            if (player.fishHook == null) {
-                LoggerHandler._debug("Cast");
-                InventoryHandler.instance().trackAllFish();
-            }
-        }
-
         return ActionResult.PASS;
     }
 
@@ -109,6 +100,12 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         } else if(screen instanceof ChatScreen) {
             ScreenEvents.afterRender(screen).register(ChatScreenRenderHandler.instance()::render);
         }
+
+        ScreenEvents.remove(screen).register(this::onRemoveScreen);
+    }
+
+    private void onRemoveScreen(Screen screen) {
+        InventoryHandler.instance().trackFishOffSide();
     }
 
     private void onBeforeInitScreen(MinecraftClient minecraftClient, Screen screen, int scaledWidth, int scaledHeight) {

@@ -266,6 +266,14 @@ public class InventoryHandler extends Handler {
         }
     }
 
+    public void trackFishOffSide() {
+        if(minecraftClient.player != null
+                && CatchingHandler.instance().isScanDone()
+        ) {
+            this.trackAllFish();
+        }
+    }
+
     public void snapshotInventory() {
         if(minecraftClient.player != null) {
             snapshotInventory = ItemStackHelper.deepCopy(

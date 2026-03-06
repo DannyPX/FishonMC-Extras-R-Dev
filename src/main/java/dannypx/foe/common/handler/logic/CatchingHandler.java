@@ -34,6 +34,10 @@ public class CatchingHandler extends Handler {
     private long startScanTime = 0L;
     private boolean scanDone = true;
     private String fishNameToFind = "";
+
+    public boolean isScanDone() {
+        return scanDone;
+    }
     //endregion
 
     //region Methods
@@ -45,7 +49,7 @@ public class CatchingHandler extends Handler {
         if(!scanDone && System.currentTimeMillis() < startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)) {
             Pair<Boolean, FishNbtObject> foundFish = this.findFish();
             if(foundFish.value1()) {
-                InventoryHandler.instance().addToTrackedFish(foundFish.value2().getID());
+                InventoryHandler.instance().trackAllFish();
 
                 // Store to Stats
                 StatsDataHandler.instance().setFish(foundFish.value2());
