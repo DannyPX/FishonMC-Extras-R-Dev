@@ -1,5 +1,7 @@
 package dannypx.foe.common.handler.fetch;
 
+import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.FishOnMCExtrasClient;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.renderer.AuctionHouseScreenRenderHandler;
 import dannypx.foe.common.handler.renderer.ChestScreenRenderHandler;
@@ -43,15 +45,15 @@ public class GenericContainerScreenHandler extends Handler {
     private void checkIsOfTitle(GenericContainerScreen genericContainerScreen) {
         this.lastContainerScreen = genericContainerScreen.getTitle().getString();
 
-        if(Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD539")) {
+        if(Objects.equals(genericContainerScreen.getTitle().getString(), FishOnMCExtras.QUEST_SCREEN)) {
             QuestScreenHandler.instance().checkQuests(genericContainerScreen.getScreenHandler());
-        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD532")) {
+        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), FishOnMCExtras.STATS_SCREEN)) {
             StatsScreenHandler.instance().checkStats(genericContainerScreen.getScreenHandler());
-        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), "\uEEE4\uD543")) {
+        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), FishOnMCExtras.AUCTION_HOUSE_SCREEN)) {
             AuctionHouseScreenRenderHandler.instance().init(genericContainerScreen);
-        } else if (genericContainerScreen.getTitle().getString().startsWith("Personal Vault #")) {
+        } else if (genericContainerScreen.getTitle().getString().startsWith(FishOnMCExtras.PERSONAL_VAULT_SCREEN)) {
             PersonalVaultScreenRenderHandler.instance().init(genericContainerScreen);
-        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), " ")) {
+        } else if (Objects.equals(genericContainerScreen.getTitle().getString(), FishOnMCExtras.STORAGE_SCREEN)) {
             ChestScreenRenderHandler.instance().init(genericContainerScreen);
         }
     }

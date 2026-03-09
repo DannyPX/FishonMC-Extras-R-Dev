@@ -5,7 +5,6 @@ import dannypx.foe.common.handler.logic.CodeExecuterHandler;
 import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
-import dannypx.foe.common.handler.store.Stat;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.FishNbtObject;
@@ -82,7 +81,7 @@ public class StatsScreenHandler extends Handler {
                     if(data.value1()) {
                         StatsDataHandler.instance().getStatsData().fishData
                                 .getOrDefault(FishNbtObject.RARITY, new HashMap<>())
-                                .put(data.value2(), new Stat<>(data.value3(), totalFish));
+                                .put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
                     }
                 }
 
@@ -95,7 +94,7 @@ public class StatsScreenHandler extends Handler {
                     if(data.value1()) {
                         StatsDataHandler.instance().getStatsData().fishData
                                 .getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>())
-                                .put(data.value2(), new Stat<>(data.value3(), totalFish));
+                                .put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
                     }
                 }
 
@@ -110,12 +109,12 @@ public class StatsScreenHandler extends Handler {
                         normalCount.set(normalCount.get() - data.value3());
                         StatsDataHandler.instance().getStatsData().fishData
                                 .getOrDefault(FishNbtObject.VARIANT, new HashMap<>())
-                                .put(data.value2(), new Stat<>(data.value3(), totalFish));
+                                .put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
                     }
                 }
                 StatsDataHandler.instance().getStatsData().fishData
                         .getOrDefault(FishNbtObject.VARIANT, new HashMap<>())
-                        .put("normal", new Stat<>(normalCount.get(), totalFish));
+                        .put("normal", new StatsDataHandler.Stat<>(normalCount.get(), totalFish));
                 return true;
             }
         }

@@ -54,7 +54,7 @@ public class PlaceholderHandler extends Handler {
     //region Methods
     // Boolean = hasFullData
     public static Pair<Boolean, MutableText> parsePlaceholderFromString(String input) {
-        Pattern placeholderPattern = Pattern.compile("%([^%]+)%");
+        Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%([^%]+?)(?<!\\\\)%");
         Matcher matcher = placeholderPattern.matcher(input);
         boolean hasFullData = true;
 

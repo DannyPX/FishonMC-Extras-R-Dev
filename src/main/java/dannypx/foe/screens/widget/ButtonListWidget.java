@@ -54,6 +54,11 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         return super.addEntry(entry);
     }
 
+    public int addEntry(ButtonEntry entry, int pos) {
+        this.children().add(pos, entry);
+        return this.children().size() - 1;
+    }
+
     @Override
     public boolean removeEntry(ButtonEntry entry) {
         return super.removeEntry(entry);
@@ -62,19 +67,26 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
     public static class ButtonEntry extends ElementListWidget.Entry<ButtonEntry> {
 
         private final ButtonWidget button;
+        private final ButtonWidget smallButton;
 
         public ButtonEntry(ButtonWidget button) {
             this.button = button;
+            this.smallButton = null;
+        }
+
+        public ButtonEntry(ButtonWidget button, ButtonWidget smallButton) {
+            this.button = button;
+            this.smallButton = smallButton;
         }
 
         @Override
         public List<? extends Element> children() {
-            return List.of(button);
+            return List.of(button, smallButton);
         }
 
         @Override
         public List<? extends Selectable> selectableChildren() {
-            return List.of(button);
+            return List.of(button, smallButton);
         }
 
         @Override
@@ -95,6 +107,15 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
                     y
             );
             button.render(context, mouseX, mouseY, delta);
+
+            if(smallButton != null) {
+                smallButton.setPosition(
+                        x + entryWidth - smallButton.getWidth() - PADDING,
+                        y
+                );
+
+                smallButton.render(context, mouseX, mouseY, delta);
+            }
         }
     }
 }

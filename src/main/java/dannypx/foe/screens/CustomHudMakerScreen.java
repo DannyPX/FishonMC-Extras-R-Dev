@@ -104,12 +104,16 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         return ButtonWidget.builder(
                         Text.literal("Delete Selected HUD"),
                         (button) -> {
-                            CustomHudDataHandler.instance().deleteCustomHud(selectedHud);
-                            editFieldListWidget.reset();
-                            ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedHud);
+                            if(editFieldListWidget.hasSelectedOption) {
+                                CustomHudDataHandler.instance().deleteCustomHud(selectedHud);
+                                editFieldListWidget.reset();
+                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedHud);
 
-                            hudList.removeEntry(entry);
-                            buttonEntryMap.remove(selectedHud);
+                                hudList.removeEntry(entry);
+                                buttonEntryMap.remove(selectedHud);
+
+                                selectedHud = null;
+                            }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
@@ -173,7 +177,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         return ButtonWidget.builder(
                         Text.literal("Export Selected HUD"),
                         (button) -> {
-                            if(editFieldListWidget.hasSelectedHud) {
+                            if(editFieldListWidget.hasSelectedOption) {
                                 try {
                                     Triplet<String, CustomHudDataHandler.CustomHud, Integer> dataHud = Triplet.of(
                                             editFieldListWidget.currentSelectedHud,
@@ -204,6 +208,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.of(Text.literal("Save first before exporting")))
                 .build();
     }
 
@@ -244,7 +249,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonWidget saveBackButton() {
         return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
-                    if(editFieldListWidget.hasSelectedHud) {
+                    if(editFieldListWidget.hasSelectedOption) {
                         if(editFieldListWidget.newName.isBlank()) {
                             SystemToast.add(minecraftClient.getToastManager(),
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -293,7 +298,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonWidget addLine() {
         return ButtonWidget.builder(Text.literal("Add Line"), button -> {
-                    if(editFieldListWidget.hasSelectedHud) {
+                    if(editFieldListWidget.hasSelectedOption) {
                         editFieldListWidget.addNewEntry();
                     }
                 })

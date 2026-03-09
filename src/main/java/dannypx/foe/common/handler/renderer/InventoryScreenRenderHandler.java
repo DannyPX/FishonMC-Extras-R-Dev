@@ -1,13 +1,16 @@
 package dannypx.foe.common.handler.renderer;
 
+import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.ScreenHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.handler.store.ConstantDataHandler;
+import dannypx.foe.common.handler.store.CustomButtonDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
+import dannypx.foe.screens.CustomButtonMakerScreen;
 import dannypx.foe.screens.CustomHudMakerScreen;
 import dannypx.foe.screens.MainScreen;
 import dannypx.foe.screens.element.*;
@@ -113,6 +116,18 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     Text.literal("Custom HUDs Button"),
                     (button) -> {
                         minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen));
+                    }
+            ));
+
+            widgets.add(new SmallButtonWidget(
+                    minecraftClient.getWindow().getScaledWidth() / 2 + 34,
+                    minecraftClient.getWindow().getScaledHeight() / 2 - 23,
+                    14, 14,
+                    "B",
+                    Tooltip.of(Text.literal("Edit Custom Buttons")),
+                    Text.literal("Custom Buttons Button"),
+                    (button) -> {
+                        minecraftClient.setScreen(new CustomButtonMakerScreen(minecraftClient.currentScreen, FishOnMCExtras.INVENTORY_SCREEN));
                     }
             ));
 

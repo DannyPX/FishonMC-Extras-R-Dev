@@ -257,6 +257,12 @@ public class StatsDataHandler extends Handler {
             super(STATS_DATA_MODEL_VERSION, null);
         }
     }
+
+    public record Stat<Amount, CaughtOn>(Amount amount, CaughtOn caughtOn) {
+        public static <Amount, CaughtOn> Stat<Amount, CaughtOn> of(Amount amount, CaughtOn caughtOn) {
+            return new Stat<>(amount, caughtOn);
+        }
+    }
     //endregion
 
     //region Dev
