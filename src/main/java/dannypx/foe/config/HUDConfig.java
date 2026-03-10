@@ -96,10 +96,13 @@ public class HUDConfig extends Config {
     @Name("Show Fishing Parts")
     public ValidatedBoolean showHotbarParts = new ValidatedBoolean(true);
 
-    @ConfigGroup.Pop
-    @ConfigGroup.Pop
     @Name("Show Active Bait")
     public ValidatedBoolean showHotbarBait = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Name("Show Tacklebox Lock")
+    public ValidatedBoolean showBaitLock = new ValidatedBoolean(true);
 
     @Name("Pet Element")
     @Desc("§7This is your pet shown on the hud. (Name, Level, Picture)")
