@@ -16,6 +16,7 @@ public class FishingRodNbtObject extends NbtObject {
     private List<NbtObject> reelItem = List.of();
     private static final String TACKLEBOX = "tacklebox";
     private List<NbtObject> tackleBox = List.of();
+    public static final String DISABLE_BAIT = "disableBait";
 
     public FishingRodNbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
         super(nbtCompound, itemStack);
@@ -45,6 +46,13 @@ public class FishingRodNbtObject extends NbtObject {
 
     public List<NbtObject> getTackleBox() {
         return this.tackleBox;
+    }
+
+    public boolean getDisableBait() {
+        if (this.contains(DISABLE_BAIT)) {
+            return this.nbtCompound.getBoolean(DISABLE_BAIT);
+        }
+        return false;
     }
 
     public static FishingRodNbtObject of(@NotNull NbtCompound nbtCompound, @NotNull ItemStack itemStack) {

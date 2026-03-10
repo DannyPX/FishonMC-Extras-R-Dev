@@ -312,6 +312,13 @@ public class HotbarElement extends Element {
                             true,
                             false,
                             true);
+
+                    if(Configs.hudConfig.showBaitLock.get()
+                            && fishingRodNbtObject.getDisableBait()
+                    ) {
+                        drawContext.drawText(textRenderer, Text.literal("\uD83D\uDD12"), x + 2, y + baitY, 0xFFFFFF, true);
+                    }
+
                     drawContext.getMatrices().pop();
                 }
                 //endregion
