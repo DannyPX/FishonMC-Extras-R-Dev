@@ -6,6 +6,7 @@ import dannypx.foe.common.handler.store.ConstantDataHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
@@ -13,8 +14,6 @@ import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class PlaceholderHandler extends Handler {
         while (matcher.find()) {
             if (matcher.start() > lastEnd) {
                 String before = input.substring(lastEnd, matcher.start());
-                Pair<MutableText, Style> parsed = parseLegacyWithStyle(before, activeStyle);
+                Pair<MutableText, Style> parsed = TextHelper.parseLegacyWithStyle(before, activeStyle);
                 result.append(parsed.value1());
                 activeStyle = parsed.value2();
             }
@@ -84,7 +83,7 @@ public class PlaceholderHandler extends Handler {
 
                     switch (functionResult.value2()) {
                         case StringValue stringValue -> {
-                            parsed = parseLegacyWithStyle(stringValue.value(), activeStyle);
+                            parsed = TextHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
                         }
                         case TextValue textValue -> {
                             parsed = Pair.of(textValue.value(), textValue.value().getStyle());
@@ -106,45 +105,11 @@ public class PlaceholderHandler extends Handler {
 
         if (lastEnd < input.length()) {
             String remaining = input.substring(lastEnd);
-            Pair<MutableText, Style> parsed = parseLegacyWithStyle(remaining, activeStyle);
+            Pair<MutableText, Style> parsed = TextHelper.parseLegacyWithStyle(remaining, activeStyle);
             result.append(parsed.value1());
         }
 
         return Pair.of(hasFullData, result);
-    }
-
-    private static Pair<MutableText, Style> parseLegacyWithStyle(String input, Style startingStyle) {
-        MutableText text = Text.empty();
-        Pattern pattern = Pattern.compile("(§#[0-9A-Fa-f]{6}|§[0-9A-FK-ORa-fk-or])");
-        Matcher matcher = pattern.matcher(input);
-
-        int lastEnd = 0;
-        Style currentStyle = startingStyle;
-
-        while (matcher.find()) {
-            if (matcher.start() > lastEnd) {
-                text.append(Text.literal(input.substring(lastEnd, matcher.start())).setStyle(currentStyle));
-            }
-
-            String code = matcher.group();
-            if (code.equalsIgnoreCase("§r")) {
-                currentStyle = Style.EMPTY;
-            } else if (code.startsWith("§#")) {
-                int rgb = Integer.parseInt(code.substring(2), 16);
-                currentStyle = currentStyle.withColor(TextColor.fromRgb(rgb));
-            } else {
-                Formatting fmt = Formatting.byCode(code.charAt(1));
-                currentStyle = currentStyle.withFormatting(fmt);
-            }
-
-            lastEnd = matcher.end();
-        }
-
-        if (lastEnd < input.length()) {
-            text.append(Text.literal(input.substring(lastEnd)).setStyle(currentStyle));
-        }
-
-        return Pair.of(text, currentStyle);
     }
 
     public static Pair<Boolean, CustomTextValue> getTextValue(CustomTextValue customTextValue) {

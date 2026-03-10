@@ -1,5 +1,7 @@
 package dannypx.foe.screens.widget;
 
+import com.mojang.brigadier.StringReader;
+import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Pair;
@@ -10,18 +12,29 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.command.argument.ItemStringReader;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SmallButtonWidget extends ClickableWidget {
     MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
 
     private final ClickCallback clickCallback;
+
+    Pattern NAMESPACED = Pattern.compile("^[a-z_]+:[a-z_]+$");
+    Pattern PATTERN = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.))$");
+
     private final String icon;
+
+
     Pair<String, Element> box;
     Pair<String, Element> box_hover;
 
@@ -37,11 +50,13 @@ public class SmallButtonWidget extends ClickableWidget {
         box = Pair.of("button_box", new BoxElement(minecraftClient,
                 getX(),
                 getY(),
+                1,
                 width, height, true, false));
 
         box_hover = Pair.of("button_hover_box", new BoxElement(minecraftClient,
                 getX(),
                 getY(),
+                1,
                 width, height, true, true));
     }
 
@@ -64,16 +79,50 @@ public class SmallButtonWidget extends ClickableWidget {
     }
 
     private void renderIcon(DrawContext context) {
-        int textWidth = minecraftClient.textRenderer.getWidth(TextHelper.smallText(icon));
-        DrawHelper.drawText(context,
-                minecraftClient.textRenderer,
-                Text.literal(icon),
-                getX() + (width / 2) - textWidth / 2, getY() + (height / 2) - minecraftClient.textRenderer.fontHeight / 2,
-                true,
-                true,
-                false,
-                true
-        );
+        Matcher m = PATTERN.matcher(icon);
+
+        if (m.matches()) {
+            if(m.group(1) != null) {
+                if(minecraftClient.player != null) {
+                    RegistryWrapper.WrapperLookup lookup = minecraftClient.player.getRegistryManager();
+
+                    ItemStringReader reader = new ItemStringReader(lookup);
+                    StringReader stringReader = new StringReader(icon);
+                    try {
+                        ItemStringReader.ItemResult result = reader.consume(stringReader);
+
+                        ItemStack itemStack = new ItemStack(result.item(), 1);
+                        itemStack.applyUnvalidatedChanges(result.components());
+
+                        context.getMatrices().push();
+                        context.getMatrices().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6, 1.0f);
+                        context.getMatrices().scale(12f / 16f, 12f / 16f, 1.0f);
+
+                        context.drawItem(itemStack, 0, 0);
+
+                        context.getMatrices().pop();
+                    } catch (Exception e) {
+                        LoggerHandler._debug(e.getMessage());
+                    }
+                }
+            } else {
+                int textWidth = minecraftClient.textRenderer.getWidth(TextHelper.smallText(icon));
+                context.getMatrices().push();
+                context.getMatrices().translate(0.0f, 0.0f, 1.0f);
+
+                DrawHelper.drawText(context,
+                        minecraftClient.textRenderer,
+                        Text.literal(icon),
+                        getX() + (width / 2) - textWidth / 2, getY() + (height / 2) - minecraftClient.textRenderer.fontHeight / 2,
+                        true,
+                        true,
+                        false,
+                        true
+                );
+
+                context.getMatrices().pop();
+            }
+        }
     }
 
     @Override

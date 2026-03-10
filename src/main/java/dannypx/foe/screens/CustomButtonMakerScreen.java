@@ -21,6 +21,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -70,7 +71,32 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         super.render(context, mouseX, mouseY, delta);
 
         this.renderText(context, mouseX, mouseY, delta);
+        this.renderTooltip(context, mouseX, mouseY, delta);
         this.buttonList.render(context, mouseX, mouseY, delta);
+    }
+
+    private void renderTooltip(DrawContext context, int mouseX, int mouseY, float delta) {
+        if(descriptionTextField.isMouseOver(mouseX, mouseY)) {
+            context.drawTooltip(textRenderer, List.of(
+                    Text.literal("Can be empty").formatted(Formatting.GRAY)
+            ), mouseX, mouseY);
+        }
+
+        if(actionTextField.isMouseOver(mouseX, mouseY)) {
+            context.drawTooltip(textRenderer, List.of(
+                    Text.literal("Must start with \"/\"").formatted(Formatting.GRAY)
+            ), mouseX, mouseY);
+        }
+
+        if(iconTextField.isMouseOver(mouseX, mouseY)) {
+            context.drawTooltip(textRenderer, List.of(
+                    Text.literal("Must be a single character or is an item").formatted(Formatting.GRAY),
+                    Text.literal("using one of the following formats: ").formatted(Formatting.GRAY),
+                    Text.literal("\"minecraft:<id>\"").formatted(Formatting.GOLD),
+                    Text.literal("\"minecraft:<id>[<componentData>]\"").formatted(Formatting.GOLD)
+
+            ), mouseX, mouseY);
+        }
     }
 
     private void renderText(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -244,7 +270,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         return ButtonWidget.builder(
                         Text.literal("Create Button"),
                         (button) -> {
-                            String id = "Custom Hud #" + UUID.randomUUID();
+                            String id = "Custom Button #" + UUID.randomUUID();
 
                             CustomButtonDataHandler.instance().createNewButton(screenId, id);
 
@@ -420,7 +446,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                     return;
                 }
 
-                Pattern iconPattern = Pattern.compile("^(?:[a-z_]+:[a-z_]+|.)$");
+                Pattern iconPattern = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.))$");
                 if(!iconPattern.matcher(iconTextField.getText()).matches()) {
                     SystemToast.add(minecraftClient.getToastManager(),
                             SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -455,7 +481,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     private ButtonListWidget.ButtonEntry createButtonEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
                 ButtonWidget.builder(
-                        Text.literal(id),
+                        Text.literal(TextHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()),
                         button -> {
                             selectedButton = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().filter(buttonObject -> Objects.equals(buttonObject.name, id)).findAny().orElse(null);
 
@@ -465,7 +491,6 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                             }
                         }
                 ).width(BUTTON_WIDTH / 4 * 3).build(),
-                // Add line
                 ButtonWidget.builder(
                                 Text.literal("Add"),
                                 button -> {
@@ -489,7 +514,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     }
 
     private void setFields() {
-        this.header = Text.literal(selectedButtonId);
+        this.header = TextHelper.parseLegacyWithStyle(selectedButtonId.replace("&", "§")).value1();
         nameTextField.setText(selectedButtonId);
         nameTextField.setPlaceholder(Text.literal(selectedButtonId));
 

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEntry> implements ScreenConstants {
@@ -81,12 +82,24 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
 
         @Override
         public List<? extends Element> children() {
-            return List.of(button, smallButton);
+            List<ButtonWidget> children = new ArrayList<>(List.of(button));
+
+            if(smallButton != null) {
+                children.add(smallButton);
+            }
+
+            return children;
         }
 
         @Override
         public List<? extends Selectable> selectableChildren() {
-            return List.of(button, smallButton);
+            List<ButtonWidget> children = new ArrayList<>(List.of(button));
+
+            if(smallButton != null) {
+                children.add(smallButton);
+            }
+
+            return children;
         }
 
         @Override

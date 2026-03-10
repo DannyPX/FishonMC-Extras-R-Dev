@@ -25,6 +25,11 @@ public class BoxElement extends Element {
     private final int x;
     private final int y;
     private final int z;
+
+    private final boolean showTop;
+    private final boolean showRight;
+    private final boolean showBottom;
+    private final boolean showLeft;
     //endregion
 
     public BoxElement(MinecraftClient minecraftClient, int x, int y, int width, int height, boolean isSolid, boolean isAlt) {
@@ -42,6 +47,10 @@ public class BoxElement extends Element {
         this.x = x;
         this.y = y;
         this.z = -1;
+        this.showTop = true;
+        this.showRight = true;
+        this.showBottom = true;
+        this.showLeft = true;
     }
 
     public BoxElement(MinecraftClient minecraftClient, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt) {
@@ -59,6 +68,31 @@ public class BoxElement extends Element {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.showTop = true;
+        this.showRight = true;
+        this.showBottom = true;
+        this.showLeft = true;
+    }
+
+    public BoxElement(MinecraftClient minecraftClient, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt, boolean showTop, boolean showRight, boolean showBottom, boolean showLeft) {
+        super(width,
+                height,
+                x,
+                y,
+                null,
+                Text.literal("Box Element"),
+                false);
+        this.minecraftClient = minecraftClient;
+        this.textRenderer = minecraftClient.textRenderer;
+        this.isSolid = isSolid;
+        this.isAlt = isAlt;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.showTop = showTop;
+        this.showRight = showRight;
+        this.showBottom = showBottom;
+        this.showLeft = showLeft;
     }
 
     //region Methods
@@ -75,7 +109,7 @@ public class BoxElement extends Element {
         }
 
         // Top Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showTop && showLeft) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 this.x, this.y,
                 0, 0,
@@ -85,7 +119,7 @@ public class BoxElement extends Element {
         );
 
         // Top
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showTop) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 this.x + 5, this.y,
                 5, 0,
@@ -95,7 +129,7 @@ public class BoxElement extends Element {
         );
 
         // Top Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showTop && showRight) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 x + this.width - 5, this.y,
                 10, 0,
@@ -105,7 +139,7 @@ public class BoxElement extends Element {
         );
 
         // Centre Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showLeft) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 this.x, this.y + 5,
                 0, 5,
@@ -125,7 +159,7 @@ public class BoxElement extends Element {
         );
 
         // Centre Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showRight) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 x + this.width - 5, this.y + 5,
                 10, 5,
@@ -135,7 +169,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showLeft && showBottom) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 this.x, y + this.height - 5,
                 0, 10,
@@ -145,7 +179,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showBottom) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 this.x + 5, y + this.height - 5,
                 5, 10,
@@ -155,7 +189,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showBottom && showRight) drawContext.drawTexture(RenderLayer::getGuiTextured,
                 TEXTURE,
                 x + this.width - 5, y + this.height - 5,
                 10, 10,
