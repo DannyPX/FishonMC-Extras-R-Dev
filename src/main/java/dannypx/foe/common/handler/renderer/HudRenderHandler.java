@@ -72,9 +72,13 @@ public class HudRenderHandler extends Handler {
                     });
         });
 
-        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen"), this::render);
+        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen"), (drawContext, renderTickCounter) -> {
+            if (Configs.mainConfig.enableMod.get()) this.render(drawContext, renderTickCounter);
+        });
 
-        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), this::renderAfterSubtitles);
+        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (drawContext, renderTickCounter) -> {
+            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(drawContext, renderTickCounter);
+        });
     }
 
     private void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {

@@ -36,7 +36,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
     private final CheckboxWidget showElementCheckBox;
     public boolean showElement;
 
-    public boolean hasSelectedHud = false;
+    public boolean hasSelectedOption = false;
     public String currentSelectedHud = null;
 
     private int scrollOffset = 0;
@@ -58,7 +58,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         newName = "";
 
         idTextField.setChangedListener(s -> {
-            if (hasSelectedHud) {
+            if (hasSelectedOption) {
                 newName = s;
             }
             idTextField.setPlaceholder(Text.literal(s));
@@ -79,7 +79,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         scale = 1.0f;
 
         scaleTextField.setChangedListener(s -> {
-            if (hasSelectedHud) {
+            if (hasSelectedOption) {
                 try {
                     scale = Float.parseFloat(s);
                 } catch (Exception e) {
@@ -108,7 +108,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
 
     public void selectHud(String id, CustomHudDataHandler.CustomHud customHud) {
         removeAllEntries();
-        hasSelectedHud = true;
+        hasSelectedOption = true;
         newName = id;
         scale = customHud.scale;
         currentSelectedHud = id;
@@ -181,7 +181,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
 
     public void reset() {
         this.removeAllEntries();
-        hasSelectedHud = false;
+        hasSelectedOption = false;
         newName = "";
         scale = 1.0f;
         currentSelectedHud = null;

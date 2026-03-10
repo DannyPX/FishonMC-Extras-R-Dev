@@ -46,6 +46,7 @@ public class DataFileHandler extends Handler {
         ConstantDataHandler.instance().tick();
         QuestDataHandler.instance().tick();
         CustomHudDataHandler.instance().tick();
+        CustomButtonDataHandler.instance().tick();
     }
 
     public void init() {
@@ -54,6 +55,7 @@ public class DataFileHandler extends Handler {
         loadDataToMemory(DataModels.DataModelType.CONSTANT_DATA);
         loadDataToMemory(DataModels.DataModelType.QUEST_DATA);
         loadDataToMemory(DataModels.DataModelType.CUSTOM_HUD_DATA);
+        loadDataToMemory(DataModels.DataModelType.CUSTOM_BUTTON_DATA);
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -122,6 +124,7 @@ public class DataFileHandler extends Handler {
             case CONSTANT_DATA -> ConstantDataHandler.instance().getConstantData();
             case QUEST_DATA -> QuestDataHandler.instance().getQuestData();
             case CUSTOM_HUD_DATA -> CustomHudDataHandler.instance().getCustomHudData();
+            case CUSTOM_BUTTON_DATA -> CustomButtonDataHandler.instance().getCustomButtonData();
         };
     }
 
@@ -144,6 +147,8 @@ public class DataFileHandler extends Handler {
                     QuestDataHandler.instance().setQuestData(gson.fromJson(json, QuestDataHandler.QuestDataModel.class));
             case CUSTOM_HUD_DATA ->
                     CustomHudDataHandler.instance().setCustomHudData(gson.fromJson(json, CustomHudDataHandler.CustomHudDataModel.class));
+            case CUSTOM_BUTTON_DATA ->
+                    CustomButtonDataHandler.instance().setCustomButtonData(gson.fromJson(json, CustomButtonDataHandler.CustomButtonDataModel.class));
         }
     }
     //endregion

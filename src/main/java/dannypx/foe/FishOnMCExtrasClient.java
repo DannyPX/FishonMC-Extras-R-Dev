@@ -32,7 +32,6 @@ import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -144,6 +143,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             ConstantDataHandler.instance().init();
             QuestDataHandler.instance().init();
             CustomHudDataHandler.instance().init();
+            CustomButtonDataHandler.instance().init();
 
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();

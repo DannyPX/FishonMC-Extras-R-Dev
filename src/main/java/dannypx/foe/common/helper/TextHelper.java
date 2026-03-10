@@ -2,23 +2,24 @@ package dannypx.foe.common.helper;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dannypx.foe.common.handler.io.DataModels;
 import dannypx.foe.common.item.NbtObject;
+import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.common.type.type_adapter.TextAdapter;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -319,6 +320,44 @@ public class TextHelper {
         return gson.setPrettyPrinting().create().toJson(TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
     }
 
+    public static Pair<MutableText, Style> parseLegacyWithStyle(String input, Style startingStyle) {
+        MutableText text = Text.empty();
+        Pattern pattern = Pattern.compile("(§#[0-9A-Fa-f]{6}|§[0-9A-FK-ORa-fk-or])");
+        Matcher matcher = pattern.matcher(input);
+
+        int lastEnd = 0;
+        Style currentStyle = startingStyle;
+
+        while (matcher.find()) {
+            if (matcher.start() > lastEnd) {
+                text.append(Text.literal(input.substring(lastEnd, matcher.start())).setStyle(currentStyle));
+            }
+
+            String code = matcher.group();
+            if (code.equalsIgnoreCase("§r")) {
+                currentStyle = Style.EMPTY;
+            } else if (code.startsWith("§#")) {
+                int rgb = Integer.parseInt(code.substring(2), 16);
+                currentStyle = currentStyle.withColor(TextColor.fromRgb(rgb));
+            } else {
+                Formatting fmt = Formatting.byCode(code.charAt(1));
+                currentStyle = currentStyle.withFormatting(fmt);
+            }
+
+            lastEnd = matcher.end();
+        }
+
+        if (lastEnd < input.length()) {
+            text.append(Text.literal(input.substring(lastEnd)).setStyle(currentStyle));
+        }
+
+        return Pair.of(text, currentStyle);
+    }
+
+    public static Pair<MutableText, Style> parseLegacyWithStyle(String input) {
+        return parseLegacyWithStyle(input, Style.EMPTY);
+    }
+
     public static byte[] compress(final String str) throws IOException {
         if ((str == null) || (str.length() == 0)) {
             return null;
@@ -357,7 +396,7 @@ public class TextHelper {
     public static Text jsonToText(String json) {
         return TextCodecs.CODEC
                 .decode(JsonOps.INSTANCE, gson.create().fromJson(json, JsonElement.class))
-                .mapOrElse((Pair::getFirst), (pairError -> Text.empty()));
+                .mapOrElse((com.mojang.datafixers.util.Pair::getFirst), (pairError -> Text.empty()));
 
     }
 }
