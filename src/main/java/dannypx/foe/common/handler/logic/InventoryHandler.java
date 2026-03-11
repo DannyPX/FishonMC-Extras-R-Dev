@@ -10,6 +10,7 @@ import dannypx.foe.common.type.tuple.Triplet;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
@@ -80,51 +81,45 @@ public class InventoryHandler extends Handler {
 
     public Pair<Boolean, CustomTextValue> getInventory(String[] params) {
         if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet)$");
+            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet|armor)$");
 
             if(fieldPattern.matcher(params[0]).matches()) {
                 return switch(params[0]) {
                     case "fishing_rod" -> {
-                        if(params.length == 2) {
+                        if(params.length >= 2) {
                             yield switch(params[1]) {
                                 case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentFishingRod().getName().copy()));
                                 case "line" -> {
                                     List<NbtObject> list = getCurrentFishingRod().getLineItem();
                                     if(!list.isEmpty()) {
-                                        yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
-                                    }
-                                    yield PlaceholderHandler.noResult();
-
-                                }
-                                case "reel" -> {
-                                    List<NbtObject> list = getCurrentFishingRod().getReelItem();
-                                    if(!list.isEmpty()) {
-                                        yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
-                                    }
-                                    yield PlaceholderHandler.noResult();
-
-                                }
-                                case "pole" -> {
-                                    List<NbtObject> list = getCurrentFishingRod().getPoleItem();
-                                    if(!list.isEmpty()) {
-                                        yield PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getItemStack().getName().copy()));
-                                    }
-                                    yield PlaceholderHandler.noResult();
-
-                                }
-                                default -> {
-                                    if(getCurrentFishingRod().contains(params[1])) {
-                                        NbtElement data = getCurrentFishingRod().get(params[1]);
-                                        yield switch (data.getType()) {
-                                            case 1 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getBoolean(params[1]))));
-                                            case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getInt(params[1]))));
-                                            case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentFishingRod().getFloat(params[1]))));
-                                            case 8 -> PlaceholderHandler.getTextValue(new StringValue(getCurrentFishingRod().getString(params[1])));
-                                            default -> PlaceholderHandler.noResult();
+                                        yield switch(params[2]) {
+                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName().copy()));
+                                            default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
                                 }
+                                case "reel" -> {
+                                    List<NbtObject> list = getCurrentFishingRod().getReelItem();
+                                    if(!list.isEmpty()) {
+                                        yield switch(params[2]) {
+                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName().copy()));
+                                            default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
+                                        };
+                                    }
+                                    yield PlaceholderHandler.noResult();
+                                }
+                                case "pole" -> {
+                                    List<NbtObject> list = getCurrentFishingRod().getPoleItem();
+                                    if(!list.isEmpty()) {
+                                        yield switch(params[2]) {
+                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName().copy()));
+                                            default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
+                                        };
+                                    }
+                                    yield PlaceholderHandler.noResult();
+                                }
+                                default -> PlaceholderHandler.getNbtTextValue(getCurrentFishingRod(), params[1]);
                             };
                         }
                         yield PlaceholderHandler.noResult();
@@ -148,20 +143,31 @@ public class InventoryHandler extends Handler {
                                 case "location_scale" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
                                 case "climate_luck" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
                                 case "climate_scale" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
-                                default -> {
-                                    if(getCurrentPet().contains(params[1])) {
-                                        NbtElement data = getCurrentPet().get(params[1]);
-                                        yield switch (data.getType()) {
-                                            case 1 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getBoolean(params[1]))));
-                                            case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getInt(params[1]))));
-                                            case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getFloat(params[1]))));
-                                            case 8 -> PlaceholderHandler.getTextValue(new StringValue(getCurrentPet().getString(params[1])));
-                                            default -> PlaceholderHandler.noResult();
-                                        };
-                                    }
-                                    yield PlaceholderHandler.noResult();
-                                }
+                                default -> PlaceholderHandler.getNbtTextValue(getCurrentPet(), params[1]);
                             };
+                        }
+                        yield PlaceholderHandler.noResult();
+                    }
+                    case "armor" -> {
+                        if(params.length == 3
+                                && minecraftClient.player != null
+                        ) {
+                            ItemStack stack = ItemStack.EMPTY;
+
+                            switch(params[1]) {
+                                case "chestplate" -> stack = minecraftClient.player.getInventory().armor.get(EquipmentSlot.CHEST.getEntitySlotId());
+                                case "leggings" -> stack = minecraftClient.player.getInventory().armor.get(EquipmentSlot.LEGS.getEntitySlotId());
+                                case "boots" -> stack = minecraftClient.player.getInventory().armor.get(EquipmentSlot.FEET.getEntitySlotId());
+                            }
+
+                            Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
+
+                            if(validatedItem.value1()) {
+                                yield switch(params[2]) {
+                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(validatedItem.value2().getName().copy()));
+                                    default -> PlaceholderHandler.getNbtTextValue(validatedItem.value2(), params[2]);
+                                };
+                            }
                         }
                         yield PlaceholderHandler.noResult();
                     }

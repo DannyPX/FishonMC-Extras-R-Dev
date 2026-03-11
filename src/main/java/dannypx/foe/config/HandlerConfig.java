@@ -43,6 +43,9 @@ public class HandlerConfig extends Config {
     @Desc("§7Data from Boss Bar")
     public ValidatedBoolean bossBarHandler = new ValidatedBoolean(true);
 
+    @Desc("§7Data from Network Handler")
+    public ValidatedBoolean networkHandler = new ValidatedBoolean(true);
+
     @Name("Screen Handlers")
     @Desc("§7Handles fetching of screen data")
     public ConfigGroup screenFetchGroup = new ConfigGroup("screen_fetch_group");

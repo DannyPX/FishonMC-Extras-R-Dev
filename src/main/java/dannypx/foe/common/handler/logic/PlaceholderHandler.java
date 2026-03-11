@@ -7,10 +7,12 @@ import dannypx.foe.common.handler.store.ProfileDataHandler;
 import dannypx.foe.common.handler.store.QuestDataHandler;
 import dannypx.foe.common.handler.store.StatsDataHandler;
 import dannypx.foe.common.helper.TextHelper;
+import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
@@ -35,6 +37,7 @@ public class PlaceholderHandler extends Handler {
     private static final Map<String, Function<String[], Pair<Boolean, CustomTextValue>>> placeholders = Map.ofEntries(
             Map.entry("boss_bar", params -> BossBarHandler.instance().getBossBar(params)),
             Map.entry("player", params -> ClientPlayerHandler.instance().getClientPlayer(params)),
+            Map.entry("network", params -> NetworkHandler.instance().getNetwork(params)),
             Map.entry("scoreboard", params -> ScoreboardHandler.instance().getScoreboard(params)),
             Map.entry("tab", params -> TabHandler.instance().getTab(params)),
             Map.entry("title", params -> TitleHandler.instance().getTitle(params)),
@@ -131,6 +134,20 @@ public class PlaceholderHandler extends Handler {
 
     public static Pair<Boolean, CustomTextValue> noResult() {
         return Pair.ofFalse(new StringValue(""));
+    }
+
+    public static Pair<Boolean, CustomTextValue> getNbtTextValue(NbtObject object, String field) {
+        if(object.contains(field)) {
+            NbtElement data = object.get(field);
+            return switch (data.getType()) {
+                case 1 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(object.getBoolean(field))));
+                case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(object.getInt(field))));
+                case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(object.getFloat(field))));
+                case 8 -> PlaceholderHandler.getTextValue(new StringValue(object.getString(field)));
+                default -> PlaceholderHandler.noResult();
+            };
+        }
+        return PlaceholderHandler.noResult();
     }
     //endregion
 

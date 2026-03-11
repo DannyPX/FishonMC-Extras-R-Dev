@@ -166,7 +166,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
                 if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
                 if(Configs.handlerConfig.inventoryHandler.get()) InventoryHandler.instance().tick();
-                if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
+                if(Configs.handlerConfig.networkHandler.get()) NetworkHandler.instance().tick();
 
                 // IO
                 if(Configs.handlerConfig.dataFileHandler.get()) DataFileHandler.instance().tick();
@@ -175,6 +175,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
                 if(Configs.handlerConfig.catchingHandler.get()) CatchingHandler.instance().tick();
                 if(Configs.handlerConfig.rayCastHandler.get()) RayCastHandler.instance().tick();
+                if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
 
                 // Renderer
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();
