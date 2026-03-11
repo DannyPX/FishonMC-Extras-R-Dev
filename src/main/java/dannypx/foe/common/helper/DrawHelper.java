@@ -44,22 +44,76 @@ public class DrawHelper {
 
     public static void drawText(DrawContext drawContext, TextRenderer textRenderer, List<Character> text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
         if (!text.isEmpty()) {
-            char c = text.getFirst();
-            if(smallText) {
-                c = TextHelper.smallChar(c);
+            String glyph = popNextGlyph(text);
+
+            if (smallText) {
+                glyph = TextHelper.smallText(glyph);
             }
-            text.removeFirst();
-            int cWidth = textRenderer.getWidth(Text.literal(String.valueOf(c)).setStyle(style));
+
+            int cWidth = textRenderer.getWidth(Text.literal(glyph).setStyle(style));
+
             int translateY = middle ? -1 : 0;
-            if (TextHelper.isSmallNumber(c)) {
-                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y - 1 + translateY, 0xFFFFFF, shadow);
-            } else if (TextHelper.isSmallLetter(c) || (hasCustomFont && TextHelper.isCustomFont(c))) {
-                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y + translateY, 0xFFFFFF, shadow);
-            } else {
-                drawContext.drawText(textRenderer, Text.literal(String.valueOf(c)).setStyle(style), x, y, 0xFFFFFF, shadow);
+
+            int offsetY = 0;
+            if(glyph.length() == 1) {
+                if (TextHelper.isSmallNumber(glyph.charAt(0))) {
+                    offsetY = 1;
+                } else if (TextHelper.isSmallLetter(glyph.charAt(0)) || (hasCustomFont && TextHelper.isCustomFont(glyph.charAt(0)))) {
+
+                } else {
+                    translateY = 0;
+                }
             }
+
+            drawContext.drawText(
+                    textRenderer,
+                    Text.literal(glyph).setStyle(style),
+                    x,
+                    y - offsetY + translateY,
+                    0xFFFFFF,
+                    shadow
+            );
+
             drawText(drawContext, textRenderer, text, x + cWidth, y, style, shadow, middle, hasCustomFont, smallText);
         }
+    }
+
+    private static String popNextGlyph(List<Character> text) {
+        if (text.isEmpty()) return "";
+
+        StringBuilder sb = new StringBuilder();
+        char first = text.removeFirst();
+        sb.append(first);
+
+        if (Character.isHighSurrogate(first) && !text.isEmpty() && Character.isLowSurrogate(text.get(0))) {
+            sb.append(text.removeFirst());
+        }
+
+        while (!text.isEmpty()) {
+            char next = text.getFirst();
+
+            int codePoint;
+
+            if (Character.isHighSurrogate(next) && text.size() > 1 && Character.isLowSurrogate(text.get(1))) {
+                codePoint = Character.toCodePoint(next, text.get(1));
+            } else {
+                codePoint = next;
+            }
+
+            if (next == '\uFE0F' || next == '\uFE0E' || next == '\u200D'
+                    || (codePoint >= 0x1F3FB && codePoint <= 0x1F3FF)) {
+
+                sb.append(text.removeFirst());
+
+                if (Character.isSupplementaryCodePoint(codePoint)) {
+                    sb.append(text.removeFirst());
+                }
+
+            } else {
+                break;
+            }
+        }
+        return sb.toString();
     }
 
     public static void drawHorizontalGradient(DrawContext context, int x1, int y1, int x2, int y2, int leftColor, int rightColor) {
