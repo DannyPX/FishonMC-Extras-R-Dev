@@ -12,7 +12,6 @@ import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
@@ -88,12 +87,12 @@ public class InventoryHandler extends Handler {
                     case "fishing_rod" -> {
                         if(params.length >= 2) {
                             yield switch(params[1]) {
-                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentFishingRod().getName().copy()));
+                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentFishingRod().getName()));
                                 case "line" -> {
                                     List<NbtObject> list = getCurrentFishingRod().getLineItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName().copy()));
+                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName()));
                                             default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
                                         };
                                     }
@@ -103,7 +102,7 @@ public class InventoryHandler extends Handler {
                                     List<NbtObject> list = getCurrentFishingRod().getReelItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName().copy()));
+                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName()));
                                             default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
                                         };
                                     }
@@ -113,7 +112,7 @@ public class InventoryHandler extends Handler {
                                     List<NbtObject> list = getCurrentFishingRod().getPoleItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName().copy()));
+                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName()));
                                             default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
                                         };
                                     }
@@ -129,12 +128,12 @@ public class InventoryHandler extends Handler {
                                 && hasPet()
                         ) {
                             yield switch(params[1]) {
-                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getName().copy()));
+                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getName()));
                                 case "level" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getLevel())));
                                 case "level_progress" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getProgress() * 100, 2)));
-                                case "rating" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRatingText().copy()));
+                                case "rating" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRatingText()));
                                 case "rating_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getTotalPercent() * 100, 2)));
-                                case "rarity" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRarityText().copy()));
+                                case "rarity" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRarityText()));
                                 case "location_luck_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxLuck() * 100, 2)));
                                 case "location_scale_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxScale() * 100, 2)));
                                 case "climate_luck_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxLuck() * 100, 2)));
@@ -164,7 +163,7 @@ public class InventoryHandler extends Handler {
 
                             if(validatedItem.value1()) {
                                 yield switch(params[2]) {
-                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(validatedItem.value2().getName().copy()));
+                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(validatedItem.value2().getName()));
                                     default -> PlaceholderHandler.getNbtTextValue(validatedItem.value2(), params[2]);
                                 };
                             }

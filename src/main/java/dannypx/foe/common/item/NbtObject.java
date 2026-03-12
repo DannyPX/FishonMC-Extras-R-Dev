@@ -98,7 +98,8 @@ public class NbtObject {
 
     //region Generic
     public Text getName() {
-        return this.itemStack.getName();
+        Text name = this.itemStack.getCustomName();
+        return name != null ? name : this.itemStack.getName();
     }
 
     public int getCount() {

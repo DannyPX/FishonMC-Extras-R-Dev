@@ -52,7 +52,7 @@ public class QuestDataHandler extends Handler {
                 int index = Integer.parseInt(params[1]);
                 if(questData.size() > index) {
                     return switch (params[2]) {
-                        case "goal" -> PlaceholderHandler.getTextValue(new TextValue(ConstantDataHandler.instance().getConstantFishText(questData.get(index).goal).copy()));
+                        case "goal" -> PlaceholderHandler.getTextValue(new TextValue(ConstantDataHandler.instance().getConstantFishText(questData.get(index).goal)));
                         case "max" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).max)));
                         case "current" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).current)));
                         default -> PlaceholderHandler.noResult();

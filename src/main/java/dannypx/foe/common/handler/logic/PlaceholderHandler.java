@@ -89,7 +89,7 @@ public class PlaceholderHandler extends Handler {
                             parsed = TextHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
                         }
                         case TextValue textValue -> {
-                            parsed = Pair.of(textValue.value(), textValue.value().getStyle());
+                            parsed = Pair.of(textValue.value().copy(), textValue.value().getStyle());
                         }
                     }
 

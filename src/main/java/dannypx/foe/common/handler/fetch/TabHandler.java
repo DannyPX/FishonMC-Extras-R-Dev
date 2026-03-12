@@ -56,7 +56,7 @@ public class TabHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "player_name" -> PlaceholderHandler.getTextValue(new TextValue(getPlayerName().copy()));
+                    case "player_name" -> PlaceholderHandler.getTextValue(new TextValue(getPlayerName()));
                     case "instance" -> PlaceholderHandler.getTextValue(new StringValue(getInstance()));
                     case "is_in_instance" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isInInstance())));
                     default -> PlaceholderHandler.noResult();
