@@ -2,6 +2,7 @@ package dannypx.foe.mixin.inject;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dannypx.foe.common.handler.fetch.ScoreboardHandler;
+import dannypx.foe.common.handler.logic.ConnectionHandler;
 import dannypx.foe.common.handler.logic.CrewHandler;
 import dannypx.foe.common.handler.renderer.TabRendererHandler;
 import dannypx.foe.common.handler.store.ProfileDataHandler;
@@ -37,9 +38,11 @@ public abstract class PlayerListHudMixin {
     private int indexPlayerEntry;
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"))
-    private void injectRender(DrawContext context, int x1, int y1, int x2, int y2, int color) {
-
-        if(color == this.client.options.getTextBackgroundColor(553648127)) {
+    private void redirectRender(DrawContext context, int x1, int y1, int x2, int y2, int color) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.playerListHudRedirectRender.get()
+                && color == this.client.options.getTextBackgroundColor(553648127)) {
             TabRendererHandler.instance().renderCrewTab(context, x1, y1, x2, y2, color, indexPlayerEntry, this.collectPlayerEntries());
         }
 
@@ -47,13 +50,21 @@ public abstract class PlayerListHudMixin {
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;"))
-    private void captureIndex(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci, @Local(ordinal = 13) int w) {
-        indexPlayerEntry = w;
+    private void injectRender(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci, @Local(ordinal = 13) int w) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.playerListHudInjectRender.get()
+        ) {
+            indexPlayerEntry = w;
+        }
     }
 
     @Inject(method = "collectPlayerEntries", at = @At("RETURN"), cancellable = true)
     private void injectCollectPlayerEntries(@NotNull CallbackInfoReturnable<List<PlayerListEntry>> cir) {
-        if(Configs.rendererConfig.showOnlineCrewMembers.get()
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showOnlineCrewMembers.get()
+                && Configs.mixinConfig.playerListHudCollectPlayerEntries.get()
                 && ProfileDataHandler.instance().getProfileData().hasImportedCrew
                 && !ScoreboardHandler.instance().getCrew().getString().isBlank()
         ) {
