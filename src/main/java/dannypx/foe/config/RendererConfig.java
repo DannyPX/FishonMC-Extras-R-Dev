@@ -11,7 +11,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 0)
+@Version(version = 1)
 @Translatable.Name("Renderer Configuration")
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
@@ -46,9 +46,19 @@ public class RendererConfig extends Config {
     @Name("Small Stack Count Number")
     public ConfigGroup smallStackCountGroup = new ConfigGroup("small_stack_count_group");
 
+    @ConfigGroup.Pop
     @Name("Use Small Stack Count Number")
     @Desc("§7Disabling this will also stop the counter from displaying on baits/lures")
     public ValidatedBoolean useSmallStackCountNumber = new ValidatedBoolean(true);
+
+    @Name("Tab Renderer")
+    @Desc("§7This is the renderer for tab extras")
+    public ConfigGroup tabRendererGroup = new ConfigGroup("tab_renderer_group");
+
+    @ConfigGroup.Pop
+    @Name("Show online crew members")
+    public ValidatedBoolean showOnlineCrewMembers = new ValidatedBoolean(true);
+
 
     @Override
     public @NotNull FileType fileType() {

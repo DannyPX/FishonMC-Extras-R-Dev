@@ -9,6 +9,7 @@ import dannypx.foe.common.type.custom_text.StringValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -41,16 +42,27 @@ public class ClientPlayerHandler extends Handler {
     }
 
     public Pair<Boolean, CustomTextValue> getClientPlayer(String[] params) {
-        if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(name|level|level_progress)$");
+        if(params.length > 0
+                && minecraftClient.player != null
+        ) {
+            Pattern fieldPattern = Pattern.compile("^(name|level|level_progress|pos|yaw|pitch|direction)$");
 
             if(fieldPattern.matcher(params[0]).matches()
-                    && params.length == 1
+                    && params.length >= 1
             ) {
                 return switch(params[0]) {
                     case "name" -> PlaceholderHandler.getTextValue(new StringValue(getName().getString()));
                     case "level" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getExperienceLevel())));
                     case "level_progress" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getExperienceProgress() * 100, 2)));
+                    case "pos" -> switch(params[1]) {
+                        case "x" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getPos().x, 0)));
+                        case "y" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getPos().y, 0)));
+                        case "z" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getPos().z, 0)));
+                        default -> PlaceholderHandler.noResult();
+                    };
+                    case "yaw" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(MathHelper.wrapDegrees(minecraftClient.player.getYaw()), 1)));
+                    case "pitch" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(minecraftClient.player.getPitch(), 1)));
+                    case "direction" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.capitalize(minecraftClient.player.getHorizontalFacing().getName())));
                     default -> PlaceholderHandler.noResult();
                 };
             }

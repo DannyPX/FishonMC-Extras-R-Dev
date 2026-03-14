@@ -16,10 +16,12 @@
     "accessor.PlayerListHudAccessor",
     "inject.ArmorFeatureRendererMixin",
     "inject.BossBarHudMixin",
+    "inject.ClientPlayNetworkHandlerMixin",
     "inject.DrawContextMixin",
     "inject.FishingBobberEntityRendererMixin",
     "inject.HandledScreenMixin",
     "inject.InGameHudMixin",
+    "inject.PlayerListHudMixin",
     "inject.RecipeBookScreenMixin",
     "inject.RecipeBookWidgetMixin"
   ]

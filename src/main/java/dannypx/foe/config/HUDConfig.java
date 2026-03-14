@@ -16,7 +16,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 1)
+@Version(version = 2)
 @Translatable.Name("HUD Configuration")
 @Translatable.Desc("§7Configure HUD elements")
 public class HUDConfig extends Config {
@@ -183,6 +183,18 @@ public class HUDConfig extends Config {
     @Name("Other items dismissal time")
     @Desc("§7How long in seconds, before the notification dismisses")
     public ValidatedInt otherDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Crew Notification")
+    @Desc("§7Options for the notifications of crews")
+    public ConfigGroup crewOptions = new ConfigGroup("crew_options_group");
+
+    @Name("Show notification when crew join/leave the server (status)")
+    public ValidatedBoolean showCrewStatusNotification = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    @Name("Crew status dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt crewDismissalTime = new ValidatedInt(10, 60, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Quest Notification")
     @Desc("§7Options for the notifications when questing")

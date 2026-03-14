@@ -34,6 +34,10 @@ public class CommandRegistry {
                         .then(command("cancel").executes(Command::cancelStats))
                         .then(command("reset").executes(Command::resetStats))
                 )
+                .then(command("crew")
+                        .then(command("import").executes(Command::importCrew))
+                        .then(command("cancel").executes(Command::cancelCrew))
+                )
                 .executes(Command::openMainScreen)
         );
     }
@@ -62,6 +66,18 @@ public class CommandRegistry {
 
         public static int resetStats(CommandContext<FabricClientCommandSource> context) {
             return executeCommand(() -> StatsDataHandler.instance().resetStats());
+        }
+
+        public static int importCrew(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(() -> {
+                if (MinecraftClient.getInstance().player != null) {
+                    MinecraftClient.getInstance().player.networkHandler.sendChatCommand("c info");
+                }
+            });
+        }
+
+        public static int cancelCrew(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(() -> ProfileDataHandler.instance().updateImportCrew(true));
         }
     }
 

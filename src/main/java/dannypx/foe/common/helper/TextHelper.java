@@ -64,18 +64,24 @@ public class TextHelper {
 
     @SuppressWarnings("unchecked")
     public static <T> MutableText literal(List<T> list) {
-        if(!list.isEmpty()) {
-            Object first = list.getFirst();
-            if(first instanceof ItemStack) return Text.empty().append(ItemStackHelper.itemStackListToJson((List<ItemStack>) list));
-            return Text.literal(
-                    gson.setPrettyPrinting()
-                            .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
-                            .registerTypeAdapter(Text.class, new TextAdapter())
-                            .create()
-                            .toJson(list)
-            );
+        try {
+            if(!list.isEmpty()) {
+                Object first = list.getFirst();
+                if(first instanceof ItemStack) return Text.empty().append(ItemStackHelper.itemStackListToJson((List<ItemStack>) list));
+                return Text.literal(
+                        gson.setPrettyPrinting()
+                                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                                .registerTypeAdapter(Text.class, new TextAdapter())
+                                .create()
+                                .toJson(list)
+                );
+            }
+            return Text.empty();
+        } catch (IllegalStateException e) {
+            return Text.empty();
         }
-        return Text.empty();
+
+
     }
 
     public static MutableText literal(String s) {
@@ -92,6 +98,10 @@ public class TextHelper {
                 Text.literal("rarity: "), Text.literal(currentHeldItem.getRarity()), Text.literal("\n"),
                 Text.literal("type: "), Text.literal(currentHeldItem.getType())
         );
+    }
+
+    public static String textListToJson(List<Text> list) {
+        return gson.setPrettyPrinting().create().toJson(TextCodecs.CODEC.listOf().encodeStart(JsonOps.INSTANCE, list).getOrThrow());
     }
 
     public static String smallText(String string) {

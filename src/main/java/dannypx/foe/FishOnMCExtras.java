@@ -17,12 +17,8 @@ public class FishOnMCExtras implements ModInitializer {
 	public static Integer HUD_VERSION = 2;
 	public static Integer BUTTON_VERSION = 1;
 
-	public static final String QUEST_SCREEN = "\uEEE4\uD539";
-	public static final String STATS_SCREEN = "\uEEE4\uD532";
-	public static final String AUCTION_HOUSE_SCREEN = "\uEEE4\uD543";
-	public static final String PERSONAL_VAULT_SCREEN = "Personal Vault #";
-	public static final String STORAGE_SCREEN = " ";
 	public static final String INVENTORY_SCREEN = "Inventory Screen";
+
 
 	@Override
 	public void onInitialize() {

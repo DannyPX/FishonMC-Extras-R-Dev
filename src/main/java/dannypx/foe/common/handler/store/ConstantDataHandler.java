@@ -62,7 +62,7 @@ public class ConstantDataHandler extends Handler {
                         Map<String, Text> subCat = getConstantData().fishData.getOrDefault(params[2], null);
                         if(subCat != null) {
                             Text field = subCat.getOrDefault(params[3], Text.empty());
-                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field.copy()));
+                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field));
                         }
                         yield PlaceholderHandler.noResult();
                     }
@@ -76,7 +76,7 @@ public class ConstantDataHandler extends Handler {
                             }
 
                             Text field = subCat.getOrDefault(param, Text.empty());
-                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field.copy()));
+                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field));
                         }
                         yield PlaceholderHandler.noResult();
                     }

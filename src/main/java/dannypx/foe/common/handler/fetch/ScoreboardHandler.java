@@ -1,7 +1,10 @@
 package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
+import dannypx.foe.common.handler.logic.NotifierHandler;
 import dannypx.foe.common.handler.logic.PlaceholderHandler;
+import dannypx.foe.common.handler.store.ProfileDataHandler;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
@@ -44,6 +47,7 @@ public class ScoreboardHandler extends Handler {
     private MutableText crewNearby = Text.empty();
 
     private boolean noScoreboard = true;
+    private boolean hasSentNotification = false;
 
     public MutableText getLevel() {
         return level;
@@ -123,6 +127,21 @@ public class ScoreboardHandler extends Handler {
     //region Methods
     public void tick() {
         this.fetchFromScoreboard();
+
+
+
+        if(!this.hasSentNotification
+                && !ProfileDataHandler.instance().getProfileData().hasImportedCrew
+                && !this.getCrew().getString().isBlank()
+        ) {
+            this.hasSentNotification = true;
+            NotifierHandler.instance().notifyImportCrew();
+        }
+    }
+
+    public void init() {
+        prevResult.clear();
+        noScoreboard = true;
     }
 
     private void fetchFromScoreboard() {
@@ -203,7 +222,8 @@ public class ScoreboardHandler extends Handler {
                 Map.entry("locationMax", Pair.of(getLocationMax(), Text.empty())),
                 Map.entry("catchRate", Pair.of(getCatchRate(), Text.empty())),
                 Map.entry("crew", Pair.of(getCrew(), Text.empty())),
-                Map.entry("crewNearby", Pair.of(isCrewNearby(), Text.empty()))
+                Map.entry("crewNearby", Pair.of(isCrewNearby(), Text.empty())),
+                Map.entry("noScoreboard", Pair.of(TextHelper.literal(isNoScoreboard()), Text.empty()))
         );
     }
     //endregion

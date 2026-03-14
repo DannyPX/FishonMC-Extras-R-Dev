@@ -13,6 +13,7 @@ public class _DebugStore {
                 StatsDataHandler.class.getName(),
                 ConstantDataHandler.class.getName(),
                 QuestDataHandler.class.getName(),
+                CrewDataHandler.class.getName(),
                 CustomHudDataHandler.class.getName(),
                 CustomButtonDataHandler.class.getName()
         );
@@ -25,6 +26,7 @@ public class _DebugStore {
                 StatsDataHandler.class.getName(), StatsDataHandler.instance()._getFields(),
                 ConstantDataHandler.class.getName(), ConstantDataHandler.instance()._getFields(),
                 QuestDataHandler.class.getName(), QuestDataHandler.instance()._getFields(),
+                CrewDataHandler.class.getName(), CrewDataHandler.instance()._getFields(),
                 CustomHudDataHandler.class.getName(), CustomHudDataHandler.instance()._getFields(),
                 CustomButtonDataHandler.class.getName(), CustomButtonDataHandler.instance()._getFields()
         );

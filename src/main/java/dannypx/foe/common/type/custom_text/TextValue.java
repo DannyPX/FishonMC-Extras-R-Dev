@@ -1,6 +1,6 @@
 package dannypx.foe.common.type.custom_text;
 
-import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
-public record TextValue(MutableText value) implements CustomTextValue {
+public record TextValue(Text value) implements CustomTextValue {
 }

@@ -185,8 +185,6 @@ public class MoveElementScreen extends DefaultModScreen {
             ));
         }
 
-
-
         widgets.forEach(this::addDrawableChild);
     }
     //endregion

@@ -23,6 +23,7 @@ public class ArmorFeatureRendererMixin<S extends BipedEntityRenderState, A exten
                 || slot == EquipmentSlot.LEGS
                 || slot == EquipmentSlot.FEET)
                 && Configs.rendererConfig.hideArmor.get()
+                && Configs.mixinConfig.armorFeatureRendererRenderArmor.get()
         ) {
             ci.cancel();
         }

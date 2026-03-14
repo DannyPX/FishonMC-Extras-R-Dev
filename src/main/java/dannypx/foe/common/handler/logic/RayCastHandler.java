@@ -64,13 +64,13 @@ public class RayCastHandler extends Handler {
                     }
                     case "entity_hit_result" -> {
                         if(getEntityHitResult() != null && !getEntityHitResult().getEntity().getName().getString().isBlank()) {
-                            yield PlaceholderHandler.getTextValue(new TextValue(getEntityHitResult().getEntity().getName().copy()));
+                            yield PlaceholderHandler.getTextValue(new TextValue(getEntityHitResult().getEntity().getName()));
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "item_frame_item" -> {
                         if(getItemFrameItem() != ItemStack.EMPTY) {
-                            yield PlaceholderHandler.getTextValue(new TextValue(getItemFrameItem().getName().copy()));
+                            yield PlaceholderHandler.getTextValue(new TextValue(getItemFrameItem().getName()));
                         }
                         yield PlaceholderHandler.noResult();
                     }
