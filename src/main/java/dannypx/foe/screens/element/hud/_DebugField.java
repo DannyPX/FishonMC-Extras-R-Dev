@@ -1,6 +1,7 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.common.handler.debug._DebugHandler;
+import dannypx.foe.common.handler.fetch.ScoreboardHandler;
 import dannypx.foe.common.handler.logic.LoadingHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
@@ -59,6 +60,7 @@ public class _DebugField extends Element {
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.debugConfig.debugFieldElement.get()
                 && Configs.debugConfig.debugMode.get()
+                && !ScoreboardHandler.instance().isNoScoreboard()
         ) {
             // Position
             if(!isCopy) {

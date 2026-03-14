@@ -2,10 +2,7 @@ package dannypx.foe.common.handler.logic;
 
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.fetch.*;
-import dannypx.foe.common.handler.store.ConstantDataHandler;
-import dannypx.foe.common.handler.store.ProfileDataHandler;
-import dannypx.foe.common.handler.store.QuestDataHandler;
-import dannypx.foe.common.handler.store.StatsDataHandler;
+import dannypx.foe.common.handler.store.*;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.item.NbtObject;
 import dannypx.foe.common.type.tuple.Pair;
@@ -46,10 +43,12 @@ public class PlaceholderHandler extends Handler {
             Map.entry("key_bind", params -> KeyBindHandler.instance().getKeyBind(params)),
             Map.entry("loading", params -> LoadingHandler.instance().getLoading(params)),
             Map.entry("ray_cast", params -> RayCastHandler.instance().getRayCast(params)),
+            Map.entry("crew", params -> CrewHandler.instance().getCrew(params)),
             Map.entry("constant_data", params -> ConstantDataHandler.instance().getConstantData(params)),
             Map.entry("profile_data", params -> ProfileDataHandler.instance().getProfileData(params)),
             Map.entry("quest_data", params -> QuestDataHandler.instance().getQuestData(params)),
-            Map.entry("stats_data", params -> StatsDataHandler.instance().getStatsData(params))
+            Map.entry("stats_data", params -> StatsDataHandler.instance().getStatsData(params)),
+            Map.entry("crew_data", params -> CrewDataHandler.instance().getCrewData(params))
     );
     //endregion
 

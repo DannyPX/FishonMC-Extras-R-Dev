@@ -33,6 +33,7 @@ public class NotifierHandler extends Handler {
     private final Map<String, UUID> persistentNotifications = new HashMap<>();
 
     public static final String IMPORT_STATS_KEY = "importStatsKey";
+    public static final String IMPORT_CREW_KEY = "importCrewKey";
     public static final String EMPTY_SLOTS_KEY = "emptySlotsKey";
 
     public List<Notification> getNotifications() {
@@ -239,12 +240,60 @@ public class NotifierHandler extends Handler {
         this.persistentNotifications.put(IMPORT_STATS_KEY, importStatsUUID);
     }
 
+    public void notifyImportCrew() {
+        UUID importCrewUUID = this.addNotification(
+                new Notification(12, 1,
+                        new ArrayList<>(Arrays.asList(
+                                Text.literal("You have yet to import ").formatted(Formatting.GOLD),
+                                Text.literal("your crew info").formatted(Formatting.GOLD),
+                                Text.empty(),
+                                TextHelper.concat(
+                                        Text.literal("Do "),
+                                        Text.literal("/foe crew import ").formatted(Formatting.GREEN),
+                                        Text.literal("to import")
+                                ),
+                                Text.literal("crew info"),
+                                Text.literal("This will open the crew screen").formatted(Formatting.GRAY, Formatting.ITALIC),
+                                Text.literal("and import your crew info").formatted(Formatting.GRAY, Formatting.ITALIC),
+                                Text.empty(),
+                                TextHelper.concat(
+                                        Text.literal("Do "),
+                                        Text.literal("/foe crew cancel ").formatted(Formatting.GREEN),
+                                        Text.literal("to cancel")
+                                ),
+                                Text.literal("this notification"),
+                                TextHelper.concat(
+                                        Text.literal("You can still do ").formatted(Formatting.GRAY, Formatting.ITALIC),
+                                        Text.literal("/foe crew ").formatted(Formatting.GREEN, Formatting.ITALIC)
+                                ),
+                                TextHelper.concat(
+                                        Text.literal("import ").formatted(Formatting.GREEN, Formatting.ITALIC),
+                                        Text.literal("to import at a later time").formatted(Formatting.GRAY, Formatting.ITALIC)
+                                )
+                        ))
+                )
+        );
+
+        this.persistentNotifications.put(IMPORT_CREW_KEY, importCrewUUID);
+    }
+
     public void notifyImportStatsCompleted() {
         this.addNotification(
                 new Notification(1, 1,
                         10,
                         Collections.singletonList(
                                 Text.literal("✔ Stats imported successfully").formatted(Formatting.GREEN)
+                        )
+                )
+        );
+    }
+
+    public void notifyImportCrewCompleted() {
+        this.addNotification(
+                new Notification(1, 1,
+                        10,
+                        Collections.singletonList(
+                                Text.literal("✔ Crew imported successfully").formatted(Formatting.GREEN)
                         )
                 )
         );
@@ -275,6 +324,31 @@ public class NotifierHandler extends Handler {
 
             this.persistentNotifications.put(EMPTY_SLOTS_KEY, emptySlotsUUID);
         }
+    }
+
+    public void notifyPlayerStatus(boolean isJoin, Pair<String, ItemStack> player) {
+        if(!Configs.hudConfig.showCrewStatusNotification.get()) {
+            return;
+        }
+
+        Text icon = isJoin
+                ? Text.literal("+ ").formatted(Formatting.BOLD, Formatting.DARK_GREEN)
+                : Text.literal("- ").formatted(Formatting.BOLD, Formatting.DARK_RED);
+
+        Text status = isJoin
+                ? Text.literal(" has joined").formatted(Formatting.GREEN)
+                : Text.literal(" has left").formatted(Formatting.RED);
+
+        this.addNotification(
+                new Notification(
+                        player.value2(), 1, 1, Configs.hudConfig.crewDismissalTime.get(),
+                        List.of(TextHelper.concat(
+                                icon,
+                                Text.literal(player.value1()).formatted(Formatting.YELLOW),
+                                status
+                        ))
+                )
+        );
     }
     //endregion
 

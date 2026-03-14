@@ -19,6 +19,7 @@ public class DataModels {
         STATS_DATA("stats"),
         CONSTANT_DATA("constant"),
         QUEST_DATA("quest"),
+        CREW_DATA("crew"),
         CUSTOM_HUD_DATA("custom_hud"),
         CUSTOM_BUTTON_DATA("custom_button");
 

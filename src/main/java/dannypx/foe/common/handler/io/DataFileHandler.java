@@ -45,6 +45,7 @@ public class DataFileHandler extends Handler {
         StatsDataHandler.instance().tick();
         ConstantDataHandler.instance().tick();
         QuestDataHandler.instance().tick();
+        CrewDataHandler.instance().tick();
         CustomHudDataHandler.instance().tick();
         CustomButtonDataHandler.instance().tick();
     }
@@ -54,6 +55,7 @@ public class DataFileHandler extends Handler {
         loadDataToMemory(DataModels.DataModelType.STATS_DATA);
         loadDataToMemory(DataModels.DataModelType.CONSTANT_DATA);
         loadDataToMemory(DataModels.DataModelType.QUEST_DATA);
+        loadDataToMemory(DataModels.DataModelType.CREW_DATA);
         loadDataToMemory(DataModels.DataModelType.CUSTOM_HUD_DATA);
         loadDataToMemory(DataModels.DataModelType.CUSTOM_BUTTON_DATA);
     }
@@ -123,6 +125,7 @@ public class DataFileHandler extends Handler {
             case STATS_DATA -> StatsDataHandler.instance().getStatsData();
             case CONSTANT_DATA -> ConstantDataHandler.instance().getConstantData();
             case QUEST_DATA -> QuestDataHandler.instance().getQuestData();
+            case CREW_DATA -> CrewDataHandler.instance().getCrewData();
             case CUSTOM_HUD_DATA -> CustomHudDataHandler.instance().getCustomHudData();
             case CUSTOM_BUTTON_DATA -> CustomButtonDataHandler.instance().getCustomButtonData();
         };
@@ -145,6 +148,8 @@ public class DataFileHandler extends Handler {
                     ConstantDataHandler.instance().setConstantData(gson.fromJson(json, ConstantDataHandler.ConstantDataModel.class));
             case QUEST_DATA ->
                     QuestDataHandler.instance().setQuestData(gson.fromJson(json, QuestDataHandler.QuestDataModel.class));
+            case CREW_DATA ->
+                    CrewDataHandler.instance().setCrewData(gson.fromJson(json, CrewDataHandler.CrewDataModel.class));
             case CUSTOM_HUD_DATA ->
                     CustomHudDataHandler.instance().setCustomHudData(gson.fromJson(json, CustomHudDataHandler.CustomHudDataModel.class));
             case CUSTOM_BUTTON_DATA ->

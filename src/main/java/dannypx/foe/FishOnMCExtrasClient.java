@@ -142,8 +142,10 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             StatsDataHandler.instance().init();
             ConstantDataHandler.instance().init();
             QuestDataHandler.instance().init();
+            CrewDataHandler.instance().init();
             CustomHudDataHandler.instance().init();
             CustomButtonDataHandler.instance().init();
+            ScoreboardHandler.instance().init();
 
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
@@ -176,6 +178,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.catchingHandler.get()) CatchingHandler.instance().tick();
                 if(Configs.handlerConfig.rayCastHandler.get()) RayCastHandler.instance().tick();
                 if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
+                if(Configs.handlerConfig.crewHandler.get()) CrewHandler.instance().tick();
 
                 // Renderer
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();

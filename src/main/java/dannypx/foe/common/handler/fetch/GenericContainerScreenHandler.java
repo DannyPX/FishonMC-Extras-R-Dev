@@ -2,13 +2,13 @@ package dannypx.foe.common.handler.fetch;
 
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.logic.CodeExecuterHandler;
-import dannypx.foe.common.handler.logic.LoggerHandler;
 import dannypx.foe.common.handler.renderer.AuctionHouseScreenRenderHandler;
 import dannypx.foe.common.handler.renderer.ChestScreenRenderHandler;
 import dannypx.foe.common.handler.renderer.PersonalVaultScreenRenderHandler;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -71,9 +71,10 @@ public class GenericContainerScreenHandler extends Handler {
         CodeExecuterHandler.runLater(2, () -> {
             net.minecraft.screen.GenericContainerScreenHandler genericContainerScreenHandler = genericContainerScreen.getScreenHandler();
 
-            genericContainerScreenHandler.slots.forEach(slot -> {
-                LoggerHandler._debug(slot.id + ": " + slot.getStack().getName().getString());
-            });
+            ItemStack crewInfoStack = genericContainerScreenHandler.getSlot(13).getStack();
+            if(Objects.equals(crewInfoStack.getName().getString(), "Crew Info")) {
+                CrewScreenHandler.instance().checkCrewInfo(genericContainerScreenHandler);
+            }
         });
     }
     //endregion

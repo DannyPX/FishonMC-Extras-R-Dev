@@ -47,7 +47,7 @@ public class ProfileDataHandler extends Handler {
 
     public Pair<Boolean, CustomTextValue> getProfileData(String[] params) {
         if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(active_pet_slot|has_imported_stats|is_in_crew_chat)$");
+            Pattern fieldPattern = Pattern.compile("^(active_pet_slot|has_imported_stats|is_in_crew_chat|has_imported_crew)$");
 
             if(Objects.equals(params[0], "data")
                     && params.length == 3
@@ -57,6 +57,7 @@ public class ProfileDataHandler extends Handler {
                     case "active_pet_slot" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().activePetSlot)));
                     case "has_imported_stats" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().hasImportedStats)));
                     case "is_in_crew_chat" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().isInCrewChat)));
+                    case "has_imported_crew" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().hasImportedCrew)));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -113,15 +114,26 @@ public class ProfileDataHandler extends Handler {
             this.needsUpdate = true;
         }
     }
+
+    public void updateImportCrew(boolean importedCrew) {
+        if(minecraftClient.player != null) {
+            if(importedCrew) {
+                NotifierHandler.instance().removeNotification(NotifierHandler.IMPORT_CREW_KEY);
+                profileData.hasImportedCrew = true;
+                this.needsUpdate = true;
+            }
+        }
+    }
     //endregion
 
     //region Model
     public static class ProfileDataModel extends DataModels.DataModel {
-        private static final String PROFILE_DATA_MODEL_VERSION = "0.3";
+        private static final String PROFILE_DATA_MODEL_VERSION = "0.4";
 
         public int activePetSlot = -1;
         public boolean hasImportedStats = false;
 
+        public boolean hasImportedCrew = false;
         public boolean isInCrewChat = false;
 
         public ProfileDataModel() {
