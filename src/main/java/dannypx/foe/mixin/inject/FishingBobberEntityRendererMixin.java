@@ -2,6 +2,9 @@ package dannypx.foe.mixin.inject;
 
 import dannypx.foe.common.entity.FishingBobberEntityModel;
 import dannypx.foe.config.Configs;
+import dannypx.foe.common.interfaces.IFishingBobberEntity;
+import dannypx.foe.common.interfaces.IFishingBobberEntityState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -11,7 +14,11 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.FishingBobberEntityRenderer;
 import net.minecraft.client.render.entity.state.FishingBobberEntityState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.Colors;
+import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,5 +55,37 @@ public class FishingBobberEntityRendererMixin {
             this.bobberModel.render(matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
             matrixStack.pop();
         }
+
+        ItemStack bait = ((IFishingBobberEntityState) fishingBobberEntityState).foer$getBaitStack();
+        if(Configs.rendererConfig.showBaitOnBobber.get()
+                && !bait.isEmpty()
+                && !((IFishingBobberEntityState) fishingBobberEntityState).foer$isDisabledBait()
+        ) {
+            MinecraftClient minecraftClient = MinecraftClient.getInstance();
+
+            matrixStack.push();
+            matrixStack.translate(0, -0.4, 0);
+
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-minecraftClient.getEntityRenderDispatcher().camera.getYaw()));
+
+            minecraftClient.getItemRenderer().renderItem(
+                    bait,
+                    ModelTransformationMode.GROUND,
+                    light,
+                    OverlayTexture.DEFAULT_UV,
+                    matrixStack,
+                    vertexConsumerProvider,
+                    null,
+                    0
+            );
+
+            matrixStack.pop();
+        }
+    }
+
+    @Inject(method = "updateRenderState(Lnet/minecraft/entity/projectile/FishingBobberEntity;Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;F)V", at = @At("TAIL"))
+    private void injectUpdateRenderState(FishingBobberEntity fishingBobberEntity, FishingBobberEntityState fishingBobberEntityState, float f, CallbackInfo ci) {
+        ((IFishingBobberEntityState) fishingBobberEntityState).foer$setBaitStack(((IFishingBobberEntity) fishingBobberEntity).foer$getBaitStack());
+        ((IFishingBobberEntityState) fishingBobberEntityState).foer$setDisabledBait(((IFishingBobberEntity) fishingBobberEntity).foer$isDisabledBait());
     }
 }
