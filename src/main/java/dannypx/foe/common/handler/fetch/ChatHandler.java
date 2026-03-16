@@ -42,6 +42,10 @@ public class ChatHandler extends Handler {
             ProfileDataHandler.instance().updateCrewChat(true);
         } else if(text.getString().startsWith("CREWS » Crew Chat has been disabled")) {
             ProfileDataHandler.instance().updateCrewChat(false);
+        } else if(text.getString().startsWith("TOURNAMENT You have ENABLED tournament contributions")) {
+            ProfileDataHandler.instance().updateTournamentContribution(true);
+        } else if(text.getString().startsWith("TOURNAMENT You have DISABLED tournament contributions")) {
+            ProfileDataHandler.instance().updateTournamentContribution(false);
         }
     }
 
