@@ -78,7 +78,14 @@ public class CrewHandler extends Handler {
 
     //endregion
 
-    //region Methods
+    //region Method
+    @Override
+    public void init() {
+        onlineMembers.clear();
+        offlineMembers.clear();
+        crewListOrdered.clear();
+    }
+
     public void tick() {
         if(!ScoreboardHandler.instance().getCrew().getString().isBlank()) {
             if(crewListOrdered.isEmpty()) this.updateCrewOrderedList(CrewDataHandler.instance().getCrewData().crewList);
@@ -170,7 +177,7 @@ public class CrewHandler extends Handler {
 
             this.pendingLeavesList.add(uuid);
 
-            CodeExecuterHandler.runLater(10, () -> {
+            CodeExecuterHandler.runLater(2, () -> {
                 if(this.pendingLeavesList.contains(uuid)) {
                     this.pendingLeavesList.remove(uuid);
                     updatePlayerToOffline(uuid);
