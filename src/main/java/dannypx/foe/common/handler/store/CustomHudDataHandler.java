@@ -85,7 +85,7 @@ public class CustomHudDataHandler extends Handler {
         return customHudData.customHudRawDataList.remove(id);
     }
 
-    public void updateHud(String currentSelectedHud, String newName, float scale, boolean showElement, List<Triplet<String, Boolean, Boolean>> list) {
+    public void updateHud(String currentSelectedHud, String newName, float scale, boolean showBackground, boolean showElement, List<Triplet<String, Boolean, Boolean>> list) {
         CustomHud newHud = customHudData.customHudRawDataList.get(currentSelectedHud);
 
         if(!Objects.equals(currentSelectedHud, newName)) {
@@ -95,6 +95,7 @@ public class CustomHudDataHandler extends Handler {
 
         newHud.textLines = list;
         newHud.scale = scale;
+        newHud.showBackground = showBackground;
         newHud.showElement = showElement;
 
         customHudData.customHudRawDataList.put(currentSelectedHud, newHud);
@@ -115,7 +116,7 @@ public class CustomHudDataHandler extends Handler {
 
     //region Model
     public static class CustomHudDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_HUD_DATA_MODEL_VERSION = "0.2";
+        private static final String CUSTOM_HUD_DATA_MODEL_VERSION = "0.3";
 
         // ID of the HUD
         public Map<String, CustomHud> customHudRawDataList = new HashMap<>(
@@ -137,6 +138,7 @@ public class CustomHudDataHandler extends Handler {
                                 1,
                                 15,
                                 1.0f,
+                                true,
                                 true
                         )
                 )
@@ -156,6 +158,7 @@ public class CustomHudDataHandler extends Handler {
         public int xPos;
         public int yPos;
         public float scale;
+        public boolean showBackground;
         public boolean showElement;
 
         public CustomHud(
@@ -164,6 +167,7 @@ public class CustomHudDataHandler extends Handler {
                 int xPos,
                 int yPos,
                 float scale,
+                boolean showBackground,
                 boolean showElement
         ) {
             this.textLines = textLines;
@@ -171,6 +175,7 @@ public class CustomHudDataHandler extends Handler {
             this.xPos = xPos;
             this.yPos = yPos;
             this.scale = scale;
+            this.showBackground = showBackground;
             this.showElement = showElement;
         }
 
@@ -182,6 +187,7 @@ public class CustomHudDataHandler extends Handler {
             this.xPos = 30;
             this.yPos = 30;
             this.scale = 1.0f;
+            this.showBackground = true;
             this.showElement = true;
         }
     }
