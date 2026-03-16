@@ -112,7 +112,7 @@ public class SearchHandler extends Handler {
         SearchBarWidget searchBarWidget = new SearchBarWidget(minecraftClient.textRenderer, x, y, width, height,
                 Text.literal("Search Bar"),
                 new ArrayList<>(Arrays.asList(
-                        Text.literal("Search Items in the search bar").formatted(Formatting.WHITE),
+                        Text.literal("Search Item Names in the search bar").formatted(Formatting.WHITE),
                         Text.literal("NBT fields can be compared against specific values for more granular filtering").formatted(Formatting.GRAY),
                         Text.empty(),
                         Text.literal("Granular filtering").formatted(Formatting.WHITE, Formatting.BOLD),
@@ -139,16 +139,17 @@ public class SearchHandler extends Handler {
                         ).formatted(Formatting.ITALIC),
                         Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
                         TextHelper.concat(
-                                Text.literal("type").formatted(Formatting.DARK_AQUA),
+                                Text.literal("tooltip").formatted(Formatting.DARK_AQUA),
                                 Text.literal("=").formatted(Formatting.GOLD),
-                                Text.literal("\"pet\"").formatted(Formatting.GREEN)
+                                Text.literal("\"tunas\"").formatted(Formatting.GREEN)
                         ),
                         Text.empty(),
                         TextHelper.concat(
-                                Text.literal("Search items that is of ").formatted(Formatting.GRAY),
-                                Text.literal("type ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("equal to ").formatted(Formatting.GOLD),
-                                Text.literal("pet").formatted(Formatting.GREEN)
+                                Text.literal("Search item ").formatted(Formatting.GRAY),
+                                Text.literal("tooltip ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("that has the word ").formatted(Formatting.GRAY),
+                                Text.literal("tunas ").formatted(Formatting.GREEN),
+                                Text.literal("in it").formatted(Formatting.GRAY)
                         ).formatted(Formatting.ITALIC),
                         Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
                         TextHelper.concat(
@@ -219,7 +220,7 @@ public class SearchHandler extends Handler {
                 ))
         );
         searchBarWidget.setText(SearchHandler.instance().getLastInput());
-        searchBarWidget.setPlaceholder(Text.literal("Search Item").formatted(Formatting.GRAY));
+        searchBarWidget.setPlaceholder(Text.literal("Search Item Names").formatted(Formatting.GRAY));
 
         searchBarWidget.setChangedListener(SearchHandler.instance()::parseSearch);
 
