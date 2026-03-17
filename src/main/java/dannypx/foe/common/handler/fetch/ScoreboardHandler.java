@@ -140,7 +140,26 @@ public class ScoreboardHandler extends Handler {
     }
 
     public void init() {
+        this.reset();
+    }
+
+    private void reset() {
         prevResult.clear();
+
+        date = Text.empty();
+        version = Text.empty();
+        level = Text.empty();
+        wallet = Text.empty();
+        credits = Text.empty();
+
+        catches = Text.empty();
+        locationMin = Text.empty();
+        locationMax = Text.empty();
+        catchRate = Text.empty();
+
+        crew = Text.empty();
+        crewNearby = Text.empty();
+
         noScoreboard = true;
     }
 

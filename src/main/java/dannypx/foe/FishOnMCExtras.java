@@ -14,7 +14,7 @@ public class FishOnMCExtras implements ModInitializer {
 	public static final String MOD_ID = "fishonmcextras";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static String VERSION = FishOnMCExtras.getModVersion();
-	public static Integer HUD_VERSION = 2;
+	public static Integer HUD_VERSION = 3;
 	public static Integer BUTTON_VERSION = 1;
 
 	public static final String INVENTORY_SCREEN = "Inventory Screen";

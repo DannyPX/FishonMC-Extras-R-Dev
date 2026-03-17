@@ -33,6 +33,9 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
     private final TextFieldWidget scaleTextField;
     public float scale;
 
+    private final CheckboxWidget showBackgroundCheckBox;
+    public boolean showBackground;
+
     private final CheckboxWidget showElementCheckBox;
     public boolean showElement;
 
@@ -49,7 +52,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
                 minecraftClient.textRenderer,
                 getX() + PADDING,
                 getY() + headerHeight + PADDING,
-                width / 2 - PADDING - PADDING_HALF,
+                width / 3 - PADDING - PADDING_HALF,
                 textFieldHeight,
                 Text.empty()
         );
@@ -68,7 +71,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
 
         scaleTextField = new TextFieldWidget(
                 minecraftClient.textRenderer,
-                getX() + width / 2 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF,
+                getX() + width / 3 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF,
                 getY() + headerHeight + PADDING,
                 40,
                 textFieldHeight,
@@ -91,9 +94,20 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
 
         scaleTextField.setText("");
 
+        showBackgroundCheckBox = CheckboxWidget.builder(Text.literal("Show Background"), minecraftClient.textRenderer)
+                .pos(
+                        getX() + width / 3 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF + 40 + PADDING_HALF,
+                        getY() + headerHeight + PADDING
+                )
+                .checked(true)
+                .callback((checkbox, checked) -> showBackground = checked)
+                .build();
+        showBackground = true;
+
         showElementCheckBox = CheckboxWidget.builder(Text.literal("Show Element"), minecraftClient.textRenderer)
                 .pos(
-                        getX() + width / 2 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF + 40 + PADDING_HALF,
+                        getX() + width / 3 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF + 40 + PADDING_HALF
+                                + minecraftClient.textRenderer.getWidth("Show Background") + PADDING_HALF + 16 + PADDING_HALF,
                         getY() + headerHeight + PADDING
                 )
                 .checked(true)
@@ -117,6 +131,10 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         idTextField.setPlaceholder(Text.literal(id));
         scaleTextField.setText(String.valueOf(customHud.scale));
         scaleTextField.setPlaceholder(Text.literal(String.valueOf(customHud.scale)));
+        showBackground = customHud.showBackground;
+        if(customHud.showBackground != showBackgroundCheckBox.isChecked()) {
+            showBackgroundCheckBox.onPress();
+        }
         showElement = customHud.showElement;
         if(customHud.showElement != showElementCheckBox.isChecked()) {
             showElementCheckBox.onPress();
@@ -185,11 +203,14 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         newName = "";
         scale = 1.0f;
         currentSelectedHud = null;
+        showBackground = true;
+        if(!showBackgroundCheckBox.isChecked()) {
+            showBackgroundCheckBox.onPress();
+        }
         showElement = true;
         if(!showElementCheckBox.isChecked()) {
             showElementCheckBox.onPress();
         }
-
         scaleTextField.setText("1.0");
         scaleTextField.setPlaceholder(Text.literal("1.0"));
         idTextField.setText("");
@@ -217,7 +238,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         context.drawText(
                 minecraftClient.textRenderer,
                 "Scale",
-                getX() + width / 2,
+                getX() + width / 3,
                 getY() + PADDING + headerHeight + headerHeight / 2 - minecraftClient.textRenderer.fontHeight / 2,
                 0xFFFFFF,
                 true
@@ -225,6 +246,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
 
         idTextField.render(context, mouseX, mouseY, delta);
         scaleTextField.render(context, mouseX, mouseY, delta);
+        showBackgroundCheckBox.render(context, mouseX, mouseY, delta);
         showElementCheckBox.render(context, mouseX, mouseY, delta);
 
         context.enableScissor(
@@ -283,6 +305,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
+            showBackgroundCheckBox.setFocused(false);
             showElementCheckBox.setFocused(false);
             idTextField.setFocused(true);
             scaleTextField.setFocused(false);
@@ -294,8 +317,21 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
+            showBackgroundCheckBox.setFocused(false);
             showElementCheckBox.setFocused(false);
             scaleTextField.setFocused(true);
+            idTextField.setFocused(false);
+            return true;
+        }
+
+        if(showBackgroundCheckBox.mouseClicked(mouseX, mouseY, button)) {
+            if (focusedEntry != null) {
+                focusedEntry.setFocused(false);
+                focusedEntry = null;
+            }
+            showBackgroundCheckBox.setFocused(true);
+            showElementCheckBox.setFocused(false);
+            scaleTextField.setFocused(false);
             idTextField.setFocused(false);
             return true;
         }
@@ -305,6 +341,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
+            showBackgroundCheckBox.setFocused(false);
             showElementCheckBox.setFocused(true);
             scaleTextField.setFocused(false);
             idTextField.setFocused(false);
@@ -329,6 +366,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (idTextField.isFocused()) return idTextField.keyPressed(keyCode, scanCode, modifiers);
         if (scaleTextField.isFocused()) return scaleTextField.keyPressed(keyCode, scanCode, modifiers);
+        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.keyPressed(keyCode, scanCode, modifiers);
         if (showElementCheckBox.isFocused()) return showElementCheckBox.keyPressed(keyCode, scanCode, modifiers);
         if (focusedEntry != null) return focusedEntry.keyPressed(keyCode, scanCode, modifiers);
         return false;
@@ -338,6 +376,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
     public boolean charTyped(char chr, int modifiers) {
         if (idTextField.isFocused()) return idTextField.charTyped(chr, modifiers);
         if (scaleTextField.isFocused()) return scaleTextField.charTyped(chr, modifiers);
+        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.charTyped(chr, modifiers);
         if (showElementCheckBox.isFocused()) return showElementCheckBox.charTyped(chr, modifiers);
         if (focusedEntry != null) return focusedEntry.charTyped(chr, modifiers);
         return false;

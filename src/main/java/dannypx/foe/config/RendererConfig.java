@@ -39,6 +39,9 @@ public class RendererConfig extends Config {
     @Name("Use the 3D bobber texture")
     public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
 
+    @Name("Show bait on bobber")
+    public ValidatedBoolean showBaitOnBobber = new ValidatedBoolean(true);
+
     @ConfigGroup.Pop
     @Name("Hide armor on players")
     public ValidatedBoolean hideArmor = new ValidatedBoolean(false);

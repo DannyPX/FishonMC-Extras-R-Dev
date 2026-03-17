@@ -45,7 +45,7 @@ public class ClientPlayerHandler extends Handler {
         if(params.length > 0
                 && minecraftClient.player != null
         ) {
-            Pattern fieldPattern = Pattern.compile("^(name|level|level_progress|pos|yaw|pitch|direction)$");
+            Pattern fieldPattern = Pattern.compile("^(name|level|level_progress|pos|yaw|pitch|direction|fps)$");
 
             if(fieldPattern.matcher(params[0]).matches()
                     && params.length >= 1
@@ -63,6 +63,7 @@ public class ClientPlayerHandler extends Handler {
                     case "yaw" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(MathHelper.wrapDegrees(minecraftClient.player.getYaw()), 1)));
                     case "pitch" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(minecraftClient.player.getPitch(), 1)));
                     case "direction" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.capitalize(minecraftClient.player.getHorizontalFacing().getName())));
+                    case "fps" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(minecraftClient.getCurrentFps())));
                     default -> PlaceholderHandler.noResult();
                 };
             }

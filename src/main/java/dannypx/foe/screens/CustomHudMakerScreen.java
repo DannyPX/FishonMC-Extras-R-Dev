@@ -275,6 +275,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                 editFieldListWidget.currentSelectedHud,
                                 editFieldListWidget.newName,
                                 editFieldListWidget.scale,
+                                editFieldListWidget.showBackground,
                                 editFieldListWidget.showElement,
                                 editFieldListWidget.getEntries()
                                         .stream()

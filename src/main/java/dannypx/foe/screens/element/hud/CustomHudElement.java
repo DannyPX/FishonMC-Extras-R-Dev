@@ -7,6 +7,7 @@ import dannypx.foe.common.handler.logic.PlaceholderHandler;
 import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.common.helper.DrawHelper;
 import dannypx.foe.common.helper.TextHelper;
+import dannypx.foe.common.type.Alignment;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.tuple.Triplet;
 import dannypx.foe.screens.element.Element;
@@ -73,36 +74,42 @@ public class CustomHudElement extends Element implements ScreenConstants {
         if(LoadingHandler.instance().isLoadingDone()
                 && TabHandler.instance().isInInstance()
         ) {
+            contentDimensions = this.assembleHud();
+            boxWidth = contentDimensions.value1() + BOX_PADDING * 2 + PADDING * 2;
+            boxHeight = contentDimensions.value2() + BOX_PADDING * 2 + PADDING_QUART * 2;
+
             int x = switch (customHud.alignment) {
                 case TOP_LEFT, BOTTOM_LEFT, LEFT -> Math.round(scaledWidth * xPos);
+                case TOP, BOTTOM -> Math.round(scaledWidth * xPos) - boxWidth / 2;
                 case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> scaledWidth
                         - Math.round(scaledWidth * xPos);
                 default -> 0;
             };
 
             int y = switch (customHud.alignment) {
-                case TOP_LEFT, TOP_RIGHT, LEFT, RIGHT -> Math.round(scaledHeight * yPos);
-                case BOTTOM_LEFT, BOTTOM_RIGHT -> scaledHeight
+                case TOP_LEFT, TOP_RIGHT, TOP -> Math.round(scaledHeight * yPos);
+                case LEFT, RIGHT -> Math.round(scaledHeight * yPos) - boxHeight / 2;
+                case BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM -> scaledHeight
                         - Math.round(scaledHeight * yPos);
                 default -> 0;
             };
 
-            contentDimensions = this.assembleHud();
-            boxWidth = contentDimensions.value1() + BOX_PADDING * 2 + PADDING * 2;
-            boxHeight = contentDimensions.value2() + BOX_PADDING * 2 + PADDING_QUART * 2;
             if(!textLines.isEmpty()) {
                 x = switch (customHud.alignment) {
+                    case TOP_LEFT, BOTTOM_LEFT, LEFT -> x;
+                    case TOP, BOTTOM -> x - boxWidth / 2;
                     case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> x - boxWidth;
-                    default -> x;
+                    default -> 0;
                 };
 
                 y = switch (customHud.alignment) {
-                    case BOTTOM_LEFT, BOTTOM_RIGHT -> y - boxHeight;
+                    case TOP_LEFT, TOP_RIGHT, TOP -> y;
+                    case BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM -> y - boxHeight;
                     case LEFT, RIGHT -> y - boxHeight / 2;
-                    default -> y;
+                    default -> 0;
                 };
 
-                this.renderBox(drawContext, tickCounter, x, y);
+                if(customHud.showBackground) this.renderBox(drawContext, tickCounter, x, y);
                 this.renderText(drawContext, tickCounter, x, y);
             }
         }
@@ -110,14 +117,20 @@ public class CustomHudElement extends Element implements ScreenConstants {
     }
 
     private void renderText(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {
-        int textX = x + PADDING + BOX_PADDING;
+        int textX;
         int textY = y + PADDING_QUART + BOX_PADDING;
+
+        if(customHud.alignment == Alignment.TOP || customHud.alignment == Alignment.BOTTOM) {
+            textX = x + PADDING + BOX_PADDING + boxWidth / 2;
+        } else {
+            textX = x + PADDING + BOX_PADDING;
+        }
 
         AtomicInteger line = new AtomicInteger(0);
         textLines.forEach(text -> {
             if(text.value1()) {
                 DrawHelper.drawText(drawContext, textRenderer, text.value3(),
-                        x + (boxWidth / 2) - TextHelper.getWidth(textRenderer, text.value3(), text.value2()) / 2,
+                        textX - (PADDING + BOX_PADDING) + boxWidth / 2 - TextHelper.getWidth(textRenderer, text.value3(), text.value2()) / 2,
                         textY + line.getAndIncrement() * LINE_HEIGHT,
                         true, text.value2(), true, text.value2()
                         );
@@ -132,6 +145,13 @@ public class CustomHudElement extends Element implements ScreenConstants {
     }
 
     private void renderBox(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {
+        int boxX = x;
+        int boxY = y;
+
+        if(customHud.alignment == Alignment.TOP || customHud.alignment == Alignment.BOTTOM) {
+            boxX = boxX + boxWidth / 2;
+        }
+
         int ATLAS_CORNER = 8;
         int ATLAS_BAR_WIDTH = 1;
         int ATLAS_BAR_HEIGHT = 5;
@@ -139,15 +159,15 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
         // Alpha Box
         drawContext.fill(
-                x + BOX_PADDING, y + BOX_PADDING,
-                x + this.boxWidth - BOX_PADDING, y + this.boxHeight - BOX_PADDING,
+                boxX + BOX_PADDING, boxY + BOX_PADDING,
+                boxX + this.boxWidth - BOX_PADDING, boxY + this.boxHeight - BOX_PADDING,
                 0x7f000000
         );
 
         // Top Left
         drawContext.drawTexture(RenderLayer::getGuiTextured,
                 BOX_TEXTURE,
-                x, y,
+                boxX, boxY,
                 0, NIB_HEIGHT,
                 ATLAS_CORNER, ATLAS_CORNER,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -157,7 +177,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         // Top
         drawContext.drawTexture(RenderLayer::getGuiTextured,
                 BOX_TEXTURE,
-                x + ATLAS_CORNER, y,
+                boxX + ATLAS_CORNER, boxY,
                 ATLAS_CORNER, NIB_HEIGHT,
                 this.boxWidth - ATLAS_CORNER * 2, ATLAS_BAR_HEIGHT,
                 ATLAS_BAR_WIDTH, ATLAS_BAR_HEIGHT,
@@ -167,7 +187,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         // Top Right
         drawContext.drawTexture(RenderLayer::getGuiTextured,
                 BOX_TEXTURE,
-                x + this.boxWidth - ATLAS_CORNER, y,
+                boxX + this.boxWidth - ATLAS_CORNER, boxY,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, NIB_HEIGHT,
                 ATLAS_CORNER, ATLAS_CORNER,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -177,7 +197,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         // Bottom Left
         drawContext.drawTexture(RenderLayer::getGuiTextured,
                 BOX_TEXTURE,
-                x, y + this.boxHeight - ATLAS_CORNER,
+                boxX, boxY + this.boxHeight - ATLAS_CORNER,
                 0, 0,
                 ATLAS_CORNER, ATLAS_CORNER,
                 ATLAS_CORNER, ATLAS_CORNER,
@@ -187,7 +207,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         // Bottom
         drawContext.drawTexture(RenderLayer::getGuiTextured,
                 BOX_TEXTURE,
-                x + ATLAS_CORNER, y + this.boxHeight - ATLAS_CORNER + NIB_HEIGHT,
+                boxX + ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER + NIB_HEIGHT,
                 ATLAS_CORNER, NIB_HEIGHT,
                 this.boxWidth - ATLAS_CORNER * 2, ATLAS_BAR_HEIGHT,
                 ATLAS_BAR_WIDTH, ATLAS_BAR_HEIGHT,
@@ -197,7 +217,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         // Bottom Right
         drawContext.drawTexture(RenderLayer::getGuiTextured,
                 BOX_TEXTURE,
-                x + this.boxWidth - ATLAS_CORNER, y + this.boxHeight - ATLAS_CORNER,
+                boxX + this.boxWidth - ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, 0,
                 ATLAS_CORNER, ATLAS_CORNER,
                 ATLAS_CORNER, ATLAS_CORNER,

@@ -3,13 +3,18 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.handler.fetch.ScoreboardHandler;
 import dannypx.foe.common.handler.store.CrewDataHandler;
+import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
 import dannypx.foe.common.type.custom_text.StringValue;
+import dannypx.foe.common.type.custom_text.TextValue;
 import dannypx.foe.common.type.tuple.Pair;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Box;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,6 +37,8 @@ public class CrewHandler extends Handler {
     List<Pair<UUID, String>> onlineMembers = new ArrayList<>();
     List<Pair<UUID, String>> offlineMembers = new ArrayList<>();
 
+    boolean isCrewNearby = false;
+
     public List<Pair<UUID, String>> getCrewListOrdered() {
         return crewListOrdered;
     }
@@ -44,17 +51,26 @@ public class CrewHandler extends Handler {
         return offlineMembers;
     }
 
+    public boolean isCrewNearby() {
+        return isCrewNearby;
+    }
+
     public Pair<Boolean, CustomTextValue> getCrew(String[] params) {
         if(params.length > 0) {
-            Pattern crewListPattern = Pattern.compile("^(online|offline)$");
+            Pattern crewListPattern = Pattern.compile("^(online|offline|is_crew_nearby)$");
             Pattern intPattern = Pattern.compile("^-?\\d+$");
             Pattern crewPattern = Pattern.compile("^(id|name)$");
 
             if(crewListPattern.matcher(params[0]).matches()) {
-                List<Pair<UUID, String>> list = switch (params[0]) {
-                    case "online" -> onlineMembers;
-                    case "offline" -> offlineMembers;
-                    default -> new ArrayList<>();
+                List<Pair<UUID, String>> list;
+
+                switch (params[0]) {
+                    case "online" -> list = onlineMembers;
+                    case "offline" -> list = offlineMembers;
+                    case "is_crew_nearby" -> {
+                        return PlaceholderHandler.getTextValue(new TextValue(TextHelper.literal(isCrewNearby(), true)));
+                    }
+                    default -> list = new ArrayList<>();
                 };
 
                 if(params.length == 3
@@ -78,11 +94,48 @@ public class CrewHandler extends Handler {
 
     //endregion
 
-    //region Methods
+    //region Method
+    @Override
+    public void init() {
+        onlineMembers.clear();
+        offlineMembers.clear();
+        crewListOrdered.clear();
+    }
+
     public void tick() {
         if(!ScoreboardHandler.instance().getCrew().getString().isBlank()) {
             if(crewListOrdered.isEmpty()) this.updateCrewOrderedList(CrewDataHandler.instance().getCrewData().crewList);
         }
+
+        if(minecraftClient.player != null) {
+            this.checkCrewNearby();
+        }
+    }
+
+    private void checkCrewNearby() {
+        Box searchBox = minecraftClient.player.getBoundingBox().expand(10d);
+        ClientWorld world = minecraftClient.player.clientWorld;
+
+        List<PlayerEntity> playerEntities = world.getEntitiesByClass(
+                PlayerEntity.class,
+                searchBox,
+                playerEntity -> {
+                    if(playerEntity.getUuid().equals(minecraftClient.player.getUuid())) return false;
+
+                    LoggerHandler._debug("Player Entity: " + playerEntity.getName().getString());
+
+                    if(CrewDataHandler.instance().getCrewData().crewList.containsKey(playerEntity.getUuid())
+                            && playerEntity.getPos().distanceTo(minecraftClient.player.getPos()) < 10d) {
+
+                        LoggerHandler._debug("Is Crew");
+                        return true;
+                    }
+                    LoggerHandler._debug("Is Not Crew");
+                    return false;
+                }
+        );
+
+        this.isCrewNearby = !playerEntities.isEmpty();
     }
 
     public void updateCrewOrderedList(Map<UUID, Pair<String, ItemStack>> crewMap) {
@@ -170,6 +223,7 @@ public class CrewHandler extends Handler {
 
             this.pendingLeavesList.add(uuid);
 
+            // Delay leaves in case of proxy change
             CodeExecuterHandler.runLater(10, () -> {
                 if(this.pendingLeavesList.contains(uuid)) {
                     this.pendingLeavesList.remove(uuid);

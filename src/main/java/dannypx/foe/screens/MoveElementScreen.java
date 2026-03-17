@@ -149,7 +149,7 @@ public class MoveElementScreen extends DefaultModScreen {
         customHudElements.forEach(element -> {
             widgets.add(new MovableBoxWidget(minecraftClient,
                     element.value2(),
-                    Alignment.getCorners(),
+                    Alignment.getAll(),
                     new MovableBoxWidget.Callback() {
                         @Override
                         public void onRelease(int xPercent, int yPercent, Alignment alignment) {
