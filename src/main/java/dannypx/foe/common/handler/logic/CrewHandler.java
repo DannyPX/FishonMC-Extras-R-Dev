@@ -31,13 +31,15 @@ public class CrewHandler extends Handler {
     }
 
     //region Fields
-    private List<UUID> pendingLeavesList = new ArrayList<>();
+    private Map<UUID, Long> pendingLeavesList = new HashMap<>();
 
     List<Pair<UUID, String>> crewListOrdered = new ArrayList<>();
     List<Pair<UUID, String>> onlineMembers = new ArrayList<>();
     List<Pair<UUID, String>> offlineMembers = new ArrayList<>();
 
     boolean isCrewNearby = false;
+
+    int leaveDelay = 20;
 
     public List<Pair<UUID, String>> getCrewListOrdered() {
         return crewListOrdered;
@@ -99,6 +101,7 @@ public class CrewHandler extends Handler {
     public void init() {
         onlineMembers.clear();
         offlineMembers.clear();
+        pendingLeavesList.clear();
         crewListOrdered.clear();
     }
 
@@ -110,6 +113,10 @@ public class CrewHandler extends Handler {
         if(minecraftClient.player != null) {
             this.checkCrewNearby();
         }
+
+        pendingLeavesList.forEach(((uuid, time) -> {
+            if(System.currentTimeMillis() > time + (leaveDelay * 50L) + 1000L) CodeExecuterHandler.runLater(1, () -> pendingLeavesList.remove(uuid));
+        }));
     }
 
     private void checkCrewNearby() {
@@ -122,15 +129,11 @@ public class CrewHandler extends Handler {
                 playerEntity -> {
                     if(playerEntity.getUuid().equals(minecraftClient.player.getUuid())) return false;
 
-                    LoggerHandler._debug("Player Entity: " + playerEntity.getName().getString());
-
                     if(CrewDataHandler.instance().getCrewData().crewList.containsKey(playerEntity.getUuid())
                             && playerEntity.getPos().distanceTo(minecraftClient.player.getPos()) < 10d) {
 
-                        LoggerHandler._debug("Is Crew");
                         return true;
                     }
-                    LoggerHandler._debug("Is Not Crew");
                     return false;
                 }
         );
@@ -206,7 +209,6 @@ public class CrewHandler extends Handler {
                 && !ScoreboardHandler.instance().getCrew().getString().isBlank()
                 && CrewDataHandler.instance().getCrewData().crewList.containsKey(uuid)
         ) {
-
             if(onlineMembers.stream().noneMatch(m -> m.value1().equals(uuid))) {
                 pendingLeavesList.remove(uuid);
 
@@ -220,12 +222,11 @@ public class CrewHandler extends Handler {
                 && !ScoreboardHandler.instance().getCrew().getString().isBlank()
                 && CrewDataHandler.instance().getCrewData().crewList.containsKey(uuid)
         ) {
-
-            this.pendingLeavesList.add(uuid);
+            this.pendingLeavesList.put(uuid, System.currentTimeMillis());
 
             // Delay leaves in case of proxy change
-            CodeExecuterHandler.runLater(10, () -> {
-                if(this.pendingLeavesList.contains(uuid)) {
+            CodeExecuterHandler.runLater(leaveDelay, () -> {
+                if(this.pendingLeavesList.containsKey(uuid)) {
                     this.pendingLeavesList.remove(uuid);
                     updatePlayerToOffline(uuid);
                 }
