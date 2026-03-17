@@ -38,6 +38,14 @@ public class TextHelper {
         return Text.literal(Boolean.toString(b));
     }
 
+    public static MutableText literal(boolean b, boolean fancy) {
+        return fancy ? (
+                    b
+                    ? Text.literal("✔").formatted(Formatting.GREEN, Formatting.BOLD)
+                    : Text.literal("✖").formatted(Formatting.DARK_RED, Formatting.BOLD)
+                ) : literal(b);
+    }
+
     public static MutableText literal(DataModels.DataModel dataModel) {
         return Text.literal(gson
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
