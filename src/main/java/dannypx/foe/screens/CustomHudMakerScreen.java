@@ -13,12 +13,14 @@ import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditFieldListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 
 import java.util.*;
 
@@ -66,6 +68,9 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         widgets.add(getDeleteHudElementButton());
         widgets.add(getImportButton());
         widgets.add(getExportButton());
+
+
+        widgets.add(this.wikiButton());
 
         widgets.forEach(this::addDrawableChild);
     }
@@ -303,8 +308,27 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         editFieldListWidget.addNewEntry();
                     }
                 })
-                .position((BUTTON_WIDTH + PADDING * 2) + PADDING_HALF, height - PADDING_HALF - BUTTON_HEIGHT)
+                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Add line to the bottom")))
+                .build();
+    }
+
+    private ClickableWidget wikiButton() {
+        return ButtonWidget.builder(Text.literal("Wiki"), button -> {
+                    String url = "https://github.com/DannyPX/FishOnMC-Extras-R/wiki/Placeholders";
+
+                    minecraftClient.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                        if (confirmed) {
+                            Util.getOperatingSystem().open(url);
+                        }
+
+                        minecraftClient.setScreen(null);
+                    }, url, true));
+                })
+                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Wiki to Placeholders")))
                 .build();
     }
 

@@ -135,21 +135,9 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     minecraftClient.getWindow().getScaledWidth() / 2 + 50,
                     minecraftClient.getWindow().getScaledHeight() / 2 - 23,
                     14, 14,
-                    "H",
-                    Tooltip.of(Text.literal("Edit Custom HUDs")),
-                    Text.literal("Custom HUDs Button"),
-                    (button) -> {
-                        minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen));
-                    }
-            ));
-
-            widgets.add(new SmallButtonWidget(
-                    minecraftClient.getWindow().getScaledWidth() / 2 + 34,
-                    minecraftClient.getWindow().getScaledHeight() / 2 - 23,
-                    14, 14,
                     "B",
-                    Tooltip.of(Text.literal("Edit Custom Buttons")),
-                    Text.literal("Custom Buttons Button"),
+                    Tooltip.of(Text.literal("Edit Inventory Buttons")),
+                    Text.literal("Edit Inventory Buttons"),
                     (button) -> {
                         minecraftClient.setScreen(new CustomButtonMakerScreen(minecraftClient.currentScreen, FishOnMCExtras.INVENTORY_SCREEN));
                     }

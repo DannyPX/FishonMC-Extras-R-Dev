@@ -1,5 +1,7 @@
 package dannypx.foe.screens;
 
+import dannypx.foe.config.Configs;
+import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -39,6 +41,8 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
 
         widgets.add(this.backButton());
 
+        if(!isMiddle && Configs.debugConfig.debugMode.get()) widgets.add(this.debugButton());
+
         widgets.forEach(this::addDrawableChild);
     }
 
@@ -51,6 +55,14 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
                 : ButtonWidget.builder(Text.literal("Return"), button ->
                         this.close())
                 .position(width / 2 - 50 / 2, height / 2 - BUTTON_HEIGHT / 2)
+                .size(50, BUTTON_HEIGHT)
+                .build();
+    }
+
+    private ButtonWidget debugButton() {
+        return ButtonWidget.builder(Text.literal("Debug"), button ->
+                        minecraftClient.setScreen(new DebugHandlerScreen(minecraftClient.currentScreen)))
+                .position(width - PADDING_HALF - 50 - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(50, BUTTON_HEIGHT)
                 .build();
     }

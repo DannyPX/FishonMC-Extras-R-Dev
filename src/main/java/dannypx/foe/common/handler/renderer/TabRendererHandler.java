@@ -40,21 +40,21 @@ public class TabRendererHandler extends Handler {
                     && index == 0
                     && Configs.rendererConfig.showOnlineCrewMembers.get()
             ) {
+                // Header Crew Name
                 int height = 16;
                 int width = 40;
 
-                // Header
                 Element crewBox = new BoxElement(MinecraftClient.getInstance(), x1, y1 - (height - 5) - 1, -1, width, height, true, false, true, true, false, true);
                 crewBox.render(context, minecraftClient.getRenderTickCounter());
+
+                Text crewText = Text.literal(ScoreboardHandler.instance().getCrew().getString());
+                DrawHelper.drawText(context, minecraftClient.textRenderer, crewText, x1 + width / 2 - TextHelper.getWidth(minecraftClient.textRenderer, crewText, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraftClient.textRenderer.fontHeight / 2 + 1, true, true, false, true);
 
                 // Left Bar
                 Element leftBar = new BoxElement(MinecraftClient.getInstance(), x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);
                 leftBar.render(context, minecraftClient.getRenderTickCounter());
 
                 int gradientWidth = 150;
-
-                Text crewText = Text.literal(ScoreboardHandler.instance().getCrew().getString());
-                DrawHelper.drawText(context, minecraftClient.textRenderer, crewText, x1 + width / 2 - TextHelper.getWidth(minecraftClient.textRenderer, crewText, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraftClient.textRenderer.fontHeight / 2 + 1, true, true, false, true);
 
                 // Box
                 DrawHelper.drawHorizontalGradient(context, x1, y1, x1 + gradientWidth, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, 0x88FFAA00, 0x00FFAA00);

@@ -51,7 +51,11 @@ public class MainScreen extends DefaultModScreen {
                 size, size
         );
 
-        drawContext.drawHorizontalLine(screenWidth / 2 - size / 2, screenWidth / 2 + size / 2, screenHeight / 2, 0xFFAAAAAA);
+        Text hudText = Text.literal("HUD Settings");
+        drawContext.drawText(textRenderer, hudText, width / 2 - textRenderer.getWidth(hudText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight, 0xFFFFFF, true);
+
+        Text configText = Text.literal("Configuration");
+        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight + (BUTTON_HEIGHT + PADDING * 3 + textRenderer.fontHeight) * 1, 0xFFFFFF, true);
 
         drawContext.drawText(textRenderer, Text.literal(FishOnMCExtras.VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - textRenderer.fontHeight - PADDING_QUART, 0xFFFFFF, true);
     }
@@ -59,38 +63,38 @@ public class MainScreen extends DefaultModScreen {
     private void renderWidgets() {
         List<ClickableWidget> widgets = new ArrayList<>();
 
-        if(Configs.debugConfig.debugMode.get()) widgets.add(debugButton());
         widgets.add(configButton());
+        widgets.add(customHudButton());
         widgets.add(moveHudButton());
         
 
         widgets.forEach(this::addDrawableChild);
     }
 
-    private ButtonWidget configButton() {
-        return ButtonWidget.builder(Text.literal("Config Screen"), button ->
-                        ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
-                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING))
-                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Open Config Screen")))
+    private ButtonWidget customHudButton() {
+        return ButtonWidget.builder(Text.literal("Create Elements"), button ->
+                        minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen)))
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Custom HUD Creator Screen")))
                 .build();
     }
 
     private ButtonWidget moveHudButton() {
-        return ButtonWidget.builder(Text.literal("Move HUD Elements Screen"), button ->
+        return ButtonWidget.builder(Text.literal("Move Elements"), button ->
                         minecraftClient.setScreen(new MoveElementScreen(minecraftClient.currentScreen)))
-                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING) * 2)
-                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .position(width / 2 + PADDING_HALF, height / 2)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Move HUD Elements Screen")))
                 .build();
     }
 
-    private ButtonWidget debugButton() {
-        return ButtonWidget.builder(Text.literal("Debug Screen"), button ->
-                        minecraftClient.setScreen(new DebugHandlerScreen(minecraftClient.currentScreen)))
-                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING) * 3)
+    private ButtonWidget configButton() {
+        return ButtonWidget.builder(Text.literal("Config Screen"), button ->
+                        ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING * 3 + textRenderer.fontHeight) * 1)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Open Debug Screen")))
+                .tooltip(Tooltip.of(Text.literal("Open Config Screen")))
                 .build();
     }
     //endregion
