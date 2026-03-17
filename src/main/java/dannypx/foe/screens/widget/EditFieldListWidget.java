@@ -1,5 +1,6 @@
 package dannypx.foe.screens.widget;
 
+import dannypx.foe.common.handler.logic.CodeExecuterHandler;
 import dannypx.foe.common.handler.store.CustomHudDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
@@ -179,12 +180,12 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         return new LineEntry.Callback() {
             @Override
             public void onDelete(LineEntry lineEntry) {
-                removeEntry(lineEntry);
+                CodeExecuterHandler.runLater(1, () -> removeEntry(lineEntry));
             }
 
             @Override
             public void onAdd(LineEntry lineEntry) {
-                addNewEntry(entries.indexOf(lineEntry) + 1);
+                CodeExecuterHandler.runLater(1, () -> addNewEntry(entries.indexOf(lineEntry)));
             }
         };
     }
@@ -463,7 +464,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
             addButton = ButtonWidget.builder(Text.literal("Add"),
                             (buttonWidget) -> callback.onAdd(this))
                     .size(BUTTON_SIZE, 20)
-                    .tooltip(Tooltip.of(Text.literal("Add line below")))
+                    .tooltip(Tooltip.of(Text.literal("Add line")))
                     .build();
 
             deleteButton = ButtonWidget.builder(Text.literal("Del"),
@@ -508,14 +509,24 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
             isSmallWidget.render(context, mouseX, mouseY, delta);
             addButton.render(context, mouseX, mouseY, delta);
             deleteButton.render(context, mouseX, mouseY, delta);
+
+            this.renderTooltips(context, mouseX, mouseY, delta);
+        }
+
+        private void renderTooltips(DrawContext context, int mouseX, int mouseY, float delta) {
+            if(textFieldWidget.isFocused()
+                    && textFieldWidget.isMouseOver(mouseX, mouseY)) {
+                context.drawTooltip(minecraftClient.textRenderer, Text.literal("You can also use placeholders. See wiki"), mouseX, mouseY);
+            }
         }
 
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (textFieldWidget.mouseClicked(mouseX, mouseY, button)) return true;
-            if (isCentreWidget.mouseClicked(mouseX, mouseY, button)) return true;
-            if (isSmallWidget.mouseClicked(mouseX, mouseY, button)) return true;
-            if(addButton.mouseClicked(mouseX, mouseY, button)) return true;
-            return deleteButton.mouseClicked(mouseX, mouseY, button);
+            if (isCentreWidget.mouseClicked(mouseX, mouseY, button)) return false;
+            if (isSmallWidget.mouseClicked(mouseX, mouseY, button)) return false;
+            if(addButton.mouseClicked(mouseX, mouseY, button)) return false;
+            if(deleteButton.mouseClicked(mouseX, mouseY, button)) return false;
+            return false;
         }
 
         public void setFocused(boolean focused) {
@@ -529,6 +540,7 @@ public class EditFieldListWidget extends ClickableWidget implements ScreenConsta
         public boolean charTyped(char chr, int modifiers) {
             return textFieldWidget.charTyped(chr, modifiers);
         }
+
 
         public interface Callback {
             void onDelete(LineEntry lineEntry);

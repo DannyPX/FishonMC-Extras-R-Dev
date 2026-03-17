@@ -118,12 +118,18 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
     private void renderText(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {
         int textX;
-        int textY = y + PADDING_QUART + BOX_PADDING;
+        int textY;
 
         if(customHud.alignment == Alignment.TOP || customHud.alignment == Alignment.BOTTOM) {
             textX = x + PADDING + BOX_PADDING + boxWidth / 2;
         } else {
             textX = x + PADDING + BOX_PADDING;
+        }
+
+        if(customHud.alignment == Alignment.LEFT || customHud.alignment == Alignment.RIGHT) {
+            textY = y + PADDING_QUART + BOX_PADDING + boxHeight / 2;
+        } else {
+            textY = y + PADDING_QUART + BOX_PADDING;
         }
 
         AtomicInteger line = new AtomicInteger(0);
@@ -150,6 +156,10 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
         if(customHud.alignment == Alignment.TOP || customHud.alignment == Alignment.BOTTOM) {
             boxX = boxX + boxWidth / 2;
+        }
+
+        if(customHud.alignment == Alignment.LEFT || customHud.alignment == Alignment.RIGHT) {
+            boxY = boxY + boxHeight / 2;
         }
 
         int ATLAS_CORNER = 8;

@@ -3,7 +3,6 @@ package dannypx.foe.common.handler.logic;
 import dannypx.foe.common.handler.Handler;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.common.type.custom_text.CustomTextValue;
-import dannypx.foe.common.type.custom_text.StringValue;
 import dannypx.foe.common.type.custom_text.TextValue;
 import net.minecraft.block.Block;
 import net.minecraft.entity.decoration.ItemFrameEntity;

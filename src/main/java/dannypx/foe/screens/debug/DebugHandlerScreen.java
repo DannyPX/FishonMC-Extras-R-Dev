@@ -3,8 +3,8 @@ package dannypx.foe.screens.debug;
 import dannypx.foe.common.handler.debug._DebugHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.screens.DefaultModScreen;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -24,10 +24,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DebugHandlerScreen extends Screen implements ScreenConstants {
+public class DebugHandlerScreen extends DefaultModScreen {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    private final Screen parent;
 
     private ButtonListWidget handlerList;
     private String selectedHandler;
@@ -40,8 +39,7 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
 
     //region Methods
     public DebugHandlerScreen(Screen parent) {
-        super(Text.literal("Debug Handler Screen"));
-        this.parent = parent;
+        super(parent, Text.literal("Debug Handler Screen"));
         handlerNames = _DebugHandler.instance()._getHandlerNames();
     }
 
@@ -148,11 +146,6 @@ public class DebugHandlerScreen extends Screen implements ScreenConstants {
                     Text.literal("Fish On Extras Rebirth"),
                     Text.literal("Copied " + hoveredName + " JSON"));
         }
-    }
-
-    @Override
-    public void close() {
-        this.minecraftClient.setScreen(parent);
     }
     //endregion
 }
