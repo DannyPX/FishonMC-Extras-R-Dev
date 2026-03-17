@@ -67,8 +67,8 @@ public class CrewHandler extends Handler {
                 List<Pair<UUID, String>> list;
 
                 switch (params[0]) {
-                    case "online" -> list = onlineMembers;
-                    case "offline" -> list = offlineMembers;
+                    case "online" -> list = getOnlineMembers();
+                    case "offline" -> list = getOfflineMembers();
                     case "is_crew_nearby" -> {
                         return PlaceholderHandler.getTextValue(new TextValue(TextHelper.literal(isCrewNearby(), true)));
                     }

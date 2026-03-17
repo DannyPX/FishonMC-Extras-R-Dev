@@ -11,7 +11,6 @@ import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.CustomButtonMakerScreen;
-import dannypx.foe.screens.CustomHudMakerScreen;
 import dannypx.foe.screens.MainScreen;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.screens.interfaces.ScreenConstants;
