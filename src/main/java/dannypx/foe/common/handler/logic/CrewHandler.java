@@ -209,9 +209,9 @@ public class CrewHandler extends Handler {
                 && !ScoreboardHandler.instance().getCrew().getString().isBlank()
                 && CrewDataHandler.instance().getCrewData().crewList.containsKey(uuid)
         ) {
-            if(onlineMembers.stream().noneMatch(m -> m.value1().equals(uuid))) {
-                pendingLeavesList.remove(uuid);
+            pendingLeavesList.remove(uuid);
 
+            if(onlineMembers.stream().noneMatch(m -> m.value1().equals(uuid))) {
                 updatePlayerToOnline(uuid);
             }
         }
