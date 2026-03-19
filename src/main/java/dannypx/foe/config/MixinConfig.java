@@ -10,7 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 1)
+@Version(version = 2)
 @Translatable.Name("Mixin Toggles")
 @Translatable.Desc("§4WARNING §7These are the toggles to mixins. Do not touch these unless you know what you are doing")
 public class MixinConfig extends Config {
@@ -99,6 +99,12 @@ public class MixinConfig extends Config {
 
     @ConfigGroup.Pop
     public ValidatedBoolean recipeBookWidgetIsOpen = new ValidatedBoolean(true);
+
+    @Name("BlockLightStorage Mixin")
+    public ConfigGroup blockLightStorageMixinGroup = new ConfigGroup("recipe_book_widget");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean blockLightStorageMixinGetLight = new ValidatedBoolean(true);
 
     @Override
     public @NotNull FileType fileType() {
