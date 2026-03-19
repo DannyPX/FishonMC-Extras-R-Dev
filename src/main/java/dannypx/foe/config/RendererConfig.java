@@ -8,10 +8,12 @@ import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 1)
+@Version(version = 2)
 @Translatable.Name("Renderer Configuration")
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
@@ -39,10 +41,24 @@ public class RendererConfig extends Config {
     @Name("Use the 3D bobber texture")
     public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
 
+    @Name("Bobber Light")
+    @Desc("§7This is the light that emits from the bobber")
+    public ConfigGroup bobberLightGroup = new ConfigGroup("bobber_light_renderer_group");
+
+    @Name("Emit light from bobber")
+    public ValidatedBoolean showLightBobber = new ValidatedBoolean(true);
+
+    @Name("Light Radius")
+    public ValidatedInt lightRadiusBobber = new ValidatedInt(5, 15, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @Name("Max Light Level")
+    public ValidatedInt maxLightLevelBobber = new ValidatedInt(10, 15, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
     @Name("Show bait on bobber")
     public ValidatedBoolean showBaitOnBobber = new ValidatedBoolean(true);
 
-    @ConfigGroup.Pop
     @Name("Hide armor on players")
     public ValidatedBoolean hideArmor = new ValidatedBoolean(false);
 

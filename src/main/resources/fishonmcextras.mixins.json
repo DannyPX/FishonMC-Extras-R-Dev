@@ -3,6 +3,7 @@
   "package": "dannypx.foe.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "inject.BlockLightStorageMixin",
     "inject.FishingBobberEntityMixin"
   ],
   "injectors": {

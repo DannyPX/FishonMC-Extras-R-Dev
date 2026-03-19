@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 3)
+@Version(version = 4)
 @Translatable.Name("Handlers")
 @Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")
@@ -90,9 +90,8 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles the ray cast hit results")
     public ValidatedBoolean rayCastHandler = new ValidatedBoolean(true);
 
-    @Name("Debug message dismissal time")
-    @Desc("§7How long in seconds, before the notification dismisses")
-    public ValidatedInt debugDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+    @Desc("§7Handles the light rendering")
+    public ValidatedBoolean lightHandler = new ValidatedBoolean(true);
 
     @Name("Catching Handler")
     @Desc("§7Handles logic of fishing")
@@ -111,6 +110,11 @@ public class HandlerConfig extends Config {
     @ConfigGroup.Pop
     @Desc("§7The delay in ticks before checking items")
     public ValidatedInt catchingItemsDelayCheck = new ValidatedInt(1, 20, 0, ValidatedNumber.WidgetType.SLIDER);
+
+
+    @Name("Debug message dismissal time")
+    @Desc("§7How long in seconds, before the notification dismisses")
+    public ValidatedInt debugDismissalTime = new ValidatedInt(15, 60, 0, ValidatedNumber.WidgetType.SLIDER);
     //endregion
 
     //region Renderer Handler Group

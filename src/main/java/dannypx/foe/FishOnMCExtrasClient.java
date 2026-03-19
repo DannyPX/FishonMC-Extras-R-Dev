@@ -180,6 +180,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.rayCastHandler.get()) RayCastHandler.instance().tick();
                 if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
                 if(Configs.handlerConfig.crewHandler.get()) CrewHandler.instance().tick();
+                if(Configs.handlerConfig.lightHandler.get()) LightHandler.instance().tick();
 
                 // Renderer
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();
