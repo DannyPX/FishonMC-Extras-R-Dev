@@ -145,6 +145,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             CrewDataHandler.instance().init();
             CustomHudDataHandler.instance().init();
             CustomButtonDataHandler.instance().init();
+            CustomNotificationDataHandler.instance().init();
             ScoreboardHandler.instance().init();
             CrewHandler.instance().init();
 

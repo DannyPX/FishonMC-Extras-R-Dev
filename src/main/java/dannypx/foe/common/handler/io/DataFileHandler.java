@@ -48,16 +48,13 @@ public class DataFileHandler extends Handler {
         CrewDataHandler.instance().tick();
         CustomHudDataHandler.instance().tick();
         CustomButtonDataHandler.instance().tick();
+        CustomNotificationDataHandler.instance().tick();
     }
 
     public void init() {
-        loadDataToMemory(DataModels.DataModelType.PROFILE_DATA);
-        loadDataToMemory(DataModels.DataModelType.STATS_DATA);
-        loadDataToMemory(DataModels.DataModelType.CONSTANT_DATA);
-        loadDataToMemory(DataModels.DataModelType.QUEST_DATA);
-        loadDataToMemory(DataModels.DataModelType.CREW_DATA);
-        loadDataToMemory(DataModels.DataModelType.CUSTOM_HUD_DATA);
-        loadDataToMemory(DataModels.DataModelType.CUSTOM_BUTTON_DATA);
+        for (DataModels.DataModelType value : DataModels.DataModelType.values()) {
+            this.loadDataToMemory(value);
+        }
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {
@@ -128,6 +125,7 @@ public class DataFileHandler extends Handler {
             case CREW_DATA -> CrewDataHandler.instance().getCrewData();
             case CUSTOM_HUD_DATA -> CustomHudDataHandler.instance().getCustomHudData();
             case CUSTOM_BUTTON_DATA -> CustomButtonDataHandler.instance().getCustomButtonData();
+            case CUSTOM_NOTIFICATION_DATA -> CustomNotificationDataHandler.instance().getCustomNotificationData();
         };
     }
 
@@ -154,6 +152,8 @@ public class DataFileHandler extends Handler {
                     CustomHudDataHandler.instance().setCustomHudData(gson.fromJson(json, CustomHudDataHandler.CustomHudDataModel.class));
             case CUSTOM_BUTTON_DATA ->
                     CustomButtonDataHandler.instance().setCustomButtonData(gson.fromJson(json, CustomButtonDataHandler.CustomButtonDataModel.class));
+            case CUSTOM_NOTIFICATION_DATA ->
+                    CustomNotificationDataHandler.instance().setCustomNotificationData(gson.fromJson(json, CustomNotificationDataHandler.CustomNotificationDataModel.class));
         }
     }
     //endregion

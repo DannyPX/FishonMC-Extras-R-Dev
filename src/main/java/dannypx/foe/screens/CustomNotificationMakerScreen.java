@@ -5,39 +5,37 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.handler.store.CustomHudDataHandler;
+import dannypx.foe.common.handler.store.CustomNotificationDataHandler;
 import dannypx.foe.common.helper.TextHelper;
 import dannypx.foe.common.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import dannypx.foe.screens.widget.EditCustomHUDWidget;
+import dannypx.foe.screens.widget.EditCustomNotificationWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
-import net.minecraft.util.Util;
 
 import java.util.*;
 
-public class CustomHudMakerScreen extends Screen implements ScreenConstants {
+public class CustomNotificationMakerScreen extends Screen implements ScreenConstants {
     //region Fields
     private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final Screen parentScreen;
 
-    private ButtonListWidget hudList;
-    private EditCustomHUDWidget editCustomHUDWidget;
+    private ButtonListWidget buttonList;
+    private EditCustomNotificationWidget editCustomNotificationWidget;
     private Map<String, ButtonListWidget.ButtonEntry> buttonEntryMap = new HashMap<>();
-    private String selectedHud;
+    private String selectedNotification;
     //endregion
 
     //region Methods
-    public CustomHudMakerScreen(Screen parent) {
-        super(Text.literal("Custom HUD Maker Screen"));
+    public CustomNotificationMakerScreen(Screen parent) {
+        super(Text.literal("Custom Notification Maker Screen"));
         this.parentScreen = parent;
     }
 
@@ -50,8 +48,8 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        this.hudList.render(context, mouseX, mouseY, delta);
-        this.editCustomHUDWidget.render(context, mouseX, mouseY, delta);
+        this.buttonList.render(context, mouseX, mouseY, delta);
+        this.editCustomNotificationWidget.render(context, mouseX, mouseY, delta);
     }
 
     private void renderWidgets() {
@@ -61,43 +59,40 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         widgets.add(this.backButton());
         widgets.add(this.addLine());
 
-        widgets.add(getEditHudWidget());
-        widgets.add(getHudList());
+        widgets.add(getEditNotificationWidget());
+        widgets.add(getButtonList());
 
-        widgets.add(getNewHudElementButton());
-        widgets.add(getDeleteHudElementButton());
+        widgets.add(getNewNotificationElementButton());
+        widgets.add(getDeleteNotificationElementButton());
         widgets.add(getImportButton());
         widgets.add(getExportButton());
-
-
-        widgets.add(this.wikiButton());
 
         widgets.forEach(this::addDrawableChild);
     }
 
-    private ClickableWidget getEditHudWidget() {
-        editCustomHUDWidget = new EditCustomHUDWidget(
+    private ClickableWidget getEditNotificationWidget() {
+        editCustomNotificationWidget = new EditCustomNotificationWidget(
                 (BUTTON_WIDTH + PADDING * 2),
                 0,
                 width - (BUTTON_WIDTH + PADDING * 2),
                 height - (BUTTON_HEIGHT + PADDING_HALF) - 3,
-                Text.literal("No Hud Selected")
+                Text.literal("No Notification Selected")
         );
 
-        return editCustomHUDWidget;
+        return editCustomNotificationWidget;
     }
 
-    private ClickableWidget getNewHudElementButton() {
+    private ClickableWidget getNewNotificationElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Create HUD"),
+                        Text.literal("Create Notification"),
                         (button) -> {
-                            String id = "Custom Hud #" + UUID.randomUUID();
+                            String id = "Custom Notification #" + UUID.randomUUID();
 
-                            CustomHudDataHandler.instance().createNewCustomHud(id);
+                            CustomNotificationDataHandler.instance().createNewCustomNotification(id);
 
-                            ButtonListWidget.ButtonEntry buttonEntry = createHudEntry(id);
+                            ButtonListWidget.ButtonEntry buttonEntry = createNotificationEntry(id);
 
-                            hudList.addEntry(buttonEntry);
+                            buttonList.addEntry(buttonEntry);
                             buttonEntryMap.put(id, buttonEntry);
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
@@ -105,19 +100,19 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                 .build();
     }
 
-    private ClickableWidget getDeleteHudElementButton() {
+    private ClickableWidget getDeleteNotificationElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected HUD"),
+                        Text.literal("Delete Selected Notification"),
                         (button) -> {
-                            if(editCustomHUDWidget.hasSelectedOption) {
-                                CustomHudDataHandler.instance().deleteCustomHud(selectedHud);
-                                editCustomHUDWidget.reset();
-                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedHud);
+                            if(editCustomNotificationWidget.hasSelectedOption) {
+                                CustomNotificationDataHandler.instance().deleteCustomNotification(selectedNotification);
+                                editCustomNotificationWidget.reset();
+                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedNotification);
 
-                                hudList.removeEntry(entry);
-                                buttonEntryMap.remove(selectedHud);
+                                buttonList.removeEntry(entry);
+                                buttonEntryMap.remove(selectedNotification);
 
-                                selectedHud = null;
+                                selectedNotification = null;
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
@@ -127,41 +122,41 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import HUD"),
+                        Text.literal("Import Notification"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
                                 String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
-                                Triplet<String, CustomHudDataHandler.CustomHud, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomHudDataHandler.CustomHud.class, Integer.class).getType());
+                                Triplet<String, CustomNotificationDataHandler.CustomNotification, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomNotificationDataHandler.CustomNotification.class, Integer.class).getType());
 
-                                if(data.value3() > FishOnMCExtras.HUD_VERSION) {
+                                if(data.value3() > FishOnMCExtras.NOTIFICATION_VERSION) {
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
                                             Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Could not Import. Imported HUD is made on a newer version"));
+                                            Text.literal("Could not Import. Imported Notification is made on a newer version"));
 
                                     return;
                                 }
 
-                                if(CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(data.value1())) {
+                                if(CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.containsKey(data.value1())) {
                                     data = Triplet.of(data.value1() + " (Duplicate)", data.value2(), data.value3());
                                 }
 
                                 String id = data.value1();
 
-                                CustomHudDataHandler.instance().createNewCustomHud(id, data.value2());
+                                CustomNotificationDataHandler.instance().createNewCustomNotification(id, data.value2());
 
-                                ButtonListWidget.ButtonEntry buttonEntry = createHudEntry(id);
+                                ButtonListWidget.ButtonEntry buttonEntry = createNotificationEntry(id);
 
-                                hudList.addEntry(buttonEntry);
+                                buttonList.addEntry(buttonEntry);
                                 buttonEntryMap.put(id, buttonEntry);
 
                                 SystemToast.add(minecraftClient.getToastManager(),
                                         SystemToast.Type.PERIODIC_NOTIFICATION,
                                         Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Imported HUD"));
+                                        Text.literal("Imported Notification"));
 
                             } catch (Exception e) {
                                 LoggerHandler.error(e);
@@ -182,16 +177,15 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         return ButtonWidget.builder(
                         Text.literal("Export Selected HUD"),
                         (button) -> {
-                            if(editCustomHUDWidget.hasSelectedOption) {
+                            if(editCustomNotificationWidget.hasSelectedOption) {
                                 try {
-                                    Triplet<String, CustomHudDataHandler.CustomHud, Integer> dataHud = Triplet.of(
-                                            editCustomHUDWidget.currentSelectedHud,
-                                            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.get(editCustomHUDWidget.currentSelectedHud),
-                                            FishOnMCExtras.HUD_VERSION
+                                    Triplet<String, CustomNotificationDataHandler.CustomNotification, Integer> dataNotification = Triplet.of(
+                                            editCustomNotificationWidget.currentSelectedNotification,
+                                            CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.get(editCustomNotificationWidget.currentSelectedNotification),
+                                            FishOnMCExtras.NOTIFICATION_VERSION
                                     );
-
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().create().toJson(dataHud))
+                                            TextHelper.compress(new GsonBuilder().create().toJson(dataNotification))
                                     );
 
                                     minecraftClient.keyboard.setClipboard(rawData);
@@ -199,7 +193,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
                                             Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Exported HUD on your clipboard"));
+                                            Text.literal("Exported Notification on your clipboard"));
                                 } catch (Exception e) {
                                     LoggerHandler.error(e);
 
@@ -209,7 +203,6 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                             Text.literal("An error has occurred"));
                                 }
                             }
-
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
@@ -217,36 +210,36 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                 .build();
     }
 
-    private ClickableWidget getHudList() {
-        hudList = new ButtonListWidget(
+    private ClickableWidget getButtonList() {
+        buttonList = new ButtonListWidget(
                 client,
                 (BUTTON_WIDTH + PADDING * 2),
                 height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
                 0,
                 BUTTON_HEIGHT + PADDING_HALF,
                 BUTTON_HEIGHT,
-                "Custom HUDs"
+                "Custom Notifications"
         );
 
-        CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((id, ignored) -> {
-            ButtonListWidget.ButtonEntry buttonEntry = createHudEntry(id);
+        CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.forEach((id, ignored) -> {
+            ButtonListWidget.ButtonEntry buttonEntry = createNotificationEntry(id);
 
-            hudList.addEntry(buttonEntry);
+            buttonList.addEntry(buttonEntry);
             buttonEntryMap.put(id, buttonEntry);
         });
 
-        return hudList;
+        return buttonList;
     }
 
-    private ButtonListWidget.ButtonEntry createHudEntry(String id) {
+    private ButtonListWidget.ButtonEntry createNotificationEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
                 ButtonWidget.builder(
                         Text.literal(id),
                         button -> {
-                            selectedHud = id;
-                            editCustomHUDWidget.selectHud(
+                            selectedNotification = id;
+                            editCustomNotificationWidget.selectNotification(
                                     id,
-                                    CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.get(id));
+                                    CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.get(id));
                         }
                 ).width(BUTTON_WIDTH).build()
         );
@@ -254,38 +247,37 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonWidget saveBackButton() {
         return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
-                    if(editCustomHUDWidget.hasSelectedOption) {
-                        if(editCustomHUDWidget.newName.isBlank()) {
+                    if(editCustomNotificationWidget.hasSelectedOption) {
+                        if(editCustomNotificationWidget.newName.isBlank()) {
                             SystemToast.add(minecraftClient.getToastManager(),
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
                                     Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("HUD name is empty"));
+                                    Text.literal("Notification name is empty"));
 
                             return;
                         }
 
                         if(
-                                !Objects.equals(editCustomHUDWidget.currentSelectedHud, editCustomHUDWidget.newName)
-                                && CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editCustomHUDWidget.newName)
+                                !Objects.equals(editCustomNotificationWidget.currentSelectedNotification, editCustomNotificationWidget.newName)
+                                && CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.containsKey(editCustomNotificationWidget.newName)
                         ) {
                             SystemToast.add(minecraftClient.getToastManager(),
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
                                     Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("HUD name already exist"));
+                                    Text.literal("Notification name already exist"));
 
                             return;
                         }
 
-                        CustomHudDataHandler.instance().updateHud(
-                                editCustomHUDWidget.currentSelectedHud,
-                                editCustomHUDWidget.newName,
-                                editCustomHUDWidget.scale,
-                                editCustomHUDWidget.showBackground,
-                                editCustomHUDWidget.showElement,
-                                editCustomHUDWidget.getEntries()
+                        CustomNotificationDataHandler.instance().updateNotification(
+                                editCustomNotificationWidget.currentSelectedNotification,
+                                editCustomNotificationWidget.newName,
+                                editCustomNotificationWidget.icon,
+                                editCustomNotificationWidget.getEntries()
                                         .stream()
-                                        .map(lineEntry -> Triplet.of(lineEntry.lineString, lineEntry.isCentre, lineEntry.isSmall))
-                                        .toList());
+                                        .map(lineEntry -> lineEntry.lineString)
+                                        .toList()
+                        );
                     }
                     this.close();
                 })
@@ -304,31 +296,13 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonWidget addLine() {
         return ButtonWidget.builder(Text.literal("Add Line"), button -> {
-                    if(editCustomHUDWidget.hasSelectedOption) {
-                        editCustomHUDWidget.addNewEntry();
+                    if(editCustomNotificationWidget.hasSelectedOption) {
+                        editCustomNotificationWidget.addNewEntry();
                     }
                 })
                 .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Add line to the bottom")))
-                .build();
-    }
-
-    private ClickableWidget wikiButton() {
-        return ButtonWidget.builder(Text.literal("Wiki"), button -> {
-                    String url = "https://github.com/DannyPX/FishOnMC-Extras-R/wiki/Placeholders";
-
-                    minecraftClient.setScreen(new ConfirmLinkScreen((confirmed) -> {
-                        if (confirmed) {
-                            Util.getOperatingSystem().open(url);
-                        }
-
-                        minecraftClient.setScreen(null);
-                    }, url, true));
-                })
-                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Open Wiki to Placeholders")))
                 .build();
     }
 

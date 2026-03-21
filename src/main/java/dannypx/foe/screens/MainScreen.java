@@ -51,11 +51,11 @@ public class MainScreen extends DefaultModScreen {
                 size, size
         );
 
-        Text hudText = Text.literal("HUD Settings");
+        Text hudText = Text.literal("Creator Settings");
         drawContext.drawText(textRenderer, hudText, width / 2 - textRenderer.getWidth(hudText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight, 0xFFFFFF, true);
 
         Text configText = Text.literal("Configuration");
-        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight + (BUTTON_HEIGHT + PADDING * 3 + textRenderer.fontHeight) * 1, 0xFFFFFF, true);
+        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 + BUTTON_HEIGHT + PADDING_HALF + BUTTON_HEIGHT + PADDING, 0xFFFFFF, true);
 
         drawContext.drawText(textRenderer, Text.literal(FishOnMCExtras.VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - textRenderer.fontHeight - PADDING_QUART, 0xFFFFFF, true);
     }
@@ -63,10 +63,10 @@ public class MainScreen extends DefaultModScreen {
     private void renderWidgets() {
         List<ClickableWidget> widgets = new ArrayList<>();
 
-        widgets.add(configButton());
         widgets.add(customHudButton());
         widgets.add(moveHudButton());
-        
+        widgets.add(customNotificationButton());
+        widgets.add(configButton());
 
         widgets.forEach(this::addDrawableChild);
     }
@@ -89,10 +89,19 @@ public class MainScreen extends DefaultModScreen {
                 .build();
     }
 
+    private ButtonWidget customNotificationButton() {
+        return ButtonWidget.builder(Text.literal("Create Notifications"), button ->
+                        minecraftClient.setScreen(new CustomNotificationMakerScreen(minecraftClient.currentScreen)))
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + BUTTON_HEIGHT + PADDING_HALF)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Custom Notification Creator Screen")))
+                .build();
+    }
+
     private ButtonWidget configButton() {
         return ButtonWidget.builder(Text.literal("Config Screen"), button ->
                         ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
-                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING * 3 + textRenderer.fontHeight) * 1)
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + BUTTON_HEIGHT + PADDING_HALF + BUTTON_HEIGHT + PADDING + textRenderer.fontHeight + PADDING_QUART)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Config Screen")))
                 .build();
