@@ -60,6 +60,7 @@ public class FishingBobberEntityRendererMixin {
         ItemStack bait = ((IFishingBobberEntityState) fishingBobberEntityState).foer$getBaitStack();
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.rendererConfig.showBaitOnBobber.get()
+                && bait != null
                 && !bait.isEmpty()
                 && !((IFishingBobberEntityState) fishingBobberEntityState).foer$isDisabledBait()
         ) {
