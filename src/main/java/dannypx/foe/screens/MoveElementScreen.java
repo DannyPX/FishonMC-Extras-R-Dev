@@ -1,8 +1,8 @@
 package dannypx.foe.screens;
 
-import dannypx.foe.common.handler.store.CustomHudDataHandler;
-import dannypx.foe.common.type.Alignment;
-import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.handler.store.CustomHudDataHandler;
+import dannypx.foe.type.Alignment;
+import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.element.hud.*;
@@ -38,9 +38,7 @@ public class MoveElementScreen extends DefaultModScreen {
 
     private void assembleCustomHudElements() {
         customHudElements.clear();
-        CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> {
-            customHudElements.add(Pair.of(key, new CustomHudElement(minecraftClient, hud, Text.literal(key))));
-        });
+        CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> customHudElements.add(Pair.of(key, new CustomHudElement(minecraftClient, hud, Text.literal(key)))));
     }
 
     @Override
@@ -146,23 +144,21 @@ public class MoveElementScreen extends DefaultModScreen {
                 }
         ));
 
-        customHudElements.forEach(element -> {
-            widgets.add(new MovableBoxWidget(minecraftClient,
-                    element.value2(),
-                    Alignment.getAll(),
-                    new MovableBoxWidget.Callback() {
-                        @Override
-                        public void onRelease(int xPercent, int yPercent, Alignment alignment) {
-                            CustomHudDataHandler.instance().updateHud(element.value1(), xPercent, yPercent, alignment);
-                        }
-
-                        @Override
-                        public void onConfig() {
-                            minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen));
-                        }
+        customHudElements.forEach(element -> widgets.add(new MovableBoxWidget(minecraftClient,
+                element.value2(),
+                Alignment.getAll(),
+                new MovableBoxWidget.Callback() {
+                    @Override
+                    public void onRelease(int xPercent, int yPercent, Alignment alignment) {
+                        CustomHudDataHandler.instance().updateHud(element.value1(), xPercent, yPercent, alignment);
                     }
-            ));
-        });
+
+                    @Override
+                    public void onConfig() {
+                        minecraftClient.setScreen(new CustomHudMakerScreen(minecraftClient.currentScreen));
+                    }
+                }
+        )));
 
         if(Configs.debugConfig.debugMode.get()) {
             widgets.add(new MovableBoxWidget(minecraftClient,

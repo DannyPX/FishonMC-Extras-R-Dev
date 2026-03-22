@@ -1,8 +1,8 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.handler.fetch.TitleHandler;
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.LoadingHandler;
+import dannypx.foe.handler.fetch.TitleHandler;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;

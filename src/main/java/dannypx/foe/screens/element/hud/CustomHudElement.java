@@ -1,15 +1,15 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.handler.fetch.TabHandler;
-import dannypx.foe.common.handler.logic.LoadingHandler;
-import dannypx.foe.common.handler.logic.PlaceholderHandler;
-import dannypx.foe.common.handler.store.CustomHudDataHandler;
-import dannypx.foe.common.helper.DrawHelper;
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Alignment;
-import dannypx.foe.common.type.tuple.Pair;
-import dannypx.foe.common.type.tuple.Triplet;
+import dannypx.foe.handler.fetch.TabHandler;
+import dannypx.foe.handler.logic.LoadingHandler;
+import dannypx.foe.handler.logic.PlaceholderHandler;
+import dannypx.foe.handler.store.CustomHudDataHandler;
+import dannypx.foe.helper.DrawHelper;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.Alignment;
+import dannypx.foe.type.tuple.Pair;
+import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;

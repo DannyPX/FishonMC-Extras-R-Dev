@@ -1,9 +1,9 @@
 package dannypx.foe.screens.widget;
 
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.Alignment;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.Alignment;
 import dannypx.foe.screens.element.Element;
-import dannypx.foe.common.helper.DrawHelper;
+import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -239,32 +239,24 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
     private void renderBox(DrawContext context) {
         switch (element.alignment) {
-            case LEFT, TOP_LEFT, BOTTOM_LEFT -> {
-                DrawHelper.drawHorizontalGradient(context,
-                        getX() - PADDING_QUART, getY() - PADDING_QUART,
-                        getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                        this.isHovered() ? 0xFFAAAAAA : 0xFF555555,
-                        this.isHovered() ? 0x00AAAAAA : 0x00555555);
-            }
-            case RIGHT, TOP_RIGHT, BOTTOM_RIGHT -> {
-                DrawHelper.drawHorizontalGradient(context,
-                        getX() - PADDING_QUART, getY() - PADDING_QUART,
-                        getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                        this.isHovered() ? 0x00AAAAAA : 0x00555555,
-                        this.isHovered() ? 0xFFAAAAAA : 0xFF555555);
-            }
-            case TOP -> {
-                context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
-                        getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                        this.isHovered() ? 0xFFAAAAAA : 0xFF555555,
-                        this.isHovered() ? 0x00AAAAAA : 0x00555555);
-            }
-            case BOTTOM -> {
-                context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
-                        getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                        this.isHovered() ? 0x00AAAAAA : 0x00555555,
-                        this.isHovered() ? 0xFFAAAAAA : 0xFF555555);
-            }
+            case LEFT, TOP_LEFT, BOTTOM_LEFT -> DrawHelper.drawHorizontalGradient(context,
+                    getX() - PADDING_QUART, getY() - PADDING_QUART,
+                    getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
+                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555,
+                    this.isHovered() ? 0x00AAAAAA : 0x00555555);
+            case RIGHT, TOP_RIGHT, BOTTOM_RIGHT -> DrawHelper.drawHorizontalGradient(context,
+                    getX() - PADDING_QUART, getY() - PADDING_QUART,
+                    getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
+                    this.isHovered() ? 0x00AAAAAA : 0x00555555,
+                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555);
+            case TOP -> context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
+                    getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
+                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555,
+                    this.isHovered() ? 0x00AAAAAA : 0x00555555);
+            case BOTTOM -> context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
+                    getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
+                    this.isHovered() ? 0x00AAAAAA : 0x00555555,
+                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555);
         }
     }
 
@@ -304,20 +296,12 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
         int currentHeight = minecraftClient.getWindow().getScaledHeight();
 
         switch (element.alignment) {
-            case LEFT, TOP, BOTTOM, TOP_LEFT, BOTTOM_LEFT-> {
-                this.deltaX += deltaX;
-            }
-            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT-> {
-                this.deltaX -= deltaX;
-            }
+            case LEFT, TOP, BOTTOM, TOP_LEFT, BOTTOM_LEFT-> this.deltaX += deltaX;
+            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT-> this.deltaX -= deltaX;
         }
         switch (element.alignment) {
-            case TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT -> {
-                this.deltaY += deltaY;
-            }
-            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> {
-                this.deltaY -= deltaY;
-            }
+            case TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT -> this.deltaY += deltaY;
+            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.deltaY -= deltaY;
         }
 
         int calculatedPercentX = Math.clamp(Math.round((float) (originalX + this.deltaX) / (float) currentWidth * 100F), 0, 100);
@@ -327,31 +311,19 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
         element.setYPercent((float) calculatedPercentY / 100F);
 
         switch (element.alignment) {
-            case LEFT, TOP_LEFT, BOTTOM_LEFT -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
-            }
-            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> {
-                this.setX(minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos)
-                        - element.width);
-            }
-            case TOP, BOTTOM -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos) - (element.width / 2));
-            }
+            case LEFT, TOP_LEFT, BOTTOM_LEFT -> this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
+            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> this.setX(minecraftClient.getWindow().getScaledWidth()
+                    - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos)
+                    - element.width);
+            case TOP, BOTTOM -> this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos) - (element.width / 2));
         }
 
         switch (element.alignment) {
-            case TOP_LEFT, TOP, TOP_RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
-            }
-            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> {
-                this.setY(minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos)
-                        - element.height);
-            }
-            case LEFT, RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos) - (element.height / 2));
-            }
+            case TOP_LEFT, TOP, TOP_RIGHT -> this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
+            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.setY(minecraftClient.getWindow().getScaledHeight()
+                    - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos)
+                    - element.height);
+            case LEFT, RIGHT -> this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos) - (element.height / 2));
         }
     }
 
@@ -360,27 +332,15 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
         super.onRelease(mouseX, mouseY);
 
         switch (element.alignment) {
-            case LEFT, TOP_LEFT, BOTTOM_LEFT-> {
-                this.originalX = getX();
-            }
-            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT-> {
-                this.originalX = minecraftClient.getWindow().getScaledWidth() - (getX() + element.width);
-            }
-            case TOP, BOTTOM -> {
-                this.originalX = getX() + (element.width / 2);
-            }
+            case LEFT, TOP_LEFT, BOTTOM_LEFT -> this.originalX = getX();
+            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> this.originalX = minecraftClient.getWindow().getScaledWidth() - (getX() + element.width);
+            case TOP, BOTTOM -> this.originalX = getX() + (element.width / 2);
         }
 
         switch (element.alignment) {
-            case TOP_LEFT, TOP, TOP_RIGHT -> {
-                this.originalY = getY();
-            }
-            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> {
-                this.originalY = minecraftClient.getWindow().getScaledHeight() - (getY() + element.height);
-            }
-            case LEFT, RIGHT -> {
-                this.originalY = getY() + (element.height / 2);
-            }
+            case TOP_LEFT, TOP, TOP_RIGHT -> this.originalY = getY();
+            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.originalY = minecraftClient.getWindow().getScaledHeight() - (getY() + element.height);
+            case LEFT, RIGHT -> this.originalY = getY() + (element.height / 2);
         }
 
         this.deltaX = 0;

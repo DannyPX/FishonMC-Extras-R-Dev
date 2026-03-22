@@ -1,7 +1,7 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.LightHandler;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.logic.LightHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.world.chunk.light.BlockLightStorage;
 import org.spongepowered.asm.mixin.Mixin;

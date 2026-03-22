@@ -1,16 +1,16 @@
 package dannypx.foe;
 
-import dannypx.foe.common.command.CommandRegistry;
-import dannypx.foe.common.entity.FishingBobberEntityModel;
-import dannypx.foe.common.handler.fetch.*;
-import dannypx.foe.common.handler.logic.*;
-import dannypx.foe.common.handler.store.*;
-import dannypx.foe.common.handler.io.DataFileHandler;
+import dannypx.foe.command.CommandRegistry;
+import dannypx.foe.entity.FishingBobberEntityModel;
+import dannypx.foe.handler.fetch.*;
+import dannypx.foe.handler.logic.*;
+import dannypx.foe.handler.store.*;
+import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.common.handler.renderer.ChatScreenRenderHandler;
+import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
-import dannypx.foe.common.handler.renderer.HudRenderHandler;
-import dannypx.foe.common.handler.renderer.InventoryScreenRenderHandler;
+import dannypx.foe.handler.renderer.HudRenderHandler;
+import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

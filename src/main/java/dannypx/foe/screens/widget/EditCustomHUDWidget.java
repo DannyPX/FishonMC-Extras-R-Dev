@@ -1,7 +1,7 @@
 package dannypx.foe.screens.widget;
 
-import dannypx.foe.common.handler.logic.CodeExecuterHandler;
-import dannypx.foe.common.handler.store.CustomHudDataHandler;
+import dannypx.foe.handler.logic.CodeExecuterHandler;
+import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -141,14 +141,12 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             showElementCheckBox.onPress();
         }
 
-        customHud.textLines.forEach(line -> {
-            this.addEntry(new EditCustomHUDWidget.LineEntry(
-                    line.value1(),
-                    line.value2(),
-                    line.value3(),
-                    getDefaultCallback()
-            ));
-        });
+        customHud.textLines.forEach(line -> this.addEntry(new LineEntry(
+                line.value1(),
+                line.value2(),
+                line.value3(),
+                getDefaultCallback()
+        )));
     }
 
     public void addEntry(LineEntry entry) {

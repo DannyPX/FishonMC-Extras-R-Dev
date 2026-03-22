@@ -1,0 +1,65 @@
+package dannypx.foe.handler.logic;
+
+import dannypx.foe.handler.Handler;
+import dannypx.foe.type.tuple.Pair;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.text.MutableText;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+public class CodeExecuterHandler extends Handler {
+    private static CodeExecuterHandler INSTANCE = new CodeExecuterHandler();
+
+    public static CodeExecuterHandler instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CodeExecuterHandler();
+        }
+        return INSTANCE;
+    }
+
+    //region Fields
+    private static final List<ScheduledTask> TASKS = new ArrayList<>();
+
+    public void init() {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            Iterator<ScheduledTask> iterator = TASKS.iterator();
+            while (iterator.hasNext()) {
+                ScheduledTask task = iterator.next();
+                task.ticks--;
+                if (task.ticks <= 0) {
+                    task.runnable.run();
+                    iterator.remove();
+                }
+            }
+        });
+    }
+
+    public static void runLater(int ticks, Runnable runnable) {
+        TASKS.add(new ScheduledTask(ticks, runnable));
+    }
+
+    private static class ScheduledTask {
+        int ticks;
+        Runnable runnable;
+
+        ScheduledTask(int ticks, Runnable runnable) {
+            this.ticks = ticks;
+            this.runnable = runnable;
+        }
+    }
+    //endregion
+
+    //region Methods
+    //endregion
+
+    //region Dev
+    /// Field, Pair<Value, Tooltip>
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+        return Map.of(
+        );
+    }
+    //endregion
+}

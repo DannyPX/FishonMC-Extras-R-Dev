@@ -1,9 +1,9 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.item.FishingRodNbtObject;
-import dannypx.foe.common.item.ValidateItem;
-import dannypx.foe.common.type.tuple.Pair;
-import dannypx.foe.common.interfaces.IFishingBobberEntity;
+import dannypx.foe.item.FishingRodNbtObject;
+import dannypx.foe.item.ValidateItem;
+import dannypx.foe.type.tuple.Pair;
+import dannypx.foe.interfaces.IFishingBobberEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
@@ -25,6 +25,7 @@ public abstract class FishingBobberEntityMixin implements IFishingBobberEntity {
     @Unique
     private boolean disabledBait = false;
 
+    @Unique
     private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
 
     @Inject(method = "tick", at = @At("TAIL"))

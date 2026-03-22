@@ -1,12 +1,12 @@
 package dannypx.foe.mixin.inject;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dannypx.foe.common.handler.fetch.ScoreboardHandler;
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.CrewHandler;
-import dannypx.foe.common.handler.renderer.TabRendererHandler;
-import dannypx.foe.common.handler.store.ProfileDataHandler;
-import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.handler.fetch.ScoreboardHandler;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.logic.CrewHandler;
+import dannypx.foe.handler.renderer.TabRendererHandler;
+import dannypx.foe.handler.store.ProfileDataHandler;
+import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

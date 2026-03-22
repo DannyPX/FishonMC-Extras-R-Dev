@@ -1,8 +1,8 @@
 package dannypx.foe.screens.element.hud;
 
-import dannypx.foe.common.handler.logic.LoadingHandler;
-import dannypx.foe.common.handler.logic.NotifierHandler;
-import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.handler.logic.LoadingHandler;
+import dannypx.foe.handler.logic.NotifierHandler;
+import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.element.NotificationElement;
@@ -111,16 +111,14 @@ public class NotifierElement extends Element implements ScreenConstants {
 
     private Pair<Integer, Integer> assembleNotificationElements() {
         notificationElements.clear();
-        NotifierHandler.instance().getNotifications().forEach(notification -> {
-            notificationElements.add(new NotificationElement(
-                    minecraftClient,
-                    WIDTH,
-                    notification.item,
-                    notification.rows,
-                    notification.columns,
-                    notification.textList
-            ));
-        });
+        NotifierHandler.instance().getNotifications().forEach(notification -> notificationElements.add(new NotificationElement(
+                minecraftClient,
+                WIDTH,
+                notification.item,
+                notification.rows,
+                notification.columns,
+                notification.textList
+        )));
 
         return Pair.of(WIDTH, notificationElements.stream().mapToInt(n -> n.height).sum() + PADDING_QUART * notificationElements.size() - PADDING_QUART);
     }

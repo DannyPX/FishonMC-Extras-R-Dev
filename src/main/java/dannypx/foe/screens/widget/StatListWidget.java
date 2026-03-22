@@ -1,9 +1,9 @@
 package dannypx.foe.screens.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dannypx.foe.common.handler.logic.LoadingHandler;
-import dannypx.foe.common.helper.DrawHelper;
-import dannypx.foe.common.helper.TextHelper;
+import dannypx.foe.handler.logic.LoadingHandler;
+import dannypx.foe.helper.DrawHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

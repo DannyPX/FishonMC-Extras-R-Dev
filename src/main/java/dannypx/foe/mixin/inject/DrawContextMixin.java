@@ -1,7 +1,7 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.renderer.ItemRendererHandler;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.renderer.ItemRendererHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

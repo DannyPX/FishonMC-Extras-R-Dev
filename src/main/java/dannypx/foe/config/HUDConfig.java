@@ -1,7 +1,7 @@
 package dannypx.foe.config;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.type.Alignment;
+import dannypx.foe.type.Alignment;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.FileType;
 import me.fzzyhmstrs.fzzy_config.config.Config;

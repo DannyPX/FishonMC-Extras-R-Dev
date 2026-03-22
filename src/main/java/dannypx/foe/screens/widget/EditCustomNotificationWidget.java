@@ -1,7 +1,7 @@
 package dannypx.foe.screens.widget;
 
-import dannypx.foe.common.handler.logic.CodeExecuterHandler;
-import dannypx.foe.common.handler.store.CustomNotificationDataHandler;
+import dannypx.foe.handler.logic.CodeExecuterHandler;
+import dannypx.foe.handler.store.CustomNotificationDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -102,12 +102,10 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
         iconTextField.setText(customNotification.icon);
         iconTextField.setPlaceholder(Text.literal(customNotification.icon));
 
-        customNotification.textLines.forEach(line -> {
-            this.addEntry(new EditCustomNotificationWidget.LineEntry(
-                    line,
-                    getDefaultCallback()
-            ));
-        });
+        customNotification.textLines.forEach(line -> this.addEntry(new LineEntry(
+                line,
+                getDefaultCallback()
+        )));
     }
 
     public void addEntry(LineEntry entry) {
@@ -336,9 +334,6 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
         private final ButtonWidget deleteButton;
 
         public String lineString;
-
-
-        private static final String isCentreText = "Centered";
 
         public static final int HEIGHT = 24;
         private static final int SPACING = 6;

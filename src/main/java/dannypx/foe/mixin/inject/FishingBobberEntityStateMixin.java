@@ -1,6 +1,6 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.interfaces.IFishingBobberEntityState;
+import dannypx.foe.interfaces.IFishingBobberEntityState;
 import net.minecraft.client.render.entity.state.FishingBobberEntityState;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
