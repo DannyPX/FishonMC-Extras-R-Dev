@@ -8,6 +8,7 @@ import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.type_adapter.ItemStackAdapter;
+import dannypx.foe.type.type_adapter.PatternAdapter;
 import dannypx.foe.type.type_adapter.TextAdapter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class DataFileHandler extends Handler {
     private static DataFileHandler INSTANCE = new DataFileHandler();
@@ -49,6 +51,7 @@ public class DataFileHandler extends Handler {
         CustomHudDataHandler.instance().tick();
         CustomButtonDataHandler.instance().tick();
         CustomNotificationDataHandler.instance().tick();
+        CustomChatTriggerDataHandler.instance().tick();
     }
 
     public void init() {
@@ -112,6 +115,7 @@ public class DataFileHandler extends Handler {
                 .setPrettyPrinting()
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                 .registerTypeAdapter(Text.class, new TextAdapter())
+                .registerTypeAdapter(Pattern.class, new PatternAdapter())
                 .create();
         return gson.toJson(dataModel);
     }
@@ -126,6 +130,7 @@ public class DataFileHandler extends Handler {
             case CUSTOM_HUD_DATA -> CustomHudDataHandler.instance().getCustomHudData();
             case CUSTOM_BUTTON_DATA -> CustomButtonDataHandler.instance().getCustomButtonData();
             case CUSTOM_NOTIFICATION_DATA -> CustomNotificationDataHandler.instance().getCustomNotificationData();
+            case CUSTOM_CHAT_TRIGGER_DATA -> CustomChatTriggerDataHandler.instance().getCustomChatTriggerData();
         };
     }
 
@@ -133,6 +138,7 @@ public class DataFileHandler extends Handler {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                 .registerTypeAdapter(Text.class, new TextAdapter())
+                .registerTypeAdapter(Pattern.class, new PatternAdapter())
                 .create();
 
         LoggerHandler._debug("Setting data from: " + dataModelType.FILENAME + ".json");
@@ -154,6 +160,8 @@ public class DataFileHandler extends Handler {
                     CustomButtonDataHandler.instance().setCustomButtonData(gson.fromJson(json, CustomButtonDataHandler.CustomButtonDataModel.class));
             case CUSTOM_NOTIFICATION_DATA ->
                     CustomNotificationDataHandler.instance().setCustomNotificationData(gson.fromJson(json, CustomNotificationDataHandler.CustomNotificationDataModel.class));
+            case CUSTOM_CHAT_TRIGGER_DATA ->
+                    CustomChatTriggerDataHandler.instance().setCustomChatTriggerData(gson.fromJson(json, CustomChatTriggerDataHandler.CustomChatTriggerDataModel.class));
         }
     }
     //endregion

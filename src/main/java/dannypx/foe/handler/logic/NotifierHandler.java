@@ -1,16 +1,17 @@
 package dannypx.foe.handler.logic;
 
+import com.mojang.brigadier.StringReader;
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.store.ConstantDataHandler;
-import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.handler.store.QuestDataHandler;
+import dannypx.foe.handler.store.*;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishNbtObject;
 import dannypx.foe.item.NbtObject;
 import dannypx.foe.item.PetNbtObject;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
+import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -35,6 +36,11 @@ public class NotifierHandler extends Handler {
     public static final String IMPORT_STATS_KEY = "importStatsKey";
     public static final String IMPORT_CREW_KEY = "importCrewKey";
     public static final String EMPTY_SLOTS_KEY = "emptySlotsKey";
+
+    private final int WIDTH = 200;
+    private final int BOX_PADDING = 7;
+    private final int CONTENT_WIDTH = WIDTH - BOX_PADDING * 2 - 2;
+    private final int ICON_CONTENT_WIDTH = CONTENT_WIDTH - 18;
 
     public List<Notification> getNotifications() {
         return notifications;
@@ -349,6 +355,53 @@ public class NotifierHandler extends Handler {
                         ))
                 )
         );
+    }
+
+    public void notifyChatTrigger(String notificationId) {
+        CustomNotificationDataHandler.CustomNotification notification = CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.getOrDefault(notificationId, null);
+
+        if(notification != null && minecraftClient.player != null) {
+            ItemStack itemStack = ItemStack.EMPTY;
+
+            if(!notification.icon.isBlank()) {
+                RegistryWrapper.WrapperLookup lookup = minecraftClient.player.getRegistryManager();
+
+                ItemStringReader reader = new ItemStringReader(lookup);
+                StringReader stringReader = new StringReader(notification.icon);
+                try {
+                    ItemStringReader.ItemResult result = reader.consume(stringReader);
+
+                    itemStack = new ItemStack(result.item(), 1);
+                    itemStack.applyUnvalidatedChanges(result.components());
+                } catch (Exception e) {
+                    LoggerHandler.error(e);
+                }
+            }
+
+            List<MutableText> lines = notification.textLines.stream().map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
+            List<Text> newLines = new ArrayList<>();
+
+            lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledText(line, notification.icon.isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraftClient.textRenderer)));
+
+            if(itemStack == ItemStack.EMPTY) {
+                this.addNotification(
+                        new Notification(
+                            newLines.size(), 1, 10,
+                            newLines
+                        )
+                );
+            } else {
+                this.addNotification(
+                        new Notification(
+                                itemStack,
+                                newLines.size(), 1, 10,
+                                newLines
+                        )
+                );
+            }
+
+
+        }
     }
     //endregion
 

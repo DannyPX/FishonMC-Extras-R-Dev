@@ -65,6 +65,7 @@ public class MainScreen extends DefaultModScreen {
 
         widgets.add(customHudButton());
         widgets.add(moveHudButton());
+        widgets.add(customChatTriggerButton());
         widgets.add(customNotificationButton());
         widgets.add(configButton());
 
@@ -89,10 +90,19 @@ public class MainScreen extends DefaultModScreen {
                 .build();
     }
 
+    private ButtonWidget customChatTriggerButton() {
+        return ButtonWidget.builder(Text.literal("Create Chat Triggers"), button ->
+                        minecraftClient.setScreen(new CustomChatTriggerMakerScreen(minecraftClient.currentScreen)))
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + BUTTON_HEIGHT + PADDING_HALF)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Custom Notification Creator Screen")))
+                .build();
+    }
+
     private ButtonWidget customNotificationButton() {
         return ButtonWidget.builder(Text.literal("Create Notifications"), button ->
                         minecraftClient.setScreen(new CustomNotificationMakerScreen(minecraftClient.currentScreen)))
-                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + BUTTON_HEIGHT + PADDING_HALF)
+                .position(width / 2 + PADDING_HALF, height / 2 + BUTTON_HEIGHT + PADDING_HALF)
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Custom Notification Creator Screen")))
                 .build();

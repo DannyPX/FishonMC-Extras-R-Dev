@@ -22,7 +22,8 @@ public class DataModels {
         CREW_DATA("crew"),
         CUSTOM_HUD_DATA("custom_hud"),
         CUSTOM_BUTTON_DATA("custom_button"),
-        CUSTOM_NOTIFICATION_DATA("custom_notification");
+        CUSTOM_NOTIFICATION_DATA("custom_notification"),
+        CUSTOM_CHAT_TRIGGER_DATA("custom_chat_trigger");
 
         public final String FILENAME;
 

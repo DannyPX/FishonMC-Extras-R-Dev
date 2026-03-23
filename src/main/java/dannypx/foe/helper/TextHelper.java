@@ -15,9 +15,12 @@ import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -374,6 +377,88 @@ public class TextHelper {
 
     public static Pair<MutableText, Style> parseLegacyWithStyle(String input) {
         return parseLegacyWithStyle(input, Style.EMPTY);
+    }
+
+    public static List<Text> wrapStyledText(Text text, int maxWidth, boolean smallText, TextRenderer renderer) {
+        List<Text> lines = new ArrayList<>();
+        AtomicReference<MutableText> currentLine = new AtomicReference<>(Text.empty());
+        AtomicInteger currentLineWidth = new AtomicInteger();
+
+        List<Text> currentWord = new ArrayList<>();
+        AtomicInteger currentWordWidth = new AtomicInteger();
+
+        text.visit((style, string) -> {
+            for (char c : string.toCharArray()) {
+                if (c == ' ') {
+                    if (currentLineWidth.get() + currentWordWidth.get() > maxWidth && currentLineWidth.get() > 0) {
+                        lines.add(currentLine.get());
+                        currentLine.set(Text.empty());
+                        currentLineWidth.set(0);
+                    }
+
+                    for (Text part : currentWord) {
+                        currentLine.get().append(part);
+                    }
+
+                    Text space = Text.literal(" ").setStyle(style);
+                    currentLine.get().append(space);
+
+                    currentLineWidth.addAndGet(currentWordWidth.get() + TextHelper.getWidth(renderer, Text.literal(" "), smallText));
+
+                    currentWord.clear();
+                    currentWordWidth.set(0);
+                    continue;
+                }
+
+                if (c == '\n') {
+                    for (Text part : currentWord) {
+                        currentLine.get().append(part);
+                    }
+                    currentWord.clear();
+                    currentWordWidth.set(0);
+
+                    lines.add(currentLine.get());
+                    currentLine.set(Text.empty());
+                    currentLineWidth.set(0);
+                    continue;
+                }
+
+                Text charText = Text.literal(String.valueOf(c)).setStyle(style);
+                currentWord.add(charText);
+
+                currentWordWidth.addAndGet(TextHelper.getWidth(renderer, Text.literal(String.valueOf(c)), smallText));
+            }
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        if (!currentWord.isEmpty()) {
+            if (currentWordWidth.get() > maxWidth) {
+                for (Text part : currentWord) {
+                    int charWidth = TextHelper.getWidth(renderer, part, smallText);
+                    if (currentLineWidth.get() + charWidth > maxWidth && currentLineWidth.get() > 0) {
+                        lines.add(currentLine.get());
+                        currentLine.set(Text.empty());
+                        currentLineWidth.set(0);
+                    }
+                    currentLine.get().append(part);
+                    currentLineWidth.addAndGet(charWidth);
+                }
+            } else {
+                if (currentLineWidth.get() + currentWordWidth.get() > maxWidth && currentLineWidth.get() > 0) {
+                    lines.add(currentLine.get());
+                    currentLine.set(Text.empty());
+                    currentLineWidth.set(0);
+                }
+                for (Text part : currentWord) currentLine.get().append(part);
+                currentLineWidth.addAndGet(currentWordWidth.get());
+            }
+        }
+
+        if (!currentLine.get().getString().isEmpty()) {
+            lines.add(currentLine.get());
+        }
+
+        return lines;
     }
 
     public static byte[] compress(final String str) throws IOException {

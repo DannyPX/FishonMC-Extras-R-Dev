@@ -21,6 +21,7 @@ import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class CustomNotificationMakerScreen extends Screen implements ScreenConstants {
     //region Fields
@@ -31,6 +32,8 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
     private EditCustomNotificationWidget editCustomNotificationWidget;
     private Map<String, ButtonListWidget.ButtonEntry> buttonEntryMap = new HashMap<>();
     private String selectedNotification;
+
+    Pattern ICON_PATTERN = Pattern.compile("^(?:([a-z0-9_]+:[a-z0-9_]+)(?:\\[([^]]*)\\])?)?$");
     //endregion
 
     //region Methods
@@ -265,6 +268,15 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
                                     Text.literal("Fish On Extras Rebirth"),
                                     Text.literal("Notification name already exist"));
+
+                            return;
+                        }
+
+                        if(!ICON_PATTERN.matcher(editCustomNotificationWidget.icon).matches()) {
+                            SystemToast.add(minecraftClient.getToastManager(),
+                                    SystemToast.Type.PERIODIC_NOTIFICATION,
+                                    Text.literal("Fish On Extras Rebirth"),
+                                    Text.literal("Icon is wrong format"));
 
                             return;
                         }

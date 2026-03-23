@@ -44,6 +44,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("loading", params -> LoadingHandler.instance().getLoading(params)),
             Map.entry("ray_cast", params -> RayCastHandler.instance().getRayCast(params)),
             Map.entry("crew", params -> CrewHandler.instance().getCrew(params)),
+            Map.entry("chat", params -> ChatHandler.instance().getChat(params)),
             Map.entry("constant_data", params -> ConstantDataHandler.instance().getConstantData(params)),
             Map.entry("profile_data", params -> ProfileDataHandler.instance().getProfileData(params)),
             Map.entry("quest_data", params -> QuestDataHandler.instance().getQuestData(params)),
