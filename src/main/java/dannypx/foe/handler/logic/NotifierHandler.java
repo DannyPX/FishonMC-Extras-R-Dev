@@ -105,7 +105,7 @@ public class NotifierHandler extends Handler {
         List<Text> notifTextList = new ArrayList<>(Arrays.asList(
                 tagText,
                 fish.getName(),
-                TextHelper.concat(fish.getFishSizeText(), Text.literal(" "), lengthText, Text.literal(" "), weightText),
+                TextHelper.concat(fish.getFishSizeText(), lengthText, weightText),
                 Text.empty(),
                 Text.literal(" - Drystreaks before catch").formatted(Formatting.GRAY),
                 TextHelper.concat(rarityText, TextHelper.literal(rarityDrystreak.value2())),
