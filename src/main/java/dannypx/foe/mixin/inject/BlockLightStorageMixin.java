@@ -1,7 +1,7 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.LightHandler;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.logic.LightHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.world.chunk.light.BlockLightStorage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,11 +17,7 @@ public class BlockLightStorageMixin {
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.blockLightStorageMixinGetLight.get()
         ) {
-            int light = LightHandler.instance().calculateBobberLight(blockPos);
-            if(light <= 0) return;
-
-            int vanilla = cir.getReturnValue();
-            cir.setReturnValue(Math.max(vanilla, light));
+            cir.setReturnValue(LightHandler.instance().calculateBobberLight(blockPos, cir.getReturnValue()));
         }
     }
 }

@@ -1,10 +1,10 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.entity.FishingBobberEntityModel;
-import dannypx.foe.common.handler.logic.ConnectionHandler;
+import dannypx.foe.entity.FishingBobberEntityModel;
+import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.common.interfaces.IFishingBobberEntity;
-import dannypx.foe.common.interfaces.IFishingBobberEntityState;
+import dannypx.foe.interfaces.IFishingBobberEntity;
+import dannypx.foe.interfaces.IFishingBobberEntityState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.OverlayTexture;
@@ -60,6 +60,7 @@ public class FishingBobberEntityRendererMixin {
         ItemStack bait = ((IFishingBobberEntityState) fishingBobberEntityState).foer$getBaitStack();
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.rendererConfig.showBaitOnBobber.get()
+                && bait != null
                 && !bait.isEmpty()
                 && !((IFishingBobberEntityState) fishingBobberEntityState).foer$isDisabledBait()
         ) {

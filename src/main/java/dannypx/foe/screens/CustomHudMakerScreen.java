@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.handler.store.CustomHudDataHandler;
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.tuple.Triplet;
+import dannypx.foe.handler.logic.LoggerHandler;
+import dannypx.foe.handler.store.CustomHudDataHandler;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import dannypx.foe.screens.widget.EditFieldListWidget;
+import dannypx.foe.screens.widget.EditCustomHUDWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
@@ -30,7 +30,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     private final Screen parentScreen;
 
     private ButtonListWidget hudList;
-    private EditFieldListWidget editFieldListWidget;
+    private EditCustomHUDWidget editCustomHUDWidget;
     private Map<String, ButtonListWidget.ButtonEntry> buttonEntryMap = new HashMap<>();
     private String selectedHud;
     //endregion
@@ -51,7 +51,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         this.hudList.render(context, mouseX, mouseY, delta);
-        this.editFieldListWidget.render(context, mouseX, mouseY, delta);
+        this.editCustomHUDWidget.render(context, mouseX, mouseY, delta);
     }
 
     private void renderWidgets() {
@@ -76,7 +76,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     }
 
     private ClickableWidget getEditHudWidget() {
-        editFieldListWidget = new EditFieldListWidget(
+        editCustomHUDWidget = new EditCustomHUDWidget(
                 (BUTTON_WIDTH + PADDING * 2),
                 0,
                 width - (BUTTON_WIDTH + PADDING * 2),
@@ -84,7 +84,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("No Hud Selected")
         );
 
-        return editFieldListWidget;
+        return editCustomHUDWidget;
     }
 
     private ClickableWidget getNewHudElementButton() {
@@ -107,11 +107,11 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getDeleteHudElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected HUD"),
+                        Text.literal("Delete Selected"),
                         (button) -> {
-                            if(editFieldListWidget.hasSelectedOption) {
+                            if(editCustomHUDWidget.hasSelectedOption) {
                                 CustomHudDataHandler.instance().deleteCustomHud(selectedHud);
-                                editFieldListWidget.reset();
+                                editCustomHUDWidget.reset();
                                 ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedHud);
 
                                 hudList.removeEntry(entry);
@@ -127,7 +127,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import HUD"),
+                        Text.literal("Import"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
@@ -180,13 +180,13 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getExportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Export Selected HUD"),
+                        Text.literal("Export Selected"),
                         (button) -> {
-                            if(editFieldListWidget.hasSelectedOption) {
+                            if(editCustomHUDWidget.hasSelectedOption) {
                                 try {
                                     Triplet<String, CustomHudDataHandler.CustomHud, Integer> dataHud = Triplet.of(
-                                            editFieldListWidget.currentSelectedHud,
-                                            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.get(editFieldListWidget.currentSelectedHud),
+                                            editCustomHUDWidget.currentSelectedHud,
+                                            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.get(editCustomHUDWidget.currentSelectedHud),
                                             FishOnMCExtras.HUD_VERSION
                                     );
 
@@ -194,7 +194,13 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                             TextHelper.compress(new GsonBuilder().create().toJson(dataHud))
                                     );
 
-                                    minecraftClient.keyboard.setClipboard(rawData);
+                                    String dataToCopy = "**Custom HUD: **" + selectedHud + "\n" +
+                                            "```\n" +
+                                            rawData + "\n" +
+                                            "```\n" +
+                                            "-# Using HUD version: " + "`v" + FishOnMCExtras.HUD_VERSION + "`";
+
+                                    minecraftClient.keyboard.setClipboard(dataToCopy);
 
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -244,7 +250,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         Text.literal(id),
                         button -> {
                             selectedHud = id;
-                            editFieldListWidget.selectHud(
+                            editCustomHUDWidget.selectHud(
                                     id,
                                     CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.get(id));
                         }
@@ -254,8 +260,8 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonWidget saveBackButton() {
         return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
-                    if(editFieldListWidget.hasSelectedOption) {
-                        if(editFieldListWidget.newName.isBlank()) {
+                    if(editCustomHUDWidget.hasSelectedOption) {
+                        if(editCustomHUDWidget.newName.isBlank()) {
                             SystemToast.add(minecraftClient.getToastManager(),
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
                                     Text.literal("Fish On Extras Rebirth"),
@@ -265,8 +271,8 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         }
 
                         if(
-                                !Objects.equals(editFieldListWidget.currentSelectedHud, editFieldListWidget.newName)
-                                && CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editFieldListWidget.newName)
+                                !Objects.equals(editCustomHUDWidget.currentSelectedHud, editCustomHUDWidget.newName)
+                                && CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editCustomHUDWidget.newName)
                         ) {
                             SystemToast.add(minecraftClient.getToastManager(),
                                     SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -277,12 +283,12 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         }
 
                         CustomHudDataHandler.instance().updateHud(
-                                editFieldListWidget.currentSelectedHud,
-                                editFieldListWidget.newName,
-                                editFieldListWidget.scale,
-                                editFieldListWidget.showBackground,
-                                editFieldListWidget.showElement,
-                                editFieldListWidget.getEntries()
+                                editCustomHUDWidget.currentSelectedHud,
+                                editCustomHUDWidget.newName,
+                                editCustomHUDWidget.scale,
+                                editCustomHUDWidget.showBackground,
+                                editCustomHUDWidget.showElement,
+                                editCustomHUDWidget.getEntries()
                                         .stream()
                                         .map(lineEntry -> Triplet.of(lineEntry.lineString, lineEntry.isCentre, lineEntry.isSmall))
                                         .toList());
@@ -304,8 +310,8 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonWidget addLine() {
         return ButtonWidget.builder(Text.literal("Add Line"), button -> {
-                    if(editFieldListWidget.hasSelectedOption) {
-                        editFieldListWidget.addNewEntry();
+                    if(editCustomHUDWidget.hasSelectedOption) {
+                        editCustomHUDWidget.addNewEntry();
                     }
                 })
                 .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)

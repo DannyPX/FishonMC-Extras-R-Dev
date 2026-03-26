@@ -1,0 +1,454 @@
+package dannypx.foe.handler.logic;
+
+import dannypx.foe.handler.Handler;
+import dannypx.foe.helper.MathHelper;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.item.NbtObject;
+import dannypx.foe.item.PetNbtObject;
+import dannypx.foe.item.ValidateItem;
+import dannypx.foe.type.tuple.Pair;
+import dannypx.foe.type.search.*;
+import dannypx.foe.screens.widget.SearchBarWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class SearchHandler extends Handler {
+    private static SearchHandler INSTANCE = new SearchHandler();
+
+    public static SearchHandler instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new SearchHandler();
+        }
+        return INSTANCE;
+    }
+
+    //region Fields
+    private List<SearchFilter> filters = new ArrayList<>();
+    private String searchRemainder = "";
+    private String lastInput = "";
+    private boolean isFocused = false;
+    private boolean isOnScreen = false;
+
+    public List<SearchFilter> getFilters() {
+        return filters;
+    }
+
+    public String getSearchRemainder() {
+        return searchRemainder;
+    }
+
+    public String getLastInput() {
+        return lastInput;
+    }
+
+    public boolean isFocused() {
+        return isFocused;
+    }
+
+    public void setFocused(boolean focused) {
+        isFocused = focused;
+    }
+
+    public void setLastInput(String lastInput) {
+        this.lastInput = lastInput;
+    }
+
+    public boolean isOnScreen() {
+        return isOnScreen;
+    }
+
+    public void setOnScreen(boolean onScreen) {
+        isOnScreen = onScreen;
+    }
+    //endregion
+
+    //region Methods
+    public void parseSearch(String input) {
+        if(!Objects.equals(this.lastInput, input)) {
+            this.setLastInput(input);
+
+            this.filters.clear();
+
+            Pattern pattern = Pattern.compile(
+                    "(\\w+)\\s*(>=|<=|==|!=|>|<|=)\\s*(?:\"([^\"]+)\"|(-?\\d+(?:\\.\\d+)?)|([A-Za-z_]\\w*))"
+            );
+
+            Matcher matcher = pattern.matcher(input);
+            StringBuilder remaining = new StringBuilder();
+
+            while (matcher.find()) {
+                String field = matcher.group(1);
+                String operator = matcher.group(2);
+
+                FilterValue value = null;
+
+                if (matcher.group(3) != null) {
+                    value = new StringValue(matcher.group(3));
+                } else if (matcher.group(4) != null) {
+                    value = new FloatValue(Float.parseFloat(matcher.group(4)));
+                } else if (matcher.group(5) != null) {
+                    value = new BooleanValue(Boolean.parseBoolean(matcher.group(5)));
+                }
+
+                this.filters.add(new SearchFilter(field, Operator.fromSymbol(operator), value));
+
+                matcher.appendReplacement(remaining, "");
+            }
+            matcher.appendTail(remaining);
+
+            this.searchRemainder = remaining.toString().trim();
+        }
+    }
+
+    public static ClickableWidget getSearchBar(int x, int y, int width, int height) {
+        SearchBarWidget searchBarWidget = new SearchBarWidget(minecraftClient.textRenderer, x, y, width, height,
+                Text.literal("Search Bar"),
+                new ArrayList<>(Arrays.asList(
+                        Text.literal("Search Item Names in the search bar").formatted(Formatting.WHITE),
+                        Text.literal("NBT fields can be compared against specific values for more granular filtering").formatted(Formatting.GRAY),
+                        Text.empty(),
+                        Text.literal("Granular filtering").formatted(Formatting.WHITE, Formatting.BOLD),
+                        Text.literal("- Allowed Operators").formatted(Formatting.GRAY, Formatting.BOLD),
+                        Text.literal("=  ==  !=  <  >  <=  >=").formatted(Formatting.GOLD),
+                        Text.empty(),
+                        Text.literal("- Non NBT fields").formatted(Formatting.GRAY, Formatting.BOLD),
+                        Text.literal("Pets").formatted(Formatting.GRAY),
+                        Text.literal("rating  lluck  lscale  cluck  cscale").formatted(Formatting.DARK_AQUA),
+                        Text.literal("lluck_percent  lscale_percent  cluck_percent  cscale_percent").formatted(Formatting.DARK_AQUA),
+                        Text.literal("Other").formatted(Formatting.GRAY),
+                        Text.literal("tooltip").formatted(Formatting.DARK_AQUA),
+                        Text.empty(),
+                        Text.literal("- Examples").formatted(Formatting.GRAY, Formatting.BOLD),
+                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
+                        TextHelper.concat(
+                                Text.literal("Pet").formatted(Formatting.GREEN)
+                        ),
+                        Text.empty(),
+                        TextHelper.concat(
+                                Text.literal("Search any item that has the word ").formatted(Formatting.GRAY),
+                                Text.literal("Pet ").formatted(Formatting.GREEN),
+                                Text.literal("in it").formatted(Formatting.GRAY)
+                        ).formatted(Formatting.ITALIC),
+                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
+                        TextHelper.concat(
+                                Text.literal("tooltip").formatted(Formatting.DARK_AQUA),
+                                Text.literal("=").formatted(Formatting.GOLD),
+                                Text.literal("\"tunas\"").formatted(Formatting.GREEN)
+                        ),
+                        Text.empty(),
+                        TextHelper.concat(
+                                Text.literal("Search item ").formatted(Formatting.GRAY),
+                                Text.literal("tooltip ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("that has the word ").formatted(Formatting.GRAY),
+                                Text.literal("tunas ").formatted(Formatting.GREEN),
+                                Text.literal("in it").formatted(Formatting.GRAY)
+                        ).formatted(Formatting.ITALIC),
+                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
+                        TextHelper.concat(
+                                Text.literal("rating").formatted(Formatting.DARK_AQUA),
+                                Text.literal(">").formatted(Formatting.GOLD),
+                                Text.literal("90  ").formatted(Formatting.GREEN),
+                                Text.literal("lscale_percent").formatted(Formatting.DARK_AQUA),
+                                Text.literal(">=").formatted(Formatting.GOLD),
+                                Text.literal("80").formatted(Formatting.GREEN)
+                        ),
+                        Text.empty(),
+                        TextHelper.concat(
+                                Text.literal("Search items that is of ").formatted(Formatting.GRAY),
+                                Text.literal("pet rating ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("higher than ").formatted(Formatting.GOLD),
+                                Text.literal("90").formatted(Formatting.GREEN),
+                                Text.literal("%").formatted(Formatting.GRAY)
+                        ).formatted(Formatting.ITALIC),
+                        TextHelper.concat(
+                                Text.literal("AND ").formatted(Formatting.GOLD),
+                                Text.literal("is of ").formatted(Formatting.GRAY),
+                                Text.literal("location scale ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("higher than or equal to ").formatted(Formatting.GOLD),
+                                Text.literal("80").formatted(Formatting.GREEN),
+                                Text.literal("%").formatted(Formatting.GRAY)
+                        ).formatted(Formatting.ITALIC),
+                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
+                        TextHelper.concat(
+                                Text.literal("type").formatted(Formatting.DARK_AQUA),
+                                Text.literal("=").formatted(Formatting.GOLD),
+                                Text.literal("\"armor\"  ").formatted(Formatting.GREEN),
+                                Text.literal("rarity").formatted(Formatting.DARK_AQUA),
+                                Text.literal("=").formatted(Formatting.GOLD),
+                                Text.literal("\"mythical\"  ").formatted(Formatting.GREEN),
+                                Text.literal("quality").formatted(Formatting.DARK_AQUA),
+                                Text.literal(">").formatted(Formatting.GOLD),
+                                Text.literal("96  ").formatted(Formatting.GREEN),
+                                Text.literal("Subtropical").formatted(Formatting.GREEN)
+                        ),
+                        Text.empty(),
+                        TextHelper.concat(
+                                Text.literal("Search items that is of ").formatted(Formatting.GRAY),
+                                Text.literal("type ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("equal to ").formatted(Formatting.GOLD),
+                                Text.literal("armor").formatted(Formatting.GREEN)
+                        ).formatted(Formatting.ITALIC),
+                        TextHelper.concat(
+                                Text.literal("AND ").formatted(Formatting.GOLD),
+                                Text.literal("is of ").formatted(Formatting.GRAY),
+                                Text.literal("rarity ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("equal to ").formatted(Formatting.GOLD),
+                                Text.literal("mythical").formatted(Formatting.GREEN)
+                        ).formatted(Formatting.ITALIC),
+                        TextHelper.concat(
+                                Text.literal("AND ").formatted(Formatting.GOLD),
+                                Text.literal("is of ").formatted(Formatting.GRAY),
+                                Text.literal("quality ").formatted(Formatting.DARK_AQUA),
+                                Text.literal("higher than ").formatted(Formatting.GOLD),
+                                Text.literal("94").formatted(Formatting.GREEN),
+                                Text.literal("%").formatted(Formatting.GRAY)
+                        ).formatted(Formatting.ITALIC),
+                        TextHelper.concat(
+                                Text.literal("AND ").formatted(Formatting.GOLD),
+                                Text.literal("search any item that has the word ").formatted(Formatting.GRAY),
+                                Text.literal("Subtropical ").formatted(Formatting.GREEN),
+                                Text.literal("in it").formatted(Formatting.GRAY)
+                        ).formatted(Formatting.ITALIC)
+                ))
+        );
+        searchBarWidget.setText(SearchHandler.instance().getLastInput());
+        searchBarWidget.setPlaceholder(Text.literal("Search Item Names").formatted(Formatting.GRAY));
+
+        searchBarWidget.setChangedListener(SearchHandler.instance()::parseSearch);
+
+        return searchBarWidget;
+    }
+
+    public boolean filterItem(ItemStack itemStack) {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(true);
+
+        // Stop when search is empty
+        if(lastInput.isBlank()) {
+            return false;
+        }
+
+        // Filter out if name doesn't contain search
+        if(!itemStack.getName().getString().toLowerCase(Locale.US).contains(searchRemainder.toLowerCase(Locale.US))
+                || (itemStack.get(DataComponentTypes.HIDE_TOOLTIP) != null)
+        ) {
+            return false;
+        }
+
+        filters.forEach(searchFilter -> {
+            if(!atomicBoolean.get()) return;
+
+            // Type
+            atomicBoolean.set(this.checkType(searchFilter, itemStack, atomicBoolean.get()));
+            if(!atomicBoolean.get()) return;
+
+            // Tooltip
+            atomicBoolean.set(this.checkTooltip(searchFilter, itemStack, atomicBoolean.get()));
+            if(!atomicBoolean.get()) return;
+
+            // Pet Specific
+            String petCheck = this.checkPet(searchFilter, itemStack, atomicBoolean.get());
+            if(petCheck.equals("false")) atomicBoolean.set(false);
+            else if(petCheck.equals("true_pet")) return;
+            if(!atomicBoolean.get()) return;
+
+            // Other
+            atomicBoolean.set(this.checkOther(searchFilter, itemStack, atomicBoolean.get()));
+        });
+
+        return atomicBoolean.get();
+    }
+
+    private boolean checkTooltip(SearchFilter searchFilter, ItemStack itemStack, boolean b) {
+        if(searchFilter.value == null || !b) {
+            return false;
+        }
+
+        return switch (searchFilter.value) {
+            case StringValue stringValue -> {
+                if(searchFilter.key.equalsIgnoreCase("tooltip")) {
+                    if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
+                        if(itemStack.get(DataComponentTypes.LORE) != null) {
+                            List<Text> textList = itemStack.get(DataComponentTypes.LORE).lines();
+                            AtomicBoolean hasText = new AtomicBoolean(false);
+                            textList.forEach(text -> {
+                                String convertedText = TextHelper.normalLetter(text.getString());
+                                if(convertedText.toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US))) hasText.set(true);
+                            });
+                            yield hasText.get();
+                        } else {
+                            yield false;
+                        }
+                    } else {
+                        yield false;
+                    }
+                } else {
+                    yield true;
+                }
+            }
+            default -> !searchFilter.key.equalsIgnoreCase("tooltip");
+        };
+    }
+
+    private boolean checkType(SearchFilter searchFilter, ItemStack itemStack, boolean b) {
+        if(searchFilter.value == null || !b) {
+            return false;
+        }
+
+        return switch (searchFilter.value) {
+            case StringValue str -> {
+                if(searchFilter.key.equalsIgnoreCase("type")) {
+                    if(searchFilter.operator == Operator.SHORT_EQUAL) {
+                        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
+                        yield validatedItem.value2().getType().toLowerCase(Locale.US).contains(str.value().toLowerCase(Locale.US));
+                    } else if (searchFilter.operator == Operator.EQUAL) {
+                        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
+                        yield validatedItem.value2().getType().toLowerCase(Locale.US).equalsIgnoreCase(str.value().toLowerCase(Locale.US));
+                    } else {
+                        yield false;
+                    }
+                } else {
+                    yield true;
+                }
+            }
+            default -> !searchFilter.key.equalsIgnoreCase("type");
+        };
+    }
+
+    private String checkPet(SearchFilter searchFilter, ItemStack itemStack, boolean b) {
+        if(searchFilter.value == null || !b) {
+            return "false";
+        }
+
+        Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(itemStack);
+        if(validatedPet.value1()) {
+            return switch (searchFilter.value) {
+                // Rating
+                case StringValue stringValue -> {
+                    if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
+                        if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
+                            yield TextHelper.normalLetter(validatedPet.value2().getRatingText().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
+                        }
+                        yield "false";
+                    }
+                    yield "true";
+                }
+                // Rating
+                case FloatValue floatValue -> {
+                    // in percent
+                    if(searchFilter.key.equalsIgnoreCase("lluck_percent")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxLuck() * 100f) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("lscale_percent")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxScale() * 100f) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("cluck_percent")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxLuck() * 100f) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("cscale_percent")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxScale() * 100f) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("lluck")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxLuck()) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("lscale")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxScale()) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("cluck")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxLuck()) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("cscale")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxScale()) ? "true_pet" : "false";
+                    } else if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getTotalPercent() * 100f) ? "true_pet" : "false";
+                    }
+                    yield "true";
+                }
+                default -> "true";
+            };
+        } else {
+            return !customPetTypes().contains(searchFilter.key) ? "true" : "false";
+        }
+    }
+
+    private boolean checkOther(SearchFilter searchFilter, ItemStack itemStack, boolean b) {
+        if(searchFilter.value == null || !b
+        ) {
+            return false;
+        }
+
+        if(customPetTypes().contains(searchFilter.key)
+                || searchFilter.key.equalsIgnoreCase("type")
+                || searchFilter.key.equalsIgnoreCase("tooltip")
+        ) {
+            return true;
+        }
+
+        return switch (searchFilter.value) {
+            case StringValue stringValue -> {
+                if(searchFilter.operator == Operator.SHORT_EQUAL) {
+                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                        yield validatedItem.value2().getString(searchFilter.key).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US));
+                    }
+                } else if(searchFilter.operator == Operator.EQUAL) {
+                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                        yield validatedItem.value2().getString(searchFilter.key).toLowerCase(Locale.US).equalsIgnoreCase(stringValue.value().toLowerCase(Locale.US));
+                    }
+                }
+                yield false;
+            }
+            case BooleanValue booleanValue -> {
+                if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
+                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                        yield validatedItem.value2().getBoolean(searchFilter.key) == booleanValue.value();
+                    }
+                }
+                yield false;
+            }
+            case FloatValue floatValue -> {
+                Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
+                    yield switch (validatedItem.value2().getType(searchFilter.key)) {
+                        case 3 -> MathHelper.checkOperation( searchFilter, floatValue, (float) validatedItem.value2().getInt(searchFilter.key));
+                        case 5 -> MathHelper.checkOperation(searchFilter, floatValue, validatedItem.value2().getFloat(searchFilter.key));
+                        default -> false;
+                    };
+                }
+                yield false;
+            }
+        };
+    }
+
+    private List<String> customPetTypes() {
+        return new ArrayList<>(Arrays.asList(
+                "rating",
+                "pet_rating",
+                "lluck",
+                "lscale",
+                "cluck",
+                "cscale",
+                "lluck_percent",
+                "lscale_percent",
+                "cluck_percent",
+                "cscale_percent"
+        ));
+    }
+    //endregion
+
+    //region Dev
+    /// Field, Pair<Value, Tooltip>
+    @Override
+    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+        return Map.of(
+                "searchRemainder", Pair.of(Text.literal(getSearchRemainder()), Text.empty()),
+                "lastInput", Pair.of(Text.literal(getLastInput()), Text.empty()),
+                "isFocused", Pair.of(TextHelper.literal(isFocused()), Text.empty()),
+                "filters", Pair.of(Text.literal("[filters]"), TextHelper.literal(getFilters()))
+        );
+    }
+    //endregion
+}

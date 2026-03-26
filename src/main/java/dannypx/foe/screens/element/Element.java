@@ -1,6 +1,6 @@
 package dannypx.foe.screens.element;
 
-import dannypx.foe.common.type.Alignment;
+import dannypx.foe.type.Alignment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
@@ -24,13 +24,13 @@ public abstract class Element {
         this.isCopy = isCopy;
     }
 
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {};
+    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {}
 
     public void setXPercent(float percent) {
         xPos = percent;
-    };
+    }
 
     public void setYPercent(float percent) {
         yPos = percent;
-    };
+    }
 }

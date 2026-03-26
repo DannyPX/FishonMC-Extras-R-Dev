@@ -1,8 +1,8 @@
 package dannypx.foe.screens.debug;
 
-import dannypx.foe.common.handler.debug._DebugHandler;
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.handler.debug._DebugHandler;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.DefaultModScreen;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import net.minecraft.client.MinecraftClient;
@@ -82,14 +82,12 @@ public class DebugHandlerScreen extends DefaultModScreen {
         );
 
         // Add buttons
-        handlerNames.forEach(handler -> {
-            handlerList.addEntry(new ButtonListWidget.ButtonEntry(
-                    ButtonWidget.builder(
-                            Text.literal(handler.replace("dannypx.foe.common.handler.", "")),
-                            button -> selectedHandler = handler
-                    ).width(BUTTON_WIDTH).build()
-            ));
-        });
+        handlerNames.forEach(handler -> handlerList.addEntry(new ButtonListWidget.ButtonEntry(
+                ButtonWidget.builder(
+                        Text.literal(handler.replace("dannypx.foe.handler.", "")),
+                        button -> selectedHandler = handler
+                ).width(BUTTON_WIDTH).build()
+        )));
 
         return handlerList;
     }

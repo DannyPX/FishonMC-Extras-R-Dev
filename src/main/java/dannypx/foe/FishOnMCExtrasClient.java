@@ -1,16 +1,16 @@
 package dannypx.foe;
 
-import dannypx.foe.common.command.CommandRegistry;
-import dannypx.foe.common.entity.FishingBobberEntityModel;
-import dannypx.foe.common.handler.fetch.*;
-import dannypx.foe.common.handler.logic.*;
-import dannypx.foe.common.handler.store.*;
-import dannypx.foe.common.handler.io.DataFileHandler;
+import dannypx.foe.command.CommandRegistry;
+import dannypx.foe.entity.FishingBobberEntityModel;
+import dannypx.foe.handler.fetch.*;
+import dannypx.foe.handler.logic.*;
+import dannypx.foe.handler.store.*;
+import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.common.handler.renderer.ChatScreenRenderHandler;
+import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
-import dannypx.foe.common.handler.renderer.HudRenderHandler;
-import dannypx.foe.common.handler.renderer.InventoryScreenRenderHandler;
+import dannypx.foe.handler.renderer.HudRenderHandler;
+import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -131,13 +131,14 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     private void onLeave(ClientPlayNetworkHandler clientPlayNetworkHandler, MinecraftClient minecraftClient) {
         ConnectionHandler.instance().onLeave();
         LoadingHandler.instance().onLeave();
+
+        InventoryHandler.instance().onLeave();
+
     }
 
     private void onJoin(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender packetSender, MinecraftClient minecraftClient) {
         ConnectionHandler.instance().init();
-        //onJoin when on server
         if(ConnectionHandler.instance().isOnServer()) {
-
             ProfileDataHandler.instance().init();
             StatsDataHandler.instance().init();
             ConstantDataHandler.instance().init();
@@ -145,12 +146,19 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             CrewDataHandler.instance().init();
             CustomHudDataHandler.instance().init();
             CustomButtonDataHandler.instance().init();
+            CustomNotificationDataHandler.instance().init();
+            CustomChatTriggerDataHandler.instance().init();
+            CustomTimerDataHandler.instance().init();
+
             ScoreboardHandler.instance().init();
             CrewHandler.instance().init();
 
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
+
+            ChatHandler.instance().init();
             NotifierHandler.instance().init();
+            TimerHandler.instance().init();
         }
     }
 
@@ -181,6 +189,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
                 if(Configs.handlerConfig.crewHandler.get()) CrewHandler.instance().tick();
                 if(Configs.handlerConfig.lightHandler.get()) LightHandler.instance().tick();
+                if(Configs.handlerConfig.timerHandler.get()) TimerHandler.instance().tick();
 
                 // Renderer
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();

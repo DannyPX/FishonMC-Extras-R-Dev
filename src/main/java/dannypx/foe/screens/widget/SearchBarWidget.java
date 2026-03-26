@@ -1,6 +1,6 @@
 package dannypx.foe.screens.widget;
 
-import dannypx.foe.common.handler.logic.SearchHandler;
+import dannypx.foe.handler.logic.SearchHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -44,9 +44,7 @@ public class SearchBarWidget extends TextFieldWidget {
                 drawContext.drawBorder(x - length / 2 - padding, 0, padding * 2 + length, padding * 2 + lines, Colors.GRAY);
 
                 AtomicInteger count = new AtomicInteger(0);
-                hoverInfo.forEach(text -> {
-                    drawContext.drawText(textRenderer, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, 0xFFFFFF, true);
-                });
+                hoverInfo.forEach(text -> drawContext.drawText(textRenderer, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, 0xFFFFFF, true));
             } finally {
                 drawContext.getMatrices().pop();
             }

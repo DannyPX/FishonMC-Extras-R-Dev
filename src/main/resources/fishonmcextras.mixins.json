@@ -16,6 +16,7 @@
     "accessor.BossBarHudAccessor",
     "accessor.ChatScreenAccessor",
     "accessor.PlayerListHudAccessor",
+    "accessor.WorldRendererAccessor",
     "inject.ArmorFeatureRendererMixin",
     "inject.BossBarHudMixin",
     "inject.ClientPlayNetworkHandlerMixin",
@@ -26,6 +27,7 @@
     "inject.InGameHudMixin",
     "inject.PlayerListHudMixin",
     "inject.RecipeBookScreenMixin",
-    "inject.RecipeBookWidgetMixin"
+    "inject.RecipeBookWidgetMixin",
+    "inject.WorldRendererMixin"
   ]
 }

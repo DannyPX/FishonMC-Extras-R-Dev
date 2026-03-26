@@ -1,10 +1,10 @@
 package dannypx.foe.screens.widget;
 
 import com.mojang.brigadier.StringReader;
-import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.helper.DrawHelper;
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.handler.logic.LoggerHandler;
+import dannypx.foe.helper.DrawHelper;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +29,6 @@ public class SmallButtonWidget extends ClickableWidget {
 
     private final ClickCallback clickCallback;
 
-    Pattern NAMESPACED = Pattern.compile("^[a-z_]+:[a-z_]+$");
     Pattern PATTERN = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.))$");
 
     private final String icon;

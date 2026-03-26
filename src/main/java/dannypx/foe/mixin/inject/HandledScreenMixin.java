@@ -1,7 +1,7 @@
 package dannypx.foe.mixin.inject;
 
-import dannypx.foe.common.handler.logic.ConnectionHandler;
-import dannypx.foe.common.handler.logic.SearchHandler;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import org.spongepowered.asm.mixin.Mixin;

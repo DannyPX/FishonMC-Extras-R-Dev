@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.common.handler.logic.CodeExecuterHandler;
-import dannypx.foe.common.handler.logic.LoggerHandler;
-import dannypx.foe.common.handler.store.CustomButtonDataHandler;
-import dannypx.foe.common.helper.TextHelper;
-import dannypx.foe.common.type.tuple.Pair;
+import dannypx.foe.handler.logic.CodeExecuterHandler;
+import dannypx.foe.handler.logic.LoggerHandler;
+import dannypx.foe.handler.store.CustomButtonDataHandler;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import net.minecraft.client.MinecraftClient;
@@ -286,7 +286,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getDeleteButtonElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected Button"),
+                        Text.literal("Delete Selected"),
                         (button) -> {
                             if(selectedButtonId != null) {
                                 CustomButtonDataHandler.instance().deleteButton(screenId, selectedButtonId);
@@ -297,6 +297,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 buttonEntryMap.remove(selectedButtonId);
 
                                 selectedButtonId = null;
+                                resetFields();
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
@@ -306,7 +307,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import Button"),
+                        Text.literal("Import"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
@@ -358,7 +359,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getExportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Export Selected Button"),
+                        Text.literal("Export Selected"),
                         (button) -> {
                             if(selectedButtonId != null) {
                                 try {
@@ -371,7 +372,13 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                             TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
                                     );
 
-                                    minecraftClient.keyboard.setClipboard(rawData);
+                                    String dataToCopy = "**Custom Button: **" + selectedButtonId + "\n" +
+                                            "```\n" +
+                                            rawData + "\n" +
+                                            "```\n" +
+                                            "-# Using Button version: " + "`v" + FishOnMCExtras.BUTTON_VERSION + "`";
+
+                                    minecraftClient.keyboard.setClipboard(dataToCopy);
 
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -493,20 +500,18 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 ).width(BUTTON_WIDTH / 4 * 3).build(),
                 ButtonWidget.builder(
                                 Text.literal("Add"),
-                                button -> {
-                                    CodeExecuterHandler.runLater(1, () -> {
-                                        String newId = "Custom Hud #" + UUID.randomUUID();
+                                button -> CodeExecuterHandler.runLater(1, () -> {
+                                    String newId = "Custom Hud #" + UUID.randomUUID();
 
-                                        int pos = buttonList.children().indexOf(buttonEntryMap.get(selectedButtonId));
+                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(selectedButtonId));
 
-                                        CustomButtonDataHandler.instance().createNewButton(screenId, newId, pos);
+                                    CustomButtonDataHandler.instance().createNewButton(screenId, newId, pos);
 
-                                        ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(newId);
+                                    ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(newId);
 
-                                        buttonList.addEntry(buttonEntry, pos);
-                                        buttonEntryMap.put(newId, buttonEntry);
-                                    });
-                                })
+                                    buttonList.addEntry(buttonEntry, pos);
+                                    buttonEntryMap.put(newId, buttonEntry);
+                                }))
                         .width(25)
                         .tooltip(Tooltip.of(Text.literal("Add new button")))
                         .build()
