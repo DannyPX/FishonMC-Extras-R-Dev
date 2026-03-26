@@ -67,7 +67,10 @@ public class LoadingHandler extends Handler {
                 isLoadingDone = this.scanFish();
             }
 
-            if(isLoadingDone) LoggerHandler.info("Loading Done");
+            if(isLoadingDone) {
+                InventoryHandler.instance().snapshotInventory();
+                LoggerHandler.info("Loading Done");
+            }
         }
     }
 

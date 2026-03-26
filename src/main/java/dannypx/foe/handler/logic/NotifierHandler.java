@@ -378,7 +378,7 @@ public class NotifierHandler extends Handler {
                 }
             }
 
-            List<MutableText> lines = notification.textLines.stream().map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
+            List<MutableText> lines = notification.textLines.stream().map(text -> text.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
             List<Text> newLines = new ArrayList<>();
 
             lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledText(line, notification.icon.isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraftClient.textRenderer)));

@@ -7,6 +7,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.type.tuple.Pair;
+import dannypx.foe.type.type_adapter.CustomTimerAdapter;
 import dannypx.foe.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.type.type_adapter.PatternAdapter;
 import dannypx.foe.type.type_adapter.TextAdapter;
@@ -52,6 +53,7 @@ public class DataFileHandler extends Handler {
         CustomButtonDataHandler.instance().tick();
         CustomNotificationDataHandler.instance().tick();
         CustomChatTriggerDataHandler.instance().tick();
+        CustomTimerDataHandler.instance().tick();
     }
 
     public void init() {
@@ -116,6 +118,7 @@ public class DataFileHandler extends Handler {
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                 .registerTypeAdapter(Text.class, new TextAdapter())
                 .registerTypeAdapter(Pattern.class, new PatternAdapter())
+                .registerTypeAdapter(CustomTimerDataHandler.CustomTimer.class, new CustomTimerAdapter())
                 .create();
         return gson.toJson(dataModel);
     }
@@ -131,6 +134,7 @@ public class DataFileHandler extends Handler {
             case CUSTOM_BUTTON_DATA -> CustomButtonDataHandler.instance().getCustomButtonData();
             case CUSTOM_NOTIFICATION_DATA -> CustomNotificationDataHandler.instance().getCustomNotificationData();
             case CUSTOM_CHAT_TRIGGER_DATA -> CustomChatTriggerDataHandler.instance().getCustomChatTriggerData();
+            case CUSTOM_TIMER_DATA -> CustomTimerDataHandler.instance().getCustomTimerData();
         };
     }
 
@@ -139,6 +143,7 @@ public class DataFileHandler extends Handler {
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
                 .registerTypeAdapter(Text.class, new TextAdapter())
                 .registerTypeAdapter(Pattern.class, new PatternAdapter())
+                .registerTypeAdapter(CustomTimerDataHandler.CustomTimer.class, new CustomTimerAdapter())
                 .create();
 
         LoggerHandler._debug("Setting data from: " + dataModelType.FILENAME + ".json");
@@ -162,6 +167,8 @@ public class DataFileHandler extends Handler {
                     CustomNotificationDataHandler.instance().setCustomNotificationData(gson.fromJson(json, CustomNotificationDataHandler.CustomNotificationDataModel.class));
             case CUSTOM_CHAT_TRIGGER_DATA ->
                     CustomChatTriggerDataHandler.instance().setCustomChatTriggerData(gson.fromJson(json, CustomChatTriggerDataHandler.CustomChatTriggerDataModel.class));
+            case CUSTOM_TIMER_DATA ->
+                    CustomTimerDataHandler.instance().setCustomTimerData(gson.fromJson(json, CustomTimerDataHandler.CustomTimerDataModel.class));
         }
     }
     //endregion

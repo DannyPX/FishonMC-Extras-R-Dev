@@ -145,6 +145,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
                 line.value1(),
                 line.value2(),
                 line.value3(),
+                width,
                 getDefaultCallback()
         )));
     }
@@ -170,6 +171,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
                 "Example text",
                 false,
                 false,
+                width,
                 getDefaultCallback()
         );
     }
@@ -412,21 +414,23 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         public String lineString;
         public boolean isCentre;
         public boolean isSmall;
-
+        public int width;
 
         private static final String isCentreText = "Centered";
+        private static final int CENTRE_TEXT_SPACING = MinecraftClient.getInstance().textRenderer.getWidth(isCentreText);
         private static final String isSmallText = "Small Text";
+        private static final int SMALL_TEXT_SPACING = MinecraftClient.getInstance().textRenderer.getWidth(isSmallText);
 
         public static final int HEIGHT = 24;
         private static final int SPACING = 6;
         private static final int CHECKBOX_SIZE = 20;
         private static final int BUTTON_SIZE = 25;
-        private static final int CENTRE_TEXT_SPACING = MinecraftClient.getInstance().textRenderer.getWidth(isCentreText);
 
-        public LineEntry(String defaultLine, boolean defaultIsCentre, boolean defaultIsSmall, Callback callback) {
+        public LineEntry(String defaultLine, boolean defaultIsCentre, boolean defaultIsSmall, int width, Callback callback) {
             lineString = defaultLine;
             isCentre = defaultIsCentre;
             isSmall = defaultIsSmall;
+            this.width = width;
 
             textFieldWidget = new TextFieldWidget(
                     minecraftClient.textRenderer,
@@ -437,12 +441,13 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             textFieldWidget.setMaxLength(Integer.MAX_VALUE);
 
             textFieldWidget.setText(defaultLine);
-            int textWidth = ((minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 5) * 2 - PADDING * 5;
+            int textWidth = width - PADDING - PADDING - 6 - PADDING - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - 20;
             textFieldWidget.setPlaceholder(Text.literal(
                     minecraftClient.textRenderer.getWidth(defaultLine) > textWidth
                     ? minecraftClient.textRenderer.trimToWidth(defaultLine, textWidth) + "..."
                     : defaultLine
             ));
+
             textFieldWidget.setChangedListener(s -> {
                 lineString = s;
                 textFieldWidget.setPlaceholder(Text.literal(s));
@@ -473,22 +478,23 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         }
 
         public void setPosition(int x, int y, int fullWidth) {
-            int textWidth = (fullWidth / 5) * 2;
+
+            int textWidth = fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - SPACING;
 
             textFieldWidget.setPosition(x, y);
             textFieldWidget.setWidth(textWidth);
 
-            int rightStart = x + textWidth;
-
             isCentreWidget.setPosition(
-                    rightStart + SPACING,
+                    x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING,
                     y
             );
 
             isSmallWidget.setPosition(
-                    rightStart + SPACING + CHECKBOX_SIZE + CENTRE_TEXT_SPACING + SPACING,
+                    x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE,
                     y
             );
+
+
 
             addButton.setPosition(
                     x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART,

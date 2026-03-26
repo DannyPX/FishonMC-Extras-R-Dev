@@ -93,6 +93,9 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles the light rendering")
     public ValidatedBoolean lightHandler = new ValidatedBoolean(true);
 
+    @Desc("§7Handles the timers")
+    public ValidatedBoolean timerHandler = new ValidatedBoolean(true);
+
     @Name("Catching Handler")
     @Desc("§7Handles logic of fishing")
     public ConfigGroup catchingLogicGroup = new ConfigGroup("catching_logic_group");

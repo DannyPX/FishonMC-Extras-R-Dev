@@ -85,7 +85,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
             context.drawTooltip(textRenderer, List.of(
                     Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
                     Text.empty(),
-                    Text.literal("Notification Name").formatted(Formatting.GRAY)
+                    Text.literal("- Notification Name").formatted(Formatting.GRAY)
             ), mouseX, mouseY);
         }
     }
@@ -115,7 +115,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         );
 
         context.drawText(textRenderer,
-                Text.literal("Trigger Notification"),
+                Text.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
                 0xFFFFFF,
@@ -248,10 +248,11 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
 
     private ClickableWidget getDeleteButtonElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected Chat Trigger"),
+                        Text.literal("Delete Selected"),
                         (button) -> {
                             if(selectedChatTriggerId != null) {
                                 CustomChatTriggerDataHandler.instance().deleteCustomChatTrigger(selectedChatTriggerId);
+                                ChatHandler.instance().initChatTrigger();
 
                                 ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedChatTriggerId);
 
@@ -259,6 +260,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                 buttonEntryMap.remove(selectedChatTriggerId);
 
                                 selectedChatTriggerId = null;
+                                resetFields();
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
@@ -268,7 +270,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import Chat Trigger"),
+                        Text.literal("Import"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
@@ -295,7 +297,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                 String id = data.value1();
 
                                 CustomChatTriggerDataHandler.instance().createNewCustomChatTrigger(data.value1(), data.value2());
-
+                                ChatHandler.instance().initChatTrigger();
 
                                 ButtonListWidget.ButtonEntry buttonEntry = createChatTriggerEntry(id);
 
@@ -323,7 +325,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
 
     private ClickableWidget getExportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Export Selected Chat Trigger"),
+                        Text.literal("Export Selected"),
                         (button) -> {
                             if(selectedChatTriggerId != null) {
                                 try {
@@ -337,7 +339,13 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                             TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
                                     );
 
-                                    minecraftClient.keyboard.setClipboard(rawData);
+                                    String dataToCopy = "**Custom Chat Trigger: **" + selectedChatTriggerId + "\n" +
+                                            "```\n" +
+                                            rawData + "\n" +
+                                            "```\n" +
+                                            "-# Using Chat Trigger version: " + "`v" + FishOnMCExtras.CHAT_TRIGGER_VERSION + "`";
+
+                                    minecraftClient.keyboard.setClipboard(dataToCopy);
 
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -470,7 +478,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
     }
 
     private void resetFields() {
-        this.header = Text.literal("No Button Selected");
+        this.header = Text.literal("No Chat Trigger Selected");
 
         nameTextField.setText("");
         nameTextField.setPlaceholder(Text.literal(""));

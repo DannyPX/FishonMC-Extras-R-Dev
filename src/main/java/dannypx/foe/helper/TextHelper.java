@@ -462,7 +462,7 @@ public class TextHelper {
     }
 
     public static byte[] compress(final String str) throws IOException {
-        if ((str == null) || (str.length() == 0)) {
+        if ((str == null) || (str.isEmpty())) {
             return null;
         }
         ByteArrayOutputStream obj = new ByteArrayOutputStream();

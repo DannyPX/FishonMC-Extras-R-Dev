@@ -1,6 +1,7 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
+import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.NbtObject;
 import dannypx.foe.item.PetNbtObject;
@@ -344,23 +345,23 @@ public class SearchHandler extends Handler {
                 case FloatValue floatValue -> {
                     // in percent
                     if(searchFilter.key.equalsIgnoreCase("lluck_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxLuck() * 100f) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxLuck() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("lscale_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxScale() * 100f) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationPercentMaxScale() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cluck_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxLuck() * 100f) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxLuck() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cscale_percent")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxScale() * 100f) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimatePercentMaxScale() * 100f) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("lluck")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxLuck()) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxLuck()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("lscale")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxScale()) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getLocationMaxScale()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cluck")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxLuck()) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxLuck()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("cscale")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxScale()) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getClimateMaxScale()) ? "true_pet" : "false";
                     } else if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
-                        yield checkOperation(searchFilter, floatValue, validatedPet.value2().getTotalPercent() * 100f) ? "true_pet" : "false";
+                        yield MathHelper.checkOperation(searchFilter, floatValue, validatedPet.value2().getTotalPercent() * 100f) ? "true_pet" : "false";
                     }
                     yield "true";
                 }
@@ -412,35 +413,13 @@ public class SearchHandler extends Handler {
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
                 if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
                     yield switch (validatedItem.value2().getType(searchFilter.key)) {
-                        case 3 -> this.checkOperation(searchFilter, floatValue, validatedItem.value2().getInt(searchFilter.key));
-                        case 5 -> this.checkOperation(searchFilter, floatValue, validatedItem.value2().getFloat(searchFilter.key));
+                        case 3 -> MathHelper.checkOperation( searchFilter, floatValue, (float) validatedItem.value2().getInt(searchFilter.key));
+                        case 5 -> MathHelper.checkOperation(searchFilter, floatValue, validatedItem.value2().getFloat(searchFilter.key));
                         default -> false;
                     };
                 }
                 yield false;
             }
-        };
-    }
-
-    private boolean checkOperation(SearchFilter searchFilter, FloatValue floatValue, int fetchedValue) {
-        return switch (searchFilter.operator) {
-            case GREATER -> fetchedValue > floatValue.value();
-            case LESS -> fetchedValue < floatValue.value();
-            case EQUAL, SHORT_EQUAL -> fetchedValue == floatValue.value();
-            case NOT_EQUAL -> fetchedValue != floatValue.value();
-            case GREATER_EQUAL -> fetchedValue >= floatValue.value();
-            case LESS_EQUAL -> fetchedValue <= floatValue.value();
-        };
-    }
-
-    private boolean checkOperation(SearchFilter searchFilter, FloatValue floatValue, float fetchedValue) {
-        return switch (searchFilter.operator) {
-            case GREATER -> fetchedValue > floatValue.value();
-            case LESS -> fetchedValue < floatValue.value();
-            case EQUAL, SHORT_EQUAL -> fetchedValue == floatValue.value();
-            case NOT_EQUAL -> fetchedValue != floatValue.value();
-            case GREATER_EQUAL -> fetchedValue >= floatValue.value();
-            case LESS_EQUAL -> fetchedValue <= floatValue.value();
         };
     }
 

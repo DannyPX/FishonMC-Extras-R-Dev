@@ -1,13 +1,13 @@
 package dannypx.foe.type.search;
 
 public enum Operator {
-    GREATER(">"),
-    LESS("<"),
     EQUAL("=="),
     SHORT_EQUAL("="),
     NOT_EQUAL("!="),
     GREATER_EQUAL(">="),
-    LESS_EQUAL("<=");
+    LESS_EQUAL("<="),
+    GREATER(">"),
+    LESS("<");
 
     public final String symbol;
 

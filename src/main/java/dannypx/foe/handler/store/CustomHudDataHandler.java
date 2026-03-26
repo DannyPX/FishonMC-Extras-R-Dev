@@ -140,6 +140,29 @@ public class CustomHudDataHandler extends Handler {
                                 1.0f,
                                 true,
                                 true
+                        ),
+                        "Contest Hud",
+                        new CustomHud(new ArrayList<>(Arrays.asList(
+                                Triplet.of("&7&l- &fContest &7-", true, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%", false, false),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%&fNext Contest: &e%timer.Contest Timer.time.off.minute%&7:&e%timer.Contest Timer.time.off.second%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%", false, false),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%&fContest Ends: &e%timer.Contest Timer.time.on.minute%&7:&e%timer.Contest Timer.time.on.second%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%chat.trigger.Contest Type%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%chat.trigger.Contest Location%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest 1st>=lb)%", false, false),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 1st%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 2nd%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 3rd%", false, true),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest Placement>=You)%", false, false),
+                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest Placement%", false, true)
+                        )),
+                                Alignment.RIGHT,
+                                1,
+                                50,
+                                1.0f,
+                                true,
+                                true
                         )
                 )
         );

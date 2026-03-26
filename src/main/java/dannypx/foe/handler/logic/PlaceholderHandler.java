@@ -3,6 +3,8 @@ package dannypx.foe.handler.logic;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.*;
 import dannypx.foe.handler.store.*;
+import dannypx.foe.helper.FunctionParser;
+import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.NbtObject;
 import dannypx.foe.type.tuple.Pair;
@@ -31,6 +33,11 @@ public class PlaceholderHandler extends Handler {
     }
 
     //region Fields
+    static final Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%([^%]+?)(?<!\\\\)%");
+    static final Pattern conditionPlaceholderPattern = Pattern.compile(
+            "^%condition\\.\\(\\s*(?:<([^>]+)>|([A-Za-z0-9]+))\\s*(=|==|>=|<=|>|<|!=)\\s*(?:<([^>]+)>|([A-Za-z0-9]+))\\s*\\)%$"
+    );
+
     private static final Map<String, Function<String[], Pair<Boolean, CustomTextValue>>> placeholders = Map.ofEntries(
             Map.entry("boss_bar", params -> BossBarHandler.instance().getBossBar(params)),
             Map.entry("player", params -> ClientPlayerHandler.instance().getClientPlayer(params)),
@@ -45,61 +52,72 @@ public class PlaceholderHandler extends Handler {
             Map.entry("ray_cast", params -> RayCastHandler.instance().getRayCast(params)),
             Map.entry("crew", params -> CrewHandler.instance().getCrew(params)),
             Map.entry("chat", params -> ChatHandler.instance().getChat(params)),
+            Map.entry("timer", params -> TimerHandler.instance().getTimer(params)),
             Map.entry("constant_data", params -> ConstantDataHandler.instance().getConstantData(params)),
             Map.entry("profile_data", params -> ProfileDataHandler.instance().getProfileData(params)),
             Map.entry("quest_data", params -> QuestDataHandler.instance().getQuestData(params)),
             Map.entry("stats_data", params -> StatsDataHandler.instance().getStatsData(params)),
             Map.entry("crew_data", params -> CrewDataHandler.instance().getCrewData(params))
     );
+
+    private static final Map<String, Function<FunctionParser.FunctionPlaceholder, Pair<Boolean, CustomTextValue>>> functionPlaceholders = Map.ofEntries(
+            Map.entry("condition", PlaceholderHandler::parseConditionFromString)
+    );
     //endregion
 
     //region Methods
     // Boolean = hasFullData
     public static Pair<Boolean, MutableText> parsePlaceholderFromString(String input) {
-        Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%([^%]+?)(?<!\\\\)%");
-        Matcher matcher = placeholderPattern.matcher(input);
+        Matcher placeholderMatcher = placeholderPattern.matcher(input);
         boolean hasFullData = true;
 
         MutableText result = Text.empty();
         int lastEnd = 0;
         Style activeStyle = Style.EMPTY;
 
-        while (matcher.find()) {
-            if (matcher.start() > lastEnd) {
-                String before = input.substring(lastEnd, matcher.start());
+        while (placeholderMatcher.find() && hasFullData) {
+            if (placeholderMatcher.start() > lastEnd) {
+                String before = input.substring(lastEnd, placeholderMatcher.start());
                 Pair<MutableText, Style> parsed = TextHelper.parseLegacyWithStyle(before, activeStyle);
                 result.append(parsed.value1());
                 activeStyle = parsed.value2();
             }
 
-            String full = matcher.group(1);
+            String full = placeholderMatcher.group(1);
             String[] parts = full.split("\\.");
             String identifier = parts[0];
             String[] parameters = Arrays.copyOfRange(parts, 1, parts.length);
 
-            Function<String[], Pair<Boolean, CustomTextValue>> function = placeholders.get(identifier);
+            Pair<Boolean, CustomTextValue> functionResult = null;
 
-            if (function != null) {
-                Pair<Boolean, CustomTextValue> functionResult = function.apply(parameters);
-                if (functionResult.value1()) {
-                    Pair<MutableText, Style> parsed;
+            if(placeholders.containsKey(identifier)) {
+                Function<String[], Pair<Boolean, CustomTextValue>> function = placeholders.get(identifier);
 
-                    switch (functionResult.value2()) {
-                        case StringValue stringValue -> parsed = TextHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
-                        case TextValue textValue -> parsed = Pair.of(textValue.value().copy(), textValue.value().getStyle());
-                    }
-
-                    result.append(parsed.value1());
-                    activeStyle = parsed.value2();
+                if (function != null) {
+                    functionResult = function.apply(parameters);
                 } else {
-                    result.append(Text.literal(matcher.group()).setStyle(activeStyle));
-                    hasFullData = false;
+                    result.append(Text.literal(placeholderMatcher.group()).setStyle(activeStyle));
                 }
-            } else {
-                result.append(Text.literal(matcher.group()).setStyle(activeStyle));
+            } else if (functionPlaceholders.containsKey(identifier)) {
+                functionResult = parseFunctionPlaceHolderFromString("%" + full + "%");
             }
 
-            lastEnd = matcher.end();
+            if (functionResult != null && functionResult.value1()) {
+                Pair<MutableText, Style> parsed;
+
+                switch (functionResult.value2()) {
+                    case StringValue stringValue -> parsed = TextHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
+                    case TextValue textValue -> parsed = Pair.of(textValue.value().copy(), textValue.value().getStyle());
+                }
+
+                result.append(parsed.value1());
+                activeStyle = parsed.value2();
+            } else {
+                result.append(Text.literal(placeholderMatcher.group()).setStyle(activeStyle));
+                hasFullData = false;
+            }
+
+            lastEnd = placeholderMatcher.end();
         }
 
         if (lastEnd < input.length()) {
@@ -109,6 +127,52 @@ public class PlaceholderHandler extends Handler {
         }
 
         return Pair.of(hasFullData, result);
+    }
+
+    private static Pair<Boolean, CustomTextValue> parseFunctionPlaceHolderFromString(String placeholder) {
+        FunctionParser.FunctionPlaceholder functionPlaceholder = FunctionParser.parse(placeholder);
+
+        Function<FunctionParser.FunctionPlaceholder, Pair<Boolean, CustomTextValue>> function = functionPlaceholders.get(functionPlaceholder.function);
+
+        if(function != null) {
+            return function.apply(functionPlaceholder);
+        } else {
+            return noResult();
+        }
+    }
+
+    private static Pair<Boolean, CustomTextValue> parseConditionFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator != null && placeholder.left != null && placeholder.right != null) {
+            String leftField;
+            String rightField;
+
+            if(placeholder.leftBracketed)
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%").value2().getString();
+            else {
+                leftField = placeholder.left;
+            }
+
+            if(placeholder.rightBracketed)
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%").value2().getString();
+            else {
+                rightField = placeholder.right;
+            }
+
+            try {
+                float leftFloat = Float.parseFloat(leftField);
+                float rightFloat = Float.parseFloat(rightField);
+
+                return Pair.of(MathHelper.checkOperation(placeholder.operator, leftFloat, rightFloat), new StringValue(""));
+            } catch (NumberFormatException e) {
+                return switch (placeholder.operator) {
+                    case SHORT_EQUAL -> Pair.of(leftField.contains(rightField), new StringValue(""));
+                    case EQUAL -> Pair.of(leftField.equals(rightField), new StringValue(""));
+                    case NOT_EQUAL -> Pair.of(!leftField.equals(rightField), new StringValue(""));
+                    default -> noResult();
+                };
+            }
+        }
+        return noResult();
     }
 
     public static Pair<Boolean, CustomTextValue> getTextValue(CustomTextValue customTextValue) {

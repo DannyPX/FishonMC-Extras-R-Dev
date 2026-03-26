@@ -286,7 +286,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getDeleteButtonElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected Button"),
+                        Text.literal("Delete Selected"),
                         (button) -> {
                             if(selectedButtonId != null) {
                                 CustomButtonDataHandler.instance().deleteButton(screenId, selectedButtonId);
@@ -297,6 +297,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 buttonEntryMap.remove(selectedButtonId);
 
                                 selectedButtonId = null;
+                                resetFields();
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
@@ -306,7 +307,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import Button"),
+                        Text.literal("Import"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
@@ -358,7 +359,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getExportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Export Selected Button"),
+                        Text.literal("Export Selected"),
                         (button) -> {
                             if(selectedButtonId != null) {
                                 try {
@@ -371,7 +372,13 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                             TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
                                     );
 
-                                    minecraftClient.keyboard.setClipboard(rawData);
+                                    String dataToCopy = "**Custom Button: **" + selectedButtonId + "\n" +
+                                            "```\n" +
+                                            rawData + "\n" +
+                                            "```\n" +
+                                            "-# Using Button version: " + "`v" + FishOnMCExtras.BUTTON_VERSION + "`";
+
+                                    minecraftClient.keyboard.setClipboard(dataToCopy);
 
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,

@@ -13,12 +13,14 @@ import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomNotificationWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -70,6 +72,8 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
         widgets.add(getImportButton());
         widgets.add(getExportButton());
 
+        widgets.add(this.wikiButton());
+
         widgets.forEach(this::addDrawableChild);
     }
 
@@ -105,7 +109,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     private ClickableWidget getDeleteNotificationElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected Notification"),
+                        Text.literal("Delete Selected"),
                         (button) -> {
                             if(editCustomNotificationWidget.hasSelectedOption) {
                                 CustomNotificationDataHandler.instance().deleteCustomNotification(selectedNotification);
@@ -125,7 +129,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import Notification"),
+                        Text.literal("Import"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
@@ -178,7 +182,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     private ClickableWidget getExportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Export Selected HUD"),
+                        Text.literal("Export Selected"),
                         (button) -> {
                             if(editCustomNotificationWidget.hasSelectedOption) {
                                 try {
@@ -191,7 +195,13 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                             TextHelper.compress(new GsonBuilder().create().toJson(dataNotification))
                                     );
 
-                                    minecraftClient.keyboard.setClipboard(rawData);
+                                    String dataToCopy = "**Custom Notification: **" + selectedNotification + "\n" +
+                                            "```\n" +
+                                            rawData + "\n" +
+                                            "```\n" +
+                                            "-# Using Notification version: " + "`v" + FishOnMCExtras.NOTIFICATION_VERSION + "`";
+
+                                    minecraftClient.keyboard.setClipboard(dataToCopy);
 
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
@@ -315,6 +325,24 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                 .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Add line to the bottom")))
+                .build();
+    }
+
+    private ClickableWidget wikiButton() {
+        return ButtonWidget.builder(Text.literal("Wiki"), button -> {
+                    String url = "https://github.com/DannyPX/FishOnMC-Extras-R/wiki/Placeholders";
+
+                    minecraftClient.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                        if (confirmed) {
+                            Util.getOperatingSystem().open(url);
+                        }
+
+                        minecraftClient.setScreen(null);
+                    }, url, true));
+                })
+                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Wiki to Placeholders")))
                 .build();
     }
 

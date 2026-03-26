@@ -18,6 +18,7 @@ public class FishOnMCExtras implements ModInitializer {
 	public static Integer BUTTON_VERSION = 1;
 	public static Integer NOTIFICATION_VERSION = 1;
 	public static Integer CHAT_TRIGGER_VERSION = 1;
+	public static Integer TIMER_VERSION = 1;
 
 	public static final String INVENTORY_SCREEN = "Inventory Screen";
 

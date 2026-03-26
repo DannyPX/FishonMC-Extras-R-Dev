@@ -104,6 +104,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
 
         customNotification.textLines.forEach(line -> this.addEntry(new LineEntry(
                 line,
+                width,
                 getDefaultCallback()
         )));
     }
@@ -127,6 +128,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
     private LineEntry getDefaultEntry() {
         return new EditCustomNotificationWidget.LineEntry(
                 "Example text",
+                width,
                 getDefaultCallback()
         );
     }
@@ -334,13 +336,15 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
         private final ButtonWidget deleteButton;
 
         public String lineString;
+        public int width;
 
         public static final int HEIGHT = 24;
         private static final int SPACING = 6;
         private static final int BUTTON_SIZE = 25;
 
-        public LineEntry(String defaultLine, Callback callback) {
+        public LineEntry(String defaultLine, int width, Callback callback) {
             lineString = defaultLine;
+            this.width = width;
 
             textFieldWidget = new TextFieldWidget(
                     minecraftClient.textRenderer,
@@ -351,7 +355,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
             textFieldWidget.setMaxLength(Integer.MAX_VALUE);
 
             textFieldWidget.setText(defaultLine);
-            int textWidth = ((minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 5) * 2 - PADDING * 5;
+            int textWidth = width - BUTTON_SIZE * 2 - PADDING_QUART * 2 - SPACING - 20;
             textFieldWidget.setPlaceholder(Text.literal(
                     minecraftClient.textRenderer.getWidth(defaultLine) > textWidth
                     ? minecraftClient.textRenderer.trimToWidth(defaultLine, textWidth) + "..."

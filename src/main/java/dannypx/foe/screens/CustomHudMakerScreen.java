@@ -107,7 +107,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getDeleteHudElementButton() {
         return ButtonWidget.builder(
-                        Text.literal("Delete Selected HUD"),
+                        Text.literal("Delete Selected"),
                         (button) -> {
                             if(editCustomHUDWidget.hasSelectedOption) {
                                 CustomHudDataHandler.instance().deleteCustomHud(selectedHud);
@@ -127,7 +127,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getImportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Import HUD"),
+                        Text.literal("Import"),
                         (button) -> {
                             String rawData = minecraftClient.keyboard.getClipboard();
                             try {
@@ -180,7 +180,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ClickableWidget getExportButton() {
         return ButtonWidget.builder(
-                        Text.literal("Export Selected HUD"),
+                        Text.literal("Export Selected"),
                         (button) -> {
                             if(editCustomHUDWidget.hasSelectedOption) {
                                 try {
@@ -194,7 +194,13 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                             TextHelper.compress(new GsonBuilder().create().toJson(dataHud))
                                     );
 
-                                    minecraftClient.keyboard.setClipboard(rawData);
+                                    String dataToCopy = "**Custom HUD: **" + selectedHud + "\n" +
+                                            "```\n" +
+                                            rawData + "\n" +
+                                            "```\n" +
+                                            "-# Using HUD version: " + "`v" + FishOnMCExtras.HUD_VERSION + "`";
+
+                                    minecraftClient.keyboard.setClipboard(dataToCopy);
 
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,

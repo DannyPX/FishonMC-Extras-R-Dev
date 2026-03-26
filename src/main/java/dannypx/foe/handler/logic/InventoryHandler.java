@@ -220,6 +220,15 @@ public class InventoryHandler extends Handler {
         }
     }
 
+    public void onLeave() {
+        this.reset();
+    }
+
+    public void reset() {
+        this.snapshotInventory.clear();
+        this.snapshottedItems.clear();
+    }
+
     private void checkSnapshottedItems() {
         snapshottedItems.removeIf(item -> item.value1() > System.currentTimeMillis() + 1000L);
     }

@@ -131,13 +131,14 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     private void onLeave(ClientPlayNetworkHandler clientPlayNetworkHandler, MinecraftClient minecraftClient) {
         ConnectionHandler.instance().onLeave();
         LoadingHandler.instance().onLeave();
+
+        InventoryHandler.instance().onLeave();
+
     }
 
     private void onJoin(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender packetSender, MinecraftClient minecraftClient) {
         ConnectionHandler.instance().init();
-        //onJoin when on server
         if(ConnectionHandler.instance().isOnServer()) {
-
             ProfileDataHandler.instance().init();
             StatsDataHandler.instance().init();
             ConstantDataHandler.instance().init();
@@ -147,13 +148,17 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             CustomButtonDataHandler.instance().init();
             CustomNotificationDataHandler.instance().init();
             CustomChatTriggerDataHandler.instance().init();
+            CustomTimerDataHandler.instance().init();
+
             ScoreboardHandler.instance().init();
             CrewHandler.instance().init();
-            ChatHandler.instance().init();
 
             DataFileHandler.instance().init();
             LoadingHandler.instance().init();
+
+            ChatHandler.instance().init();
             NotifierHandler.instance().init();
+            TimerHandler.instance().init();
         }
     }
 
@@ -184,6 +189,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
                 if(Configs.handlerConfig.crewHandler.get()) CrewHandler.instance().tick();
                 if(Configs.handlerConfig.lightHandler.get()) LightHandler.instance().tick();
+                if(Configs.handlerConfig.timerHandler.get()) TimerHandler.instance().tick();
 
                 // Renderer
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();

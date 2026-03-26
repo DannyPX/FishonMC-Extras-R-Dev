@@ -2,6 +2,7 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
@@ -14,6 +15,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +153,18 @@ public class ChatHandler extends Handler {
         else if (petStr.indexOf('\uf036') != -1) return 5f;
         else if (petStr.indexOf('\uf037') != -1) return 7.5f;
         return 1;
+    }
+
+    public void cleanChatTriggerStore(String[] chatTriggers) {
+        LoggerHandler._debug(Arrays.toString(chatTriggers));
+
+        for (String chatTrigger : chatTriggers) {
+            if(storedChatTriggerText.containsKey(chatTrigger)) {
+                CodeExecuterHandler.runLater(2, () -> {
+                    storedChatTriggerText.put(chatTrigger, Text.empty());
+                });
+            }
+        }
     }
     //endregion
 
