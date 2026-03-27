@@ -114,7 +114,7 @@ public class CustomTimerDataHandler extends Handler {
                         "Contest Timer",
                         1800,
                         1800,
-                        -3,
+                        -5,
                         "Contest Start",
                         "Contest End",
                         "Contest Type, Contest Location, Contest Level, Contest 1st, Contest 2nd, Contest 3rd, Contest Placement",
