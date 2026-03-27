@@ -21,6 +21,8 @@ public class PetNbtObject extends NbtObject {
     public static final String CLIMATE_BASE = "cbase";
     public static final String PERCENT_MAX_BASE = "percent_max";
     public static final String MAX_BASE = "cur_max";
+    public static final String ITEM = "item";
+    public static final String SKIN = "skin";
 
     public static final int RATING_LINE = 15;
     public static final int RATING_SIBLING = 2;

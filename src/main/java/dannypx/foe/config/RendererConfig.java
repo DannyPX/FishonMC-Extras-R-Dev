@@ -21,12 +21,15 @@ public class RendererConfig extends Config {
         super(Identifier.of(FishOnMCExtras.MOD_ID, "renderer_config"));
     }
 
-    @Name("Item Rarity Marker")
-    @Desc("§7This is the small marker on items that shows rarity")
-    public ConfigGroup itemRarityGroup = new ConfigGroup("item_rarity_group");
+    @Name("Item Marker")
+    @Desc("§7This is the small markers on items")
+    public ConfigGroup itemMarkerGroup = new ConfigGroup("item_marker_group");
+
+    @Name("Show Equipped Pet Item")
+    public ValidatedBoolean showPetEquippedMarker = new ValidatedBoolean(true);
 
     @Name("Show Rarity marker")
-    public ValidatedBoolean showMarker = new ValidatedBoolean(true);
+    public ValidatedBoolean showRarityMarker = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
     @Name("Blacklist items from rendering rarity marker")

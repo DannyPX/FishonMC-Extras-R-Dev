@@ -1,19 +1,23 @@
 package dannypx.foe.handler.renderer;
 
+import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.NbtObject;
+import dannypx.foe.item.PetNbtObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +35,12 @@ public class ItemRendererHandler extends Handler {
     }
 
     //region Fields
+    private final Identifier petItemMarker = Identifier.of(FishOnMCExtras.MOD_ID, "icons/pet_item");
     //endregion
 
     //region Methods
     public void drawRarityMarker(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, int x, int y) {
-        if(!Configs.rendererConfig.showMarker.get()) {
+        if(!Configs.rendererConfig.showRarityMarker.get()) {
             return;
         }
 
@@ -124,6 +129,22 @@ public class ItemRendererHandler extends Handler {
 
             drawContext.drawBorder(x, y, 16, 16, Colors.RED);
 
+            drawContext.getMatrices().pop();
+        }
+    }
+
+
+    public void drawPetItemEquipped(DrawContext drawContext, ItemStack stack, int x, int y) {
+        if(!Configs.rendererConfig.showPetEquippedMarker.get()) {
+            return;
+        }
+
+        Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(stack);
+
+        if(validatedPet.value1() && (validatedPet.value2().contains(PetNbtObject.ITEM) || validatedPet.value2().contains(PetNbtObject.SKIN))) {
+            drawContext.getMatrices().push();
+            drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+            drawContext.drawGuiTexture(RenderLayer::getGuiTextured, petItemMarker, x, y, 16, 16, 0xFFFFFFFF);
             drawContext.getMatrices().pop();
         }
     }
