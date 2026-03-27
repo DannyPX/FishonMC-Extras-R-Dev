@@ -7,8 +7,12 @@ import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.item.FishNbtObject;
 import dannypx.foe.item.NbtObject;
 import dannypx.foe.item.ValidateItem;
+import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.custom_text.TextValue;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
+import dannypx.foe.type.tuple.Triplet;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -19,6 +23,7 @@ import net.minecraft.util.math.Box;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 public class CatchingHandler extends Handler {
     private static CatchingHandler INSTANCE = new CatchingHandler();
@@ -35,8 +40,66 @@ public class CatchingHandler extends Handler {
     private boolean scanDone = true;
     private String fishNameToFind = "";
 
+    private FishNbtObject lastCaughtFish = FishNbtObject.empty();
+    // Rarity Variant Size
+    private Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> lastDataFish = null;
+
     public boolean isScanDone() {
         return scanDone;
+    }
+
+    public Pair<Boolean, CustomTextValue> getCatch(String[] params) {
+        if(params.length > 2) {
+            Pattern fieldPattern = Pattern.compile("^(last_caught)$");
+
+            if(fieldPattern.matcher(params[0]).matches()) {
+                return switch(params[0]) {
+                    case "last_caught" -> switch (params[1]) {
+                        case "fish" -> {
+                            if(lastCaughtFish.getItemStack() != ItemStack.EMPTY && lastDataFish != null) {
+                                yield switch (params[2]) {
+                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(lastCaughtFish.getName()));
+                                    case "rarity", "variant", "size" -> {
+                                        Pair<String, Integer> drystreakData = null;
+                                        Text icon = null;
+
+                                        switch (params[2]) {
+                                            case "rarity" -> {
+                                                drystreakData = lastDataFish.value1();
+                                                icon = lastCaughtFish.getRarityText();
+                                            }
+                                            case "variant" -> {
+                                                drystreakData = lastDataFish.value2();
+                                                icon = lastCaughtFish.getVariantText();
+                                            }
+                                            case "size" -> {
+                                                drystreakData = lastDataFish.value3();
+                                                icon = lastCaughtFish.getFishSizeText();
+                                            }
+                                        }
+
+                                        if(icon != null) {
+                                            yield switch (params[3]) {
+                                                case "name" -> PlaceholderHandler.getTextValue(new StringValue(drystreakData.value1()));
+                                                case "icon" -> PlaceholderHandler.getTextValue(new TextValue(icon), true);
+                                                case "last_drystreak" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(drystreakData.value2())));
+                                                default -> PlaceholderHandler.noResult();
+                                            };
+                                        }
+                                        yield PlaceholderHandler.noResult();
+                                    }
+                                    default -> PlaceholderHandler.getNbtTextValue(lastCaughtFish, params[2]);
+                                };
+                            }
+                            yield PlaceholderHandler.noResult();
+                        }
+                        default -> PlaceholderHandler.noResult();
+                    };
+                    default -> PlaceholderHandler.noResult();
+                };
+            }
+        }
+        return PlaceholderHandler.noResult();
     }
     //endregion
 
@@ -52,12 +115,16 @@ public class CatchingHandler extends Handler {
                 InventoryHandler.instance().trackAllFish();
 
                 // Store to Stats
-                StatsDataHandler.instance().setFish(foundFish.value2());
+                Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> prevStats = StatsDataHandler.instance().setFish(foundFish.value2());
+                NotifierHandler.instance().notifyFish(foundFish.value2(), prevStats.value1(), prevStats.value2(), prevStats.value3());
+
                 QuestDataHandler.instance().setFish(foundFish.value2());
                 LoggerHandler._debug("Found Fish: " + foundFish.value2().getName().getString());
 
                 CodeExecuterHandler.runLater(Configs.handlerConfig.catchingItemsDelayCheck.get(), this::checkForCaughtItems);
 
+                lastDataFish = prevStats;
+                lastCaughtFish = foundFish.value2();
                 this.scanDone = true;
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){

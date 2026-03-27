@@ -34,9 +34,6 @@ public class PlaceholderHandler extends Handler {
 
     //region Fields
     static final Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%([^%]+?)(?<!\\\\)%");
-    static final Pattern conditionPlaceholderPattern = Pattern.compile(
-            "^%condition\\.\\(\\s*(?:<([^>]+)>|([A-Za-z0-9]+))\\s*(=|==|>=|<=|>|<|!=)\\s*(?:<([^>]+)>|([A-Za-z0-9]+))\\s*\\)%$"
-    );
 
     private static final Map<String, Function<String[], Pair<Boolean, CustomTextValue>>> placeholders = Map.ofEntries(
             Map.entry("boss_bar", params -> BossBarHandler.instance().getBossBar(params)),
@@ -53,6 +50,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("crew", params -> CrewHandler.instance().getCrew(params)),
             Map.entry("chat", params -> ChatHandler.instance().getChat(params)),
             Map.entry("timer", params -> TimerHandler.instance().getTimer(params)),
+            Map.entry("catch", params -> CatchingHandler.instance().getCatch(params)),
             Map.entry("constant_data", params -> ConstantDataHandler.instance().getConstantData(params)),
             Map.entry("profile_data", params -> ProfileDataHandler.instance().getProfileData(params)),
             Map.entry("quest_data", params -> QuestDataHandler.instance().getQuestData(params)),
@@ -202,7 +200,7 @@ public class PlaceholderHandler extends Handler {
             return switch (data.getType()) {
                 case 1 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(object.getBoolean(field))));
                 case 3 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(object.getInt(field))));
-                case 5 -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(object.getFloat(field))));
+                case 5 -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(object.getFloat(field), 2)));
                 case 8 -> PlaceholderHandler.getTextValue(new StringValue(object.getString(field)));
                 default -> PlaceholderHandler.noResult();
             };
