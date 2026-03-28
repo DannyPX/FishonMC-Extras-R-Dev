@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 2)
+@Version(version = 3)
 @Translatable.Name("Renderer Configuration")
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
