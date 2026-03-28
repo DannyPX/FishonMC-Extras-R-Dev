@@ -1,6 +1,7 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.fetch.NetworkHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
@@ -37,8 +38,11 @@ public class InventoryHandler extends Handler {
     private final List<UUID> trackedFish = new ArrayList<>();
     private DefaultedList<ItemStack> snapshotInventory = DefaultedList.ofSize(0);
     private List<Triplet<Long, ItemStack, Integer>> snapshottedItems = new ArrayList<>();
+    private List<Triplet<Long, ItemStack, Integer>> snapshottedRemovedItems = new ArrayList<>();
     private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
     private PetNbtObject currentPet = PetNbtObject.empty();
+
+    private boolean currentlyLoading = false;
 
     private int currentEmptySlots = 27;
 
@@ -190,8 +194,7 @@ public class InventoryHandler extends Handler {
     }
 
     private void tickInventory() {
-        if(!snapshotInventory.isEmpty()
-        ) {
+        if(!snapshotInventory.isEmpty()) {
             DefaultedList<ItemStack> oldInventory = snapshotInventory;
             DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().main;
 
@@ -204,7 +207,15 @@ public class InventoryHandler extends Handler {
                         || (newStack.isEmpty() && !oldStack.isEmpty())
                 ) {
                     this.snapshotInventory();
-                    if(!newStack.isEmpty()) this.addToSnapshotItems(newStack, 1);
+                    int finalI = i;
+                    if(!newStack.isEmpty() &&
+                            snapshottedRemovedItems.stream()
+                                    .noneMatch(
+                                            removedItem -> removedItem.value3() == finalI
+                                            && ItemStack.areItemsAndComponentsEqual(removedItem.value2(), newStack)
+                                    )
+                    ) this.addToSnapshotItems(newStack, 1);
+                    if(newStack.isEmpty()) this.addToRemovedSnapshotItems(oldStack, i);
                 }
 
                 // Same item, stack size changed
@@ -216,7 +227,10 @@ public class InventoryHandler extends Handler {
                 }
             }
         } else {
-            this.snapshotInventory();
+            if(!currentlyLoading) {
+                currentlyLoading = true;
+                CodeExecuterHandler.runLater(100, this::snapshotInventory);
+            }
         }
     }
 
@@ -225,18 +239,23 @@ public class InventoryHandler extends Handler {
     }
 
     public void reset() {
+        this.currentlyLoading = false;
         this.snapshotInventory.clear();
         this.snapshottedItems.clear();
     }
 
     private void checkSnapshottedItems() {
         snapshottedItems.removeIf(item -> item.value1() > System.currentTimeMillis() + 1000L);
+        snapshottedRemovedItems.removeIf(item -> item.value1() > System.currentTimeMillis() + 60L + NetworkHandler.instance().getPing());
     }
 
     private void addToSnapshotItems(ItemStack newStack, int count) {
-        LoggerHandler._debug("Snapshotted Item: " + newStack.getName().getString());
-        LoggerHandler._debug("Snapshotted Time: " + System.currentTimeMillis());
+        LoggerHandler._debug("Snapshotted Item: " + newStack.getName().getString() + " at " + System.currentTimeMillis());
         snapshottedItems.add(Triplet.of(System.currentTimeMillis(), newStack, count));
+    }
+
+    private void addToRemovedSnapshotItems(ItemStack oldStack, int slot) {
+        snapshottedRemovedItems.add(Triplet.of(System.currentTimeMillis(), oldStack, slot));
     }
 
     private void snapshotEmptySlots() {
