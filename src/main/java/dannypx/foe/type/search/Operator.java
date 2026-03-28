@@ -7,7 +7,17 @@ public enum Operator {
     GREATER_EQUAL(">="),
     LESS_EQUAL("<="),
     GREATER(">"),
-    LESS("<");
+    LESS("<"),
+
+    SEPARATOR(","),
+
+    ADDITION("\\+"),
+    SUBTRACTION("\\-"),
+    MULTIPLICATION("\\*"),
+    DIVISION("\\/"),
+    MODULO("\\%"),
+    POWER("\\^")
+    ;
 
     public final String symbol;
 

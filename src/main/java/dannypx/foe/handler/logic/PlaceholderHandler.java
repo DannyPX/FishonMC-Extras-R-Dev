@@ -7,6 +7,7 @@ import dannypx.foe.helper.FunctionParser;
 import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.NbtObject;
+import dannypx.foe.type.search.Operator;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.custom_text.CustomTextValue;
 import dannypx.foe.type.custom_text.StringValue;
@@ -16,7 +17,10 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -33,7 +37,7 @@ public class PlaceholderHandler extends Handler {
     }
 
     //region Fields
-    static final Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%([^%]+?)(?<!\\\\)%");
+    static final Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%((?:\\\\.|[^%])*?)(?<!\\\\)%");
 
     private static final Map<String, Function<String[], Pair<Boolean, CustomTextValue>>> placeholders = Map.ofEntries(
             Map.entry("boss_bar", params -> BossBarHandler.instance().getBossBar(params)),
@@ -59,7 +63,24 @@ public class PlaceholderHandler extends Handler {
     );
 
     private static final Map<String, Function<FunctionParser.FunctionPlaceholder, Pair<Boolean, CustomTextValue>>> functionPlaceholders = Map.ofEntries(
-            Map.entry("condition", PlaceholderHandler::parseConditionFromString)
+            // Boolean
+            Map.entry("condition", PlaceholderHandler::parseConditionFromString),
+            Map.entry("is_blank", param -> parseIsBlankFromString(param, true)),
+            Map.entry("is_not_blank", param -> parseIsBlankFromString(param, false)),
+            Map.entry("or", PlaceholderHandler::parseOrFromString),
+            Map.entry("and", PlaceholderHandler::parseAndFromString),
+            // String
+            Map.entry("substring_front", param -> parseSubStringFromString(param, true)),
+            Map.entry("substring_back", param -> parseSubStringFromString(param, false)),
+            Map.entry("index_of", PlaceholderHandler::parseIndexOfFromString),
+            // Math
+            Map.entry("expression", PlaceholderHandler::parseExpressionFromString),
+            Map.entry("max", PlaceholderHandler::parseMaxFromString),
+            Map.entry("min", PlaceholderHandler::parseMinFromString),
+            Map.entry("abs", PlaceholderHandler::parseAbsoluteFromString),
+            Map.entry("ceil", PlaceholderHandler::parseCeilingFromString),
+            Map.entry("floor", PlaceholderHandler::parseFloorFromString),
+            Map.entry("round", PlaceholderHandler::parseRoundingFromString)
     );
     //endregion
 
@@ -168,6 +189,339 @@ public class PlaceholderHandler extends Handler {
                     case NOT_EQUAL -> Pair.of(!leftField.equals(rightField), new StringValue(""));
                     default -> noResult();
                 };
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseIsBlankFromString(FunctionParser.FunctionPlaceholder placeholder, boolean isBlank) {
+        if(placeholder.operator == null && placeholder.left != null && placeholder.right == null) {
+            String leftField;
+
+            if(placeholder.leftBracketed) {
+                Pair<Boolean, MutableText> parsedString = parsePlaceholderFromString("%" + placeholder.left + "%");
+                if(parsedString.value1()) {
+                    leftField = parsePlaceholderFromString("%" + placeholder.left + "%").value2().getString();
+                } else {
+                    leftField = "";
+                }
+            } else {
+                leftField = placeholder.left;
+            }
+
+            return Pair.of(leftField.isBlank() == isBlank, new StringValue(""));
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseSubStringFromString(FunctionParser.FunctionPlaceholder placeholder, boolean isFront) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            int rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            try {
+                if(leftField.value1()) {
+                    if(placeholder.rightBracketed) {
+                        rightField = Integer.parseInt(parsePlaceholderFromString("%" + placeholder.right + "%").value2().getString());
+                    } else {
+                        rightField = Integer.parseInt(placeholder.right);
+                    }
+
+                    if(isFront) {
+                        return Pair.of(true, new TextValue(TextHelper.substring(leftField.value2(), 0, rightField)));
+                    } else {
+                        return Pair.of(true, new TextValue(TextHelper.substring(leftField.value2(), rightField, leftField.value2().getString().length())));
+                    }
+                } else {
+                    return noResult();
+                }
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseIndexOfFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(true, Text.literal(placeholder.right));
+            }
+
+            if(leftField.value1() && rightField.value1()) {
+                int index = leftField.value2().getString().indexOf(rightField.value2().getString());
+
+                LoggerHandler._debug(String.valueOf(index));
+
+                if(index == -1) {
+                    return noResult();
+                } else {
+                    return Pair.of(true, new StringValue(String.valueOf(index)));
+                }
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseOrFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(Boolean.parseBoolean(placeholder.left), Text.empty());
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(Boolean.parseBoolean(placeholder.right), Text.empty());
+            }
+
+            if(leftField.value1() || rightField.value1()) {
+                return Pair.of(true, new StringValue(""));
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseAndFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(Boolean.parseBoolean(placeholder.left), Text.empty());
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(Boolean.parseBoolean(placeholder.right), Text.empty());
+            }
+
+            if(leftField.value1() && rightField.value1()) {
+                return Pair.of(true, new StringValue(""));
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseExpressionFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator != null && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(true, Text.literal(placeholder.right));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+                float rightNumber = Float.parseFloat(rightField.value2().getString());
+
+                float result = MathHelper.checkExpression(placeholder.operator, leftNumber, rightNumber);
+
+                if(result != Float.MIN_VALUE) {
+                    return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                }
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseMaxFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(true, Text.literal(placeholder.right));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+                float rightNumber = Float.parseFloat(rightField.value2().getString());
+
+                float result = Math.max(leftNumber, rightNumber);
+
+                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseMinFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(true, Text.literal(placeholder.right));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+                float rightNumber = Float.parseFloat(rightField.value2().getString());
+
+                float result = Math.min(leftNumber, rightNumber);
+
+                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseAbsoluteFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == null && placeholder.left != null && placeholder.right == null) {
+            Pair<Boolean, MutableText> leftField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+
+                float result = Math.abs(leftNumber);
+
+                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseCeilingFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == null && placeholder.left != null && placeholder.right == null) {
+            Pair<Boolean, MutableText> leftField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+
+                float result = (float) Math.ceil(leftNumber);
+
+                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseRoundingFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(true, Text.literal(placeholder.right));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+                int rightNumber = Integer.parseInt(rightField.value2().getString());
+
+                if (rightNumber < 0) return noResult();
+
+                BigDecimal bd = new BigDecimal(Double.toString(leftNumber));
+                bd = bd.setScale(rightNumber, RoundingMode.HALF_UP);
+                float result = (float) bd.doubleValue();
+
+                return Pair.of(true, new StringValue(TextHelper.floatToString(result, rightNumber)));
+            } catch (NumberFormatException e) {
+                return noResult();
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseFloorFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == null && placeholder.left != null && placeholder.right == null) {
+            Pair<Boolean, MutableText> leftField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(true, Text.literal(placeholder.left));
+            }
+
+            try {
+                float leftNumber = Float.parseFloat(leftField.value2().getString());
+
+                float result = (float) Math.floor(leftNumber);
+
+                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+            } catch (NumberFormatException e) {
+                return noResult();
             }
         }
         return noResult();
