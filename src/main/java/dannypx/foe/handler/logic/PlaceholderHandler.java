@@ -228,9 +228,9 @@ public class PlaceholderHandler extends Handler {
             try {
                 if(leftField.value1()) {
                     if(placeholder.rightBracketed) {
-                        rightField = Integer.parseInt(parsePlaceholderFromString("%" + placeholder.right + "%").value2().getString());
+                        rightField = (int) Float.parseFloat(parsePlaceholderFromString("%" + placeholder.right + "%").value2().getString());
                     } else {
-                        rightField = Integer.parseInt(placeholder.right);
+                        rightField = (int) Float.parseFloat(placeholder.right);
                     }
 
                     if(isFront) {
