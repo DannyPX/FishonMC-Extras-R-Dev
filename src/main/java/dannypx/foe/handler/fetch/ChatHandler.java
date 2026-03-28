@@ -37,7 +37,7 @@ public class ChatHandler extends Handler {
     //region Fields
     private Map<String, Text> storedChatTriggerText = new HashMap<>();
 
-    List<String> blacklistedTextFilters = List.of(
+    final List<String> blacklistedTextFilters = List.of(
             "REACTIONS »"
     );
 
