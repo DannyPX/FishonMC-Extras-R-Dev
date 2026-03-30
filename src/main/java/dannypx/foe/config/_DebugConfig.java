@@ -19,8 +19,8 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 1)
-@Translatable.Name("Debug Configuration")
+@Version(version = 2)
+@Translatable.Name("§7§oDev§8§o: §f§oDebug Configuration")
 @Translatable.Desc("§4WARNING §7Debugging only. Do not touch these unless you know what you are doing")
 public class _DebugConfig extends Config {
     public _DebugConfig() {
