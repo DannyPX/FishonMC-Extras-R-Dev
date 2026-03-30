@@ -69,6 +69,8 @@ public class PlaceholderHandler extends Handler {
             Map.entry("is_not_blank", param -> parseIsBlankFromString(param, false)),
             Map.entry("or", PlaceholderHandler::parseOrFromString),
             Map.entry("and", PlaceholderHandler::parseAndFromString),
+            Map.entry("not", PlaceholderHandler::parseNotFromString),
+            Map.entry("xot", PlaceholderHandler::parseXorFromString),
             // String
             Map.entry("substring_front", param -> parseSubStringFromString(param, true)),
             Map.entry("substring_back", param -> parseSubStringFromString(param, false)),
@@ -304,6 +306,30 @@ public class PlaceholderHandler extends Handler {
         return noResult();
     }
 
+    public static Pair<Boolean, CustomTextValue> parseXorFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableText> leftField;
+            Pair<Boolean, MutableText> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(Boolean.parseBoolean(placeholder.left), Text.empty());
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.of(Boolean.parseBoolean(placeholder.right), Text.empty());
+            }
+
+            if((leftField.value1() || rightField.value1()) && (leftField.value1() != rightField.value1())) {
+                return Pair.of(true, new StringValue(""));
+            }
+        }
+        return noResult();
+    }
+
     public static Pair<Boolean, CustomTextValue> parseAndFromString(FunctionParser.FunctionPlaceholder placeholder) {
         if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
             Pair<Boolean, MutableText> leftField;
@@ -322,6 +348,25 @@ public class PlaceholderHandler extends Handler {
             }
 
             if(leftField.value1() && rightField.value1()) {
+                return Pair.of(true, new StringValue(""));
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> parseNotFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == null && placeholder.left != null && placeholder.right == null) {
+            Pair<Boolean, MutableText> leftField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.of(Boolean.parseBoolean(placeholder.left), Text.empty());
+            }
+
+            if(leftField.value1()) {
+                return Pair.of(false, new StringValue(""));
+            } else {
                 return Pair.of(true, new StringValue(""));
             }
         }
