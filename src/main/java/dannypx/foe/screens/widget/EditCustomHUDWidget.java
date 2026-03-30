@@ -16,6 +16,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class EditCustomHUDWidget extends ClickableWidget implements ScreenConstants {
     MinecraftClient minecraftClient = MinecraftClient.getInstance();
@@ -130,8 +131,8 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         header = Text.literal(id);
         idTextField.setText(id);
         idTextField.setPlaceholder(Text.literal(id));
-        scaleTextField.setText(String.valueOf(customHud.scale));
-        scaleTextField.setPlaceholder(Text.literal(String.valueOf(customHud.scale)));
+        scaleTextField.setText(String.format(Locale.US, "%f", customHud.scale));
+        scaleTextField.setPlaceholder(Text.literal(String.format(Locale.US, "%f", customHud.scale)));
         showBackground = customHud.showBackground;
         if(customHud.showBackground != showBackgroundCheckBox.isChecked()) {
             showBackgroundCheckBox.onPress();

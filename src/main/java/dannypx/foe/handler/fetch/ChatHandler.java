@@ -37,6 +37,10 @@ public class ChatHandler extends Handler {
     //region Fields
     private Map<String, Text> storedChatTriggerText = new HashMap<>();
 
+    final List<String> blacklistedTextFilters = List.of(
+            "REACTIONS »"
+    );
+
     public Pair<Boolean, CustomTextValue> getChat(String[] params) {
         if(params.length > 1
                 && minecraftClient.player != null
@@ -70,8 +74,14 @@ public class ChatHandler extends Handler {
     }
 
     public void onReceiveMessage(Text text) {
+        if(this.inBlackList(text)) return;
+        
         this.checkPet(text);
         this.checkChatTrigger(text);
+    }
+
+    private boolean inBlackList(Text text) {
+        return blacklistedTextFilters.stream().anyMatch(filter -> text.getString().startsWith(filter));
     }
 
     private void checkPet(Text text) {

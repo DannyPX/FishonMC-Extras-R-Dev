@@ -461,6 +461,35 @@ public class TextHelper {
         return lines;
     }
 
+    public static Text substring(Text text, int start, int end) {
+        int length = text.getString().length();
+
+        if (start < 0 || end < 0 || start > end || end > length) {
+            return Text.empty();
+        }
+
+        MutableText result = Text.empty();
+        AtomicInteger index = new AtomicInteger(0);
+
+        text.visit((style, string) -> {
+            int strStart = index.get();
+            int strEnd = strStart + string.length();
+
+            if (strEnd > start && strStart < end) {
+                int from = Math.max(0, start - strStart);
+                int to = Math.min(string.length(), end - strStart);
+
+                String sub = string.substring(from, to);
+                result.append(Text.literal(sub).setStyle(style));
+            }
+
+            index.addAndGet(string.length());
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
     public static byte[] compress(final String str) throws IOException {
         if ((str == null) || (str.isEmpty())) {
             return null;

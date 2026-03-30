@@ -13,6 +13,7 @@ import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.custom_text.CustomTextValue;
 import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.tuple.Triplet;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -121,7 +122,7 @@ public class StatsDataHandler extends Handler {
         this.statsData.uuid = uuid;
     }
 
-    public void setFish(FishNbtObject fish) {
+    public Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> setFish(FishNbtObject fish) {
         statsData.fishTotal++;
 
         Pair<String, Integer> rarityDrystreak = this.updateFishData(statsData, FishNbtObject.RARITY, fish.getRarity(), 1);
@@ -133,8 +134,7 @@ public class StatsDataHandler extends Handler {
         Pair<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishNbtObject.FISH_SIZE, fish.getFishSize(), 1);
         ConstantDataHandler.instance().updateFishData(FishNbtObject.FISH_SIZE, fish.getFishSize(), fish.getFishSizeText());
 
-        // Notify Fish
-        NotifierHandler.instance().notifyFish(fish, rarityDrystreak, variantDrystreak, sizeDryStreak);
+        return Triplet.of(rarityDrystreak, variantDrystreak, sizeDryStreak);
     }
 
 
