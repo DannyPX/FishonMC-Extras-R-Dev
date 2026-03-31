@@ -51,11 +51,11 @@ public class StatsScreenHandler extends Handler {
         if(this.importStats) {
             CodeExecuterHandler.runLater(2, () -> {
                 Slot statSlot = genericContainerScreenHandler.getSlot(23);
-                boolean completed = this.extractData(statSlot.getStack());
+                Pair<Boolean, Map<String, Map<String, StatsDataHandler.Stat<Integer, Integer>>>> completed = this.extractData(statSlot.getStack());
 
-                if(completed) {
+                if(completed.value1()) {
                     ProfileDataHandler.instance().updateImportStats(true);
-                    StatsDataHandler.instance().updateImportStats(true);
+                    StatsDataHandler.instance().updateImportStats(true, completed.value2());
                     NotifierHandler.instance().notifyImportStatsCompleted();
                 }
             });
@@ -64,11 +64,13 @@ public class StatsScreenHandler extends Handler {
         }
     }
 
-    private boolean extractData(ItemStack stack) {
+    private Pair<Boolean, Map<String, Map<String, StatsDataHandler.Stat<Integer, Integer>>>> extractData(ItemStack stack) {
         if(stack.get(DataComponentTypes.LORE) != null) {
             List<Text> lines = stack.get(DataComponentTypes.LORE).lines();
             this.statsLore = lines;
             if(lines.size() > 7) {
+                Map<String, Map<String, StatsDataHandler.Stat<Integer, Integer>>> newData = StatsDataHandler.instance().getStatsData().fishData;
+
                 int totalFish = this.extractTotal(lines.get(5));
                 StatsDataHandler.instance().getStatsData().fishTotal = totalFish;
 
@@ -79,9 +81,12 @@ public class StatsScreenHandler extends Handler {
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishNbtObject.RARITY, new HashMap<>()), line);
 
                     if(data.value1()) {
-                        StatsDataHandler.instance().getStatsData().fishData
-                                .getOrDefault(FishNbtObject.RARITY, new HashMap<>())
-                                .put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
+                        Map<String, StatsDataHandler.Stat<Integer, Integer>> newCategoryData = newData
+                                .getOrDefault(FishNbtObject.RARITY, new HashMap<>());
+
+                        newCategoryData.put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
+
+                        newData.put(FishNbtObject.RARITY, newCategoryData);
                     }
                 }
 
@@ -92,9 +97,12 @@ public class StatsScreenHandler extends Handler {
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>()), line);
 
                     if(data.value1()) {
-                        StatsDataHandler.instance().getStatsData().fishData
-                                .getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>())
-                                .put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
+                        Map<String, StatsDataHandler.Stat<Integer, Integer>> newCategoryData = newData
+                                .getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>());
+
+                        newCategoryData.put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
+
+                        newData.put(FishNbtObject.FISH_SIZE, newCategoryData);
                     }
                 }
 
@@ -106,19 +114,23 @@ public class StatsScreenHandler extends Handler {
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishNbtObject.VARIANT, new HashMap<>()), line);
 
                     if(data.value1()) {
+                        Map<String, StatsDataHandler.Stat<Integer, Integer>> newCategoryData = newData
+                                .getOrDefault(FishNbtObject.VARIANT, new HashMap<>());
+
                         normalCount.set(normalCount.get() - data.value3());
-                        StatsDataHandler.instance().getStatsData().fishData
-                                .getOrDefault(FishNbtObject.VARIANT, new HashMap<>())
-                                .put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
+                        newCategoryData.put(data.value2(), new StatsDataHandler.Stat<>(data.value3(), totalFish));
+
+                        newData.put(FishNbtObject.VARIANT, newCategoryData);
                     }
                 }
-                StatsDataHandler.instance().getStatsData().fishData
-                        .getOrDefault(FishNbtObject.VARIANT, new HashMap<>())
+
+                newData.getOrDefault(FishNbtObject.VARIANT, new HashMap<>())
                         .put("normal", new StatsDataHandler.Stat<>(normalCount.get(), totalFish));
-                return true;
+
+                return Pair.of(true, newData);
             }
         }
-        return false;
+        return Pair.of(false, new HashMap<>());
     }
 
     private Triplet<Boolean, String, Integer> extractStat(Map<String, Text> constants, Text line) {
