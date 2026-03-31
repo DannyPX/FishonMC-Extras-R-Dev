@@ -503,7 +503,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 button -> CodeExecuterHandler.runLater(1, () -> {
                                     String newId = "Custom Hud #" + UUID.randomUUID();
 
-                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(selectedButtonId));
+                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
                                     CustomButtonDataHandler.instance().createNewButton(screenId, newId, pos);
 
