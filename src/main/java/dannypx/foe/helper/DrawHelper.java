@@ -36,11 +36,11 @@ public class DrawHelper {
         }
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+    private static void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
         drawText(drawContext, textRenderer, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, shadow, middle, hasCustomFont, smallText);
     }
 
-    public static void drawText(DrawContext drawContext, TextRenderer textRenderer, List<Character> text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+    private static void drawText(DrawContext drawContext, TextRenderer textRenderer, List<Character> text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
         if (!text.isEmpty()) {
             String glyph = popNextGlyph(text);
 

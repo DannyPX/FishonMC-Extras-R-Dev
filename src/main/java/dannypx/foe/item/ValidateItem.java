@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class ValidateItem {
     private static final String PET = "pet";
+    private static final String ARMOR = "armor";
 
     public static Pair<Boolean, NbtObject> isServerItem(ItemStack itemStack) {
         return isValidItem(itemStack);
@@ -66,6 +67,18 @@ public class ValidateItem {
 
     public static Pair<Boolean, PetNbtObject> isPet(NbtObject item) {
         return Pair.of(Objects.equals(item.getType(), PET), PetNbtObject.of(item.nbtCompound, item.itemStack));
+    }
+
+    public static Pair<Boolean, ArmorNbtObject> isArmor(ItemStack itemStack) {
+        Pair<Boolean, NbtObject> validatedItem = isType(itemStack);
+        if(validatedItem.value1()) {
+            return isArmor(validatedItem.value2());
+        }
+        return Pair.ofFalse(ArmorNbtObject.of(validatedItem.value2().nbtCompound, validatedItem.value2().itemStack));
+    }
+
+    public static Pair<Boolean, ArmorNbtObject> isArmor(NbtObject item) {
+        return Pair.of(Objects.equals(item.getType(), ARMOR), ArmorNbtObject.of(item.nbtCompound, item.itemStack));
     }
 
     public static Pair<Boolean, FishNbtObject> isFish(ItemStack itemStack) {

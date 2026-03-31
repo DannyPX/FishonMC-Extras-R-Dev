@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class FishNbtObject extends NbtObject {
-
     public static final String FISH = "fish";
     public static final String FISH_SIZE = "size";
     public static final String VARIANT = "variant";

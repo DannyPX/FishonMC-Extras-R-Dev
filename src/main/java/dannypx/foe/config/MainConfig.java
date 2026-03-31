@@ -11,7 +11,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 0)
+@Version(version = 1)
 @RootConfig
 @Translatable.Name("FishOnExtras Rebirth")
 @IgnoreVisibility
@@ -20,7 +20,7 @@ public class MainConfig extends Config {
         super(Identifier.of(FishOnMCExtras.MOD_ID, "main_config"));
     }
 
-    @Name("Enable Mod")
+    @Name("§7§oDev§8§o: §f§oEnable Mod")
     @Desc("§4WARNING\nThis will turn off the mod when false. NOTHING will work when false.\nTo turn it back on, do /foe config")
     public ValidatedBoolean enableMod = new ValidatedBoolean(true);
 

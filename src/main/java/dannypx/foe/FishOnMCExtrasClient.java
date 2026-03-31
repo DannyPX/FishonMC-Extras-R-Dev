@@ -108,13 +108,21 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onBeforeInitScreen(MinecraftClient minecraftClient, Screen screen, int scaledWidth, int scaledHeight) {
-        ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, modifiers, modifiers2) -> afterKeyPress(screen1, key, modifiers2));
+        ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> afterKeyPress(screen1, key, modifiers));
+        ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, key, scancode, modifiers) -> afterKeyRelease(screen1, key, modifiers));
     }
 
     private void afterKeyPress(Screen screen, int key, int modifiers) {
+        KeyBindHandler.instance().checkKeyPresses(screen, key, modifiers);
+
         if(screen instanceof DebugHandlerScreen debugHandlerScreen) {
             debugHandlerScreen.copyText(key, modifiers);
         }
+    }
+
+    private void afterKeyRelease(Screen screen, int key, int modifiers) {
+        KeyBindHandler.instance().afterKeyPressed(screen, key, modifiers);
+
     }
 
     private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {

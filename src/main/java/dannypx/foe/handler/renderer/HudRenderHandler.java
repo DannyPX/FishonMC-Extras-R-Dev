@@ -2,9 +2,12 @@ package dannypx.foe.handler.renderer;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.fetch.ClientPlayerHandler;
+import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.RayCastHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
+import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.item.NbtObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.config.Configs;
@@ -83,6 +86,26 @@ public class HudRenderHandler extends Handler {
 
     private void renderAfterSubtitles(DrawContext drawContext, RenderTickCounter renderTickCounter) {
         this.renderTooltip(drawContext);
+
+        if(!LoadingHandler.instance().isLoadingDone()
+                || ScoreboardHandler.instance().isNoScoreboard()
+                || !ScoreboardHandler.instance().getLevel().getString().trim().equals(String.valueOf(ClientPlayerHandler.instance().getExperienceLevel()))
+        ) this.renderLoading(drawContext);
+    }
+
+
+
+    private void renderLoading(DrawContext drawContext) {
+        long time = System.currentTimeMillis();
+        int dotCount = (int)((time / 1000) % 4);
+
+        Text loadingText = Text.literal("Loading FOER" + ".".repeat(dotCount));
+
+        DrawHelper.drawText(drawContext, minecraftClient.textRenderer, loadingText,
+                minecraftClient.getWindow().getScaledWidth() - minecraftClient.textRenderer.getWidth(loadingText) - 8,
+                minecraftClient.getWindow().getScaledHeight() - minecraftClient.textRenderer.fontHeight - 8,
+                true, true, false, true
+        );
     }
 
     private void renderTooltip(DrawContext drawContext) {

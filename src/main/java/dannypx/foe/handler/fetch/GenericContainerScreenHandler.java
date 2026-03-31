@@ -36,6 +36,7 @@ public class GenericContainerScreenHandler extends Handler {
     public static final String STATS_SCREEN_CONTAINER = "\uEEE4\uD532";
     public static final String AUCTION_HOUSE_SCREEN_CONTAINER = "\uEEE4\uD543";
     public static final String PERSONAL_VAULT_SCREEN_CONTAINER = "Personal Vault #";
+    public static final String ARMOR_MENU_SCREEN_CONTAINER = "Armor Menu";
     public static final String STORAGE_SCREEN_CONTAINER = " ";
     public static final String GENERIC_SCREEN_CONTAINER = "\uEEE4\uD552";
     //endregion
@@ -52,7 +53,7 @@ public class GenericContainerScreenHandler extends Handler {
     private void checkIsOfTitle(GenericContainerScreen genericContainerScreen) {
         this.lastContainerScreen = genericContainerScreen.getTitle().getString();
 
-        if(Objects.equals(genericContainerScreen.getTitle().getString(), QUEST_SCREEN_CONTAINER)) {
+        if (Objects.equals(genericContainerScreen.getTitle().getString(), QUEST_SCREEN_CONTAINER)) {
             QuestScreenHandler.instance().checkQuests(genericContainerScreen.getScreenHandler());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STATS_SCREEN_CONTAINER)) {
             StatsScreenHandler.instance().checkStats(genericContainerScreen.getScreenHandler());
@@ -62,6 +63,8 @@ public class GenericContainerScreenHandler extends Handler {
             PersonalVaultScreenRenderHandler.instance().init(genericContainerScreen);
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STORAGE_SCREEN_CONTAINER)) {
             ChestScreenRenderHandler.instance().init(genericContainerScreen);
+        } else if (genericContainerScreen.getTitle().getString().startsWith(ARMOR_MENU_SCREEN_CONTAINER)) {
+            ArmorRollScreenHandler.instance().checkArmorRolls(genericContainerScreen.getScreenHandler());
         } else if(Objects.equals(genericContainerScreen.getTitle().getString(), GENERIC_SCREEN_CONTAINER)) {
             this.checkIsOfItem(genericContainerScreen);
         }
@@ -71,6 +74,7 @@ public class GenericContainerScreenHandler extends Handler {
         CodeExecuterHandler.runLater(2, () -> {
             net.minecraft.screen.GenericContainerScreenHandler genericContainerScreenHandler = genericContainerScreen.getScreenHandler();
 
+            // Crew Info
             ItemStack crewInfoStack = genericContainerScreenHandler.getSlot(13).getStack();
             if(Objects.equals(crewInfoStack.getName().getString(), "Crew Info")) {
                 CrewScreenHandler.instance().checkCrewInfo(genericContainerScreenHandler);
