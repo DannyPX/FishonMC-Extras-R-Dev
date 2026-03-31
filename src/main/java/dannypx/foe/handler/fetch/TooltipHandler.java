@@ -1,15 +1,19 @@
 package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.KeyBindHandler;
 import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.item.ArmorNbtObject;
 import dannypx.foe.item.NbtObject;
 import dannypx.foe.item.PetNbtObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -18,6 +22,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class TooltipHandler extends Handler {
     private static TooltipHandler INSTANCE = new TooltipHandler();
@@ -39,10 +44,144 @@ public class TooltipHandler extends Handler {
             Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(validatedItem.value2());
             if(validatedPet.value1()) this.setPetPercentages(validatedPet.value2(), texts);
 
+            Pair<Boolean, ArmorNbtObject> validatedArmor = ValidateItem.isArmor(validatedItem.value2());
+            if(validatedArmor.value1()) this.setArmorRolls(validatedArmor.value2(), texts);
+
             if(ValidateItem.isAuctionItem(validatedItem.value2())) {
                 this.setPricesPerItem(validatedItem.value2(), texts);
             } else if(this.isTackleShopItem(texts)) {
                 this.setPricesPerItemRaw(validatedItem.value2(), texts);
+            }
+        } else {
+            if(itemStack.getItem() == Items.ENDER_EYE
+                    && itemStack.get(DataComponentTypes.LORE) != null
+                    && itemStack.get(DataComponentTypes.LORE).lines().get(0).getString().contains("Bonus Slot")
+            ) {
+                this.setArmorRoll(itemStack, texts);
+            }
+        }
+    }
+
+    private void setArmorRoll(ItemStack itemStack, List<Text> texts) {
+        for (int i = 0; i < ArmorRollScreenHandler.instance().getRollList().size(); i++) {
+            ItemStack listItem = ArmorRollScreenHandler.instance().getRollList().get(i);
+
+            if(ItemStack.areItemsAndComponentsEqual(listItem, itemStack)) {
+                Text border = NbtObject.getBorderText(itemStack);
+                Text borderText = Text.literal(border.getString().trim())
+                        .setStyle(border.getStyle())
+                        .append("   ");
+
+                int sizeOfLine = -1;
+                for (int j = 0; j < texts.size(); j++) {
+                    if(texts.get(j).getString().contains("(+")
+                            && texts.get(j).getString().contains("%)")
+                    ) sizeOfLine = j;
+                }
+
+                if(sizeOfLine != -1) {
+                    ArmorNbtObject armor = ArmorRollScreenHandler.instance().getArmor();
+
+                    int rolls = armor.getArmorRollRolls(i);
+                    int tier = i + 1;
+                    int money = ArmorNbtObject.calculateMoneyRolls(rolls, tier);
+
+                    Text moneyRoll = TextHelper.concat(
+                            borderText,
+                            Text.literal(TextHelper.smallText("rolls: ")).formatted(Formatting.GRAY),
+                            Text.literal(String.valueOf(rolls - 1)).formatted(Formatting.YELLOW),
+                            Text.literal("x ").formatted(Formatting.WHITE),
+                            Text.literal(TextHelper.smallText("| spent: ")).formatted(Formatting.GRAY),
+                            Text.literal("$" + TextHelper.shortenNumber(money, 2)).formatted(Formatting.GREEN)
+                    );
+
+                    texts.add(sizeOfLine + 2, moneyRoll);
+                }
+            }
+        }
+    }
+
+    private void setArmorRolls(ArmorNbtObject armorNbtObject, List<Text> texts) {
+        Text border = Text.literal(armorNbtObject.getBorderText().getString().trim())
+                .setStyle(armorNbtObject.getBorderText().getStyle())
+                .append("   ");
+
+        int tierLine = -1;
+        int rightClickLine = -1;
+        int qualityLine = -1;
+        Text seperatorText = Text.empty();
+
+        for (int i = 0; i < texts.size(); i++) {
+            if(texts.get(i).getString().contains("Tier: ")) tierLine = i;
+            if(texts.get(i).getString().contains("ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ʀᴏʟʟ ʙᴏɴᴜsᴇs")) rightClickLine = i;
+            if(texts.get(i).getString().contains("ꞯᴜᴀʟɪᴛʏ: ")
+                    || texts.get(i).getString().contains("ᴜᴀʟɪᴛʏ ")
+            ) qualityLine = i;
+            if(Objects.equals(seperatorText, Text.empty())
+                    && texts.get(i).getString().contains("                                               ")
+                    && texts.get(i).getSiblings().get(1).getStyle().isStrikethrough()
+            ) seperatorText = texts.get(i);
+        }
+
+        if(rightClickLine != -1
+                && armorNbtObject.isIdentified()
+        ) {
+            Text rollHintText = TextHelper.concat(
+                    border,
+                    Text.literal(TextHelper.smallText("Hold shift to see more info")).formatted(Formatting.DARK_GRAY)
+            );
+
+            texts.add(rightClickLine + 1, rollHintText);
+        }
+
+        if(KeyBindHandler.instance().isPressingShift()) {
+            if(tierLine != -1) {
+                for (int i = 4; i >= 0; i--) {
+                    if(armorNbtObject.isArmorRollUnlocked(i)
+                            && armorNbtObject.isArmorRollRolled(i)
+                    ) {
+                        int rolls = armorNbtObject.getArmorRollRolls(i);
+                        int tier = i + 1;
+                        int money = ArmorNbtObject.calculateMoneyRolls(rolls, tier);
+
+                        Text moneyRoll = TextHelper.concat(
+                                border,
+                                Text.literal(TextHelper.smallText("  └ rolls: ")).formatted(Formatting.GRAY),
+                                Text.literal(String.valueOf(rolls - 1)).formatted(Formatting.YELLOW),
+                                Text.literal("x ").formatted(Formatting.WHITE),
+                                Text.literal(TextHelper.smallText("| spent: ")).formatted(Formatting.GRAY),
+                                Text.literal("$" + TextHelper.shortenNumber(money, 2)).formatted(Formatting.GREEN)
+                        );
+
+                        texts.add(tierLine + tier + 1, moneyRoll);
+                    }
+                }
+            }
+
+            if(qualityLine != -1
+                    && armorNbtObject.isIdentified()
+            ) {
+                String username = null;
+
+                if(armorNbtObject.getPlayerUUID() != null) {
+                    username = GameProfileHandler.instance().getUsername(armorNbtObject.getPlayerUUID());
+                }
+
+                Text identifierrText = TextHelper.concat(
+                        border,
+                        Text.literal("Identifier:").formatted(Formatting.GRAY)
+                );
+
+                Text usernameText = TextHelper.concat(
+                        border,
+                        Text.literal(TextHelper.smallText("  Player: ")).formatted(Formatting.GRAY),
+                        username != null ? Text.literal(username).formatted(Formatting.YELLOW)
+                                : Text.literal("Loading").formatted(Formatting.DARK_GRAY)
+                );
+
+                texts.add(qualityLine + 1, usernameText);
+                texts.add(qualityLine + 1, identifierrText);
+                texts.add(qualityLine + 1, seperatorText);
             }
         }
     }

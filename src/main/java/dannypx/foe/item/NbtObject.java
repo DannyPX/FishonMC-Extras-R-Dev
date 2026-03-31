@@ -36,6 +36,8 @@ public class NbtObject {
     //From the bottom
     public static final int SHOP_PRICE_LINE = 5;
 
+    public static final int BORDER_LINE = 2;
+
     protected final NbtCompound nbtCompound;
     protected final ItemStack itemStack;
 
@@ -136,6 +138,28 @@ public class NbtObject {
         if(this.itemStack.get(DataComponentTypes.LORE) != null) {
             List<Text> textList = this.getLore();
             return textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
+        }
+        return Text.empty();
+    }
+
+    public Text getBorderText() {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+            List<Text> textList = this.getLore();
+            if(!textList.isEmpty()) {
+                Text borderLine = textList.get(BORDER_LINE);
+                if (!borderLine.getSiblings().isEmpty()) return borderLine.getSiblings().getFirst();
+            }
+        }
+        return Text.empty();
+    }
+
+    public static Text getBorderText(ItemStack itemStack) {
+        if(itemStack.get(DataComponentTypes.LORE) != null) {
+            List<Text> textList = itemStack.get(DataComponentTypes.LORE).lines();
+            if(!textList.isEmpty()) {
+                Text borderLine = textList.get(BORDER_LINE);
+                if (!borderLine.getSiblings().isEmpty()) return borderLine.getSiblings().getFirst();
+            }
         }
         return Text.empty();
     }
