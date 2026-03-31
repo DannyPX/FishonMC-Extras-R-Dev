@@ -238,7 +238,8 @@ public class SearchHandler extends Handler {
 
         // Filter out if name doesn't contain search
         if(!itemStack.getName().getString().toLowerCase(Locale.US).contains(searchRemainder.toLowerCase(Locale.US))
-                || (itemStack.get(DataComponentTypes.HIDE_TOOLTIP) != null)
+                || (itemStack.get(DataComponentTypes.TOOLTIP_DISPLAY) != null
+                && itemStack.get(DataComponentTypes.TOOLTIP_DISPLAY).hideTooltip())
         ) {
             return false;
         }

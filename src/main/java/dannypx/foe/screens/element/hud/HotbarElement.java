@@ -136,7 +136,7 @@ public class HotbarElement extends Element {
             int countY = 41;
 
             for(int i = 0; i < 9; i++) {
-                ItemStack item = minecraftClient.player.getInventory().main.get(i);
+                ItemStack item = minecraftClient.player.getInventory().getMainStacks().get(i);
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(item);
 
                 drawContext.drawItem(item, x + itemX + (18 * i), y + itemY);
@@ -181,7 +181,7 @@ public class HotbarElement extends Element {
             //region Texture
             int selectorX = 29;
             int selectorY = 26;
-            int index = minecraftClient.player.getInventory().selectedSlot;
+            int index = minecraftClient.player.getInventory().getSelectedSlot();
 
             drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
                     SELECTOR_TEXTURE,
@@ -194,8 +194,8 @@ public class HotbarElement extends Element {
 
     private void renderSelectedItemName(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
         if(minecraftClient.player != null) {
-            int index = minecraftClient.player.getInventory().selectedSlot;
-            ItemStack selectedStack = minecraftClient.player.getInventory().main.get(index);
+            int index = minecraftClient.player.getInventory().getSelectedSlot();
+            ItemStack selectedStack = minecraftClient.player.getInventory().getMainStacks().get(index);
 
             int itemNameX = x + (WIDTH / 2);
             int itemNameY = y - textRenderer.fontHeight - 2;
@@ -264,9 +264,9 @@ public class HotbarElement extends Element {
             int armorX = 129;
             int armorY = 4;
 
-            ItemStack chestplate = minecraftClient.player.getInventory().armor.get(EquipmentSlot.CHEST.getEntitySlotId());
-            ItemStack leggings = minecraftClient.player.getInventory().armor.get(EquipmentSlot.LEGS.getEntitySlotId());
-            ItemStack boots = minecraftClient.player.getInventory().armor.get(EquipmentSlot.FEET.getEntitySlotId());
+            ItemStack chestplate = minecraftClient.player.getEquippedStack(EquipmentSlot.CHEST);
+            ItemStack leggings = minecraftClient.player.getEquippedStack(EquipmentSlot.LEGS);
+            ItemStack boots = minecraftClient.player.getEquippedStack(EquipmentSlot.FEET);
 
             drawContext.drawItem(chestplate, x + armorX, y + armorY);
             drawContext.drawItem(leggings, x + armorX + 18, y + armorY);

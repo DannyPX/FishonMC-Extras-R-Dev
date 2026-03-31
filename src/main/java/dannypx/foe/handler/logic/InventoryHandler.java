@@ -158,9 +158,9 @@ public class InventoryHandler extends Handler {
                             ItemStack stack = ItemStack.EMPTY;
 
                             switch(params[1]) {
-                                case "chestplate" -> stack = minecraftClient.player.getInventory().armor.get(EquipmentSlot.CHEST.getEntitySlotId());
-                                case "leggings" -> stack = minecraftClient.player.getInventory().armor.get(EquipmentSlot.LEGS.getEntitySlotId());
-                                case "boots" -> stack = minecraftClient.player.getInventory().armor.get(EquipmentSlot.FEET.getEntitySlotId());
+                                case "chestplate" -> stack = minecraftClient.player.getEquippedStack(EquipmentSlot.CHEST);
+                                case "leggings" -> stack = minecraftClient.player.getEquippedStack(EquipmentSlot.LEGS);
+                                case "boots" -> stack = minecraftClient.player.getEquippedStack(EquipmentSlot.FEET);
                             }
 
                             Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
@@ -196,7 +196,7 @@ public class InventoryHandler extends Handler {
     private void tickInventory() {
         if(!snapshotInventory.isEmpty()) {
             DefaultedList<ItemStack> oldInventory = snapshotInventory;
-            DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().main;
+            DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().getMainStacks();
 
             for(int i = 0; i < newInventory.size(); i++) {
                 ItemStack oldStack = oldInventory.get(i);
@@ -261,7 +261,7 @@ public class InventoryHandler extends Handler {
     private void snapshotEmptySlots() {
         int empty = 0;
 
-        for (ItemStack stack : minecraftClient.player.getInventory().main) {
+        for (ItemStack stack : minecraftClient.player.getInventory().getMainStacks()) {
             if (stack.isEmpty()) {
                 empty++;
             }
@@ -275,7 +275,7 @@ public class InventoryHandler extends Handler {
 
     private void snapshotPet() {
         if(ProfileDataHandler.instance().getProfileData().activePetSlot != -1) {
-            ItemStack pet = minecraftClient.player.getInventory().main.get(ProfileDataHandler.instance().getProfileData().activePetSlot);
+            ItemStack pet = minecraftClient.player.getInventory().getMainStacks().get(ProfileDataHandler.instance().getProfileData().activePetSlot);
             if(!pet.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentPet.getItemStack(), pet)) {
                 Pair<Boolean, @Nullable PetNbtObject> validatedPet = ValidateItem.isPet(pet);
                 if(validatedPet.value1()) {
@@ -290,7 +290,7 @@ public class InventoryHandler extends Handler {
     }
 
     private void snapshotFishingRod() {
-        ItemStack fishingRod = minecraftClient.player.getInventory().main.getFirst();
+        ItemStack fishingRod = minecraftClient.player.getInventory().getMainStacks().getFirst();
         if(!fishingRod.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
             Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
             if(validatedFishingRod.value1()) {
@@ -310,7 +310,7 @@ public class InventoryHandler extends Handler {
     public void snapshotInventory() {
         if(minecraftClient.player != null) {
             snapshotInventory = ItemStackHelper.deepCopy(
-                    minecraftClient.player.getInventory().main,
+                    minecraftClient.player.getInventory().getMainStacks(),
                     ItemStack.EMPTY,
                     stack -> stack.isEmpty() ? ItemStack.EMPTY : stack.copy()
             );
@@ -326,7 +326,7 @@ public class InventoryHandler extends Handler {
     public boolean trackAllFish() {
         if(minecraftClient.player != null) {
             trackedFish.clear();
-            minecraftClient.player.getInventory().main.forEach(itemStack -> {
+            minecraftClient.player.getInventory().getMainStacks().forEach(itemStack -> {
                 Pair<Boolean, FishNbtObject> validatedItem = ValidateItem.isFish(itemStack);
                 if(validatedItem.value1() && validatedItem.value2().isOwn()) {
                     this.addToTrackedFish(validatedItem.value2().getID());
@@ -340,7 +340,7 @@ public class InventoryHandler extends Handler {
 
     public NbtObject getCurrentHeldItem() {
         if(minecraftClient.player != null) {
-            ItemStack heldItem = minecraftClient.player.getInventory().getMainHandStack();
+            ItemStack heldItem = minecraftClient.player.getMainHandStack();
             Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(heldItem);
             if(validatedItem.value1()) {
                 return validatedItem.value2();

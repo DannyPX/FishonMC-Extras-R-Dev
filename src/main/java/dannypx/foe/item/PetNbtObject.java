@@ -38,15 +38,15 @@ public class PetNbtObject extends NbtObject {
 
     public int getLevel() {
         if(this.contains(LEVEL)) {
-            return this.nbtCompound.getInt(LEVEL);
+            return this.getInt(LEVEL);
         }
         return 0;
     }
 
     public float getProgress() {
         if(this.contains(XP_NEED) && this.contains(XP_CURRENT)) {
-            float neededXP = this.nbtCompound.getFloat(XP_NEED);
-            float currentXP = this.nbtCompound.getFloat(XP_CURRENT);
+            float neededXP = this.getFloat(XP_NEED);
+            float currentXP = this.getFloat(XP_CURRENT);
             return Math.min(currentXP / neededXP, 1f);
         }
         return 0f;
@@ -62,14 +62,14 @@ public class PetNbtObject extends NbtObject {
 
     public NbtList getLocationBase() {
         if(this.contains(LOCATION_BASE)) {
-            return this.nbtCompound.getList(LOCATION_BASE, NbtElement.COMPOUND_TYPE);
+            return this.getList(LOCATION_BASE);
         }
         return new NbtList();
     }
 
     public NbtList getClimateBase() {
         if(this.contains(CLIMATE_BASE)) {
-            return this.nbtCompound.getList(CLIMATE_BASE, NbtElement.COMPOUND_TYPE);
+            return this.getList(CLIMATE_BASE);
         }
         return new NbtList();
     }
@@ -77,9 +77,9 @@ public class PetNbtObject extends NbtObject {
     public float getLocationPercentMaxLuck() {
         NbtList base = this.getLocationBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(0);
+            NbtCompound compound = base.getCompound(0).orElse(new NbtCompound());
             if(compound.contains(PERCENT_MAX_BASE)) {
-                return compound.getFloat(PERCENT_MAX_BASE);
+                return compound.getFloat(PERCENT_MAX_BASE).orElse(0.0f);
             }
         }
         return 0f;
@@ -88,9 +88,9 @@ public class PetNbtObject extends NbtObject {
     public float getLocationPercentMaxScale() {
         NbtList base = this.getLocationBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(1);
+            NbtCompound compound = base.getCompound(1).orElse(new NbtCompound());
             if(compound.contains(PERCENT_MAX_BASE)) {
-                return compound.getFloat(PERCENT_MAX_BASE);
+                return compound.getFloat(PERCENT_MAX_BASE).orElse(0.0f);
             }
         }
         return 0f;
@@ -99,9 +99,9 @@ public class PetNbtObject extends NbtObject {
     public float getClimatePercentMaxLuck() {
         NbtList base = this.getClimateBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(0);
+            NbtCompound compound = base.getCompound(0).orElse(new NbtCompound());
             if(compound.contains(PERCENT_MAX_BASE)) {
-                return compound.getFloat(PERCENT_MAX_BASE);
+                return compound.getFloat(PERCENT_MAX_BASE).orElse(0.0f);
             }
         }
         return 0f;
@@ -110,9 +110,9 @@ public class PetNbtObject extends NbtObject {
     public float getClimatePercentMaxScale() {
         NbtList base = this.getClimateBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(1);
+            NbtCompound compound = base.getCompound(1).orElse(new NbtCompound());
             if(compound.contains(PERCENT_MAX_BASE)) {
-                return compound.getFloat(PERCENT_MAX_BASE);
+                return compound.getFloat(PERCENT_MAX_BASE).orElse(0.0f);
             }
         }
         return 0f;
@@ -121,9 +121,9 @@ public class PetNbtObject extends NbtObject {
     public float getLocationMaxLuck() {
         NbtList base = this.getLocationBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(0);
+            NbtCompound compound = base.getCompound(0).orElse(new NbtCompound());
             if(compound.contains(MAX_BASE)) {
-                return compound.getInt(MAX_BASE);
+                return compound.getInt(MAX_BASE).orElse(0);
             }
         }
         return 0f;
@@ -132,9 +132,9 @@ public class PetNbtObject extends NbtObject {
     public float getLocationMaxScale() {
         NbtList base = this.getLocationBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(1);
+            NbtCompound compound = base.getCompound(1).orElse(new NbtCompound());
             if(compound.contains(MAX_BASE)) {
-                return compound.getInt(MAX_BASE);
+                return compound.getInt(MAX_BASE).orElse(0);
             }
         }
         return 0f;
@@ -143,9 +143,9 @@ public class PetNbtObject extends NbtObject {
     public float getClimateMaxLuck() {
         NbtList base = this.getClimateBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(0);
+            NbtCompound compound = base.getCompound(0).orElse(new NbtCompound());
             if(compound.contains(MAX_BASE)) {
-                return compound.getInt(MAX_BASE);
+                return compound.getInt(MAX_BASE).orElse(0);
             }
         }
         return 0f;
@@ -154,9 +154,9 @@ public class PetNbtObject extends NbtObject {
     public float getClimateMaxScale() {
         NbtList base = this.getClimateBase();
         if(!base.isEmpty()) {
-            NbtCompound compound = base.getCompound(1);
+            NbtCompound compound = base.getCompound(1).orElse(new NbtCompound());
             if(compound.contains(MAX_BASE)) {
-                return compound.getInt(MAX_BASE);
+                return compound.getInt(MAX_BASE).orElse(0);
             }
         }
         return 0f;

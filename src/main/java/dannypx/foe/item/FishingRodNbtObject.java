@@ -50,7 +50,7 @@ public class FishingRodNbtObject extends NbtObject {
 
     public boolean getDisableBait() {
         if (this.contains(DISABLE_BAIT)) {
-            return this.nbtCompound.getBoolean(DISABLE_BAIT);
+            return this.getBoolean(DISABLE_BAIT);
         }
         return false;
     }

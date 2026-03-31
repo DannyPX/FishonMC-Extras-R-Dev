@@ -61,7 +61,7 @@ public class ClientPlayerHandler extends Handler {
                     };
                     case "yaw" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(MathHelper.wrapDegrees(minecraftClient.player.getYaw()), 1)));
                     case "pitch" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(minecraftClient.player.getPitch(), 1)));
-                    case "direction" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.capitalize(minecraftClient.player.getHorizontalFacing().getName())));
+                    case "direction" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.capitalize(minecraftClient.player.getHorizontalFacing().name())));
                     case "fps" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(minecraftClient.getCurrentFps())));
                     default -> PlaceholderHandler.noResult();
                 };

@@ -29,7 +29,7 @@ public class ArmorNbtObject extends NbtObject {
                 && index < this.getArmorRolls().size()
                 && ((NbtCompound) this.getArmorRolls().get(index)).contains(ARMOR_ROLLS_UNLOCKED)
         ) {
-            return ((NbtCompound) this.getArmorRolls().get(index)).getBoolean(ARMOR_ROLLS_UNLOCKED);
+            return ((NbtCompound) this.getArmorRolls().get(index)).getBoolean(ARMOR_ROLLS_UNLOCKED).orElse(false);
         }
         return false;
     }
@@ -39,7 +39,7 @@ public class ArmorNbtObject extends NbtObject {
                 && index < this.getArmorRolls().size()
                 && ((NbtCompound) this.getArmorRolls().get(index)).contains(ARMOR_ROLLS_ROLLED)
         ) {
-            return ((NbtCompound) this.getArmorRolls().get(index)).getBoolean(ARMOR_ROLLS_ROLLED);
+            return ((NbtCompound) this.getArmorRolls().get(index)).getBoolean(ARMOR_ROLLS_ROLLED).orElse(false);
         }
         return false;
     }
@@ -56,7 +56,7 @@ public class ArmorNbtObject extends NbtObject {
                 && index < this.getArmorRolls().size()
                 && ((NbtCompound) this.getArmorRolls().get(index)).contains(ARMOR_ROLLS_ROLLS)
         ) {
-            return ((NbtCompound) this.getArmorRolls().get(index)).getInt(ARMOR_ROLLS_ROLLS);
+            return ((NbtCompound) this.getArmorRolls().get(index)).getInt(ARMOR_ROLLS_ROLLS).orElse(0);
         }
         return 0;
     }
