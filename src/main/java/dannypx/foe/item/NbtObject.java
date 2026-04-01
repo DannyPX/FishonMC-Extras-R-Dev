@@ -2,6 +2,7 @@ package dannypx.foe.item;
 
 import com.mojang.serialization.DataResult;
 import dannypx.foe.helper.ItemStackHelper;
+import dannypx.foe.helper.UUIDHelper;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
@@ -23,7 +24,7 @@ public class NbtObject {
 
     public static final String ID = "id";
     public static final String CATCHER = "catcher";
-    public static final String UUID = "uuid";
+    public static final String UUID_KEY = "uuid";
     public static final String COUNTER = "counter";
     public static final String TYPE = "type";
     public static final String RARITY = "rarity";
@@ -57,23 +58,27 @@ public class NbtObject {
     }
 
     public int getInt(String key) {
-        return this.nbtCompound.getInt(key);
+        return this.nbtCompound.getInt(key).orElse(0);
     }
 
     public float getFloat(String key) {
-        return this.nbtCompound.getFloat(key);
+        return this.nbtCompound.getFloat(key).orElse(0.0f);
     }
 
     public String getString(String key) {
-        return this.nbtCompound.getString(key);
+        return this.nbtCompound.getString(key).orElse("");
     }
 
     public boolean getBoolean(String key) {
-        return this.nbtCompound.getBoolean(key);
+        return this.nbtCompound.getBoolean(key).orElse(false);
     }
 
     public UUID getUuid(String key) {
-        return this.nbtCompound.getUuid(key);
+        return UUIDHelper.getUUID(this.nbtCompound.getIntArray(key).orElse(new int[]{0}));
+    }
+
+    public NbtList getList(String key) {
+        return this.nbtCompound.getList(key).orElse(new NbtList());
     }
 
     public NbtElement get(String key) {
@@ -81,7 +86,7 @@ public class NbtObject {
     }
 
     public byte getType(String key) {
-        return this.nbtCompound.getType(key);
+        return this.nbtCompound.get(key).getType();
     }
     //endregion
 
@@ -92,8 +97,8 @@ public class NbtObject {
     public UUID getPlayerUUID() {
         if(this.contains(CATCHER)) {
             return this.getUuid(CATCHER);
-        } else if (this.contains(UUID)) {
-            return this.getUuid(UUID);
+        } else if (this.contains(UUID_KEY)) {
+            return this.getUuid(UUID_KEY);
         }
         return null;
     }
@@ -200,7 +205,7 @@ public class NbtObject {
         NbtList renderInfo = this.getRenderInfo();
         if(!renderInfo.isEmpty()) {
             if(((NbtCompound) renderInfo.getFirst()).contains(MONEY)) {
-                return ((NbtCompound) renderInfo.getFirst()).getFloat(MONEY);
+                return ((NbtCompound) renderInfo.getFirst()).getFloat(MONEY).orElse(0.0f);
             }
         }
         return 0f;

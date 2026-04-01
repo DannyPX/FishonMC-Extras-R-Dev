@@ -16,8 +16,8 @@ import net.minecraft.client.render.entity.FishingBobberEntityRenderer;
 import net.minecraft.client.render.entity.state.FishingBobberEntityState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
@@ -73,7 +73,7 @@ public class FishingBobberEntityRendererMixin {
 
             minecraftClient.getItemRenderer().renderItem(
                     bait,
-                    ModelTransformationMode.GROUND,
+                    ItemDisplayContext.GROUND,
                     light,
                     OverlayTexture.DEFAULT_UV,
                     matrixStack,

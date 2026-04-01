@@ -170,7 +170,7 @@ public class CatchingHandler extends Handler {
         AtomicReference<FishNbtObject> foundItemStack = new AtomicReference<>();
 
         if(minecraftClient.player != null) {
-            minecraftClient.player.getInventory().main.forEach(itemStack -> {
+            minecraftClient.player.getInventory().getMainStacks().forEach(itemStack -> {
                 FishNbtObject validatedFish = validateFish(itemStack);
                 if(validatedFish != null && foundItemStack.get() == null) foundItemStack.set(validatedFish);
             });

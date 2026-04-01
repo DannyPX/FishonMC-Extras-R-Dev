@@ -90,7 +90,7 @@ public class ProfileDataHandler extends Handler {
     public void updatePet(boolean enablePet) {
         if (minecraftClient.player != null) {
             if(enablePet) {
-                profileData.activePetSlot = minecraftClient.player.getInventory().selectedSlot;
+                profileData.activePetSlot = minecraftClient.player.getInventory().getSelectedSlot();
             } else {
                 profileData.activePetSlot = -1;
             }

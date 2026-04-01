@@ -61,7 +61,7 @@ public class LoadingHandler extends Handler {
     //region Methods
     public void tick() {
         if(minecraftClient.player != null) {
-            ItemStack firstSlot = minecraftClient.player.getInventory().main.getFirst();
+            ItemStack firstSlot = minecraftClient.player.getInventory().getMainStacks().getFirst();
 
             if(this.checkFishingRodLoaded(firstSlot)) {
                 isLoadingDone = this.scanFish();

@@ -109,6 +109,6 @@ public class ValidateItem {
     }
 
     private static boolean isShopItem(NbtCompound nbtCompound) {
-        return Objects.requireNonNull(nbtCompound).getBoolean("shopitem");
+        return Objects.requireNonNull(nbtCompound).getBoolean("shopitem").orElse(false);
     }
 }

@@ -152,7 +152,7 @@ public class ConstantDataHandler extends Handler {
         return map
                 .entrySet()
                 .stream()
-                .filter(entry -> value.equals(entry.getValue().getString()))
+                .filter(entry -> value.equals(entry.getValue().getString().trim()))
                 .map(Map.Entry::getKey);
     }
     //endregion
