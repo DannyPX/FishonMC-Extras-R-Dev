@@ -102,6 +102,24 @@ public class CustomTimerDataHandler extends Handler {
 
         needsUpdate = true;
     }
+
+    public void resetTimers() {
+        customTimerData.timerList = new HashMap<>(Map.of(
+                "Contest Timer", new CustomTimerPeriod(
+                        "Contest Timer",
+                        1800,
+                        1800,
+                        -5,
+                        "Contest Start",
+                        "Contest End",
+                        "Contest Type, Contest Location, Contest Level, Contest 1st, Contest 2nd, Contest 3rd, Contest Placement",
+                        true,
+                        true
+                )
+        ));
+
+        needsUpdate = true;
+    }
     //endregion
 
     //region Model

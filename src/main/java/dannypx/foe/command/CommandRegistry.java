@@ -4,9 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
-import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.handler.store.StatsDataHandler;
+import dannypx.foe.handler.logic.TimerHandler;
+import dannypx.foe.handler.store.*;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.MainScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
@@ -37,6 +38,12 @@ public class CommandRegistry {
                 .then(command("crew")
                         .then(command("import").executes(Command::importCrew))
                         .then(command("cancel").executes(Command::cancelCrew))
+                )
+                .then(command("reset_to_defaults")
+                        .then(command("button").executes(Command::resetButton))
+                        .then(command("chat_trigger").executes(Command::resetChatTrigger))
+                        .then(command("notification").executes(Command::resetNotification))
+                        .then(command("timer").executes(Command::resetTimer))
                 )
                 .executes(Command::openMainScreen)
         );
@@ -79,6 +86,29 @@ public class CommandRegistry {
         public static int cancelCrew(CommandContext<FabricClientCommandSource> context) {
             return executeCommand(() -> ProfileDataHandler.instance().updateImportCrew(true));
         }
+
+
+        public static int resetButton(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(context, Text.literal("Reset buttons to default config").formatted(Formatting.GREEN), () -> CustomButtonDataHandler.instance().resetButtons());
+        }
+
+        public static int resetChatTrigger(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(context, Text.literal("Reset chat triggers to default config").formatted(Formatting.GREEN), () -> {
+                CustomChatTriggerDataHandler.instance().resetChatTriggers();
+                ChatHandler.instance().initChatTrigger();
+            });
+        }
+
+        public static int resetNotification(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(context, Text.literal("Reset notifications to default config").formatted(Formatting.GREEN), () -> CustomNotificationDataHandler.instance().resetNotifications());
+        }
+
+        public static int resetTimer(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(context, Text.literal("Reset timers to default config").formatted(Formatting.GREEN), () -> {
+                CustomTimerDataHandler.instance().resetTimers();
+                TimerHandler.instance().initTimers();
+            });
+        }
     }
 
     //region Command Builder
@@ -107,7 +137,7 @@ public class CommandRegistry {
     private static int sendFeedback(CommandContext<FabricClientCommandSource> context, Text feedback) {
         context.getSource().sendFeedback(
                 TextHelper.concat(
-                        Text.literal("FoE ").formatted(Formatting.DARK_GREEN, Formatting.BOLD),
+                        Text.literal("FoER ").formatted(Formatting.DARK_GREEN, Formatting.BOLD),
                         Text.literal("» ").formatted(Formatting.DARK_GRAY),
                         feedback
                 )
