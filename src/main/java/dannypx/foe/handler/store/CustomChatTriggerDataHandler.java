@@ -94,6 +94,55 @@ public class CustomChatTriggerDataHandler extends Handler {
         customChatTriggerData.chatTriggerList.put(currentSelectedChatTrigger, newChatTrigger);
         needsUpdate = true;
     }
+
+    public void resetChatTriggers() {
+        customChatTriggerData.chatTriggerList = new HashMap<>(Map.of(
+                "Contest Type", new CustomChatTrigger(
+                        "Contest Type",
+                        "^Type:.*",
+                        "",
+                        true
+                ),
+                "Contest Location", new CustomChatTrigger(
+                        "Contest Location",
+                        "^Location:.*",
+                        "",
+                        true
+                ),
+                "Contest Level", new CustomChatTrigger(
+                        "Contest Level",
+                        "^Level:.*",
+                        "",
+                        true
+                ),
+                "Contest 1st", new CustomChatTrigger(
+                        "Contest 1st",
+                        "^\uF060.*",
+                        "",
+                        true
+                ),
+                "Contest 2nd", new CustomChatTrigger(
+                        "Contest 2nd",
+                        "^\uF061.*",
+                        "",
+                        true
+                ),
+                "Contest 3rd", new CustomChatTrigger(
+                        "Contest 3rd",
+                        "^\uF062.*",
+                        "",
+                        true
+                ),
+                "Contest Placement", new CustomChatTrigger(
+                        "Contest Placement",
+                        "^You →.*",
+                        "",
+                        true
+                )
+        ));
+
+        needsUpdate = true;
+    }
     //endregion
 
     //region Model

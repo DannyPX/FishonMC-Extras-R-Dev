@@ -92,6 +92,33 @@ public class CustomNotificationDataHandler extends Handler {
         customNotificationData.notificationList.put(currentSelectedNotification, newNotification);
         needsUpdate = true;
     }
+
+    public void resetNotifications() {
+        customNotificationData.notificationList = new HashMap<>(Map.of(
+                "Contest Start", new CustomNotification(
+                        "Contest Start",
+                        "",
+                        new ArrayList<>(List.of(
+                                "&6A contest has started",
+                                "%chat.trigger.Contest Type%",
+                                "%chat.trigger.Contest Location%"
+                        ))
+                ),
+                "Contest End", new CustomNotification(
+                        "Contest End",
+                        "",
+                        new ArrayList<>(List.of(
+                                "&6A contest has ended",
+                                "&7- Placements",
+                                "%chat.trigger.Contest 1st%",
+                                "%chat.trigger.Contest 2nd%",
+                                "%chat.trigger.Contest 3rd%"
+                        ))
+                )
+        ));
+
+        needsUpdate = true;
+    }
     //endregion
 
     //region Model

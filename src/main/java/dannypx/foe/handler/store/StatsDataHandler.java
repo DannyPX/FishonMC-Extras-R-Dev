@@ -16,6 +16,7 @@ import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.type.tuple.Triplet;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -202,8 +203,9 @@ public class StatsDataHandler extends Handler {
         return Pair.of(item, statsData.fishTotal - itemStat.caughtOn());
     }
 
-    public void updateImportStats(boolean updatedStats) {
+    public void updateImportStats(boolean updatedStats, @NotNull Map<String, Map<String, Stat<Integer, Integer>>> newData) {
         if(updatedStats) {
+            this.statsData.fishData = newData;
             this.needsUpdate = true;
         }
     }
