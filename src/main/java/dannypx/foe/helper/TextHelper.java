@@ -180,7 +180,7 @@ public class TextHelper {
             case 'P', 'p' -> 'ᴘ';
             case 'Q', 'q' -> 'ꞯ';
             case 'R', 'r' -> 'ʀ';
-            case 'S', 's' -> 'ꜱ';
+            case 'S', 's' -> 's';
             case 'T', 't' -> 'ᴛ';
             case 'U', 'u' -> 'ᴜ';
             case 'V', 'v' -> 'ᴠ';
@@ -225,7 +225,7 @@ public class TextHelper {
             case 'ᴘ' -> 'p';
             case 'ꞯ' -> 'q';
             case 'ʀ' -> 'r';
-            case 'ꜱ' -> 's';
+            case 's' -> 's';
             case 'ᴛ' -> 't';
             case 'ᴜ' -> 'u';
             case 'ᴠ' -> 'v';
@@ -251,7 +251,7 @@ public class TextHelper {
 
     public static boolean isSmallLetter(char c) {
         return switch (c) {
-            case 'ᴀ', 'ʙ', 'ᴄ', 'ᴅ', 'ᴇ', 'ꜰ', 'ɢ', 'ʜ', 'ɪ', 'ᴊ', 'ᴋ', 'ʟ', 'ᴍ', 'ɴ', 'ᴏ', 'ᴘ', 'ꞯ', 'ʀ', 'ꜱ', 'ᴛ',
+            case 'ᴀ', 'ʙ', 'ᴄ', 'ᴅ', 'ᴇ', 'ꜰ', 'ɢ', 'ʜ', 'ɪ', 'ᴊ', 'ᴋ', 'ʟ', 'ᴍ', 'ɴ', 'ᴏ', 'ᴘ', 'ꞯ', 'ʀ', 's', 'ᴛ',
                  'ᴜ', 'ᴠ', 'ᴡ', 'x', 'ʏ', 'ᴢ', '.', ',', ':', ';', '_' -> true;
             default -> false;
         };
