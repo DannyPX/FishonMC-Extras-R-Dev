@@ -88,6 +88,26 @@ public class CustomButtonDataHandler extends Handler {
         needsUpdate = true;
     }
 
+    public void swapUp(String namespace, int pos) {
+        Pair<List<CustomButton>, Boolean> buttonList = customButtonData.buttonList.getOrDefault(namespace, Pair.of(new ArrayList<>(), false));
+
+        Collections.swap(buttonList.value1(), pos, pos - 1);
+
+        customButtonData.buttonList.put(namespace, buttonList);
+
+        needsUpdate = true;
+    }
+
+    public void swapDown(String namespace, int pos) {
+        Pair<List<CustomButton>, Boolean> buttonList = customButtonData.buttonList.getOrDefault(namespace, Pair.of(new ArrayList<>(), false));
+
+        Collections.swap(buttonList.value1(), pos, pos + 1);
+
+        customButtonData.buttonList.put(namespace, buttonList);
+
+        needsUpdate = true;
+    }
+
     public void createNewButton(String namespace, CustomButton newButton) {
         customButtonData.buttonList.getOrDefault(namespace, Pair.of(new ArrayList<>(), false)).value1().add(newButton);
 

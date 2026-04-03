@@ -514,6 +514,34 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 }))
                         .width(25)
                         .tooltip(Tooltip.of(Text.literal("Add new button")))
+                        .build(),
+                ButtonWidget.builder(
+                                Text.literal("⏶"),
+                                button -> CodeExecuterHandler.runLater(1, () -> {
+                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
+
+                                    if(pos > 0) {
+                                        CustomButtonDataHandler.instance().swapUp(screenId, pos);
+
+                                        buttonList.swapUp(pos);
+                                    }
+                                }))
+                        .size(25, 10)
+                        .tooltip(Tooltip.of(Text.literal("Move button up")))
+                        .build(),
+                ButtonWidget.builder(
+                                Text.literal("⏷"),
+                                button -> CodeExecuterHandler.runLater(1, () -> {
+                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
+
+                                    if(pos < buttonList.children().size() - 1) {
+                                        CustomButtonDataHandler.instance().swapDown(screenId, pos);
+
+                                        buttonList.swapDown(pos);
+                                    }
+                                }))
+                        .size(25, 10)
+                        .tooltip(Tooltip.of(Text.literal("Move button down")))
                         .build()
         );
     }

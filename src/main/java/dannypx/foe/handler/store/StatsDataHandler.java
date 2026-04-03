@@ -62,17 +62,29 @@ public class StatsDataHandler extends Handler {
                 return switch (params[1]) {
                     case "fish" -> {
                         if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getStatsData().fishTotal)));
-                        Map<String, Map<String, Stat<Integer, Integer>>> fishData = getStatsData().fishData;
-                        yield getStatsData(fishData, params[2], params[3], params[4], getStatsData().fishTotal);
+                        if(params.length >= 5) {
+                            Map<String, Map<String, Stat<Integer, Integer>>> fishData = getStatsData().fishData;
+                            yield getStatsData(fishData, params[2], params[3], params[4], getStatsData().fishTotal);
+                        }
+                        yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
                         if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getStatsData().petTotal)));
-                        Map<String, Map<String, Stat<Integer, Integer>>> petData = getStatsData().petData;
-                        yield getStatsData(petData, params[2], params[3], params[4], getStatsData().fishTotal);
+                        if(Objects.equals(params[2], "dry_streak")) yield PlaceholderHandler.getTextValue(new StringValue(
+                                String.valueOf(getStatsData().fishTotal - getStatsData().petData.getOrDefault(PetNbtObject.RARITY, new HashMap<>()).values().stream().mapToInt(stat -> stat.caughtOn).max().orElse(0))
+                        ));
+                        if(params.length >= 5) {
+                            Map<String, Map<String, Stat<Integer, Integer>>> petData = getStatsData().petData;
+                            yield getStatsData(petData, params[2], params[3], params[4], getStatsData().fishTotal);
+                        }
+                        yield PlaceholderHandler.noResult();
                     }
                     case "item" -> {
-                        Map<String, Stat<Integer, Integer>> itemData = getStatsData().itemData;
-                        yield getStatsData(itemData, params[2], params[3], getStatsData().fishTotal);
+                        if(params.length >= 4) {
+                            Map<String, Stat<Integer, Integer>> itemData = getStatsData().itemData;
+                            yield getStatsData(itemData, params[2], params[3], getStatsData().fishTotal);
+                        }
+                        yield PlaceholderHandler.noResult();
                     }
                     default -> PlaceholderHandler.noResult();
                 };

@@ -82,9 +82,13 @@ public class InventoryHandler extends Handler {
         return this.currentPet.getItemStack() != ItemStack.EMPTY;
     }
 
+    public int getCurrentEmptySlots() {
+        return currentEmptySlots;
+    }
+
     public Pair<Boolean, CustomTextValue> getInventory(String[] params) {
         if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet|armor)$");
+            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet|armor|empty_slots)$");
 
             if(fieldPattern.matcher(params[0]).matches()) {
                 return switch(params[0]) {
@@ -174,6 +178,7 @@ public class InventoryHandler extends Handler {
                         }
                         yield PlaceholderHandler.noResult();
                     }
+                    case "empty_slots" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentEmptySlots())));
                     default -> PlaceholderHandler.noResult();
                 };
             }
