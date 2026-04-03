@@ -123,8 +123,8 @@ public class CustomHudDataHandler extends Handler {
                 Map.of(
                         "Quest Hud",
                         new CustomHud(new ArrayList<>(Arrays.asList(
-                                Triplet.of("&7&l- &fQuests &7-", true, true),
-                                Triplet.of("", false, false),
+                                Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%&7&l- &fQuests &7-", true, true),
+                                Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%", false, false),
                                 Triplet.of("%quest_data.data.0.goal% &e%quest_data.data.0.current%&7/&f%quest_data.data.0.max%", false, true),
                                 Triplet.of("%quest_data.data.1.goal% &e%quest_data.data.1.current%&7/&f%quest_data.data.1.max%", false, true),
                                 Triplet.of("%quest_data.data.2.goal% &e%quest_data.data.2.current%&7/&f%quest_data.data.2.max%", false, true),

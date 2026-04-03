@@ -12,6 +12,7 @@ import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEntry> implements ScreenConstants {
@@ -60,6 +61,14 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         return this.children().size() - 1;
     }
 
+    public void swapUp(int pos) {
+        Collections.swap(this.children(), pos, pos - 1);
+    }
+
+    public void swapDown(int pos) {
+        Collections.swap(this.children(), pos, pos + 1);
+    }
+
     @Override
     public boolean removeEntry(ButtonEntry entry) {
         return super.removeEntry(entry);
@@ -69,15 +78,21 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
 
         private final ButtonWidget button;
         private final ButtonWidget smallButton;
+        private final ButtonWidget upButton;
+        private final ButtonWidget downButton;
 
         public ButtonEntry(ButtonWidget button) {
             this.button = button;
             this.smallButton = null;
+            this.upButton = null;
+            this.downButton = null;
         }
 
-        public ButtonEntry(ButtonWidget button, ButtonWidget smallButton) {
+        public ButtonEntry(ButtonWidget button, ButtonWidget smallButton, ButtonWidget upButton, ButtonWidget downButton) {
             this.button = button;
             this.smallButton = smallButton;
+            this.upButton = upButton;
+            this.downButton = downButton;
         }
 
         @Override
@@ -87,6 +102,9 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
             if(smallButton != null) {
                 children.add(smallButton);
             }
+
+            if(upButton != null) children.add(upButton);
+            if(downButton != null) children.add(downButton);
 
             return children;
         }
@@ -98,6 +116,9 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
             if(smallButton != null) {
                 children.add(smallButton);
             }
+
+            if(upButton != null) children.add(upButton);
+            if(downButton != null) children.add(downButton);
 
             return children;
         }
@@ -128,6 +149,24 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
                 );
 
                 smallButton.render(context, mouseX, mouseY, delta);
+            }
+
+            if(upButton != null) {
+                upButton.setPosition(
+                        x + PADDING,
+                        y
+                );
+
+                upButton.render(context, mouseX, mouseY, delta);
+            }
+
+            if(downButton != null) {
+                downButton.setPosition(
+                        x + PADDING,
+                        y + entryHeight / 2
+                );
+
+                downButton.render(context, mouseX, mouseY, delta);
             }
         }
     }

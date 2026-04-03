@@ -53,48 +53,39 @@ public class FunctionParser {
         int parenDepth = 0;
 
         for (int i = 0; i < expression.length(); i++) {
-            char c = expression.charAt(i);
-
-            if (c == '<') {
-                angleDepth++;
-                continue;
-            } else if (c == '>') {
-                angleDepth--;
-                continue;
-            } else if (c == '(') {
-                parenDepth++;
-                continue;
-            } else if (c == ')') {
-                parenDepth--;
-                continue;
-            }
-
-            if (angleDepth == 0 && parenDepth == 0) {
+            if (i > 0 && angleDepth == 0 && parenDepth == 0) {
                 Operator op = matchOperator(expression, i);
+
                 if (op != null) {
                     String left = expression.substring(0, i).trim();
                     String right = expression.substring(i + op.symbol.length()).trim();
 
                     result.operator = op;
 
-                    if (isBracketed(left)) {
-                        result.leftBracketed = true;
-                        result.left = stripBrackets(left);
-                    } else {
-                        result.leftBracketed = false;
-                        result.left = left;
-                    }
+                    result.leftBracketed = isBracketed(left);
+                    result.left = result.leftBracketed
+                            ? stripBrackets(left)
+                            : left;
 
-                    if (isBracketed(right)) {
-                        result.rightBracketed = true;
-                        result.right = stripBrackets(right);
-                    } else {
-                        result.rightBracketed = false;
-                        result.right = right;
-                    }
+                    result.rightBracketed = isBracketed(right);
+                    result.right = result.rightBracketed
+                            ? stripBrackets(right)
+                            : right;
 
                     return;
                 }
+            }
+
+            char c = expression.charAt(i);
+
+            if (c == '<') {
+                angleDepth++;
+            } else if (c == '>') {
+                angleDepth--;
+            } else if (c == '(') {
+                parenDepth++;
+            } else if (c == ')') {
+                parenDepth--;
             }
         }
 
@@ -115,13 +106,10 @@ public class FunctionParser {
             return;
         }
 
-        if (isBracketed(expr)) {
-            result.leftBracketed = true;
-            result.left = stripBrackets(expr);
-        } else {
-            result.leftBracketed = false;
-            result.left = expr;
-        }
+        result.leftBracketed = isBracketed(expr);
+        result.left = result.leftBracketed
+                ? stripBrackets(expr)
+                : expr;
 
         result.operator = null;
         result.right = null;
@@ -129,7 +117,32 @@ public class FunctionParser {
     }
 
     private static boolean isBracketed(String s) {
-        return s.startsWith("<") && s.endsWith(">");
+        if (!s.startsWith("<") || !s.endsWith(">")) {
+            return false;
+        }
+
+        int depth = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            }
+
+            if (depth < 0) {
+                return false;
+            }
+
+            // Only one top-level bracket block allowed
+            if (depth == 0 && i != s.length() - 1) {
+                return false;
+            }
+        }
+
+        return depth == 0;
     }
 
     private static String stripBrackets(String s) {
