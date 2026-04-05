@@ -219,7 +219,7 @@ public class InventoryHandler extends Handler {
                                             removedItem -> removedItem.value3() == finalI
                                             && ItemStack.areItemsAndComponentsEqual(removedItem.value2(), newStack)
                                     )
-                    ) this.addToSnapshotItems(newStack, 1);
+                    ) this.addToSnapshotItems(newStack, newStack.getCount());
                     if(newStack.isEmpty()) this.addToRemovedSnapshotItems(oldStack, i);
                 }
 
