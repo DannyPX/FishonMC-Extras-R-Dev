@@ -39,6 +39,29 @@ public class CustomNotificationDataHandler extends Handler {
         }
         this.needsUpdate = false;
     }
+
+    private static final Map<String, CustomNotification> defaultNotifications = Map.of(
+            "Contest Start", new CustomNotification(
+                    "Contest Start",
+                    "",
+                    new ArrayList<>(List.of(
+                            "&6A contest has started",
+                            "%chat.trigger.Contest Type%",
+                            "%chat.trigger.Contest Location%"
+                    ))
+            ),
+            "Contest End", new CustomNotification(
+                    "Contest End",
+                    "",
+                    new ArrayList<>(List.of(
+                            "&6A contest has ended",
+                            "&7- Placements",
+                            "%chat.trigger.Contest 1st%",
+                            "%chat.trigger.Contest 2nd%",
+                            "%chat.trigger.Contest 3rd%"
+                    ))
+            )
+    );
     //endregion
 
     //region Methods
@@ -94,28 +117,7 @@ public class CustomNotificationDataHandler extends Handler {
     }
 
     public void resetNotifications() {
-        customNotificationData.notificationList = new HashMap<>(Map.of(
-                "Contest Start", new CustomNotification(
-                        "Contest Start",
-                        "",
-                        new ArrayList<>(List.of(
-                                "&6A contest has started",
-                                "%chat.trigger.Contest Type%",
-                                "%chat.trigger.Contest Location%"
-                        ))
-                ),
-                "Contest End", new CustomNotification(
-                        "Contest End",
-                        "",
-                        new ArrayList<>(List.of(
-                                "&6A contest has ended",
-                                "&7- Placements",
-                                "%chat.trigger.Contest 1st%",
-                                "%chat.trigger.Contest 2nd%",
-                                "%chat.trigger.Contest 3rd%"
-                        ))
-                )
-        ));
+        customNotificationData.notificationList = new HashMap<>(defaultNotifications);
 
         needsUpdate = true;
     }
@@ -125,29 +127,8 @@ public class CustomNotificationDataHandler extends Handler {
     public static class CustomNotificationDataModel extends DataModels.DataModel {
         private static final String CUSTOM_NOTIFICATION_DATA_MODEL_VERSION = "0.1";
 
-        //Name Notification, Notificaiton
-        public Map<String, CustomNotification> notificationList = new HashMap<>(Map.of(
-                "Contest Start", new CustomNotification(
-                        "Contest Start",
-                        "",
-                        new ArrayList<>(List.of(
-                                "&6A contest has started",
-                                "%chat.trigger.Contest Type%",
-                                "%chat.trigger.Contest Location%"
-                        ))
-                ),
-                "Contest End", new CustomNotification(
-                        "Contest End",
-                        "",
-                        new ArrayList<>(List.of(
-                                "&6A contest has ended",
-                                "&7- Placements",
-                                "%chat.trigger.Contest 1st%",
-                                "%chat.trigger.Contest 2nd%",
-                                "%chat.trigger.Contest 3rd%"
-                        ))
-                )
-        ));
+        //Name Notification, Notification
+        public Map<String, CustomNotification> notificationList = new HashMap<>(defaultNotifications);
 
         public CustomNotificationDataModel() {
             super(CUSTOM_NOTIFICATION_DATA_MODEL_VERSION, null);

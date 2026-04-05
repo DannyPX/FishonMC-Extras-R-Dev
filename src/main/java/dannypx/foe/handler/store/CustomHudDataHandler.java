@@ -45,6 +45,52 @@ public class CustomHudDataHandler extends Handler {
         }
         this.needsUpdate = false;
     }
+
+    private static final Map<String, CustomHud> defaultHuds = Map.of(
+            "Quest Hud",
+            new CustomHud(new ArrayList<>(Arrays.asList(
+                    Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%&7&l- &fQuests &7-", true, true),
+                    Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%", false, false),
+                    Triplet.of("%quest_data.data.0.goal% &e%quest_data.data.0.current%&7/&f%quest_data.data.0.max%", false, true),
+                    Triplet.of("%quest_data.data.1.goal% &e%quest_data.data.1.current%&7/&f%quest_data.data.1.max%", false, true),
+                    Triplet.of("%quest_data.data.2.goal% &e%quest_data.data.2.current%&7/&f%quest_data.data.2.max%", false, true),
+                    Triplet.of("%quest_data.data.3.goal% &e%quest_data.data.3.current%&7/&f%quest_data.data.3.max%", false, true),
+                    Triplet.of("%quest_data.data.4.goal% &e%quest_data.data.4.current%&7/&f%quest_data.data.4.max%", false, true),
+                    Triplet.of("%quest_data.data.5.goal% &e%quest_data.data.5.current%&7/&f%quest_data.data.5.max%", false, true),
+                    Triplet.of("%quest_data.data.6.goal% &e%quest_data.data.6.current%&7/&f%quest_data.data.6.max%", false, true),
+                    Triplet.of("%quest_data.data.7.goal% &e%quest_data.data.7.current%&7/&f%quest_data.data.7.max%", false, true)
+            )),
+                    Alignment.TOP_RIGHT,
+                    1,
+                    15,
+                    1.0f,
+                    true,
+                    true
+            ),
+            "Contest Hud",
+            new CustomHud(new ArrayList<>(Arrays.asList(
+                    Triplet.of("&7&l- &fContest &7-", true, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%", false, false),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%&fNext Contest: &e%timer.Contest Timer.time.off.minute%&7:&e%timer.Contest Timer.time.off.second%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%", false, false),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%&fContest Ends: &e%timer.Contest Timer.time.on.minute%&7:&e%timer.Contest Timer.time.on.second%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%chat.trigger.Contest Type%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%chat.trigger.Contest Location%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest 1st>=lb)%", false, false),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 1st%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 2nd%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 3rd%", false, true),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest Placement>=You)%", false, false),
+                    Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest Placement%", false, true)
+            )),
+                    Alignment.RIGHT,
+                    1,
+                    50,
+                    1.0f,
+                    true,
+                    true
+            )
+    );
     //endregion
 
     //region Methods
@@ -119,53 +165,7 @@ public class CustomHudDataHandler extends Handler {
         private static final String CUSTOM_HUD_DATA_MODEL_VERSION = "0.3";
 
         // ID of the HUD
-        public Map<String, CustomHud> customHudRawDataList = new HashMap<>(
-                Map.of(
-                        "Quest Hud",
-                        new CustomHud(new ArrayList<>(Arrays.asList(
-                                Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%&7&l- &fQuests &7-", true, true),
-                                Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%", false, false),
-                                Triplet.of("%quest_data.data.0.goal% &e%quest_data.data.0.current%&7/&f%quest_data.data.0.max%", false, true),
-                                Triplet.of("%quest_data.data.1.goal% &e%quest_data.data.1.current%&7/&f%quest_data.data.1.max%", false, true),
-                                Triplet.of("%quest_data.data.2.goal% &e%quest_data.data.2.current%&7/&f%quest_data.data.2.max%", false, true),
-                                Triplet.of("%quest_data.data.3.goal% &e%quest_data.data.3.current%&7/&f%quest_data.data.3.max%", false, true),
-                                Triplet.of("%quest_data.data.4.goal% &e%quest_data.data.4.current%&7/&f%quest_data.data.4.max%", false, true),
-                                Triplet.of("%quest_data.data.5.goal% &e%quest_data.data.5.current%&7/&f%quest_data.data.5.max%", false, true),
-                                Triplet.of("%quest_data.data.6.goal% &e%quest_data.data.6.current%&7/&f%quest_data.data.6.max%", false, true),
-                                Triplet.of("%quest_data.data.7.goal% &e%quest_data.data.7.current%&7/&f%quest_data.data.7.max%", false, true)
-                        )),
-                                Alignment.TOP_RIGHT,
-                                1,
-                                15,
-                                1.0f,
-                                true,
-                                true
-                        ),
-                        "Contest Hud",
-                        new CustomHud(new ArrayList<>(Arrays.asList(
-                                Triplet.of("&7&l- &fContest &7-", true, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%", false, false),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%&fNext Contest: &e%timer.Contest Timer.time.off.minute%&7:&e%timer.Contest Timer.time.off.second%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%", false, false),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%&fContest Ends: &e%timer.Contest Timer.time.on.minute%&7:&e%timer.Contest Timer.time.on.second%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%chat.trigger.Contest Type%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%chat.trigger.Contest Location%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest 1st>=lb)%", false, false),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 1st%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 2nd%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 3rd%", false, true),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest Placement>=You)%", false, false),
-                                Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest Placement%", false, true)
-                        )),
-                                Alignment.RIGHT,
-                                1,
-                                50,
-                                1.0f,
-                                true,
-                                true
-                        )
-                )
-        );
+        public Map<String, CustomHud> customHudRawDataList = new HashMap<>(defaultHuds);
 
         public CustomHudDataModel() {
             super(CUSTOM_HUD_DATA_MODEL_VERSION, null);
