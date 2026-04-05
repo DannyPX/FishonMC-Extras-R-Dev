@@ -56,7 +56,7 @@ public class CustomTimerDataHandler extends Handler {
                     true,
                     true
             )
-    )
+    );
     //endregion
 
     //region Methods
