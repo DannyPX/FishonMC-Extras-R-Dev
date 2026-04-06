@@ -60,7 +60,9 @@ public class TimerHandler extends Handler {
                             yield PlaceholderHandler.noResult();
                         }
                         case "time" -> {
-                            if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
+                            if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod
+                                && params.length >= 3
+                            ) {
                                 long cycle = timerPeriod.timer + timerPeriod.offTimer;
                                 long adjusted = System.currentTimeMillis() / 1000 + timerPeriod.offset;
                                 long pos = adjusted % cycle;
@@ -102,7 +104,7 @@ public class TimerHandler extends Handler {
                                     case "is_off" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(!isOn)));
                                     default -> PlaceholderHandler.noResult();
                                 };
-                            } else {
+                            } else if (params.length == 3) {
                                 long timeSeconds = System.currentTimeMillis() / 1000;
                                 long adjusted = timeSeconds + timer.offset;
                                 long pos = adjusted % timer.timer;
@@ -116,6 +118,8 @@ public class TimerHandler extends Handler {
                                     case "hour" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(remainingTime.value3())));
                                     default -> PlaceholderHandler.noResult();
                                 };
+                            } else {
+                                yield PlaceholderHandler.noResult();
                             }
                         }
                         default -> PlaceholderHandler.noResult();
@@ -248,7 +252,6 @@ public class TimerHandler extends Handler {
         if(prev <= curr) {
             return prev < target && curr >= target;
         } else {
-            // wrapped around the cycle
             return prev < target || curr >= target;
         }
     }

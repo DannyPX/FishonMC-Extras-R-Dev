@@ -270,8 +270,6 @@ public class PlaceholderHandler extends Handler {
             if(leftField.value1() && rightField.value1()) {
                 int index = leftField.value2().getString().indexOf(rightField.value2().getString());
 
-                LoggerHandler._debug(String.valueOf(index));
-
                 if(index == -1) {
                     return noResult();
                 } else {

@@ -56,7 +56,7 @@ public class StatsDataHandler extends Handler {
             Pattern categoryPattern = Pattern.compile("^(fish|pet|item)$");
 
             if(Objects.equals(params[0], "data")
-                    && params.length >= 3 || params.length <= 5
+                    && params.length >= 3
                     && categoryPattern.matcher(params[1]).matches()
             ) {
                 return switch (params[1]) {
