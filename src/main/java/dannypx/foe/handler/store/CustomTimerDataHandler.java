@@ -44,19 +44,7 @@ public class CustomTimerDataHandler extends Handler {
         this.needsUpdate = false;
     }
 
-    private static final Map<String, CustomTimer> defaultTimers = Map.of(
-            "Contest Timer", new CustomTimerPeriod(
-                    "Contest Timer",
-                    1800,
-                    1800,
-                    -5,
-                    "Contest Start",
-                    "Contest End",
-                    "Contest Type, Contest Location, Contest Level, Contest 1st, Contest 2nd, Contest 3rd, Contest Placement",
-                    true,
-                    true
-            )
-    );
+
     //endregion
 
     //region Methods
@@ -118,7 +106,7 @@ public class CustomTimerDataHandler extends Handler {
     }
 
     public void resetTimers() {
-        customTimerData.timerList = new HashMap<>(defaultTimers);
+        customTimerData.timerList = new HashMap<>(CustomTimerDataModel.defaultTimers);
 
         needsUpdate = true;
     }
@@ -127,6 +115,20 @@ public class CustomTimerDataHandler extends Handler {
     //region Model
     public static class CustomTimerDataModel extends DataModels.DataModel {
         private static final String CUSTOM_TIMER_DATA_MODEL_VERSION = "0.1";
+
+        private static Map<String, CustomTimer> defaultTimers = Map.of(
+                "Contest Timer", new CustomTimerPeriod(
+                        "Contest Timer",
+                        1800,
+                        1800,
+                        -5,
+                        "Contest Start",
+                        "Contest End",
+                        "Contest Type, Contest Location, Contest Level, Contest 1st, Contest 2nd, Contest 3rd, Contest Placement",
+                        true,
+                        true
+                )
+        );
 
         //Name Chat Trigger, Chat Trigger
         public Map<String, CustomTimer> timerList = new HashMap<>(defaultTimers);
