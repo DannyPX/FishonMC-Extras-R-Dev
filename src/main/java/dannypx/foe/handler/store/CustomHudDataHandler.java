@@ -112,6 +112,12 @@ public class CustomHudDataHandler extends Handler {
         customHudData.customHudRawDataList.put(currentSelectedHud, newHud);
         needsUpdate = true;
     }
+
+    public void resetHuds() {
+        customHudData.customHudRawDataList = new HashMap<>(CustomHudDataModel.defaultHuds);
+
+        needsUpdate = true;
+    }
     //endregion
 
     //region Model

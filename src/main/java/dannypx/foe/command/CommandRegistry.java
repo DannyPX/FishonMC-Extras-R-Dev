@@ -44,6 +44,7 @@ public class CommandRegistry {
                         .then(command("chat_trigger").executes(Command::resetChatTrigger))
                         .then(command("notification").executes(Command::resetNotification))
                         .then(command("timer").executes(Command::resetTimer))
+                        .then(command("hud").executes(Command::resetHud))
                 )
                 .executes(Command::openMainScreen)
         );
@@ -108,6 +109,10 @@ public class CommandRegistry {
                 CustomTimerDataHandler.instance().resetTimers();
                 TimerHandler.instance().initTimers();
             });
+        }
+
+        public static int resetHud(CommandContext<FabricClientCommandSource> context) {
+            return executeCommand(context, Text.literal("Reset HUDs to default config").formatted(Formatting.GREEN), () -> CustomHudDataHandler.instance().resetHuds());
         }
     }
 
