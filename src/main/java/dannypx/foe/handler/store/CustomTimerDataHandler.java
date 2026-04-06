@@ -116,7 +116,7 @@ public class CustomTimerDataHandler extends Handler {
     public static class CustomTimerDataModel extends DataModels.DataModel {
         private static final String CUSTOM_TIMER_DATA_MODEL_VERSION = "0.1";
 
-        private static Map<String, CustomTimer> defaultTimers = Map.of(
+        private static final Map<String, CustomTimer> defaultTimers = Map.of(
                 "Contest Timer", new CustomTimerPeriod(
                         "Contest Timer",
                         1800,

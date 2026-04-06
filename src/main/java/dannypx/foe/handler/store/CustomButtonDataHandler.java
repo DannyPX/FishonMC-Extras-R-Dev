@@ -164,7 +164,7 @@ public class CustomButtonDataHandler extends Handler {
     public static class CustomButtonDataModel extends DataModels.DataModel {
         private static final String CUSTOM_BUTTON_DATA_MODEL_VERSION = "0.2";
 
-        private static Map<String, Pair<List<CustomButton>, Boolean>> defaultButtons = Map.ofEntries(
+        private static final Map<String, Pair<List<CustomButton>, Boolean>> defaultButtons = Map.ofEntries(
                 Map.entry("Inventory Screen", Pair.of(new ArrayList<>(List.of(
                         new CustomButton("&6&lInstances",
                                 "&7Change Instances",

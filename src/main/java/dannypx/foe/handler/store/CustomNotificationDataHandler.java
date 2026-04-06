@@ -104,7 +104,7 @@ public class CustomNotificationDataHandler extends Handler {
     public static class CustomNotificationDataModel extends DataModels.DataModel {
         private static final String CUSTOM_NOTIFICATION_DATA_MODEL_VERSION = "0.1";
 
-        private static Map<String, CustomNotification> defaultNotifications = Map.of(
+        private static final Map<String, CustomNotification> defaultNotifications = Map.of(
                 "Contest Start", new CustomNotification(
                         "Contest Start",
                         "",

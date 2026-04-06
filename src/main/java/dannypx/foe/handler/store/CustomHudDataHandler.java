@@ -124,7 +124,7 @@ public class CustomHudDataHandler extends Handler {
     public static class CustomHudDataModel extends DataModels.DataModel {
         private static final String CUSTOM_HUD_DATA_MODEL_VERSION = "0.3";
 
-        private static Map<String, CustomHud> defaultHuds = Map.of(
+        private static final Map<String, CustomHud> defaultHuds = Map.of(
                 "Quest Hud",
                 new CustomHud(new ArrayList<>(Arrays.asList(
                         Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%&7&l- &fQuests &7-", true, true),
