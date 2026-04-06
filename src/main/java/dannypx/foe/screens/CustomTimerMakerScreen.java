@@ -221,6 +221,113 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 0xFFFFFF,
                 true
         );
+        try {
+            if(selectedTimerId != null) {
+                long timeSeconds = System.currentTimeMillis() / 1000;
+                long adjustedWithOffset = timeSeconds + Integer.parseInt(offsetTextField.getText());
+
+                if(isPeriodCheckBox.isChecked()) {
+                    long timer = Integer.parseInt(timerTextField.getText());
+                    long offTimer = Integer.parseInt(offTimerTextField.getText());
+                    long cycle = timer + offTimer;
+                    long pos = (adjustedWithOffset - offTimer) % cycle;
+                    long remainingOn = cycle - pos;
+                    long midPos = adjustedWithOffset % cycle;
+                    long remainingOff = cycle - midPos;
+
+                    Triplet<Long, Long, Long> remainingTime = getTime(remainingOn);
+                    Triplet<Long, Long, Long> remainingTimeMid = getTime(remainingOff);
+
+                    boolean isOnTimer = remainingOn < timer;
+
+                    Text onTimerText = TextHelper.concat(
+                            Text.literal("Timer till ").formatted(Formatting.GRAY),
+                            Text.literal("ON").formatted(Formatting.GREEN),
+                            Text.literal(" period ends: ").formatted(Formatting.GRAY),
+                            Text.literal(String.valueOf(remainingTime.value3())).formatted(Formatting.YELLOW),
+                            Text.literal(":").formatted(Formatting.YELLOW),
+                            Text.literal(String.format("%02d", remainingTime.value2())).formatted(Formatting.YELLOW),
+                            Text.literal(":").formatted(Formatting.YELLOW),
+                            Text.literal(String.format("%02d", remainingTime.value1())).formatted(Formatting.YELLOW)
+                    );
+
+                    Text offTimerText = TextHelper.concat(
+                            Text.literal("Timer till ").formatted(Formatting.GRAY),
+                            Text.literal("OFF").formatted(Formatting.RED),
+                            Text.literal(" period ends: ").formatted(Formatting.GRAY),
+                            Text.literal(String.valueOf(remainingTimeMid.value3())).formatted(Formatting.YELLOW),
+                            Text.literal(":").formatted(Formatting.YELLOW),
+                            Text.literal(String.format("%02d", remainingTimeMid.value2())).formatted(Formatting.YELLOW),
+                            Text.literal(":").formatted(Formatting.YELLOW),
+                            Text.literal(String.format("%02d", remainingTimeMid.value1())).formatted(Formatting.YELLOW)
+                    );
+
+                    context.drawText(textRenderer,
+                            onTimerText,
+                            (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
+                            0xFFFFFF,
+                            true
+                    );
+
+                    context.drawText(textRenderer,
+                            offTimerText,
+                            (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 1,
+                            0xFFFFFF,
+                            true
+                    );
+
+                    Text isOnTimerText = TextHelper.concat(
+                            Text.literal("Currently in ").formatted(Formatting.GRAY),
+                            isOnTimer ? Text.literal("ON").formatted(Formatting.GREEN) : Text.literal("OFF").formatted(Formatting.RED),
+                            Text.literal(" period").formatted(Formatting.GRAY)
+                    );
+
+                    context.drawText(textRenderer,
+                            isOnTimerText,
+                            (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 2,
+                            0xFFFFFF,
+                            true
+                    );
+                } else {
+                    long interval = Integer.parseInt(timerTextField.getText());
+                    long pos = adjustedWithOffset % interval;
+                    long remainingOn = interval - pos;
+
+                    Triplet<Long, Long, Long> remainingTime = getTime(remainingOn);
+
+                    Text onTimerText = TextHelper.concat(
+                            Text.literal("Timer: ").formatted(Formatting.GRAY),
+                            Text.literal(String.valueOf(remainingTime.value3())).formatted(Formatting.YELLOW),
+                            Text.literal(":").formatted(Formatting.YELLOW),
+                            Text.literal(String.format("%02d", remainingTime.value2())).formatted(Formatting.YELLOW),
+                            Text.literal(":").formatted(Formatting.YELLOW),
+                            Text.literal(String.format("%02d", remainingTime.value1())).formatted(Formatting.YELLOW)
+                    );
+
+                    context.drawText(textRenderer,
+                            onTimerText,
+                            (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
+                            0xFFFFFF,
+                            true
+                    );
+
+                }
+            }
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    private Triplet<Long, Long, Long> getTime(long seconds) {
+        long hour = seconds / 3600;
+        long minute = (seconds % 3600) / 60;
+        long second = seconds % 60;
+
+        return Triplet.of(second, minute, hour);
     }
 
     private void renderBox(DrawContext context, int mouseX, int mouseY, float delta)

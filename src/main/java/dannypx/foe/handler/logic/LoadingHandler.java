@@ -69,6 +69,7 @@ public class LoadingHandler extends Handler {
 
             if(isLoadingDone) {
                 InventoryHandler.instance().snapshotInventory();
+                EventHandler.instance().onJoin();
                 LoggerHandler.info("Loading Done");
             }
         }

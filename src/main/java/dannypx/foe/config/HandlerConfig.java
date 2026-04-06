@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 5)
+@Version(version = 6)
 @Translatable.Name("§7§oDev§8§o: §f§oHandlers")
 @Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")
@@ -95,6 +95,14 @@ public class HandlerConfig extends Config {
 
     @Desc("§7Handles the timers")
     public ValidatedBoolean timerHandler = new ValidatedBoolean(true);
+
+    @Name("Event Handler")
+    @Desc("§7Handles logic of client events")
+    public ConfigGroup eventLogicGroup = new ConfigGroup("event_logic_group");
+
+    @ConfigGroup.Pop
+    @Desc("§7Open /events on join")
+    public ValidatedBoolean openEventsOnJoin = new ValidatedBoolean(true);
 
     @Name("Catching Handler")
     @Desc("§7Handles logic of fishing")

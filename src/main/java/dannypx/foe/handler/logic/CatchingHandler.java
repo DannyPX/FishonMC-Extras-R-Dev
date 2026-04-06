@@ -78,7 +78,9 @@ public class CatchingHandler extends Handler {
                                             }
                                         }
 
-                                        if(icon != null) {
+                                        if(icon != null
+                                                && params.length == 4
+                                        ) {
                                             yield switch (params[3]) {
                                                 case "name" -> PlaceholderHandler.getTextValue(new StringValue(drystreakData.value1()));
                                                 case "icon" -> PlaceholderHandler.getTextValue(new TextValue(icon), true);
