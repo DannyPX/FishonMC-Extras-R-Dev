@@ -357,6 +357,8 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
                 entry.setFocused(true);
                 idTextField.setFocused(false);
                 scaleTextField.setFocused(false);
+                showBackgroundCheckBox.setFocused(false);
+                showElementCheckBox.setFocused(false);
                 return true;
             }
         }
