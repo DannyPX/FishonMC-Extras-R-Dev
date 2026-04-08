@@ -7,11 +7,13 @@ import dannypx.foe.helper.FunctionParser;
 import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.NbtObject;
+import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.search.Operator;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.custom_text.CustomTextValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.type.custom_text.TextValue;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -603,6 +605,11 @@ public class PlaceholderHandler extends Handler {
             };
         }
         return PlaceholderHandler.noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> getNbtTextValue(ItemStack itemStack, String field) {
+        Pair<Boolean, NbtObject> item = ValidateItem.isServerItem(itemStack);
+        return getNbtTextValue(item.value2(), field);
     }
     //endregion
 
