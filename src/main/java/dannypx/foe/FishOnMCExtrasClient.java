@@ -4,13 +4,11 @@ import dannypx.foe.command.CommandRegistry;
 import dannypx.foe.entity.FishingBobberEntityModel;
 import dannypx.foe.handler.fetch.*;
 import dannypx.foe.handler.logic.*;
+import dannypx.foe.handler.renderer.*;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
-import dannypx.foe.handler.renderer.HudRenderHandler;
-import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -90,6 +88,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         SearchHandler.instance().setFocused(false);
         SearchHandler.instance().setOnScreen(false);
 
+        PersonalVaultScreenRenderHandler.instance().setOnScreen(false);
+        AuctionHouseScreenRenderHandler.instance().setOnScreen(false);
+
         if(screen instanceof InventoryScreen) {
             InventoryScreenRenderHandler.instance().init(screen);
             ScreenEvents.afterRender(screen).register(InventoryScreenRenderHandler.instance()::render);
@@ -110,6 +111,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     private void onBeforeInitScreen(MinecraftClient minecraftClient, Screen screen, int scaledWidth, int scaledHeight) {
         ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, key, scancode, modifiers) -> afterKeyPress(screen1, key, modifiers));
         ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, key, scancode, modifiers) -> afterKeyRelease(screen1, key, modifiers));
+        ScreenMouseEvents.afterMouseScroll(screen).register(this::afterMouseScroll);
     }
 
     private void afterKeyPress(Screen screen, int key, int modifiers) {
@@ -123,6 +125,11 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     private void afterKeyRelease(Screen screen, int key, int modifiers) {
         KeyBindHandler.instance().afterKeyPressed(screen, key, modifiers);
 
+    }
+
+    private void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        PersonalVaultScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+        AuctionHouseScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
