@@ -1,5 +1,6 @@
 package dannypx.foe.handler.store;
 
+import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
@@ -50,6 +51,13 @@ public class CustomButtonDataHandler extends Handler {
         } else if(!CustomButtonDataModel.CUSTOM_BUTTON_DATA_MODEL_VERSION.equals(customButtonData.version)) {
             customButtonData.version = CustomButtonDataModel.CUSTOM_BUTTON_DATA_MODEL_VERSION;
             needsUpdate = true;
+        }
+
+        if(customButtonData.uuid != null
+                && (!this.customButtonData.buttonList.containsKey(CustomButtonDataModel.INVENTORY_SCREEN)
+
+        )) {
+            this.resetButtons();
         }
     }
 
@@ -154,7 +162,9 @@ public class CustomButtonDataHandler extends Handler {
 
 
     public void resetButtons() {
-        customButtonData.buttonList = new HashMap<>(CustomButtonDataModel.defaultButtons);
+        customButtonData.buttonList = new HashMap<>(Map.ofEntries(
+                Map.entry(CustomButtonDataModel.INVENTORY_SCREEN, CustomButtonDataModel.defaultInventoryButtons)
+        ));
 
         needsUpdate = true;
     }
@@ -162,64 +172,66 @@ public class CustomButtonDataHandler extends Handler {
 
     //region Model
     public static class CustomButtonDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_BUTTON_DATA_MODEL_VERSION = "0.2";
+        private static final String CUSTOM_BUTTON_DATA_MODEL_VERSION = "0.4";
 
-        private static final Map<String, Pair<List<CustomButton>, Boolean>> defaultButtons = Map.ofEntries(
-                Map.entry("Inventory Screen", Pair.of(new ArrayList<>(List.of(
-                        new CustomButton("&6&lInstances",
-                                "&7Change Instances",
-                                "/instances", "\u24BE", true),
-                        new CustomButton("&6&lTurbo Travel",
-                                "&7Change Location",
-                                "/tt", "\u26A1", true),
-                        new CustomButton("&6&lCrew Home",
-                                "&7Go to your crew home",
-                                "/crew home", "\u2693", true),
-                        new CustomButton("&6&lSpawn",
-                                "&7Go to spawn",
-                                "/spawn", "\u24C8", true),
-                        new CustomButton("&6&lQuests",
-                                "&7Open your quests",
-                                "/quests", "\u2690", true),
-                        new CustomButton("&6&lPersonal Vault",
-                                "&7Open your personal vault",
-                                "/pv", "\u26E8", true),
-                        new CustomButton("&6&lAuction House",
-                                "&7Open the auction house",
-                                "/ah", "\u2B50", true),
-                        new CustomButton("&6&lCraft",
-                                "&7Open the crafting station",
-                                "/trash", "\u26CF", true),
+        public static final String INVENTORY_SCREEN = "Inventory Screen";
 
-                        new CustomButton("&6&lArtisan",
-                                "&7Open the Artisan Menu",
-                                "/artisan", "A", true),
-                        new CustomButton("&6&lIdentifier",
-                                "&7Open the Identifier Menu",
-                                "/identifier", "I", true),
-                        new CustomButton("&6&lForge",
-                                "&7Open the Forge Menu",
-                                "/forge", "F", true),
-                        new CustomButton("&6&lScrapper",
-                                "&7Open the Scrapper Menu",
-                                "/scrapper", "S", true),
-                        new CustomButton("&6&lCalibrator",
-                                "&7Open the Calibrator Menu",
-                                "/calibrator", "C", true),
-                        new CustomButton("Spacer #1",
-                                "Used to show empty spot",
-                                "/", "minecraft:barrier", false),
-                        new CustomButton("Spacer #2",
-                                "Used to show empty spot",
-                                "/", "minecraft:barrier", false),
-                        new CustomButton("&6&lSell",
-                                "&7Open the sell menu",
-                                "/sell", "$", true)
-                )), true))
-        );
+        private static final Pair<List<CustomButton>, Boolean> defaultInventoryButtons = Pair.of(new ArrayList<>(List.of(
+                new CustomButton("&6&lInstances",
+                        "&7Change Instances",
+                        "/instances", "\u24BE", true),
+                new CustomButton("&6&lTurbo Travel",
+                        "&7Change Location",
+                        "/tt", "\u26A1", true),
+                new CustomButton("&6&lCrew Home",
+                        "&7Go to your crew home",
+                        "/crew home", "\u2693", true),
+                new CustomButton("&6&lSpawn",
+                        "&7Go to spawn",
+                        "/spawn", "\u24C8", true),
+                new CustomButton("&6&lQuests",
+                        "&7Open your quests",
+                        "/quests", "\u2690", true),
+                new CustomButton("&6&lPersonal Vault",
+                        "&7Open your personal vault",
+                        "/pv", "\u26E8", true),
+                new CustomButton("&6&lAuction House",
+                        "&7Open the auction house",
+                        "/ah", "\u2B50", true),
+                new CustomButton("&6&lCraft",
+                        "&7Open the crafting station",
+                        "/craft", "\u26CF", true),
+
+                new CustomButton("&6&lArtisan",
+                        "&7Open the Artisan Menu",
+                        "/artisan", "A", true),
+                new CustomButton("&6&lIdentifier",
+                        "&7Open the Identifier Menu",
+                        "/identifier", "I", true),
+                new CustomButton("&6&lForge",
+                        "&7Open the Forge Menu",
+                        "/forge", "F", true),
+                new CustomButton("&6&lScrapper",
+                        "&7Open the Scrapper Menu",
+                        "/scrapper", "S", true),
+                new CustomButton("&6&lCalibrator",
+                        "&7Open the Calibrator Menu",
+                        "/calibrator", "C", true),
+                new CustomButton("Spacer #1",
+                        "Used to show empty spot",
+                        "/", "minecraft:barrier", false),
+                new CustomButton("Spacer #2",
+                        "Used to show empty spot",
+                        "/", "minecraft:barrier", false),
+                new CustomButton("&6&lSell",
+                        "&7Open the sell menu",
+                        "/sell", "$", true)
+        )), true);
 
         //Screen <Button List, isMenuOpen>
-        public Map<String, Pair<List<CustomButton>, Boolean>> buttonList = new HashMap<>(defaultButtons);
+        public Map<String, Pair<List<CustomButton>, Boolean>> buttonList = new HashMap<>(Map.ofEntries(
+                Map.entry("Inventory Screen", defaultInventoryButtons)
+        ));
 
         public CustomButtonDataModel() {
             super(CUSTOM_BUTTON_DATA_MODEL_VERSION, null);

@@ -7,11 +7,13 @@ import dannypx.foe.helper.FunctionParser;
 import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.NbtObject;
+import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.search.Operator;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.custom_text.CustomTextValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.type.custom_text.TextValue;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -23,8 +25,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PlaceholderHandler extends Handler {
     private static PlaceholderHandler INSTANCE = new PlaceholderHandler();
@@ -37,8 +37,6 @@ public class PlaceholderHandler extends Handler {
     }
 
     //region Fields
-    static final Pattern placeholderPattern = Pattern.compile("(?<!\\\\)%((?:\\\\.|[^%])*?)(?<!\\\\)%");
-
     private static final Map<String, Function<String[], Pair<Boolean, CustomTextValue>>> placeholders = Map.ofEntries(
             Map.entry("boss_bar", params -> BossBarHandler.instance().getBossBar(params)),
             Map.entry("player", params -> ClientPlayerHandler.instance().getClientPlayer(params)),
@@ -89,22 +87,42 @@ public class PlaceholderHandler extends Handler {
     //region Methods
     // Boolean = hasFullData
     public static Pair<Boolean, MutableText> parsePlaceholderFromString(String input) {
-        Matcher placeholderMatcher = placeholderPattern.matcher(input);
         boolean hasFullData = true;
 
         MutableText result = Text.empty();
         int lastEnd = 0;
         Style activeStyle = Style.EMPTY;
 
-        while (placeholderMatcher.find() && hasFullData) {
-            if (placeholderMatcher.start() > lastEnd) {
-                String before = input.substring(lastEnd, placeholderMatcher.start());
-                Pair<MutableText, Style> parsed = TextHelper.parseLegacyWithStyle(before, activeStyle);
+        while (hasFullData) {
+            int startPlaceholderPos = -1;
+            int endPlaceHolderPos = -1;
+
+            for (int i = lastEnd; i < input.length(); i++) {
+                if (input.charAt(i) == '%' && (i == 0 || input.charAt(i - 1) != '\\')) {
+                    if (startPlaceholderPos == -1) {
+                        startPlaceholderPos = i;
+                    } else {
+                        endPlaceHolderPos = i;
+                        break;
+                    }
+                }
+            }
+
+            if (startPlaceholderPos == -1 || endPlaceHolderPos == -1) {
+                break;
+            }
+
+            if (startPlaceholderPos > lastEnd) {
+                String before = input.substring(lastEnd, startPlaceholderPos);
+                Pair<MutableText, Style> parsed =
+                        TextHelper.parseLegacyWithStyle(before, activeStyle);
+
                 result.append(parsed.value1());
                 activeStyle = parsed.value2();
             }
 
-            String full = placeholderMatcher.group(1);
+            String full = input.substring(startPlaceholderPos + 1, endPlaceHolderPos);
+
             String[] parts = full.split("\\.");
             String identifier = parts[0];
             String[] parameters = Arrays.copyOfRange(parts, 1, parts.length);
@@ -117,7 +135,7 @@ public class PlaceholderHandler extends Handler {
                 if (function != null) {
                     functionResult = function.apply(parameters);
                 } else {
-                    result.append(Text.literal(placeholderMatcher.group()).setStyle(activeStyle));
+                    result.append(Text.literal(input.substring(startPlaceholderPos, endPlaceHolderPos + 1)).setStyle(activeStyle));
                 }
             } else if (functionPlaceholders.containsKey(identifier)) {
                 functionResult = parseFunctionPlaceHolderFromString("%" + full + "%");
@@ -134,11 +152,11 @@ public class PlaceholderHandler extends Handler {
                 result.append(parsed.value1());
                 activeStyle = parsed.value2();
             } else {
-                result.append(Text.literal(placeholderMatcher.group()).setStyle(activeStyle));
+                result.append(Text.literal(input.substring(startPlaceholderPos, endPlaceHolderPos + 1)).setStyle(activeStyle));
                 hasFullData = false;
             }
 
-            lastEnd = placeholderMatcher.end();
+            lastEnd = endPlaceHolderPos + 1;
         }
 
         if (lastEnd < input.length()) {
@@ -603,6 +621,11 @@ public class PlaceholderHandler extends Handler {
             };
         }
         return PlaceholderHandler.noResult();
+    }
+
+    public static Pair<Boolean, CustomTextValue> getNbtTextValue(ItemStack itemStack, String field) {
+        Pair<Boolean, NbtObject> item = ValidateItem.isServerItem(itemStack);
+        return getNbtTextValue(item.value2(), field);
     }
     //endregion
 

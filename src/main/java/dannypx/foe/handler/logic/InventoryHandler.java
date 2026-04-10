@@ -11,6 +11,7 @@ import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.custom_text.CustomTextValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.type.custom_text.TextValue;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
@@ -18,10 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class InventoryHandler extends Handler {
@@ -88,7 +86,7 @@ public class InventoryHandler extends Handler {
 
     public Pair<Boolean, CustomTextValue> getInventory(String[] params) {
         if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet|armor|empty_slots)$");
+            Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet|armor|empty_slots|held_item|slot)$");
 
             if(fieldPattern.matcher(params[0]).matches()) {
                 return switch(params[0]) {
@@ -179,6 +177,68 @@ public class InventoryHandler extends Handler {
                         yield PlaceholderHandler.noResult();
                     }
                     case "empty_slots" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentEmptySlots())));
+                    case "held_item" -> {
+                        if(params.length >= 2
+                                && minecraftClient.player != null
+                        ) {
+                            ItemStack heldItem = minecraftClient.player.getInventory().getMainHandStack();
+                            if(!heldItem.isEmpty()) {
+                                yield switch (params[1]) {
+                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(heldItem.getName()));
+                                    case "tooltip" -> {
+                                        if(params.length >= 3) {
+                                            if(heldItem.get(DataComponentTypes.LORE) != null) {
+                                                List<Text> lines = heldItem.get(DataComponentTypes.LORE).lines();
+                                                try {
+                                                    int index = Integer.parseInt(params[2]);
+
+                                                    if(index < lines.size()) {
+                                                        yield PlaceholderHandler.getTextValue(new TextValue(lines.get(index)));
+                                                    }
+                                                } catch (Exception ignored) {}
+                                            }
+                                        }
+                                        yield PlaceholderHandler.noResult();
+                                    }
+                                    default -> PlaceholderHandler.getNbtTextValue(heldItem, params[2]);
+                                };
+                            }
+                        }
+                        yield PlaceholderHandler.noResult();
+                    }
+                    case "slot" -> {
+                        if(params.length >= 3
+                                && minecraftClient.player != null
+                        ) {
+                            try {
+                                int slot = Integer.parseInt(params[1]);
+                                ItemStack stack = minecraftClient.player.getInventory().getStack(slot);
+
+                                if(!stack.isEmpty()) {
+                                    yield switch (params[2]) {
+                                        case "name" -> PlaceholderHandler.getTextValue(new TextValue(stack.getName()));
+                                        case "tooltip" -> {
+                                            if(params.length >= 4) {
+                                                if(stack.get(DataComponentTypes.LORE) != null) {
+                                                    List<Text> lines = stack.get(DataComponentTypes.LORE).lines();
+                                                    try {
+                                                        int index = Integer.parseInt(params[3]);
+
+                                                        if(index < lines.size()) {
+                                                            yield PlaceholderHandler.getTextValue(new TextValue(lines.get(index)));
+                                                        }
+                                                    } catch (Exception ignored) {}
+                                                }
+                                            }
+                                            yield PlaceholderHandler.noResult();
+                                        }
+                                        default -> PlaceholderHandler.getNbtTextValue(stack, params[2]);
+                                    };
+                                }
+                            } catch (Exception ignored) {}
+                        }
+                        yield PlaceholderHandler.noResult();
+                    }
                     default -> PlaceholderHandler.noResult();
                 };
             }

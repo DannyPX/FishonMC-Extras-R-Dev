@@ -68,8 +68,8 @@ public class ArmorNbtObject extends NbtObject {
             return 0;
         }
 
-        int cap = getTierCap(tier);
-        int overflowValue = getOverflowValue(tier);
+        int cap = 15;
+        int overflowValue = 25000;
 
         int amount = calculateSquareSum(Math.min(adjustedRolls, cap));
 
@@ -86,18 +86,6 @@ public class ArmorNbtObject extends NbtObject {
             sum += i * i * 100;
         }
         return sum;
-    }
-
-    private static int getTierCap(int tier) {
-        if (tier < 4) return 15;
-        if (tier == 4) return 18;
-        return 23;
-    }
-
-    private static int getOverflowValue(int tier) {
-        if (tier < 4) return 25000;
-        if (tier == 4) return 32500;
-        return 50000;
     }
 
     public static ArmorNbtObject of(@NotNull NbtCompound nbtCompound, @NotNull ItemStack itemStack) {

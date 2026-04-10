@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 3)
+@Version(version = 4)
 @Translatable.Name("Renderer Configuration")
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
@@ -40,6 +40,9 @@ public class RendererConfig extends Config {
     @Name("Entity Model Renderer")
     @Desc("§7This is the model renderer for entities")
     public ConfigGroup entityModelGroup = new ConfigGroup("entity_model_renderer_group");
+
+    @Name("Show pet names")
+    public ValidatedBoolean showPetName = new ValidatedBoolean(true);
 
     @Name("Use the 3D bobber texture")
     public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
