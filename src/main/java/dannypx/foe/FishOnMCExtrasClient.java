@@ -133,7 +133,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
-        HudRenderHandler.instance().init(layeredDrawerWrapper);
+        HudRenderHandler.instance().hudRenderCallback(layeredDrawerWrapper);
     }
 
     private void onInit() {

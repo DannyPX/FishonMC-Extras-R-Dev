@@ -45,8 +45,8 @@ public class HudRenderHandler extends Handler {
     //endregion
 
     //region Methods
-    public void init(LayeredDrawerWrapper layeredDrawerWrapper) {
-        addElements(layeredDrawerWrapper);
+    public void hudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
+        renderElements(layeredDrawerWrapper);
     }
 
     public void tick() {
@@ -58,14 +58,15 @@ public class HudRenderHandler extends Handler {
         }
     }
 
-    private void addElements(LayeredDrawerWrapper layeredDrawerWrapper) {
-        elements.clear();
-        elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
-        elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
-        elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraftClient)));
-        elements.add(Pair.of("pet_hud", new PetElement(minecraftClient)));
-        elements.add(Pair.of("notifier_hud", new NotifierElement(minecraftClient)));
-        elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
+    private void renderElements(LayeredDrawerWrapper layeredDrawerWrapper) {
+        if(elements.isEmpty()) {
+            elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
+            elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
+            elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraftClient)));
+            elements.add(Pair.of("pet_hud", new PetElement(minecraftClient)));
+            elements.add(Pair.of("notifier_hud", new NotifierElement(minecraftClient)));
+            elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
+        }
 
         elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
                 Identifier.of(FishOnMCExtras.MOD_ID, element.value1()), (drawContext, tickCounter) -> {

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "inject.BlockLightStorageMixin",
+    "inject.EntityMixin",
     "inject.FishingBobberEntityMixin"
   ],
   "injectors": {
