@@ -63,7 +63,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
 
     //region Methods
     public void init(Screen screen) {
-        buttonBoxRows = (CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(FishOnMCExtras.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size() + buttonsPerRow - 1) / buttonsPerRow;
+        buttonBoxRows = (CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size() + buttonsPerRow - 1) / buttonsPerRow;
 
         this.initElements();
         this.initWidgets(screen);
@@ -84,7 +84,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
     }
 
     private void renderButtonBoxText(DrawContext drawContext) {
-        if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(FishOnMCExtras.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()
+        if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()
                 && buttonBoxRows == 0
         ) {
             drawContext.drawCenteredTextWithShadow(textRenderer, Text.literal("You have no custom buttons").formatted(Formatting.ITALIC, Formatting.GRAY),
@@ -135,11 +135,11 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     "B",
                     Tooltip.of(Text.literal("Edit Inventory Buttons")),
                     Text.literal("Edit Inventory Buttons"),
-                    (button) -> minecraftClient.setScreen(new CustomButtonMakerScreen(minecraftClient.currentScreen, FishOnMCExtras.INVENTORY_SCREEN))
+                    (button) -> minecraftClient.setScreen(new CustomButtonMakerScreen(minecraftClient.currentScreen, CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN))
             ));
 
-            for (int i = 0; i < CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(FishOnMCExtras.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size(); i++) {
-                CustomButtonDataHandler.CustomButton button = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(FishOnMCExtras.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().get(i);
+            for (int i = 0; i < CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size(); i++) {
+                CustomButtonDataHandler.CustomButton button = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().get(i);
                 if(button.showButton) {
                     int row = i / buttonsPerRow;
                     int column = i % buttonsPerRow;
@@ -166,7 +166,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                 }
             }
 
-            if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(FishOnMCExtras.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()) {
+            if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()) {
                 buttonMenuToggle = getCloseButtonMenuButton(screen);
                 widgets.addAll(buttons);
             } else {
@@ -194,7 +194,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     elements.add(buttonBox);
                     Screens.getButtons(screen).addAll(buttons);
 
-                    CustomButtonDataHandler.instance().updateButton(FishOnMCExtras.INVENTORY_SCREEN, true);
+                    CustomButtonDataHandler.instance().updateButton(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, true);
                 }
         );
     }
@@ -216,7 +216,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     elements.remove(buttonBox);
                     Screens.getButtons(screen).removeAll(buttons);
 
-                    CustomButtonDataHandler.instance().updateButton(FishOnMCExtras.INVENTORY_SCREEN, false);
+                    CustomButtonDataHandler.instance().updateButton(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, false);
                 }
         );
     }
@@ -320,7 +320,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                 minecraftClient.getWindow().getScaledHeight() / 2 + INVENTORY_HEIGHT / 2 - 5,
                 0,
                 170, Math.max(11 + buttonBoxRows * buttonSizeAndPadding, 11 + 16), false, false, false, true, true, true));
-        if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(FishOnMCExtras.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()) {
+        if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()) {
             elements.add(buttonBox);
         }
     }

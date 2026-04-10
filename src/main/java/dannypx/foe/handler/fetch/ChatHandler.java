@@ -166,8 +166,6 @@ public class ChatHandler extends Handler {
     }
 
     public void cleanChatTriggerStore(String[] chatTriggers) {
-        LoggerHandler._debug(Arrays.toString(chatTriggers));
-
         for (String chatTrigger : chatTriggers) {
             if(storedChatTriggerText.containsKey(chatTrigger)) {
                 CodeExecuterHandler.runLater(2, () -> {

@@ -1,0 +1,31 @@
+package dannypx.foe.mixin.inject;
+
+import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.ConnectionHandler;
+import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(Entity.class)
+public abstract class EntityMixin<T extends Entity, S extends EntityRenderState> {
+    @Shadow
+    public abstract Text getName();
+
+    @Inject(method = "isCustomNameVisible", at = @At("RETURN"), cancellable = true)
+    private void injectIsCustomNameVisible(CallbackInfoReturnable<Boolean> cir) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.entityMixinIsCustomNameVisible.get()
+                && !Configs.rendererConfig.showPetName.get()
+                && this.getName().getString().contains("'s")
+                && this.getName().getString().contains("Pet")
+        ) {
+            cir.setReturnValue(false);
+        }
+    }
+}
