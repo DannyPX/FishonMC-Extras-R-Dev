@@ -181,7 +181,7 @@ public class InventoryHandler extends Handler {
                         if(params.length >= 2
                                 && minecraftClient.player != null
                         ) {
-                            ItemStack heldItem = minecraftClient.player.getInventory().getMainHandStack();
+                            ItemStack heldItem = minecraftClient.player.getInventory().getSelectedStack();
                             if(!heldItem.isEmpty()) {
                                 yield switch (params[1]) {
                                     case "name" -> PlaceholderHandler.getTextValue(new TextValue(heldItem.getName()));
