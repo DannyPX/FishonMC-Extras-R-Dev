@@ -200,7 +200,7 @@ public class CustomButtonDataHandler extends Handler {
                         "/ah", "\u2B50", true),
                 new CustomButton("&6&lCraft",
                         "&7Open the crafting station",
-                        "/trash", "\u26CF", true),
+                        "/craft", "\u26CF", true),
 
                 new CustomButton("&6&lArtisan",
                         "&7Open the Artisan Menu",
