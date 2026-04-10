@@ -172,7 +172,7 @@ public class CustomButtonDataHandler extends Handler {
 
     //region Model
     public static class CustomButtonDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_BUTTON_DATA_MODEL_VERSION = "0.3";
+        private static final String CUSTOM_BUTTON_DATA_MODEL_VERSION = "0.4";
 
         public static final String INVENTORY_SCREEN = "Inventory Screen";
 
