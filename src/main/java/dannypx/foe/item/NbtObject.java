@@ -184,12 +184,18 @@ public class NbtObject {
         if(this.contains(key)) {
             DataResult<List<ItemStack>> result =
                     ItemStack.CODEC.listOf().parse(NbtOps.INSTANCE, this.get(key));
-            List<ItemStack> itemStackList = result.result().orElse(List.of());
+            List<ItemStack> itemStackList;
+
+            try {
+                itemStackList = result.getPartialOrThrow();
+            } catch (Exception e) {
+                itemStackList = List.of();
+            }
 
             return itemStackList.stream().map(item -> {
                 Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(item);
                 return validatedItem.value2();
-            }).filter(Objects::nonNull).toList();
+            }).toList();
         }
         return List.of();
     }
