@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.UUID;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onPlayerList", at = @At("TAIL"))
     private void injectOnPlayerList(PlayerListS2CPacket packet, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
