@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
-public class InGameHudMixin {
+public abstract class InGameHudMixin {
     @Inject(method = "setTitle", at = @At("HEAD"))
     private void injectSetTitle(Text title, CallbackInfo ci) {
         if(LoadingHandler.instance().isLoadingDone()

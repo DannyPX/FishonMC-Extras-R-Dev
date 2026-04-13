@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(FishingBobberEntityState.class)
-public class FishingBobberEntityStateMixin implements IFishingBobberEntityState {
+public abstract class FishingBobberEntityStateMixin implements IFishingBobberEntityState {
 
     @Unique
     private ItemStack baitStack = ItemStack.EMPTY;

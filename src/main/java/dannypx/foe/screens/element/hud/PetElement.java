@@ -127,9 +127,9 @@ public class PetElement extends Element {
             int bars = 20;
             int progress = (int) (bars * InventoryHandler.instance().getCurrentPet().getProgress());
             int progressLeft = bars - progress;
-            Text progressText = Text.literal(" ".repeat(progress))
+            Text progressText = Text.literal(" ".repeat(Math.max(0, progress)))
                     .formatted(Formatting.STRIKETHROUGH, Formatting.GOLD);
-            Text progressLeftText = Text.literal(" ".repeat(progressLeft))
+            Text progressLeftText = Text.literal(" ".repeat(Math.min(bars, progressLeft)))
                     .formatted(Formatting.STRIKETHROUGH, Formatting.DARK_GRAY);
 
             Text levelText = TextHelper.concat(
