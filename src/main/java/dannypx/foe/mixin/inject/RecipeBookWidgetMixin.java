@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RecipeBookWidget.class)
-public class RecipeBookWidgetMixin {
+public abstract class RecipeBookWidgetMixin {
     @Inject(method = "isOpen", at = @At("HEAD"), cancellable = true)
     private void injectIsOpen(CallbackInfoReturnable<Boolean> cir) {
         if(ConnectionHandler.instance().isOnServer()

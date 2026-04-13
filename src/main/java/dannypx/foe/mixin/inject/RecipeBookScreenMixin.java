@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RecipeBookScreen.class)
-public class RecipeBookScreenMixin {
+public abstract class RecipeBookScreenMixin {
     @Inject(method = "addRecipeBook", at = @At("HEAD"), cancellable = true)
     private void injectAddRecipeBook(CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()

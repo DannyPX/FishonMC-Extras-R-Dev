@@ -89,14 +89,14 @@ public class TimerHandler extends Handler {
 
                                 yield switch (params[2]) {
                                     case "on" -> switch (params[3]) {
-                                        case "second" -> PlaceholderHandler.getTextValue(new StringValue(String.format("%02d", remainingTimeOn.value1())));
-                                        case "minute" -> PlaceholderHandler.getTextValue(new StringValue(String.format("%02d", remainingTimeOn.value2())));
+                                        case "second" -> PlaceholderHandler.getTextValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOn.value1())));
+                                        case "minute" -> PlaceholderHandler.getTextValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOn.value2())));
                                         case "hour" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(remainingTimeOn.value3())));
                                         default -> PlaceholderHandler.noResult();
                                     };
                                     case "off" -> switch (params[3]) {
-                                        case "second" -> PlaceholderHandler.getTextValue(new StringValue(String.format("%02d", remainingTimeOff.value1())));
-                                        case "minute" -> PlaceholderHandler.getTextValue(new StringValue(String.format("%02d", remainingTimeOff.value2())));
+                                        case "second" -> PlaceholderHandler.getTextValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOff.value1())));
+                                        case "minute" -> PlaceholderHandler.getTextValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOff.value2())));
                                         case "hour" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(remainingTimeOff.value3())));
                                         default -> PlaceholderHandler.noResult();
                                     };
@@ -113,8 +113,8 @@ public class TimerHandler extends Handler {
                                 Triplet<Long, Long, Long> remainingTime = getTime(remaining);
 
                                 yield switch (params[2]) {
-                                    case "second" -> PlaceholderHandler.getTextValue(new StringValue(String.format("%02d", remainingTime.value1())));
-                                    case "minute" -> PlaceholderHandler.getTextValue(new StringValue(String.format("%02d", remainingTime.value2())));
+                                    case "second" -> PlaceholderHandler.getTextValue(new StringValue(String.format(Locale.US, "%02d", remainingTime.value1())));
+                                    case "minute" -> PlaceholderHandler.getTextValue(new StringValue(String.format(Locale.US, "%02d", remainingTime.value2())));
                                     case "hour" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(remainingTime.value3())));
                                     default -> PlaceholderHandler.noResult();
                                 };

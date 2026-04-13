@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FishingBobberEntityRenderer.class)
-public class FishingBobberEntityRendererMixin {
+public abstract class FishingBobberEntityRendererMixin {
     @Unique
     private Model bobberModel;
 

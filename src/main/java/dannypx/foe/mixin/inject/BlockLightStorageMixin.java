@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockLightStorage.class)
-public class BlockLightStorageMixin {
+public abstract class BlockLightStorageMixin {
     @Inject(method = "getLight", at = @At("RETURN"), cancellable = true)
     private void injectGetLight(long blockPos, CallbackInfoReturnable<Integer> cir) {
         if(ConnectionHandler.instance().isOnServer()
