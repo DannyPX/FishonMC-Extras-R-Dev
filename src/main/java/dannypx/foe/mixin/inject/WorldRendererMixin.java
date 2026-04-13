@@ -1,7 +1,6 @@
 package dannypx.foe.mixin.inject;
 
 import dannypx.foe.handler.logic.LightHandler;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
