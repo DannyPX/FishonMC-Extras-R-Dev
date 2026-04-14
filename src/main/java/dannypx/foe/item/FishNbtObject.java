@@ -54,7 +54,9 @@ public class FishNbtObject extends NbtObject {
     }
 
     public Text getVariantText() {
-        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null
+                && !this.getLore().isEmpty()
+        ) {
             List<Text> textList = this.getLore();
             return textList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
         }
@@ -66,7 +68,9 @@ public class FishNbtObject extends NbtObject {
     }
 
     public Text getFishSizeText() {
-        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null
+                && !this.getLore().isEmpty()
+        ) {
             List<Text> textList = this.getLore();
             return textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
         }
