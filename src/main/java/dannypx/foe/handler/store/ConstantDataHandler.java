@@ -169,27 +169,27 @@ public class ConstantDataHandler extends Handler {
          */
         public Map<String, Map<String, Text>> fishData = new HashMap<>(
                 Map.of(
-                        "size", Map.of(
+                        "size", new HashMap<>(Map.of(
                                 "baby", Text.literal("ʙᴀʙʏ").withColor(0x468CE7),
                                 "juvenile", Text.literal("ᴊᴜᴠᴇɴɪʟᴇ").withColor(0x22EA08),
                                 "adult", Text.literal("ᴀᴅᴜʟᴛ").withColor(0x1C7DA0),
                                 "large", Text.literal("ʟᴀʀɢᴇ").withColor(0xFF9000),
                                 "gigantic", Text.literal("ɢɪɢᴀɴᴛɪᴄ").withColor(0xAF3333)
-                        ),
-                        "variant", Map.of(
+                        )),
+                        "variant", new HashMap<>(Map.of(
                                 "normal", Text.literal("\uF040").formatted(Formatting.WHITE),
                                 "albino", Text.literal("\uF041").formatted(Formatting.WHITE),
                                 "melanistic", Text.literal("\uF042").formatted(Formatting.WHITE),
                                 "trophy", Text.literal("\uF043").formatted(Formatting.WHITE),
                                 "fabled", Text.literal("\uF044").formatted(Formatting.WHITE)
-                        ),
-                        "rarity", Map.of(
+                        )),
+                        "rarity", new HashMap<>(Map.of(
                                 "common", Text.literal("\uF033").formatted(Formatting.WHITE),
                                 "rare", Text.literal("\uF034").formatted(Formatting.WHITE),
                                 "epic", Text.literal("\uF035").formatted(Formatting.WHITE),
                                 "legendary", Text.literal("\uF036").formatted(Formatting.WHITE),
                                 "mythical", Text.literal("\uF037").formatted(Formatting.WHITE)
-                        )
+                        ))
                 )
         );
 
