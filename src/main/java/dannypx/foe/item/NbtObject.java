@@ -135,7 +135,9 @@ public class NbtObject {
     }
 
     public Text getRarityText() {
-        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null
+                && !this.getLore().isEmpty()
+        ) {
             List<Text> textList = this.getLore();
             return textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
         }
@@ -143,7 +145,9 @@ public class NbtObject {
     }
 
     public Text getBorderText() {
-        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null
+                && !this.getLore().isEmpty()
+        ) {
             List<Text> textList = this.getLore();
             if(!textList.isEmpty()) {
                 Text borderLine = textList.get(BORDER_LINE);
