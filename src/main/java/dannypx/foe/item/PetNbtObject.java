@@ -53,7 +53,9 @@ public class PetNbtObject extends NbtObject {
     }
 
     public Text getRatingText() {
-        if(this.itemStack.get(DataComponentTypes.LORE) != null) {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null
+                && !this.getLore().isEmpty()
+        ) {
             List<Text> textList = this.getLore();
             return textList.get(RATING_LINE).getSiblings().get(RATING_SIBLING);
         }
