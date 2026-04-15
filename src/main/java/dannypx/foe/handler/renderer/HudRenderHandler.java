@@ -89,7 +89,9 @@ public class HudRenderHandler extends Handler {
     private void renderAfterSubtitles(DrawContext drawContext, RenderTickCounter renderTickCounter) {
         this.renderTooltip(drawContext);
 
-        if(!LoadingHandler.instance().isLoadingDone() &&
+        if((!LoadingHandler.instance().isLoadingDone()
+                || ScoreboardHandler.instance().isNoScoreboard()
+                || !ScoreboardHandler.instance().getLevel().getString().trim().equals(String.valueOf(ClientPlayerHandler.instance().getExperienceLevel()))) &&
                 ConnectionHandler.instance().isOnServer()
         ) this.renderLoading(drawContext);
     }
