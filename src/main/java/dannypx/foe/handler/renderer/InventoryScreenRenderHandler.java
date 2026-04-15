@@ -74,6 +74,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                 && Configs.inventoryScreenConfig.showStatsElement.get()
                 && Configs.mainConfig.enableMod.get()
         ) {
+            this.renderButtonHelp(drawContext, true, false);
+
             elements.forEach(element -> element.value2().render(drawContext, MinecraftClient.getInstance().getRenderTickCounter()));
             if(this.statList != null) {
                 this.statList.render(drawContext, mouseX, mouseY, tickDelta);
@@ -82,6 +84,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
             this.renderButtonBoxText(drawContext);
         }
     }
+
+
 
     private void renderButtonBoxText(DrawContext drawContext) {
         if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()

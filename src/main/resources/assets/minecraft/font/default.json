@@ -1,0 +1,16 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/shift.png",
+      "height": 12, "ascent": 9,
+      "chars": [ "\uDB80\uDC00" ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/scroll.png",
+      "height": 15, "ascent": 12,
+      "chars": [ "\uDB80\uDC01" ]
+    }
+  ]
+}
