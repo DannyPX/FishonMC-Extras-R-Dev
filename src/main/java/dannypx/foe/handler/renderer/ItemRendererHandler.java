@@ -3,11 +3,10 @@ package dannypx.foe.handler.renderer;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.SearchHandler;
+import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.helper.TextHelper;
-import dannypx.foe.item.NbtObject;
-import dannypx.foe.item.PetNbtObject;
-import dannypx.foe.item.ValidateItem;
+import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
@@ -19,10 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ItemRendererHandler extends Handler {
     private static ItemRendererHandler INSTANCE = new ItemRendererHandler();
@@ -46,51 +42,53 @@ public class ItemRendererHandler extends Handler {
 
         Pair<Boolean, NbtObject> validateItem = ValidateItem.isServerItem(stack);
 
-        if(validateItem.value1()
-                && !this.checkIfBlacklisted(validateItem.value2())
+        if(!this.checkIfBlacklisted(validateItem.value2())
                 && !validateItem.value2().getRarity().isBlank()
-                && !Objects.equals(validateItem.value2().getRarityText(), Text.empty())
-                && !validateItem.value2().getRarityText().getString().isBlank()
         ) {
-            Text rarityText = Text.literal(validateItem.value2().getRarityText().getString());
+            Text rarityText = Text.literal(ConstantDataHandler.instance().getConstantData().fishData
+                    .getOrDefault(FishNbtObject.RARITY, new HashMap<>())
+                    .getOrDefault(validateItem.value2().getRarity().toLowerCase(Locale.US), Text.empty()).getString().trim());
+            if(rarityText.getString().isBlank()) rarityText = Text.literal(validateItem.value2().getRarityText().getString());
 
-            int markerX = x;
-            int markerY = y - 1;
+            if(!Objects.equals(rarityText, Text.empty())) {
+                int markerX = x;
+                int markerY = y - 1;
 
-            drawContext.getMatrices().push();
-            drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+                drawContext.getMatrices().push();
+                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
 
-            //TOP
-            int bgX = markerX;
-            int bgY = markerY - 1;
-            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-            drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
-            drawContext.disableScissor();
+                //TOP
+                int bgX = markerX;
+                int bgY = markerY - 1;
+                drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.disableScissor();
 
-            //BOTTOM
-            bgY = markerY + 1;
-            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-            drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
-            drawContext.disableScissor();
+                //BOTTOM
+                bgY = markerY + 1;
+                drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.disableScissor();
 
-            //LEFT
-            bgX = markerX - 1;
-            bgY = markerY;
-            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-            drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
-            drawContext.disableScissor();
+                //LEFT
+                bgX = markerX - 1;
+                bgY = markerY;
+                drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.disableScissor();
 
-            //RIGHT
-            bgX = markerX + 1;
-            drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-            drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
-            drawContext.disableScissor();
+                //RIGHT
+                bgX = markerX + 1;
+                drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.disableScissor();
 
-            drawContext.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
-            drawContext.drawText(textRenderer, rarityText, markerX, markerY, 0xFFFFFF, false);
-            drawContext.disableScissor();
+                drawContext.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
+                drawContext.drawText(textRenderer, rarityText, markerX, markerY, 0xFFFFFF, false);
+                drawContext.disableScissor();
 
-            drawContext.getMatrices().pop();
+                drawContext.getMatrices().pop();
+            }
         }
     }
 
@@ -146,6 +144,72 @@ public class ItemRendererHandler extends Handler {
             drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
             drawContext.drawGuiTexture(RenderLayer::getGuiTextured, petItemMarker, x, y, 16, 16, 0xFFFFFFFF);
             drawContext.getMatrices().pop();
+        }
+    }
+
+    public void drawFishSize(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, int x, int y) {
+        Pair<Boolean, FishNbtObject> validatedFish = ValidateItem.isFish(stack);
+
+        if(validatedFish.value1()
+                && !validatedFish.value2().getFishSize().isBlank()
+        ) {
+            Text sizeText = ConstantDataHandler.instance().getConstantData().fishData
+                    .getOrDefault(FishNbtObject.FISH_SIZE, new HashMap<>())
+                    .getOrDefault(validatedFish.value2().getFishSize().toLowerCase(Locale.US), Text.empty());
+            if(sizeText.getString().isBlank()) sizeText = validatedFish.value2().getFishSizeText();
+
+            if(!sizeText.getString().isEmpty()) {
+                sizeText = TextHelper.substring(sizeText, 0, 1);
+
+                drawContext.getMatrices().push();
+                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+
+                drawContext.drawText(textRenderer, sizeText, x + 17 - textRenderer.getWidth(sizeText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
+
+                drawContext.getMatrices().pop();
+            }
+        }
+    }
+
+    public void drawPetRating(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, int x, int y) {
+        Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(stack);
+
+        if(validatedPet.value1()
+                && !validatedPet.value2().getRatingText().getString().isBlank()
+        ) {
+            Text ratingText = validatedPet.value2().getRatingText();
+
+            if(!ratingText.getString().isEmpty()) {
+                ratingText = TextHelper.substring(ratingText, 0, 1);
+
+                drawContext.getMatrices().push();
+                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+
+                drawContext.drawText(textRenderer, ratingText, x + 17 - textRenderer.getWidth(ratingText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
+
+                drawContext.getMatrices().pop();
+            }
+        }
+    }
+
+    public void drawArmorQuality(DrawContext drawContext, TextRenderer textRenderer, ItemStack stack, int x, int y) {
+        Pair<Boolean, ArmorNbtObject> validatedArmor = ValidateItem.isArmor(stack);
+
+        if(validatedArmor.value1()
+                && !validatedArmor.value2().getQualityText().getString().isBlank()
+        ) {
+            Text qualityArmor = validatedArmor.value2().getQualityText();
+            Text qualityRaw = TextHelper.substring(qualityArmor, 0, qualityArmor.getString().length() - 1);
+            Text qualityText = Text.literal(TextHelper.smallText(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
+
+            if(!qualityText.getString().isEmpty()) {
+                drawContext.getMatrices().push();
+                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+
+                drawContext.drawText(textRenderer, qualityText, x + 17 - textRenderer.getWidth(qualityText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
+
+                drawContext.getMatrices().pop();
+            }
         }
     }
     //endregion

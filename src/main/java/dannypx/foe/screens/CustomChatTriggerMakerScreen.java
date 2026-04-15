@@ -279,7 +279,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
                                 Triplet<String, CustomChatTriggerDataHandler.CustomChatTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomChatTriggerDataHandler.CustomChatTrigger.class, Integer.class).getType());
 
-                                if(data.value3() > FishOnMCExtras.HUD_VERSION) {
+                                if(data.value3() > FishOnMCExtras.CHAT_TRIGGER_VERSION) {
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
                                             Text.literal("Fish On Extras Rebirth"),

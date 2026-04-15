@@ -1,10 +1,14 @@
 package dannypx.foe.item;
 
 import dannypx.foe.helper.ItemStackHelper;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ArmorNbtObject extends NbtObject {
     public static final String ARMOR_ROLLS = "fish_bonus";
@@ -12,6 +16,10 @@ public class ArmorNbtObject extends NbtObject {
     public static final String ARMOR_ROLLS_ROLLED = "rolled";
     public static final String ARMOR_ROLLS_ROLLS = "rolls";
     public static final String IDENTIFIED = "identified";
+
+
+    public static final int ARMOR_QUALITY_LINE = 2;
+    public static final int ARMOR_QUALITY_SIBLING = 3;
 
     public ArmorNbtObject(NbtCompound nbtCompound, ItemStack itemStack) {
         super(nbtCompound, itemStack);
@@ -59,6 +67,17 @@ public class ArmorNbtObject extends NbtObject {
             return ((NbtCompound) this.getArmorRolls().get(index)).getInt(ARMOR_ROLLS_ROLLS);
         }
         return 0;
+    }
+
+    public Text getQualityText() {
+        if(this.itemStack.get(DataComponentTypes.LORE) != null
+                && !this.getLore().isEmpty()
+        ) {
+            List<Text> textList = this.getLore();
+            Text qualityText = textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
+            return qualityText.getString().contains("%") ? qualityText : textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
+        }
+        return Text.empty();
     }
 
     public static int calculateMoneyRolls(int rolls, int tier) {

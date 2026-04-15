@@ -215,7 +215,7 @@ public class ScoreboardHandler extends Handler {
                 .filter(prefix -> !prefix.getString().isBlank())
                 .toList();
         if(!Objects.equals(prevResult, textList)) {
-            prevResult = textList;
+            prevResult = new ArrayList<>(textList);
             return Pair.of(prevResult);
         }
         return Pair.ofFalse(prevResult);
