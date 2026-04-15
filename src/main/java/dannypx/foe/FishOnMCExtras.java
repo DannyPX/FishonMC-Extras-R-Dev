@@ -1,27 +1,28 @@
 package dannypx.foe;
 
 import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.LoggerHandler;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 public class FishOnMCExtras implements ModInitializer {
 	public static final String MOD_ID = "fishonmcextras";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static String VERSION = FishOnMCExtras.getModVersion();
-	public static Integer HUD_VERSION = 3;
-	public static Integer BUTTON_VERSION = 1;
-	public static Integer NOTIFICATION_VERSION = 1;
-	public static Integer CHAT_TRIGGER_VERSION = 1;
-	public static Integer TIMER_VERSION = 1;
-
-
-
+	public static List<String> AUTHORS = FishOnMCExtras.getAuthors();
+	public static Integer HUD_VERSION = FishOnMCExtras.getVersion("hud_version");
+	public static Integer BUTTON_VERSION = FishOnMCExtras.getVersion("button_version");
+	public static Integer NOTIFICATION_VERSION = FishOnMCExtras.getVersion("notification_version");
+	public static Integer CHAT_TRIGGER_VERSION = FishOnMCExtras.getVersion("chat_trigger_version");
+	public static Integer TIMER_VERSION = FishOnMCExtras.getVersion("timer_version");
 
 	@Override
 	public void onInitialize() {
@@ -33,6 +34,20 @@ public class FishOnMCExtras implements ModInitializer {
 			return getModContainer().get().getMetadata().getVersion().getFriendlyString();
 		}
 		return "N/A";
+	}
+
+	private static List<String> getAuthors() {
+		if(getModContainer().isPresent()) {
+			return getModContainer().get().getMetadata().getAuthors().stream().map(Person::getName).toList();
+		}
+		return List.of();
+	}
+
+	private static Integer getVersion(String key) {
+		if(getModContainer().isPresent()) {
+			return getModContainer().get().getMetadata().getCustomValue(key).getAsNumber().intValue();
+		}
+		return -1;
 	}
 
 	private static Optional<ModContainer> getModContainer() {

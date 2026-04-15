@@ -35,6 +35,11 @@
 	"custom": {
 		"fzzy_config": [
 			"fishonmcextras"
-		]
+		],
+		"hud_version": 3,
+		"button_version": 1,
+		"notification_version": 1,
+		"chat_trigger_version": 1,
+		"timer_version": 1
 	}
 }

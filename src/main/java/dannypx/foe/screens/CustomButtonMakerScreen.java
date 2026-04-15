@@ -316,7 +316,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 Gson gson = new GsonBuilder().create();
                                 Pair<CustomButtonDataHandler.CustomButton, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Pair.class, CustomButtonDataHandler.CustomButton.class, Integer.class).getType());
 
-                                if(data.value2() > FishOnMCExtras.HUD_VERSION) {
+                                if(data.value2() > FishOnMCExtras.BUTTON_VERSION) {
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
                                             Text.literal("Fish On Extras Rebirth"),
