@@ -90,6 +90,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
         PersonalVaultScreenRenderHandler.instance().setOnScreen(false);
         AuctionHouseScreenRenderHandler.instance().setOnScreen(false);
+        PresetsScreenRenderHandler.instance().setOnScreen(false);
 
         if(screen instanceof InventoryScreen) {
             InventoryScreenRenderHandler.instance().init(screen);
@@ -97,6 +98,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             ScreenMouseEvents.afterMouseScroll(screen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
         } else if(screen instanceof GenericContainerScreen genericContainerScreen) {
             GenericContainerScreenHandler.instance().init(genericContainerScreen);
+            ScreenEvents.afterRender(screen).register(GenericContainerScreenHandler.instance()::render);
         } else if(screen instanceof ChatScreen) {
             ScreenEvents.afterRender(screen).register(ChatScreenRenderHandler.instance()::render);
         }
@@ -130,6 +132,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     private void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         PersonalVaultScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
         AuctionHouseScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+        PresetsScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {

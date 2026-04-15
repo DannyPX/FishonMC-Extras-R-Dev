@@ -602,7 +602,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                     data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTimerDataHandler.CustomTimerPeriod.class, Integer.class).getType());
                                 }
 
-                                if(data.value4() > FishOnMCExtras.HUD_VERSION) {
+                                if(data.value4() > FishOnMCExtras.TIMER_VERSION) {
                                     SystemToast.add(minecraftClient.getToastManager(),
                                             SystemToast.Type.PERIODIC_NOTIFICATION,
                                             Text.literal("Fish On Extras Rebirth"),

@@ -31,6 +31,7 @@ public class ChatScreenRenderHandler extends ScreenHandler {
     //endregion
 
     //region Methods
+    @Override
     public void render(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
         if(screen instanceof ChatScreen chatScreen) {
             TextFieldWidget textfield = ((ChatScreenAccessor) chatScreen).getChatField();
