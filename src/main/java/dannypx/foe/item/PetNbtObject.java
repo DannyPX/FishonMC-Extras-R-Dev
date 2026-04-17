@@ -56,8 +56,12 @@ public class PetNbtObject extends NbtObject {
         if(this.itemStack.get(DataComponentTypes.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
-            List<Text> textList = this.getLore();
-            return textList.get(RATING_LINE).getSiblings().get(RATING_SIBLING);
+            try {
+                List<Text> textList = this.getLore();
+                return textList.get(RATING_LINE).getSiblings().get(RATING_SIBLING);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return Text.empty();
+            }
         }
         return Text.empty();
     }

@@ -57,8 +57,12 @@ public class FishNbtObject extends NbtObject {
         if(this.itemStack.get(DataComponentTypes.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
-            List<Text> textList = this.getLore();
-            return textList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
+            try {
+                List<Text> textList = this.getLore();
+                return textList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return Text.empty();
+            }
         }
         return Text.empty();
     }
@@ -71,8 +75,12 @@ public class FishNbtObject extends NbtObject {
         if(this.itemStack.get(DataComponentTypes.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
-            List<Text> textList = this.getLore();
-            return textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
+            try {
+                List<Text> textList = this.getLore();
+                return textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return Text.empty();
+            }
         }
         return Text.empty();
     }
