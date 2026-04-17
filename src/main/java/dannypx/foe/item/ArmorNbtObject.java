@@ -74,8 +74,13 @@ public class ArmorNbtObject extends NbtObject {
                 && !this.getLore().isEmpty()
         ) {
             List<Text> textList = this.getLore();
-            Text qualityText = textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
-            return qualityText.getString().contains("%") ? qualityText : textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
+            Text qualityText;
+            try {
+                qualityText = textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
+                return qualityText.getString().contains("%") ? qualityText : textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return Text.empty();
+            }
         }
         return Text.empty();
     }
