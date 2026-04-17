@@ -143,8 +143,12 @@ public class NbtObject {
         if(this.itemStack.get(DataComponentTypes.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
-            List<Text> textList = this.getLore();
-            return textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
+            try {
+                List<Text> textList = this.getLore();
+                return textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return Text.empty();
+            }
         }
         return Text.empty();
     }
