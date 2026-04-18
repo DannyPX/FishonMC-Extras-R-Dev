@@ -2,15 +2,242 @@
   "providers": [
     {
       "type": "bitmap",
-      "file": "minecraft:font/buttons/shift.png",
+      "file": "minecraft:font/buttons/key_letters.png",
       "height": 12, "ascent": 9,
-      "chars": [ "\uDB80\uDC00" ]
+      "chars": [
+        "\uDB80\uDC00\uDB80\uDC01\uDB80\uDC02\uDB80\uDC03\uDB80\uDC04\uDB80\uDC05\uDB80\uDC06\uDB80\uDC07",
+        "\uDB80\uDC08\uDB80\uDC09\uDB80\uDC0A\uDB80\uDC0B\uDB80\uDC0C\uDB80\uDC0D\uDB80\uDC0E\uDB80\uDC0F",
+        "\uDB80\uDC10\uDB80\uDC11\uDB80\uDC12\uDB80\uDC13\uDB80\uDC14\uDB80\uDC15\uDB80\uDC16\uDB80\uDC17",
+        "\uDB80\uDC18\uDB80\uDC19\uDB80\uDC1A\uDB80\uDC1B\uDB80\uDC1C\uDB80\uDC1D\uDB80\uDC1E\uDB80\uDC1F"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_numbers.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC20\uDB80\uDC21\uDB80\uDC22\uDB80\uDC23\uDB80\uDC24\uDB80\uDC25\uDB80\uDC26\uDB80\uDC27",
+        "\uDB80\uDC28\uDB80\uDC29\uDB80\uDC2A\uDB80\uDC2B\uDB80\uDC2C\uDB80\uDC2D\uDB80\uDC2E\uDB80\uDC2F"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_function.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC30\uDB80\uDC31\uDB80\uDC32\uDB80\uDC33\uDB80\uDC34\uDB80\uDC35\uDB80\uDC36\uDB80\uDC37",
+        "\uDB80\uDC38\uDB80\uDC39\uDB80\uDC3A\uDB80\uDC3B\uDB80\uDC3C\uDB80\uDC3D\uDB80\uDC3E\uDB80\uDC3F"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_arrows.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC40\uDB80\uDC41\uDB80\uDC42\uDB80\uDC43"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_symbols.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC44\uDB80\uDC45\uDB80\uDC46\uDB80\uDC47\uDB80\uDC48\uDB80\uDC49\uDB80\uDC4A\uDB80\uDC4B",
+        "\uDB80\uDC4C\uDB80\uDC4D\uDB80\uDC4E\uDB80\uDC4F\uDB80\uDC50\uDB80\uDC51\uDB80\uDC52\uDB80\uDC53"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_space.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC54"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_enter.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC55"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_escape.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC56"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_tab.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC57"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_backspace.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC58"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_shift.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC59"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_alt.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC5A"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_control.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC5B"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_caps.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC5C"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_insert.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC5D"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_delete.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC5F"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_home.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC60"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_end.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC61"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_pageup.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC62"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_pagedown.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC63"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_print.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC64"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_scrolllock.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC65"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/key_pause.png",
+      "height": 12,
+      "ascent": 9,
+      "chars": [
+        "\uDB80\uDC66"
+      ]
     },
     {
       "type": "bitmap",
       "file": "minecraft:font/buttons/scroll.png",
-      "height": 15, "ascent": 12,
-      "chars": [ "\uDB80\uDC01" ]
+      "height": 15,
+      "ascent": 12,
+      "chars": [
+        "\uDB80\uDC67"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/mouse_left.png",
+      "height": 15,
+      "ascent": 12,
+      "chars": [
+        "\uDB80\uDC68"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/buttons/mouse_right.png",
+      "height": 15,
+      "ascent": 12,
+      "chars": [
+        "\uDB80\uDC69"
+      ]
     }
   ]
 }
