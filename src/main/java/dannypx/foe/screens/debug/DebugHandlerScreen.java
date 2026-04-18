@@ -125,6 +125,14 @@ public class DebugHandlerScreen extends DefaultModScreen {
         }
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+
+        this.copyText(keyCode, modifiers);
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     public void copyText(int key, int modifiers) {
         boolean ctrl = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0
                 || (modifiers & GLFW.GLFW_MOD_SUPER) != 0;

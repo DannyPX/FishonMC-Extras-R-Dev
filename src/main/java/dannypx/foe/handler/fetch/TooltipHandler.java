@@ -1,7 +1,9 @@
 package dannypx.foe.handler.fetch;
 
+import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.KeyBindHandler;
+import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.ArmorNbtObject;
@@ -126,15 +128,20 @@ public class TooltipHandler extends Handler {
         if(rightClickLine != -1
                 && armorNbtObject.isIdentified()
         ) {
+            Text inspectText = TextHelper.concat(
+                    Text.literal(TextHelper.smallText("Hold ")),
+                    Text.literal(TextHelper.smallText(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind))),
+                    Text.literal(TextHelper.smallText(" to see more info"))
+            ).formatted(Formatting.DARK_GRAY);
             Text rollHintText = TextHelper.concat(
                     border,
-                    Text.literal(TextHelper.smallText("Hold shift to see more info")).formatted(Formatting.DARK_GRAY)
+                    inspectText
             );
 
             texts.add(rightClickLine + 1, rollHintText);
         }
 
-        if(KeyBindHandler.instance().isPressingShift()) {
+        if(KeyBindHandler.instance().isPressingInspect()) {
             if(tierLine != -1) {
                 for (int i = 4; i >= 0; i--) {
                     if(armorNbtObject.isArmorRollUnlocked(i)
