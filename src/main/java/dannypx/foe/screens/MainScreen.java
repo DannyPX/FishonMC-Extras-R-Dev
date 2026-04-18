@@ -75,6 +75,7 @@ public class MainScreen extends DefaultModScreen {
         widgets.add(customTimerButton());
         widgets.add(customNotificationButton());
         widgets.add(configButton());
+        widgets.add(controlsButton());
 
         widgets.forEach(this::addDrawableChild);
     }
@@ -128,8 +129,17 @@ public class MainScreen extends DefaultModScreen {
         return ButtonWidget.builder(Text.literal("Config Screen"), button ->
                         ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
                 .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2 + BUTTON_HEIGHT + PADDING + textRenderer.fontHeight + PADDING_QUART)
-                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Config Screen")))
+                .build();
+    }
+
+    private ButtonWidget controlsButton() {
+        return ButtonWidget.builder(Text.literal("Controls"), button ->
+                        ConfigApiJava.INSTANCE.openScreen(Configs.keyBindConfig.translationKey()))
+                .position(width / 2 + PADDING_HALF, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2 + BUTTON_HEIGHT + PADDING + textRenderer.fontHeight + PADDING_QUART)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Controls Config")))
                 .build();
     }
     //endregion

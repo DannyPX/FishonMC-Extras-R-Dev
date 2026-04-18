@@ -1,18 +1,15 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
-import dannypx.foe.type.AdvancedKeyBinding;
+import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.custom_text.CustomTextValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.screens.MainScreen;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -28,26 +25,22 @@ public class KeyBindHandler extends Handler {
     }
 
     //region Fields
-    private boolean isPressingShift = false;
+    private boolean isPressingInspect = false;
 
-    public final AdvancedKeyBinding openMainKeybind =
-            new AdvancedKeyBinding("key." + FishOnMCExtras.MOD_ID + ".openmain",
-                    GLFW.GLFW_KEY_O,
-                    "category." + FishOnMCExtras.MOD_ID + ".general");
-
-    public boolean isPressingShift() {
-        return isPressingShift;
+    public boolean isPressingInspect() {
+        return isPressingInspect;
     }
 
     public Pair<Boolean, CustomTextValue> getKeyBind(String[] params) {
         if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(open_main_keybind)$");
+            Pattern fieldPattern = Pattern.compile("^(open_main_keybind|inspect_keybind)$");
 
             if(fieldPattern.matcher(params[0]).matches()
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "open_main_keybind" -> PlaceholderHandler.getTextValue(new StringValue(openMainKeybind.getBoundKeyTranslationKey()));
+                    case "open_main_keybind" -> PlaceholderHandler.getTextValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)));
+                    case "inspect_keybind" -> PlaceholderHandler.getTextValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -57,32 +50,14 @@ public class KeyBindHandler extends Handler {
     //endregion
 
     //region Methods
-    public void init() {
-        this.registerKeybinds();
-    }
-
     public void tick() {
-        this.openMainKeybind.onPressed(() -> minecraftClient.setScreen(new MainScreen(minecraftClient.currentScreen)));
-    }
-
-    public void checkKeyPresses(Screen screen, int key, int modifiers) {
-        if(key == GLFW.GLFW_KEY_LEFT_SHIFT) isPressingShift = true;
-    }
-
-    public void afterKeyPressed(Screen screen, int key, int modifiers) {
-        if(key == GLFW.GLFW_KEY_LEFT_SHIFT) isPressingShift = false;
-    }
-
-    private void registerKeybinds() {
-        KeyBindHandler.register(
-                this.openMainKeybind
-        );
-    }
-
-    private static void register(KeyBinding... keybindings) {
-        for(KeyBinding keyBinding : keybindings) {
-            KeyBindingHelper.registerKeyBinding(keyBinding);
+        if(minecraftClient.currentScreen == null
+                && KeyBindHelper.isPressed(Configs.keyBindConfig.openMainKeybind)
+        ) {
+            minecraftClient.setScreen(new MainScreen(minecraftClient.currentScreen));
         }
+
+        isPressingInspect = KeyBindHelper.isPressed(Configs.keyBindConfig.inspectKeybind);
     }
     //endregion
 
@@ -90,7 +65,8 @@ public class KeyBindHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableText, MutableText>> _getFields() {
         return Map.of(
-                "openMainKeybind", Pair.of(Text.literal(openMainKeybind.getBoundKeyTranslationKey()), Text.empty())
+                "openMainKeybind", Pair.of(Text.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)), Text.empty()),
+                "inspectKeybind", Pair.of(Text.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)), Text.empty())
         );
     }
     //endregion

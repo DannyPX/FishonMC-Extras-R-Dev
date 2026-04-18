@@ -42,7 +42,7 @@ public abstract class DrawContextMixin {
             ItemRendererHandler.instance().drawRarityMarker((DrawContext) (Object) this, textRenderer, stack, x, y);
             ItemRendererHandler.instance().drawSearchItem((DrawContext) (Object) this, stack, x, y);
             ItemRendererHandler.instance().drawPetItemEquipped((DrawContext) (Object) this, stack, x, y);
-            if(KeyBindHandler.instance().isPressingShift()) {
+            if(KeyBindHandler.instance().isPressingInspect()) {
                 ItemRendererHandler.instance().drawFishSize((DrawContext) (Object) this, textRenderer, stack, x, y);
                 ItemRendererHandler.instance().drawPetRating((DrawContext) (Object) this, textRenderer, stack, x, y);
                 ItemRendererHandler.instance().drawArmorQuality((DrawContext) (Object) this, textRenderer, stack, x, y);
