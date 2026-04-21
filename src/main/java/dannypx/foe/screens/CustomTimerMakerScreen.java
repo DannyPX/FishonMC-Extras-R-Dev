@@ -24,6 +24,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -163,14 +164,14 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2,
-                0xFFFFFF
+                Colors.WHITE
         );
 
         context.drawText(textRenderer,
                 Text.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING),
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -178,7 +179,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Timer"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 2,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -186,7 +187,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Off Timer"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -194,7 +195,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Offset"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 4,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -202,7 +203,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 5,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -210,7 +211,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Trigger Notif. End"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 6,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -218,7 +219,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Clear Triggers"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 7,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
         try {
@@ -266,7 +267,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             onTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
-                            0xFFFFFF,
+                            Colors.WHITE,
                             true
                     );
 
@@ -274,7 +275,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             offTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 1,
-                            0xFFFFFF,
+                            Colors.WHITE,
                             true
                     );
 
@@ -288,7 +289,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             isOnTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 2,
-                            0xFFFFFF,
+                            Colors.WHITE,
                             true
                     );
                 } else {
@@ -311,7 +312,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             onTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
-                            0xFFFFFF,
+                            Colors.WHITE,
                             true
                     );
 
@@ -337,8 +338,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 minecraftClient.getWindow().getScaledWidth(),
                 minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, 0xFF747474);
-        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, 0xFF747474);
+        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
+        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
     }
 
     private void renderWidgets() {
@@ -822,11 +823,11 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
         if(selectedTimer != null) {
             if(selectedTimer.useTimer != useTimerCheckBox.isChecked()) {
-                useTimerCheckBox.onPress();
+                useTimerCheckBox.onPress(null);
             }
 
             if(selectedTimer.isPeriod != isPeriodCheckBox.isChecked()) {
-                isPeriodCheckBox.onPress();
+                isPeriodCheckBox.onPress(null);
             }
 
             timerTextField.setText(String.valueOf(selectedTimer.timer));
@@ -870,11 +871,11 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         nameTextField.setPlaceholder(Text.literal(""));
 
         if(useTimerCheckBox.isChecked()) {
-            useTimerCheckBox.onPress();
+            useTimerCheckBox.onPress(null);
         }
 
         if(isPeriodCheckBox.isChecked()) {
-            isPeriodCheckBox.onPress();
+            isPeriodCheckBox.onPress(null);
         }
 
         timerTextField.setText("");

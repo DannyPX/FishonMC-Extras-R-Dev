@@ -6,6 +6,7 @@ import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -114,7 +115,7 @@ public class NotificationElement extends Element implements ScreenConstants {
 
     private void renderBox(DrawContext drawContext) {
         // Top Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x, this.y,
                 0, 0,
@@ -124,7 +125,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Top
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x + 5, this.y,
                 5, 0,
@@ -134,7 +135,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Top Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 x + this.width - 5, this.y,
                 10, 0,
@@ -144,7 +145,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Centre Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x, this.y + 5,
                 0, 5,
@@ -154,7 +155,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Centre
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x + 5, this.y + 5,
                 5, 5,
@@ -164,7 +165,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Centre Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 x + this.width - 5, this.y + 5,
                 10, 5,
@@ -174,7 +175,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Bottom Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x, y + this.height - 5,
                 0, 10,
@@ -184,7 +185,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Bottom
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x + 5, y + this.height - 5,
                 5, 10,
@@ -194,7 +195,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Bottom Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 x + this.width - 5, y + this.height - 5,
                 10, 10,

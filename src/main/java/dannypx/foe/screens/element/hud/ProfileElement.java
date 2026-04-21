@@ -11,10 +11,12 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -60,8 +62,8 @@ public class ProfileElement extends Element {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.profileElementScale.get()));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.profileElementScale.get()));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showProfileElement.get()
                 && TabHandler.instance().isInInstance()
@@ -84,15 +86,15 @@ public class ProfileElement extends Element {
             this.renderText(drawContext, textRenderer, x, y);
             this.renderHead(drawContext, x, y);
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderHead(DrawContext drawContext, int x, int y) {
         if(minecraftClient.player != null) {
-            Identifier SKIN_TEXTURE = minecraftClient.player.getSkinTextures().texture();
+            Identifier SKIN_TEXTURE = minecraftClient.player.getSkin().body().texturePath();
             switch (Configs.hudConfig.profileElementAlignment.get()) {
                 case TOP_LEFT -> {
-                    drawContext.drawTexture(RenderLayer::getGuiTextured,
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x + 8, y + 8,
                             8, 8,
@@ -101,7 +103,7 @@ public class ProfileElement extends Element {
                             64, 64
                     );
 
-                    drawContext.drawTexture(RenderLayer::getGuiTextured,
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x + 7, y + 7,
                             40, 8,
@@ -111,7 +113,7 @@ public class ProfileElement extends Element {
                     );
                 }
                 case TOP_RIGHT -> {
-                    drawContext.drawTexture(RenderLayer::getGuiTextured,
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x - 8 - 21, y + 8,
                             8, 8,
@@ -120,7 +122,7 @@ public class ProfileElement extends Element {
                             64, 64
                     );
 
-                    drawContext.drawTexture(RenderLayer::getGuiTextured,
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x - 7 - 23, y + 7,
                             40, 8,
@@ -191,7 +193,7 @@ public class ProfileElement extends Element {
                 drawContext.drawText(textRenderer,
                         player,
                         x + text1x, y + text1y,
-                        0xFFFFFF,
+                        Colors.WHITE,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
@@ -222,7 +224,7 @@ public class ProfileElement extends Element {
                 drawContext.drawText(textRenderer,
                         player,
                         x - text1x - playerWidth, y + text1y,
-                        0xFFFFFF,
+                        Colors.WHITE,
                         true);
 
                 DrawHelper.drawText(drawContext, textRenderer,
@@ -254,12 +256,12 @@ public class ProfileElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.profileElementAlignment.get()) {
-            case TOP_LEFT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            case TOP_LEFT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     PROFILE_TEXTURE,
                     x, y,
                     width, height
             );
-            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     PROFILE_TEXTURE_FLIP,
                     x - width, y,
                     width, height

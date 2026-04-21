@@ -21,6 +21,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -104,14 +105,14 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2,
-                0xFFFFFF
+                Colors.WHITE
         );
 
         context.drawText(textRenderer,
                 Text.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING),
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -119,7 +120,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Description"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 2,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -127,7 +128,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Command"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -135,7 +136,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 Text.literal("Icon"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 4,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
     }
@@ -147,8 +148,8 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 minecraftClient.getWindow().getScaledWidth(),
                 minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, 0xFF747474);
-        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, 0xFF747474);
+        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
+        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
     }
 
     private void renderWidgets() {
@@ -553,7 +554,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
         if(selectedButton != null) {
             if(selectedButton.showButton != showButtonCheckBox.isChecked()) {
-                showButtonCheckBox.onPress();
+                showButtonCheckBox.onPress(null);
             }
 
             descriptionTextField.setText(selectedButton.description);
@@ -574,7 +575,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         nameTextField.setPlaceholder(Text.literal(""));
 
         if(showButtonCheckBox.isChecked()) {
-            showButtonCheckBox.onPress();
+            showButtonCheckBox.onPress(null);
         }
 
         descriptionTextField.setText("");

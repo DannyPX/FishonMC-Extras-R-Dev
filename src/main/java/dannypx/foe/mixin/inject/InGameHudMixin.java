@@ -53,25 +53,25 @@ public abstract class InGameHudMixin {
         }
     }
 
-    @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
-    private void injectRenderExperienceBar(DrawContext context, int x, CallbackInfo ci) {
-        if(ConnectionHandler.instance().isOnServer()
-                && Configs.mainConfig.enableMod.get()
-                && Configs.mixinConfig.inGameHudRenderExperienceBar.get()
-        ) {
-            ci.cancel();
-        }
-    }
-
-    @Inject(method = "renderExperienceLevel", at = @At("HEAD"), cancellable = true)
-    private void injectRenderExperienceLevel(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        if(ConnectionHandler.instance().isOnServer()
-                && Configs.mainConfig.enableMod.get()
-                && Configs.mixinConfig.inGameHudRenderExperienceLevel.get()
-        ) {
-            ci.cancel();
-        }
-    }
+//    @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
+//    private void injectRenderExperienceBar(DrawContext context, int x, CallbackInfo ci) {
+//        if(ConnectionHandler.instance().isOnServer()
+//                && Configs.mainConfig.enableMod.get()
+//                && Configs.mixinConfig.inGameHudRenderExperienceBar.get()
+//        ) {
+//            ci.cancel();
+//        }
+//    }
+//
+//    @Inject(method = "renderExperienceLevel", at = @At("HEAD"), cancellable = true)
+//    private void injectRenderExperienceLevel(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+//        if(ConnectionHandler.instance().isOnServer()
+//                && Configs.mainConfig.enableMod.get()
+//                && Configs.mixinConfig.inGameHudRenderExperienceLevel.get()
+//        ) {
+//            ci.cancel();
+//        }
+//    }
 
     @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
     private void injectRenderHotbar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {

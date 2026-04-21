@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +27,7 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
                             int bottom,
                             int itemHeight,
                             String title) {
-        super(client, width, height, top, bottom, itemHeight);
+        super(client, width, height, bottom, itemHeight);
         headerTitle = title;
     }
 
@@ -41,13 +42,15 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
     }
 
     @Override
-    protected void renderHeader(DrawContext context, int x, int y) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+        super.renderWidget(context, mouseX, mouseY, deltaTicks);
+
         context.drawCenteredTextWithShadow(
                 client.textRenderer,
                 Text.literal(headerTitle),
-                x + getRowWidth() / 2,
-                y + 4,
-                0xFFFFFF
+                getX() + getRowWidth() / 2,
+                getY() + 4,
+                Colors.WHITE
         );
     }
 
@@ -70,8 +73,8 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
     }
 
     @Override
-    public boolean removeEntry(ButtonEntry entry) {
-        return super.removeEntry(entry);
+    public void removeEntry(ButtonEntry entry) {
+        super.removeEntry(entry);
     }
 
     public static class ButtonEntry extends ElementListWidget.Entry<ButtonEntry> {
@@ -126,26 +129,21 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         @Override
         public void render(
                 DrawContext context,
-                int index,
-                int y,
-                int x,
-                int entryWidth,
-                int entryHeight,
                 int mouseX,
                 int mouseY,
                 boolean hovered,
                 float delta
         ) {
             button.setPosition(
-                    x + (entryWidth - button.getWidth()) / 2,
-                    y
+                    getX() + (getContentWidth() - button.getWidth()) / 2,
+                    getY()
             );
             button.render(context, mouseX, mouseY, delta);
 
             if(smallButton != null) {
                 smallButton.setPosition(
-                        x + entryWidth - smallButton.getWidth() - PADDING,
-                        y
+                        getX() + getContentWidth() - smallButton.getWidth() - PADDING,
+                        getY()
                 );
 
                 smallButton.render(context, mouseX, mouseY, delta);
@@ -153,8 +151,8 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
 
             if(upButton != null) {
                 upButton.setPosition(
-                        x + PADDING,
-                        y
+                        getX() + PADDING,
+                        getY()
                 );
 
                 upButton.render(context, mouseX, mouseY, delta);
@@ -162,8 +160,8 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
 
             if(downButton != null) {
                 downButton.setPosition(
-                        x + PADDING,
-                        y + entryHeight / 2
+                        getX() + PADDING,
+                        getY() + getContentWidth() / 2
                 );
 
                 downButton.render(context, mouseX, mouseY, delta);

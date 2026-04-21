@@ -6,10 +6,12 @@ import dannypx.foe.screens.element.Element;
 import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -98,13 +100,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1,
                         getX() + 1,
                         getY() + 1,
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() - 1, getY() - 1,
                         0,0,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case TOP_RIGHT -> {
@@ -113,13 +115,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1,
                         getX() + 1 + getWidth(),
                         getY() + 1,
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() + 1 + getWidth(), getY() - 1,
                         screenWidth,0,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case BOTTOM_LEFT -> {
@@ -128,13 +130,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1 + getHeight(),
                         getX() + 1,
                         getY() + 1 + getHeight(),
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() - 1, getY() + 1 + getHeight(),
                         0, screenHeight,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case BOTTOM_RIGHT -> {
@@ -143,13 +145,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1 + getHeight(),
                         getX() + 1 + getWidth(),
                         getY() + 1 + getHeight(),
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() + 1 + getWidth(), getY() + 1 + getHeight(),
                         screenWidth, screenHeight,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case TOP -> {
@@ -158,13 +160,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1,
                         getX() + 1 + (getWidth() / 2),
                         getY() + 1,
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() + (getWidth() / 2), getY() - 1,
                         screenWidth / 2, 0,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case BOTTOM -> {
@@ -173,13 +175,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1 + getHeight(),
                         getX() + 1 + (getWidth() / 2),
                         getY() + 1 + getHeight(),
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() + (getWidth() / 2), getY() + 1 + getHeight(),
                         screenWidth / 2, screenHeight,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case LEFT -> {
@@ -188,13 +190,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1 + (getHeight() / 2),
                         getX() + 1,
                         getY() + 1 + (getHeight() / 2),
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() - 1, getY() + (getHeight() / 2),
                         0, screenHeight / 2,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
             case RIGHT -> {
@@ -203,13 +205,13 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
                         getY() - 1 + (getHeight() / 2),
                         getX() + 1 + getWidth(),
                         getY() + 1 + (getHeight() / 2),
-                        0xFFFF0000
+                        Colors.RED
                 );
 
                 DrawHelper.drawLine(context,
                         getX() + 1 + getWidth(), getY() + (getHeight() / 2),
                         screenWidth, screenHeight / 2,
-                        0xFFFF0000
+                        Colors.RED
                 );
             }
         }
@@ -242,21 +244,21 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
             case LEFT, TOP_LEFT, BOTTOM_LEFT -> DrawHelper.drawHorizontalGradient(context,
                     getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555,
+                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555);
             case RIGHT, TOP_RIGHT, BOTTOM_RIGHT -> DrawHelper.drawHorizontalGradient(context,
                     getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555,
-                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555);
+                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY);
             case TOP -> context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555,
+                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555);
             case BOTTOM -> context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555,
-                    this.isHovered() ? 0xFFAAAAAA : 0xFF555555);
+                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY);
         }
     }
 
@@ -264,13 +266,12 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.active && this.visible && this.isMouseOver(mouseX, mouseY)) {
-            if (button == 0) {
+    public void onClick(Click click, boolean doubled) {
+        if (this.active && this.visible && this.isMouseOver(click.x(), click.y())) {
+            if (click.button() == 0) {
                 this.playDownSound(MinecraftClient.getInstance().getSoundManager());
-                this.onClick(mouseX, mouseY);
-                return true;
-            } else if (button == 1) {
+                this.onClick(click, doubled);
+            } else if (click.button() == 1) {
                 this.playDownSound(MinecraftClient.getInstance().getSoundManager());
 
                 element.alignment = this.nextAlignment();
@@ -278,19 +279,15 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
                 callback.onRelease(Math.round(element.xPos * 100f),
                         Math.round(element.yPos * 100f), element.alignment);
-                return false;
-            } else if (button == 2) {
+            } else if (click.button() == 2) {
                 callback.onConfig();
             }
         }
-        return false;
     }
 
-
-
     @Override
-    protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+    protected void onDrag(Click click, double offsetX, double offsetY) {
+        super.onDrag(click, offsetX, offsetY);
 
         int currentWidth = minecraftClient.getWindow().getScaledWidth();
         int currentHeight = minecraftClient.getWindow().getScaledHeight();
@@ -328,8 +325,8 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void onRelease(Click click) {
+        super.onRelease(click);
 
         switch (element.alignment) {
             case LEFT, TOP_LEFT, BOTTOM_LEFT -> this.originalX = getX();

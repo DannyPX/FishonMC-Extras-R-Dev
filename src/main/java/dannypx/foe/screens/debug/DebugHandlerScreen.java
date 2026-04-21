@@ -12,9 +12,11 @@ import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
@@ -101,21 +103,19 @@ public class DebugHandlerScreen extends DefaultModScreen {
                         Text.literal(": "),
                         value.value1()
                 );
-                // Get Text Coordinates and Bounds
+
                 int textx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
                 int texty = PADDING + (textRenderer.fontHeight + LINE_SPACING) * atomicInteger.getAndIncrement();
                 int textwidth = textRenderer.getWidth(text);
                 int textHeight = textRenderer.fontHeight;
-                int color = 0xFFFFFF;
+                int color = Colors.WHITE;
 
-                // Draw Text
                 context.drawText(textRenderer, text, textx, texty, color, true);
 
-                // Draw Tooltip
                 if(mouseX >= textx && mouseX <= textx + textwidth
                         && mouseY >= texty && mouseY <= texty + textHeight) {
                     if(!Objects.equals(value.value2(), Text.empty())) {
-                        context.drawTooltip(textRenderer, Tooltip.of(value.value2()).getLines(minecraftClient), HoveredTooltipPositioner.INSTANCE, mouseX, mouseY);
+                        context.drawTooltip(value.value2(), mouseX, mouseY);
                     }
 
                     hoveredName = name;
@@ -126,18 +126,18 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput input) {
 
-        this.copyText(keyCode, modifiers);
+        this.copyText(input);
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
-    public void copyText(int key, int modifiers) {
-        boolean ctrl = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0
-                || (modifiers & GLFW.GLFW_MOD_SUPER) != 0;
+    public void copyText(KeyInput input) {
+        boolean ctrl = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0
+                || (input.modifiers() & GLFW.GLFW_MOD_SUPER) != 0;
 
-        if(ctrl && key == GLFW.GLFW_KEY_C) {
+        if(ctrl && input.key() == GLFW.GLFW_KEY_C) {
             String json;
             if(Objects.equals(hoveredValue.value2(), Text.empty())) {
                 json = TextHelper.textToJsonPretty(hoveredValue.value1());

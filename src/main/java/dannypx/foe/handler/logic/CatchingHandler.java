@@ -183,8 +183,10 @@ public class CatchingHandler extends Handler {
     private FishNbtObject findFishInWorld() {
         AtomicReference<FishNbtObject> foundItemStack = new AtomicReference<>();
 
-        if(minecraftClient.player != null) {
-            ClientWorld world = minecraftClient.player.clientWorld;
+        if(minecraftClient.player != null
+                && minecraftClient.world != null
+        ) {
+            ClientWorld world = minecraftClient.world;
             Box searchBox = minecraftClient.player.getBoundingBox().expand(10d);
 
             List<ItemEntity> itemEntities = world.getEntitiesByClass(

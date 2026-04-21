@@ -64,8 +64,10 @@ public class ConnectionHandler extends Handler {
     private void checkIfOnServer() {
         isOnServer = this.checkFOMCAddress();
         if(isOnServer) {
-            LoggerHandler.info("On server. (play.fishonmc.net)");
+            LoggerHandler.info("On server (play.fishonmc.net)");
             wasOnServer = true;
+        } else {
+            LoggerHandler.info("Not on server");
         }
     }
 

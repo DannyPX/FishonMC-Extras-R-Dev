@@ -75,7 +75,7 @@ public abstract class PlayerListHudMixin {
             List<PlayerListEntry> sorted = new ArrayList<>(cir.getReturnValue());
 
             sorted.sort(Comparator.comparing(
-                    e -> !priorityUUIDs.contains(e.getProfile().getId())
+                    e -> !priorityUUIDs.contains(e.getProfile().id())
             ));
 
             cir.setReturnValue(sorted);

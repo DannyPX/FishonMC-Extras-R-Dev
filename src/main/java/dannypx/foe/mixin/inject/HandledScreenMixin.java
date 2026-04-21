@@ -4,6 +4,7 @@ import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.input.KeyInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
     @Inject(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;close()V"), cancellable = true)
-    private void injectKeypressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    private void injectKeypressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.handledScreenMixinGroupKeyPressed.get()

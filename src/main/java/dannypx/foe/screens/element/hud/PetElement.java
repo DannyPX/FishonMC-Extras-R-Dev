@@ -10,6 +10,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -60,8 +61,8 @@ public class PetElement extends Element {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.petElementScale.get()));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.petElementScale.get()));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.hudConfig.petElementScale.get(), Configs.hudConfig.petElementScale.get(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(Configs.hudConfig.petElementScale.get(), Configs.hudConfig.petElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showPetElement.get()
                 && TabHandler.instance().isInInstance()
@@ -84,26 +85,26 @@ public class PetElement extends Element {
             this.renderText(drawContext, textRenderer, x, y);
             this.renderPetIcon(drawContext, x, y);
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderPetIcon(DrawContext drawContext, int x, int y) {
         if(minecraftClient.player != null && InventoryHandler.instance().hasPet()) {
             ItemStack pet = InventoryHandler.instance().getCurrentPet().getItemStack();
 
-            drawContext.getMatrices().push();
+            drawContext.getMatrices().pushMatrix();
             switch (Configs.hudConfig.petElementAlignment.get()) {
                 case TOP_LEFT -> {
-                    drawContext.getMatrices().translate(x + 7, y + 7, 0);
-                    drawContext.getMatrices().scale(1.5f, 1.5f, 1f);
+                    drawContext.getMatrices().translate(x + 7, y + 7);
+                    drawContext.getMatrices().scale(1.5f, 1.5f);
                 }
                 case TOP_RIGHT -> {
-                    drawContext.getMatrices().translate(x - 7 - 24, y + 7, 0);
-                    drawContext.getMatrices().scale(1.5f, 1.5f, 1f);
+                    drawContext.getMatrices().translate(x - 7 - 24, y + 7);
+                    drawContext.getMatrices().scale(1.5f, 1.5f);
                 }
             }
             drawContext.drawItem(pet, 0, 0);
-            drawContext.getMatrices().pop();
+            drawContext.getMatrices().popMatrix();
         }
     }
 
@@ -204,12 +205,12 @@ public class PetElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.petElementAlignment.get()) {
-            case TOP_LEFT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            case TOP_LEFT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     PET_TEXTURE,
                     x, y,
                     width, height
             );
-            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     PET_TEXTURE_FLIP,
                     x - width, y,
                     width, height

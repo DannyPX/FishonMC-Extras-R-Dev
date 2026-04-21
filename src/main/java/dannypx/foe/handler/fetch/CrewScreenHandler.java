@@ -45,9 +45,9 @@ public class CrewScreenHandler extends Handler {
                     ItemStack itemStack = genericContainerScreenHandler.getSlot(i).getStack();
                     if(itemStack.getItem() == Items.PLAYER_HEAD
                             && itemStack.get(DataComponentTypes.PROFILE) != null
-                            && itemStack.get(DataComponentTypes.PROFILE).id().isPresent()
+                            && itemStack.get(DataComponentTypes.PROFILE).getGameProfile().id() != null
                     ) {
-                        crewMembers.put(itemStack.get(DataComponentTypes.PROFILE).id().get(), Pair.of(itemStack.get(DataComponentTypes.PROFILE).name().get(), itemStack));
+                        crewMembers.put(itemStack.get(DataComponentTypes.PROFILE).getGameProfile().id(), Pair.of(itemStack.get(DataComponentTypes.PROFILE).getGameProfile().name(), itemStack));
                     }
                 }
 

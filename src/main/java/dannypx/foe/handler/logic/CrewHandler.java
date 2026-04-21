@@ -110,7 +110,9 @@ public class CrewHandler extends Handler {
             if(crewListOrdered.isEmpty()) this.updateCrewOrderedList(CrewDataHandler.instance().getCrewData().crewList);
         }
 
-        if(minecraftClient.player != null) {
+        if(minecraftClient.player != null
+                && minecraftClient.world != null
+        ) {
             this.checkCrewNearby();
         }
 
@@ -121,7 +123,7 @@ public class CrewHandler extends Handler {
 
     private void checkCrewNearby() {
         Box searchBox = minecraftClient.player.getBoundingBox().expand(10d);
-        ClientWorld world = minecraftClient.player.clientWorld;
+        ClientWorld world = minecraftClient.world;
 
         List<PlayerEntity> playerEntities = world.getEntitiesByClass(
                 PlayerEntity.class,
@@ -130,7 +132,7 @@ public class CrewHandler extends Handler {
                     if(playerEntity.getUuid().equals(minecraftClient.player.getUuid())) return false;
 
                     return CrewDataHandler.instance().getCrewData().crewList.containsKey(playerEntity.getUuid())
-                            && playerEntity.getPos().distanceTo(minecraftClient.player.getPos()) < 10d;
+                            && playerEntity.getEntityPos().distanceTo(minecraftClient.player.getEntityPos()) < 10d;
                 }
         );
 

@@ -14,6 +14,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -82,8 +83,8 @@ public class HotbarElement extends Element {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.hotbarElementScale.get()));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.hotbarElementScale.get()));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.hudConfig.hotbarElementScale.get(), Configs.hudConfig.hotbarElementScale.get(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(Configs.hudConfig.hotbarElementScale.get(), Configs.hudConfig.hotbarElementScale.get());
 
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showHotbarElement.get()) {
             // Position
@@ -110,7 +111,7 @@ public class HotbarElement extends Element {
             if(Configs.hudConfig.showHotbarArmor.get() && TabHandler.instance().isInInstance()) this.renderArmor(drawContext, x, y);
             if(Configs.hudConfig.showHotbarBait.get() && TabHandler.instance().isInInstance()) this.renderBait(drawContext, textRenderer, x, y);
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderHotbar(DrawContext drawContext, int x, int y) {
@@ -118,7 +119,7 @@ public class HotbarElement extends Element {
         int hotbarX = 25;
         int hotbarY = 25;
 
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                 HOTBAR_TEXTURE,
                 x + hotbarX, y + hotbarY,
                 HOTBAR_WIDTH, HOTBAR_HEIGHT
@@ -146,29 +147,23 @@ public class HotbarElement extends Element {
                     Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                     int countWidth = textRenderer.getWidth(countText);
 
-                    drawContext.getMatrices().push();
-                    drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
                     if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                             x + countX + (18 * i) - countWidth, y + countY,
                             true,
                             true,
                             false,
                             false);
-                    drawContext.getMatrices().pop();
                 } else {
                     int count = item.getCount();
                     Text countText = TextHelper.literal(count);
                     int countWidth = textRenderer.getWidth(countText);
 
-                    drawContext.getMatrices().push();
-                    drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
                     if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                             x + countX + (18 * i) - countWidth, y + countY - 2,
                             true,
                             true,
                             false,
                             false);
-                    drawContext.getMatrices().pop();
                 }
             }
         }
@@ -183,7 +178,7 @@ public class HotbarElement extends Element {
             int selectorY = 26;
             int index = minecraftClient.player.getInventory().getSelectedSlot();
 
-            drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     SELECTOR_TEXTURE,
                     x + selectorX + (18 * index) - 1, y + selectorY,
                     SELECTOR_WIDTH, SELECTOR_HEIGHT
@@ -224,7 +219,7 @@ public class HotbarElement extends Element {
         //region Texture
         int gearX = 35;
 
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                 GEAR_TEXTURE,
                 x + gearX, y,
                 GEAR_WIDTH, GEAR_HEIGHT
@@ -252,7 +247,7 @@ public class HotbarElement extends Element {
         //region Texture
         int gearX = 125;
 
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                 GEAR_TEXTURE,
                 x + gearX, y,
                 GEAR_WIDTH, GEAR_HEIGHT
@@ -290,7 +285,7 @@ public class HotbarElement extends Element {
                 //region Texture
                 int baitY = 26;
 
-                drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+                drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                         SLOT_TEXTURE,
                         x, y + baitY,
                         SLOT_WIDTH, SLOT_HEIGHT
@@ -304,8 +299,6 @@ public class HotbarElement extends Element {
                     Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
                     int countWidth = textRenderer.getWidth(countText);
 
-                    drawContext.getMatrices().push();
-                    drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
                     if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                             x + countX - countWidth, y + countY,
                             true,
@@ -316,10 +309,8 @@ public class HotbarElement extends Element {
                     if(Configs.hudConfig.showBaitLock.get()
                             && fishingRodNbtObject.getDisableBait()
                     ) {
-                        drawContext.drawText(textRenderer, Text.literal("\uD83D\uDD12"), x + 2, y + baitY, 0xFFFFFF, true);
+                        drawContext.drawText(textRenderer, Text.literal("\uD83D\uDD12"), x + 2, y + baitY, Colors.WHITE, true);
                     }
-
-                    drawContext.getMatrices().pop();
                 }
                 //endregion
             }

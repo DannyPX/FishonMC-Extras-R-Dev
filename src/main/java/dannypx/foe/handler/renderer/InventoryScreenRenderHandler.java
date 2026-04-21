@@ -25,6 +25,7 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -94,7 +95,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
             drawContext.drawCenteredTextWithShadow(textRenderer, Text.literal("You have no custom buttons").formatted(Formatting.ITALIC, Formatting.GRAY),
                     minecraftClient.getWindow().getScaledWidth() / 2,
                     minecraftClient.getWindow().getScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 8 - textRenderer.fontHeight / 2,
-                    0xFFFFFF);
+                    Colors.WHITE);
         }
     }
 
@@ -225,13 +226,15 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         );
     }
 
-    public void onMouseScrolled(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+    public boolean onMouseScrolled(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {
         if(this.statList != null
                 && Configs.inventoryScreenConfig.showStatsElement.get()
                 && this.statList.isMouseOver(mouseX, mouseY)
         ) {
             this.statList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
         }
+
+        return false;
     }
 
     private ClickableWidget getStatList() {

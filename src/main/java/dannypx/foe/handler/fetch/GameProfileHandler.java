@@ -1,9 +1,13 @@
 package dannypx.foe.handler.fetch;
 
+import com.mojang.authlib.GameProfile;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.LoggerHandler;
+import dannypx.foe.mixin.accessor.MinecraftClientAccessor;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.client.network.ClientPlayerProfileResolver;
+import net.minecraft.server.GameProfileResolver;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -21,9 +25,14 @@ public class GameProfileHandler extends Handler {
         return INSTANCE;
     }
 
+    public GameProfileHandler() {
+        gameProfileResolver = new ClientPlayerProfileResolver(minecraftClient, ((MinecraftClientAccessor) minecraftClient).getApiServices().profileResolver());
+    }
+
     //region Fields
     private final Map<UUID, String> nameCache = new HashMap<>();
     private final Map<UUID, Boolean> fetchingUUIDs = new HashMap<>();
+    private final GameProfileResolver gameProfileResolver;
     //endregion
 
     //region Methods
@@ -38,14 +47,13 @@ public class GameProfileHandler extends Handler {
 
             fetchingUUIDs.put(uuid, true);
 
-            SkullBlockEntity.fetchProfileByUuid(uuid)
-                    .thenAccept(optionalProfile -> {
-                        optionalProfile.ifPresentOrElse(profile ->
-                                nameCache.put(uuid, profile.getName()),
-                                () -> nameCache.put(uuid, null)
-                        );
+            gameProfileResolver.getProfileById(uuid).ifPresentOrElse(profile ->
+                    {
+                        nameCache.put(uuid, profile.name());
                         fetchingUUIDs.remove(uuid);
-                    });
+                    },
+                    () -> {}
+            );
         }
 
         return null;

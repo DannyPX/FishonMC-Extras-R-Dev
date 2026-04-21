@@ -10,6 +10,7 @@ import dannypx.foe.helper.DrawHelper;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -59,8 +60,8 @@ public class LocationElement extends Element {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.locationElementScale.get()));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.locationElementScale.get()));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.hudConfig.locationElementScale.get(), Configs.hudConfig.locationElementScale.get(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(Configs.hudConfig.locationElementScale.get(), Configs.hudConfig.locationElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showLocationElement.get()
                 && TabHandler.instance().isInInstance()
@@ -82,7 +83,7 @@ public class LocationElement extends Element {
             this.renderTexture(drawContext, x, y);
             this.renderText(drawContext, textRenderer, x, y);
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderText(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
@@ -180,12 +181,12 @@ public class LocationElement extends Element {
 
     private void renderTexture(DrawContext drawContext, int x, int y) {
         switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case TOP_LEFT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            case TOP_LEFT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     LOCATION_TEXTURE,
                     x, y,
                     width, height
             );
-            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     LOCATION_TEXTURE_FLIP,
                     x - width, y,
                     width, height

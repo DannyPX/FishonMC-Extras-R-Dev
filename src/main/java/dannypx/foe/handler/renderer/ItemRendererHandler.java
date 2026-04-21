@@ -10,6 +10,7 @@ import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
@@ -54,40 +55,39 @@ public class ItemRendererHandler extends Handler {
                 int markerX = x;
                 int markerY = y - 1;
 
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
+                drawContext.getMatrices().pushMatrix();
 
                 //TOP
                 int bgX = markerX;
                 int bgY = markerY - 1;
                 drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, Colors.LIGHT_GRAY, false);
                 drawContext.disableScissor();
 
                 //BOTTOM
                 bgY = markerY + 1;
                 drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, Colors.LIGHT_GRAY, false);
                 drawContext.disableScissor();
 
                 //LEFT
                 bgX = markerX - 1;
                 bgY = markerY;
                 drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, Colors.LIGHT_GRAY, false);
                 drawContext.disableScissor();
 
                 //RIGHT
                 bgX = markerX + 1;
                 drawContext.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                drawContext.drawText(textRenderer, rarityText, bgX, bgY, 0xAAAAAA, false);
+                drawContext.drawText(textRenderer, rarityText, bgX, bgY, Colors.LIGHT_GRAY, false);
                 drawContext.disableScissor();
 
                 drawContext.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
-                drawContext.drawText(textRenderer, rarityText, markerX, markerY, 0xFFFFFF, false);
+                drawContext.drawText(textRenderer, rarityText, markerX, markerY, Colors.WHITE, false);
                 drawContext.disableScissor();
 
-                drawContext.getMatrices().pop();
+                drawContext.getMatrices().popMatrix();
             }
         }
     }
@@ -107,8 +107,6 @@ public class ItemRendererHandler extends Handler {
         Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
         int countWidth = textRenderer.getWidth(countText);
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
         if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
                 x + 19 - 2 - countWidth, y + 6 + 4,
                 true,
@@ -116,18 +114,15 @@ public class ItemRendererHandler extends Handler {
                 false,
                 true
         );
-        drawContext.getMatrices().pop();
     }
 
     public void drawSearchItem(DrawContext drawContext, ItemStack stack, int x, int y) {
         if(SearchHandler.instance().isOnScreen()
                 && SearchHandler.instance().filterItem(stack)) {
-            drawContext.getMatrices().push();
-            drawContext.getMatrices().translate(0.0F, 0.0F, 180.0F);
-
-            drawContext.drawBorder(x, y, 16, 16, Colors.RED);
-
-            drawContext.getMatrices().pop();
+            drawContext.drawHorizontalLine(x, x + 16, y, Colors.RED);
+            drawContext.drawHorizontalLine(x, x + 16, y + 16, Colors.RED);
+            drawContext.drawVerticalLine(x, y, y + 16, Colors.RED);
+            drawContext.drawVerticalLine(x + 16, y, y + 16, Colors.RED);
         }
     }
 
@@ -140,10 +135,7 @@ public class ItemRendererHandler extends Handler {
         Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(stack);
 
         if(validatedPet.value1() && (validatedPet.value2().contains(PetNbtObject.ITEM) || validatedPet.value2().contains(PetNbtObject.SKIN))) {
-            drawContext.getMatrices().push();
-            drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
-            drawContext.drawGuiTexture(RenderLayer::getGuiTextured, petItemMarker, x, y, 16, 16, 0xFFFFFFFF);
-            drawContext.getMatrices().pop();
+            drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, petItemMarker, x, y, 16, 16, Colors.WHITE);
         }
     }
 
@@ -161,12 +153,7 @@ public class ItemRendererHandler extends Handler {
             if(!sizeText.getString().isEmpty()) {
                 sizeText = TextHelper.substring(sizeText, 0, 1);
 
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
-
-                drawContext.drawText(textRenderer, sizeText, x + 17 - textRenderer.getWidth(sizeText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
-
-                drawContext.getMatrices().pop();
+                drawContext.drawText(textRenderer, sizeText, x + 17 - textRenderer.getWidth(sizeText), y + 18 - textRenderer.fontHeight, Colors.WHITE, true);
             }
         }
     }
@@ -182,12 +169,7 @@ public class ItemRendererHandler extends Handler {
             if(!ratingText.getString().isEmpty()) {
                 ratingText = TextHelper.substring(ratingText, 0, 1);
 
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
-
-                drawContext.drawText(textRenderer, ratingText, x + 17 - textRenderer.getWidth(ratingText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
-
-                drawContext.getMatrices().pop();
+                drawContext.drawText(textRenderer, ratingText, x + 17 - textRenderer.getWidth(ratingText), y + 18 - textRenderer.fontHeight, Colors.WHITE, true);
             }
         }
     }
@@ -203,12 +185,7 @@ public class ItemRendererHandler extends Handler {
             Text qualityText = Text.literal(TextHelper.smallText(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityText.getString().isEmpty()) {
-                drawContext.getMatrices().push();
-                drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
-
-                drawContext.drawText(textRenderer, qualityText, x + 17 - textRenderer.getWidth(qualityText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
-
-                drawContext.getMatrices().pop();
+                drawContext.drawText(textRenderer, qualityText, x + 17 - textRenderer.getWidth(qualityText), y + 18 - textRenderer.fontHeight, Colors.WHITE, true);
             }
         }
     }

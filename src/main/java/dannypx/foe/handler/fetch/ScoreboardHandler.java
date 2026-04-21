@@ -222,8 +222,13 @@ public class ScoreboardHandler extends Handler {
     }
 
     private ScoreboardObjective getObjective() {
-        Scoreboard scoreboard = Objects.requireNonNull(minecraftClient.player).getScoreboard();
-        return scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR);
+        if(minecraftClient.player != null
+                && minecraftClient.player.getScoreboardTeam() != null
+        ) {
+            Scoreboard scoreboard = minecraftClient.player.getScoreboardTeam().getScoreboard();
+            return scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR);
+        }
+        return null;
     }
     //endregion
 

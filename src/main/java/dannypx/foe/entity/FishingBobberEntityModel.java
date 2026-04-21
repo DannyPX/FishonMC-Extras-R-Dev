@@ -2,6 +2,8 @@ package dannypx.foe.entity;
 
 import dannypx.foe.FishOnMCExtras;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.state.FishingBobberEntityState;
@@ -11,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class FishingBobberEntityModel<T extends FishingBobberEntityState> extends EntityModel<T> {
     public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(Identifier.of(FishOnMCExtras.MOD_ID, "fishing_bobber"), "main");
     public static final Identifier TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/entity/fishing_bobber.png");
+
+    public static final RenderLayer RENDER_LAYER = RenderLayers.entityTranslucent(TEXTURE);
 
     private static final float ANGLE_180_DEGREES = (float) (1f * Math.PI);
 

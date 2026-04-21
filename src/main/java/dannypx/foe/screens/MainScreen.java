@@ -5,6 +5,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -45,25 +47,25 @@ public class MainScreen extends DefaultModScreen {
 
         int size = 200;
 
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured,
+        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                 ICON_TEXTURE,
                 screenWidth / 2 - size / 2, screenHeight / 2 - size + 32,
                 size, size
         );
 
         Text hudText = Text.literal("Creator Settings");
-        drawContext.drawText(textRenderer, hudText, width / 2 - textRenderer.getWidth(hudText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight, 0xFFFFFF, true);
+        drawContext.drawText(textRenderer, hudText, width / 2 - textRenderer.getWidth(hudText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight, Colors.WHITE, true);
 
         Text configText = Text.literal("Configuration");
-        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2 + BUTTON_HEIGHT + PADDING, 0xFFFFFF, true);
+        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2 + BUTTON_HEIGHT + PADDING, Colors.WHITE, true);
 
         //Versions
-        drawContext.drawText(textRenderer, Text.literal("Mod Version: v" + FishOnMCExtras.VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - textRenderer.fontHeight - PADDING_QUART, 0xFFFFFF, true);
-        drawContext.drawText(textRenderer, Text.literal("HUD Version: v" + FishOnMCExtras.HUD_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 2, 0xFFFFFF, true);
-        drawContext.drawText(textRenderer, Text.literal("Chat Trigger Version: v" + FishOnMCExtras.CHAT_TRIGGER_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 3, 0xFFFFFF, true);
-        drawContext.drawText(textRenderer, Text.literal("Timer Version: v" + FishOnMCExtras.TIMER_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 4, 0xFFFFFF, true);
-        drawContext.drawText(textRenderer, Text.literal("Notification Version: v" + FishOnMCExtras.NOTIFICATION_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 5, 0xFFFFFF, true);
-        drawContext.drawText(textRenderer, Text.literal("Button Version: v" + FishOnMCExtras.BUTTON_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 6, 0xFFFFFF, true);
+        drawContext.drawText(textRenderer, Text.literal("Mod Version: v" + FishOnMCExtras.VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - textRenderer.fontHeight - PADDING_QUART, Colors.WHITE, true);
+        drawContext.drawText(textRenderer, Text.literal("HUD Version: v" + FishOnMCExtras.HUD_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 2, Colors.WHITE, true);
+        drawContext.drawText(textRenderer, Text.literal("Chat Trigger Version: v" + FishOnMCExtras.CHAT_TRIGGER_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 3, Colors.WHITE, true);
+        drawContext.drawText(textRenderer, Text.literal("Timer Version: v" + FishOnMCExtras.TIMER_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 4, Colors.WHITE, true);
+        drawContext.drawText(textRenderer, Text.literal("Notification Version: v" + FishOnMCExtras.NOTIFICATION_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 5, Colors.WHITE, true);
+        drawContext.drawText(textRenderer, Text.literal("Button Version: v" + FishOnMCExtras.BUTTON_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 6, Colors.WHITE, true);
     }
 
     private void renderWidgets() {

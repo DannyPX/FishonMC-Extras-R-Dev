@@ -11,6 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public abstract class ScreenHandler implements ScreenConstants {
                     minecraftClient.getWindow().getScaledWidth() - PADDING - textRenderer.getWidth(text),
                     minecraftClient.getWindow().getScaledHeight() - PADDING - textRenderer.fontHeight
                             - (textRenderer.fontHeight + 12) * i,
-                    0xFFFFFF,
+                    Colors.WHITE,
                     true
             );
         }

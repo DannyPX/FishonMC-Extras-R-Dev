@@ -4,13 +4,17 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.store.CustomNotificationDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
@@ -174,14 +178,14 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
         int entryStartY = getY() + headerHeight + PADDING + textFieldHeight + PADDING;
 
         context.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
-        context.drawHorizontalLine(getX(), getRight(), getBottom(), 0xFF747474);
-        context.drawVerticalLine(getX(), 0, getBottom(), 0xFF747474);
+        context.drawHorizontalLine(getX(), getRight(), getBottom(), Colors.GRAY);
+        context.drawVerticalLine(getX(), 0, getBottom(), Colors.GRAY);
         context.drawCenteredTextWithShadow(
                 minecraftClient.textRenderer,
                 header,
                 getX() + width / 2,
                 getY() + PADDING,
-                0xFFFFFF
+                Colors.WHITE
         );
 
         // Draw scale text
@@ -190,7 +194,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
                 "Icon",
                 getX() + width / 2,
                 getY() + PADDING + headerHeight + headerHeight / 2 - minecraftClient.textRenderer.fontHeight / 2,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -242,7 +246,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
                     scrollbarY,
                     scrollbarX + scrollbarWidth,
                     scrollbarY + scrollbarHeight,
-                    0xFFAAAAAA
+                    Colors.LIGHT_GRAY
             );
         }
 
@@ -250,8 +254,8 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!isMouseOver(mouseX, mouseY)) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (!isMouseOver(click.x(), click.y())) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -259,7 +263,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
             return false;
         }
 
-        if (idTextField.mouseClicked(mouseX, mouseY, button)) {
+        if (idTextField.mouseClicked(click, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -269,7 +273,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
             return true;
         }
 
-        if (iconTextField.mouseClicked(mouseX, mouseY, button)) {
+        if (iconTextField.mouseClicked(click, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -280,7 +284,7 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
         }
 
         for (LineEntry entry : entries) {
-            if (entry.mouseClicked(mouseX, mouseY, button)) {
+            if (entry.mouseClicked(click, doubled)) {
                 if (focusedEntry != null && focusedEntry != entry) focusedEntry.setFocused(false);
                 focusedEntry = entry;
                 entry.setFocused(true);
@@ -294,18 +298,18 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (idTextField.isFocused()) return idTextField.keyPressed(keyCode, scanCode, modifiers);
-        if (iconTextField.isFocused()) return iconTextField.keyPressed(keyCode, scanCode, modifiers);
-        if (focusedEntry != null) return focusedEntry.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(KeyInput input) {
+        if (idTextField.isFocused()) return idTextField.keyPressed(input);
+        if (iconTextField.isFocused()) return iconTextField.keyPressed(input);
+        if (focusedEntry != null) return focusedEntry.keyPressed(input);
         return false;
     }
 
     @Override
-    public boolean charTyped(char chr, int modifiers) {
-        if (idTextField.isFocused()) return idTextField.charTyped(chr, modifiers);
-        if (iconTextField.isFocused()) return iconTextField.charTyped(chr, modifiers);
-        if (focusedEntry != null) return focusedEntry.charTyped(chr, modifiers);
+    public boolean charTyped(CharInput input) {
+        if (idTextField.isFocused()) return idTextField.charTyped(input);
+        if (iconTextField.isFocused()) return iconTextField.charTyped(input);
+        if (focusedEntry != null) return focusedEntry.charTyped(input);
         return false;
     }
 
@@ -411,10 +415,10 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
             }
         }
 
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (textFieldWidget.mouseClicked(mouseX, mouseY, button)) return true;
-            if(addButton.mouseClicked(mouseX, mouseY, button)) return false;
-            if(deleteButton.mouseClicked(mouseX, mouseY, button)) return false;
+        public boolean mouseClicked(Click click, boolean doubled) {
+            if (textFieldWidget.mouseClicked(click, doubled)) return true;
+            if(addButton.mouseClicked(click, doubled)) return false;
+            if(deleteButton.mouseClicked(click, doubled)) return false;
             return false;
         }
 
@@ -422,12 +426,12 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
             textFieldWidget.setFocused(focused);
         }
 
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            return textFieldWidget.keyPressed(keyCode, scanCode, modifiers);
+        public boolean keyPressed(KeyInput input) {
+            return textFieldWidget.keyPressed(input);
         }
 
-        public boolean charTyped(char chr, int modifiers) {
-            return textFieldWidget.charTyped(chr, modifiers);
+        public boolean charTyped(CharInput input) {
+            return textFieldWidget.charTyped(input);
         }
 
 

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ChatScreenRenderHandler extends ScreenHandler {
                         Text.literal(TextHelper.smallText("You are in crew chat")).formatted(Formatting.GREEN),
                         4,
                         minecraftClient.getWindow().getScaledHeight() - textRenderer.fontHeight - 4,
-                        0xFFFFFF,
+                        Colors.WHITE,
                         true);
             }
         }

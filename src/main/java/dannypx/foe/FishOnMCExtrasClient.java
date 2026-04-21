@@ -8,7 +8,6 @@ import dannypx.foe.handler.renderer.*;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.screens.debug.DebugHandlerScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -16,10 +15,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -53,7 +49,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::modifyGameMessage);
-        HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
@@ -114,20 +109,24 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ScreenMouseEvents.afterMouseScroll(screen).register(this::afterMouseScroll);
     }
 
-    private void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+    private boolean afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {
         PersonalVaultScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
         AuctionHouseScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
         PresetsScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+
+        return false;
     }
 
-    private void onHudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
-        HudRenderHandler.instance().hudRenderCallback(layeredDrawerWrapper);
+    private void initHudRenderer() {
+        HudRenderHandler.instance().initializeHudRenderer();
     }
 
     private void onInit() {
         this.registerEntityModels();
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
+
+        this.initHudRenderer();
     }
 
     private void onLeave(ClientPlayNetworkHandler clientPlayNetworkHandler, MinecraftClient minecraftClient) {

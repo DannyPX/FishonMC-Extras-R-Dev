@@ -14,6 +14,7 @@ import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -69,8 +70,8 @@ public class CustomHudElement extends Element implements ScreenConstants {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / customHud.scale));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / customHud.scale));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(customHud.scale, customHud.scale, 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(customHud.scale, customHud.scale);
         if(LoadingHandler.instance().isLoadingDone()
                 && TabHandler.instance().isInInstance()
         ) {
@@ -113,7 +114,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
                 this.renderText(drawContext, tickCounter, x, y);
             }
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderText(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {
@@ -175,7 +176,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX, boxY,
                 0, NIB_HEIGHT,
@@ -185,7 +186,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + ATLAS_CORNER, boxY,
                 ATLAS_CORNER, NIB_HEIGHT,
@@ -195,7 +196,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + this.boxWidth - ATLAS_CORNER, boxY,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, NIB_HEIGHT,
@@ -205,7 +206,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom Left
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX, boxY + this.boxHeight - ATLAS_CORNER,
                 0, 0,
@@ -215,7 +216,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER + NIB_HEIGHT,
                 ATLAS_CORNER, NIB_HEIGHT,
@@ -225,7 +226,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom Right
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + this.boxWidth - ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, 0,

@@ -4,6 +4,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -68,7 +69,7 @@ public class DrawHelper {
                     Text.literal(glyph).setStyle(style),
                     x,
                     y - offsetY + translateY,
-                    0xFFFFFF,
+                    Colors.WHITE,
                     shadow
             );
 
@@ -99,7 +100,7 @@ public class DrawHelper {
             }
 
             if (next == '\uFE0F' || next == '\uFE0E' || next == '\u200D'
-                    || (codePoint >= 0x1F3FB && codePoint <= 0x1F3FF)) {
+                    || (codePoint >= 0x1_F3FB && codePoint <= 0x1F3FF)) {
 
                 sb.append(text.removeFirst());
 

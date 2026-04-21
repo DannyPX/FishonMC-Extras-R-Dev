@@ -55,8 +55,8 @@ public class _DebugField extends Element {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.debugConfig.debugFieldElementScale.get(), Configs.debugConfig.debugFieldElementScale.get(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(Configs.debugConfig.debugFieldElementScale.get(), Configs.debugConfig.debugFieldElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.debugConfig.debugFieldElement.get()
                 && Configs.debugConfig.debugMode.get()
@@ -84,7 +84,7 @@ public class _DebugField extends Element {
 
             this.renderText(drawContext, textRenderer, x, y);
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderText(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {

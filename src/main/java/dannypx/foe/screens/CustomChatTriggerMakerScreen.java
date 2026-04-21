@@ -22,6 +22,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -95,14 +96,14 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2,
-                0xFFFFFF
+                Colors.WHITE
         );
 
         context.drawText(textRenderer,
                 Text.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING),
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -110,7 +111,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                 Text.literal("Regex Filter"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 2,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -118,7 +119,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                 Text.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
     }
@@ -130,8 +131,8 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                 minecraftClient.getWindow().getScaledWidth(),
                 minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, 0xFF747474);
-        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, 0xFF747474);
+        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
+        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
     }
 
     private void renderWidgets() {
@@ -466,7 +467,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
 
         if(selectedChatTrigger != null) {
             if(selectedChatTrigger.useChatTrigger != useChatTriggerCheckBox.isChecked()) {
-                useChatTriggerCheckBox.onPress();
+                useChatTriggerCheckBox.onPress(null);
             }
 
             regexTextField.setText(selectedChatTrigger.regex);
@@ -484,7 +485,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         nameTextField.setPlaceholder(Text.literal(""));
 
         if(useChatTriggerCheckBox.isChecked()) {
-            useChatTriggerCheckBox.onPress();
+            useChatTriggerCheckBox.onPress(null);
         }
 
         regexTextField.setText("");

@@ -56,8 +56,8 @@ public class NotifierElement extends Element implements ScreenConstants {
         int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
         int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
 
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(Configs.hudConfig.notifierElementScale.get(), Configs.hudConfig.notifierElementScale.get(), 1f);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(Configs.hudConfig.notifierElementScale.get(), Configs.hudConfig.notifierElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showNotifierElement.get()
         ) {
@@ -95,7 +95,7 @@ public class NotifierElement extends Element implements ScreenConstants {
 
             this.renderNotifications(drawContext, tickCounter, x, y);
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private void renderNotifications(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {

@@ -28,7 +28,7 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
 
     @Override
     protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
-        RenderSystem.disableScissor();
+        RenderSystem.disableScissorForRenderTypeDraws();
         super.renderList(context, mouseX, mouseY, delta);
     }
 
@@ -104,18 +104,18 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             if(!LoadingHandler.instance().isLoadingDone()) {
                 return;
             }
 
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             int height = textRenderer.fontHeight;
-            int posY = y - height / 2;
+            int posY = getY() - height / 2;
 
 
             if(isHeader) {
-                int headerX = x + width / 2;
+                int headerX = getX() + width / 2;
                 int headerWidth = textRenderer.getWidth(
                         Text.literal(TextHelper.smallText(category.getString())).setStyle(category.getStyle())
                 );
@@ -132,9 +132,9 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
                 } else {
                     fieldText = field1;
                 }
-                int fieldTextX = itemStacks.isEmpty() ? x + 17 + PADDING_QUART : x + 17 + PADDING_QUART + 16 + PADDING_QUART ;
+                int fieldTextX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getY() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
 
-                int field3X = x + (width/4) * 3;
+                int field3X = getX() + (width/4) * 3;
                 int field3Width = textRenderer.getWidth(TextHelper.smallText(field3.getString()));
 
                 DrawHelper.drawText(context, textRenderer, fieldText,
@@ -148,7 +148,7 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
                 if(!itemStacks.isEmpty()) {
                     long seconds = System.currentTimeMillis() / 1000;
                     int itemIndex = (int) (seconds % itemStacks.size());
-                    context.drawItem(itemStacks.get(itemIndex), x + 17 + PADDING_QUART, y - 16 / 2);
+                    context.drawItem(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2);
                 }
             }
         }

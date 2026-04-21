@@ -4,6 +4,7 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -11,7 +12,10 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
@@ -135,11 +139,11 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         scaleTextField.setPlaceholder(Text.literal(String.format(Locale.US, "%f", customHud.scale)));
         showBackground = customHud.showBackground;
         if(customHud.showBackground != showBackgroundCheckBox.isChecked()) {
-            showBackgroundCheckBox.onPress();
+            showBackgroundCheckBox.onPress(null);
         }
         showElement = customHud.showElement;
         if(customHud.showElement != showElementCheckBox.isChecked()) {
-            showElementCheckBox.onPress();
+            showElementCheckBox.onPress(null);
         }
 
         customHud.textLines.forEach(line -> this.addEntry(new LineEntry(
@@ -207,11 +211,11 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         currentSelectedHud = null;
         showBackground = true;
         if(!showBackgroundCheckBox.isChecked()) {
-            showBackgroundCheckBox.onPress();
+            showBackgroundCheckBox.onPress(null);
         }
         showElement = true;
         if(!showElementCheckBox.isChecked()) {
-            showElementCheckBox.onPress();
+            showElementCheckBox.onPress(null);
         }
         scaleTextField.setText("1.0");
         scaleTextField.setPlaceholder(Text.literal("1.0"));
@@ -226,14 +230,14 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         int entryStartY = getY() + headerHeight + PADDING + textFieldHeight + PADDING;
 
         context.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
-        context.drawHorizontalLine(getX(), getRight(), getBottom(), 0xFF747474);
-        context.drawVerticalLine(getX(), 0, getBottom(), 0xFF747474);
+        context.drawHorizontalLine(getX(), getRight(), getBottom(), Colors.GRAY);
+        context.drawVerticalLine(getX(), 0, getBottom(), Colors.GRAY);
         context.drawCenteredTextWithShadow(
                 minecraftClient.textRenderer,
                 header,
                 getX() + width / 2,
                 getY() + PADDING,
-                0xFFFFFF
+                Colors.WHITE
         );
 
         // Draw scale text
@@ -242,7 +246,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
                 "Scale",
                 getX() + width / 3,
                 getY() + PADDING + headerHeight + headerHeight / 2 - minecraftClient.textRenderer.fontHeight / 2,
-                0xFFFFFF,
+                Colors.WHITE,
                 true
         );
 
@@ -285,7 +289,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
                     scrollbarY,
                     scrollbarX + scrollbarWidth,
                     scrollbarY + scrollbarHeight,
-                    0xFFAAAAAA
+                    Colors.LIGHT_GRAY
             );
         }
 
@@ -293,8 +297,8 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!isMouseOver(mouseX, mouseY)) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (!isMouseOver(click.x(), click.y())) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -302,7 +306,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             return false;
         }
 
-        if (idTextField.mouseClicked(mouseX, mouseY, button)) {
+        if (idTextField.mouseClicked(click, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -314,7 +318,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             return true;
         }
 
-        if (scaleTextField.mouseClicked(mouseX, mouseY, button)) {
+        if (scaleTextField.mouseClicked(click, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -326,7 +330,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             return true;
         }
 
-        if(showBackgroundCheckBox.mouseClicked(mouseX, mouseY, button)) {
+        if(showBackgroundCheckBox.mouseClicked(click, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -338,7 +342,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             return true;
         }
 
-        if(showElementCheckBox.mouseClicked(mouseX, mouseY, button)) {
+        if(showElementCheckBox.mouseClicked(click, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -351,7 +355,7 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         }
 
         for (LineEntry entry : entries) {
-            if (entry.mouseClicked(mouseX, mouseY, button)) {
+            if (entry.mouseClicked(click, doubled)) {
                 if (focusedEntry != null && focusedEntry != entry) focusedEntry.setFocused(false);
                 focusedEntry = entry;
                 entry.setFocused(true);
@@ -367,22 +371,22 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (idTextField.isFocused()) return idTextField.keyPressed(keyCode, scanCode, modifiers);
-        if (scaleTextField.isFocused()) return scaleTextField.keyPressed(keyCode, scanCode, modifiers);
-        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.keyPressed(keyCode, scanCode, modifiers);
-        if (showElementCheckBox.isFocused()) return showElementCheckBox.keyPressed(keyCode, scanCode, modifiers);
-        if (focusedEntry != null) return focusedEntry.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(KeyInput input) {
+        if (idTextField.isFocused()) return idTextField.keyPressed(input);
+        if (scaleTextField.isFocused()) return scaleTextField.keyPressed(input);
+        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.keyPressed(input);
+        if (showElementCheckBox.isFocused()) return showElementCheckBox.keyPressed(input);
+        if (focusedEntry != null) return focusedEntry.keyPressed(input);
         return false;
     }
 
     @Override
-    public boolean charTyped(char chr, int modifiers) {
-        if (idTextField.isFocused()) return idTextField.charTyped(chr, modifiers);
-        if (scaleTextField.isFocused()) return scaleTextField.charTyped(chr, modifiers);
-        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.charTyped(chr, modifiers);
-        if (showElementCheckBox.isFocused()) return showElementCheckBox.charTyped(chr, modifiers);
-        if (focusedEntry != null) return focusedEntry.charTyped(chr, modifiers);
+    public boolean charTyped(CharInput input) {
+        if (idTextField.isFocused()) return idTextField.charTyped(input);
+        if (scaleTextField.isFocused()) return scaleTextField.charTyped(input);
+        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.charTyped(input);
+        if (showElementCheckBox.isFocused()) return showElementCheckBox.charTyped(input);
+        if (focusedEntry != null) return focusedEntry.charTyped(input);
         return false;
     }
 
@@ -527,12 +531,12 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             }
         }
 
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (textFieldWidget.mouseClicked(mouseX, mouseY, button)) return true;
-            if (isCentreWidget.mouseClicked(mouseX, mouseY, button)) return false;
-            if (isSmallWidget.mouseClicked(mouseX, mouseY, button)) return false;
-            if(addButton.mouseClicked(mouseX, mouseY, button)) return false;
-            if(deleteButton.mouseClicked(mouseX, mouseY, button)) return false;
+        public boolean mouseClicked(Click click, boolean doubled) {
+            if (textFieldWidget.mouseClicked(click, doubled)) return true;
+            if (isCentreWidget.mouseClicked(click, doubled)) return false;
+            if (isSmallWidget.mouseClicked(click, doubled)) return false;
+            if(addButton.mouseClicked(click, doubled)) return false;
+            if(deleteButton.mouseClicked(click, doubled)) return false;
             return false;
         }
 
@@ -540,12 +544,12 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             textFieldWidget.setFocused(focused);
         }
 
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            return textFieldWidget.keyPressed(keyCode, scanCode, modifiers);
+        public boolean keyPressed(KeyInput input) {
+            return textFieldWidget.keyPressed(input);
         }
 
-        public boolean charTyped(char chr, int modifiers) {
-            return textFieldWidget.charTyped(chr, modifiers);
+        public boolean charTyped(CharInput input) {
+            return textFieldWidget.charTyped(input);
         }
 
 

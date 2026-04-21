@@ -4,6 +4,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -104,12 +105,10 @@ public class BoxElement extends Element {
     private void renderBox(DrawContext drawContext) {
         Identifier TEXTURE = isAlt ? (isSolid ? BOX_SOLID_ALT_TEXTURE : BOX_ALT_TEXTURE) : (isSolid ? BOX_SOLID_TEXTURE : BOX_TEXTURE);
         if(this.z != -1) {
-            drawContext.getMatrices().push();
-            drawContext.getMatrices().translate(0.0f, 0.0f, this.z);
         }
 
         // Top Left
-        if(showTop && showLeft) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showTop && showLeft) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x, this.y,
                 0, 0,
@@ -119,7 +118,7 @@ public class BoxElement extends Element {
         );
 
         // Top
-        if(showTop) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showTop) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x + 5, this.y,
                 5, 0,
@@ -129,7 +128,7 @@ public class BoxElement extends Element {
         );
 
         // Top Right
-        if(showTop && showRight) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showTop && showRight) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 x + this.width - 5, this.y,
                 10, 0,
@@ -139,7 +138,7 @@ public class BoxElement extends Element {
         );
 
         // Centre Left
-        if(showLeft) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showLeft) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x, this.y + 5,
                 0, 5,
@@ -149,7 +148,7 @@ public class BoxElement extends Element {
         );
 
         // Centre
-        drawContext.drawTexture(RenderLayer::getGuiTextured,
+        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x + 5, this.y + 5,
                 5, 5,
@@ -159,7 +158,7 @@ public class BoxElement extends Element {
         );
 
         // Centre Right
-        if(showRight) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showRight) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 x + this.width - 5, this.y + 5,
                 10, 5,
@@ -169,7 +168,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom Left
-        if(showLeft && showBottom) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showLeft && showBottom) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x, y + this.height - 5,
                 0, 10,
@@ -179,7 +178,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom
-        if(showBottom) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showBottom) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x + 5, y + this.height - 5,
                 5, 10,
@@ -189,7 +188,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom Right
-        if(showBottom && showRight) drawContext.drawTexture(RenderLayer::getGuiTextured,
+        if(showBottom && showRight) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 x + this.width - 5, y + this.height - 5,
                 10, 10,
@@ -197,10 +196,6 @@ public class BoxElement extends Element {
                 5, 5,
                 15, 15
         );
-
-        if(this.z != -1) {
-            drawContext.getMatrices().pop();
-        }
     }
     //endregion
 }

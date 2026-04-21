@@ -8,6 +8,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -93,21 +94,21 @@ public class SmallButtonWidget extends ClickableWidget {
                         ItemStack itemStack = new ItemStack(result.item(), 1);
                         itemStack.applyUnvalidatedChanges(result.components());
 
-                        context.getMatrices().push();
-                        context.getMatrices().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6, 1.0f);
-                        context.getMatrices().scale(12f / 16f, 12f / 16f, 1.0f);
+                        context.getMatrices().pushMatrix();
+                        context.getMatrices().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
+                        context.getMatrices().scale(12f / 16f, 12f / 16f);
 
                         context.drawItem(itemStack, 0, 0);
 
-                        context.getMatrices().pop();
+                        context.getMatrices().popMatrix();
                     } catch (Exception e) {
                         LoggerHandler._debug(e.getMessage());
                     }
                 }
             } else {
                 int textWidth = minecraftClient.textRenderer.getWidth(TextHelper.smallText(icon));
-                context.getMatrices().push();
-                context.getMatrices().translate(0.0f, 0.0f, 1.0f);
+                context.getMatrices().pushMatrix();
+                context.getMatrices().translate(0.0f, 0.0f);
 
                 DrawHelper.drawText(context,
                         minecraftClient.textRenderer,
@@ -119,7 +120,7 @@ public class SmallButtonWidget extends ClickableWidget {
                         true
                 );
 
-                context.getMatrices().pop();
+                context.getMatrices().popMatrix();
             }
         }
     }
@@ -128,8 +129,8 @@ public class SmallButtonWidget extends ClickableWidget {
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(Click click, boolean doubled) {
+        super.onClick(click, doubled);
         if(clickCallback != null) {
             this.clickCallback.onClick(this);
         }

@@ -6,6 +6,7 @@ import dannypx.foe.handler.fetch.ClientPlayerHandler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.RayCastHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.helper.DrawHelper;
@@ -15,8 +16,8 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.hud.*;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -45,8 +46,8 @@ public class HudRenderHandler extends Handler {
     //endregion
 
     //region Methods
-    public void hudRenderCallback(LayeredDrawerWrapper layeredDrawerWrapper) {
-        renderElements(layeredDrawerWrapper);
+    public void initializeHudRenderer() {
+        renderElements();
     }
 
     public void tick() {
@@ -58,7 +59,7 @@ public class HudRenderHandler extends Handler {
         }
     }
 
-    private void renderElements(LayeredDrawerWrapper layeredDrawerWrapper) {
+    private void renderElements() {
         if(elements.isEmpty()) {
             elements.add(Pair.of("profile_hud", new ProfileElement(minecraftClient)));
             elements.add(Pair.of("location_hud", new LocationElement(minecraftClient)));
@@ -68,16 +69,18 @@ public class HudRenderHandler extends Handler {
             elements.add(Pair.of("debug_field_hud", new _DebugField(minecraftClient)));
         }
 
-        elements.forEach(element -> layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
-                Identifier.of(FishOnMCExtras.MOD_ID, element.value1()), (drawContext, tickCounter) -> {
-                    if (Configs.mainConfig.enableMod.get()) element.value2().render(drawContext, tickCounter);
-                }));
+        LoggerHandler._debug("Register Default Elements");
+        elements.forEach(element -> HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.of(FishOnMCExtras.MOD_ID, element.value1()), (drawContext, tickCounter) -> {
+            if (Configs.mainConfig.enableMod.get()) element.value2().render(drawContext, tickCounter);
+        }));
 
-        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen"), (drawContext, renderTickCounter) -> {
+        LoggerHandler._debug("Register Custom Elements");
+        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen"), (drawContext, renderTickCounter) -> {
             if (Configs.mainConfig.enableMod.get()) this.render(drawContext, renderTickCounter);
         });
 
-        layeredDrawerWrapper.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (drawContext, renderTickCounter) -> {
+        LoggerHandler._debug("Register Misc Elements");
+        HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.of(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (drawContext, renderTickCounter) -> {
             if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(drawContext, renderTickCounter);
         });
     }

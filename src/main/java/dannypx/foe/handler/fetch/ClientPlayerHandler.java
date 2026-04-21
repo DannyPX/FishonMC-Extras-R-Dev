@@ -56,9 +56,9 @@ public class ClientPlayerHandler extends Handler {
                     case "pos" -> {
                         if(params.length > 1) {
                             switch(params[1]) {
-                                case "x" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getPos().x, 0)));
-                                case "y" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getPos().y, 0)));
-                                case "z" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getPos().z, 0)));
+                                case "x" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getEntityPos().x, 0)));
+                                case "y" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getEntityPos().y, 0)));
+                                case "z" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getEntityPos().z, 0)));
                                 default -> PlaceholderHandler.noResult();
                             };
                         }

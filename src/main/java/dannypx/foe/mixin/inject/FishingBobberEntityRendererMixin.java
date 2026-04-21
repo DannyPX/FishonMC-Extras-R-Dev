@@ -6,14 +6,15 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.interfaces.IFishingBobberEntity;
 import dannypx.foe.interfaces.IFishingBobberEntityState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.FishingBobberEntityRenderer;
 import net.minecraft.client.render.entity.state.FishingBobberEntityState;
+import net.minecraft.client.render.item.KeyedItemRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemDisplayContext;
@@ -29,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FishingBobberEntityRenderer.class)
 public abstract class FishingBobberEntityRendererMixin {
     @Unique
-    private Model bobberModel;
+    private Model<FishingBobberEntityState> bobberModel;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void injectInit(EntityRendererFactory.Context context, CallbackInfo ci) {
@@ -45,15 +46,14 @@ public abstract class FishingBobberEntityRendererMixin {
         }
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At("RETURN"))
-    private void injectRender(FishingBobberEntityState fishingBobberEntityState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, CallbackInfo ci) {
+    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("RETURN"))
+    private void injectRender(FishingBobberEntityState fishingBobberEntityState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState, CallbackInfo ci) {
         if(Configs.rendererConfig.showNewBobber.get()
                 && Configs.mixinConfig.fishingBobberEntityRendererRender.get()
         ) {
             matrixStack.push();
             matrixStack.translate(0f, -0.0075f, 0f);
-            VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(FishingBobberEntityModel.TEXTURE));
-            this.bobberModel.render(matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, Colors.WHITE);
+            orderedRenderCommandQueue.submitModel(this.bobberModel, fishingBobberEntityState, matrixStack, FishingBobberEntityModel.RENDER_LAYER, fishingBobberEntityState.light, OverlayTexture.DEFAULT_UV, fishingBobberEntityState.outlineColor, null);
             matrixStack.pop();
         }
 
@@ -65,24 +65,20 @@ public abstract class FishingBobberEntityRendererMixin {
                 && !((IFishingBobberEntityState) fishingBobberEntityState).foer$isDisabledBait()
         ) {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
+            if(minecraftClient.getEntityRenderDispatcher().camera != null) {
+                matrixStack.push();
+                matrixStack.translate(0, -0.4, 0);
 
-            matrixStack.push();
-            matrixStack.translate(0, -0.4, 0);
+                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-minecraftClient.getEntityRenderDispatcher().camera.getYaw()));
 
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-minecraftClient.getEntityRenderDispatcher().camera.getYaw()));
+                ItemModelManager itemModelManager = minecraftClient.getItemModelManager();
+                KeyedItemRenderState itemRenderState = new KeyedItemRenderState();
 
-            minecraftClient.getItemRenderer().renderItem(
-                    bait,
-                    ItemDisplayContext.GROUND,
-                    light,
-                    OverlayTexture.DEFAULT_UV,
-                    matrixStack,
-                    vertexConsumerProvider,
-                    null,
-                    0
-            );
+                itemModelManager.clearAndUpdate(itemRenderState, bait, ItemDisplayContext.GROUND, minecraftClient.world, null, 0);
+                itemRenderState.render(matrixStack, orderedRenderCommandQueue, fishingBobberEntityState.light, OverlayTexture.DEFAULT_UV, Colors.BLACK);
 
-            matrixStack.pop();
+                matrixStack.pop();
+            }
         }
     }
 

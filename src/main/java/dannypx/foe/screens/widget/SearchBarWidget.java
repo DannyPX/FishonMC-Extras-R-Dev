@@ -28,11 +28,10 @@ public class SearchBarWidget extends TextFieldWidget {
 
         // Hover Info
         if(this.isHovered() && this.isFocused()) {
-            drawContext.getMatrices().push();
+            drawContext.getMatrices().pushMatrix();
             try {
                 float scale = .75f;
-                drawContext.getMatrices().translate(0, this.getBottom(), 320);
-                drawContext.getMatrices().scale(scale, scale, 1);
+                drawContext.getMatrices().scale(scale, scale);
 
                 int padding = 4;
                 int lineHeight = textRenderer.fontHeight + 1;
@@ -41,12 +40,16 @@ public class SearchBarWidget extends TextFieldWidget {
                 int x = (int) (((float) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) * (1 / scale));
 
                 drawContext.fill(x - length / 2 - padding, 0, x + length / 2 + padding, padding * 2 + lines, Colors.BLACK);
-                drawContext.drawBorder(x - length / 2 - padding, 0, padding * 2 + length, padding * 2 + lines, Colors.GRAY);
+
+                drawContext.drawHorizontalLine(x - length / 2 - padding, x + length / 2 + padding, 0, Colors.GRAY);
+                drawContext.drawHorizontalLine(x - length / 2 - padding, x + length / 2 + padding, padding * 2 + lines, Colors.GRAY);
+                drawContext.drawVerticalLine(x - length / 2 - padding, 0, padding * 2 + lines, Colors.GRAY);
+                drawContext.drawVerticalLine(x + length / 2 + padding, 0, padding * 2 + lines, Colors.GRAY);
 
                 AtomicInteger count = new AtomicInteger(0);
-                hoverInfo.forEach(text -> drawContext.drawText(textRenderer, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, 0xFFFFFF, true));
+                hoverInfo.forEach(text -> drawContext.drawText(textRenderer, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, Colors.WHITE, true));
             } finally {
-                drawContext.getMatrices().pop();
+                drawContext.getMatrices().popMatrix();
             }
         }
     }

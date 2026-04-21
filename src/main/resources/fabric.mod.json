@@ -26,11 +26,11 @@
 		"fishonmcextras.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.18.2",
-		"minecraft": "~1.21.4",
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~1.21.11",
 		"java": ">=21",
-		"fabric-api": ">=0.119.4+1.21.4",
-		"fzzy_config": ">=0.7.4-fix1+1.21.3"
+		"fabric-api": ">=0.141.3+1.21.11",
+		"fzzy_config": ">=0.7.6+1.21.11"
 	},
 	"custom": {
 		"fzzy_config": [

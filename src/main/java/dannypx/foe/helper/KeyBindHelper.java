@@ -4,6 +4,7 @@ import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindSimple;
 import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindUnbound;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 
 import java.util.Map;
@@ -170,7 +171,7 @@ public class KeyBindHelper {
 
     public static String getTranslatableKey(ValidatedKeybind validatedKeybind) {
         if(validatedKeybind.get() instanceof FzzyKeybindSimple fzzyKeybindSimple) {
-            InputUtil.Key key = InputUtil.fromKeyCode(fzzyKeybindSimple.getInputCode(), 0);
+            InputUtil.Key key = InputUtil.Type.KEYSYM.createFromCode(fzzyKeybindSimple.getInputCode());
             return key.getTranslationKey();
         } else if (validatedKeybind.get() instanceof FzzyKeybindUnbound) {
             return "Not Bound";
@@ -186,7 +187,7 @@ public class KeyBindHelper {
                 && !validatedKeybind.needsCtrl()
                 && validatedKeybind.get() instanceof FzzyKeybindSimple fzzyKeybindSimple
         ) {
-            return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), fzzyKeybindSimple.getInputCode());
+            return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), fzzyKeybindSimple.getInputCode());
         }
 
         return false;
