@@ -2,7 +2,6 @@ package dannypx.foe.screens;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
-import dannypx.foe.screens.debug.DebugHandlerScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -11,7 +10,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;

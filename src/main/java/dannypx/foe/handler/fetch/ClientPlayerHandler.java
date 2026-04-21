@@ -60,7 +60,7 @@ public class ClientPlayerHandler extends Handler {
                                 case "y" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getEntityPos().y, 0)));
                                 case "z" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString((float) minecraftClient.player.getEntityPos().z, 0)));
                                 default -> PlaceholderHandler.noResult();
-                            };
+                            }
                         }
                         yield PlaceholderHandler.noResult();
                     }

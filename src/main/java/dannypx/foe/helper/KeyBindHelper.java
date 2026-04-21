@@ -4,7 +4,6 @@ import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindSimple;
 import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindUnbound;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 
 import java.util.Map;

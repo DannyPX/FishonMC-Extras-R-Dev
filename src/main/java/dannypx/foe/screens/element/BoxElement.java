@@ -1,12 +1,10 @@
 package dannypx.foe.screens.element;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.config.Configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -104,8 +102,6 @@ public class BoxElement extends Element {
 
     private void renderBox(DrawContext drawContext) {
         Identifier TEXTURE = isAlt ? (isSolid ? BOX_SOLID_ALT_TEXTURE : BOX_ALT_TEXTURE) : (isSolid ? BOX_SOLID_TEXTURE : BOX_TEXTURE);
-        if(this.z != -1) {
-        }
 
         // Top Left
         if(showTop && showLeft) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,

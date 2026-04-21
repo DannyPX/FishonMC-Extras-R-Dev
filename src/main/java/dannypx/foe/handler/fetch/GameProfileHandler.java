@@ -1,11 +1,9 @@
 package dannypx.foe.handler.fetch;
 
-import com.mojang.authlib.GameProfile;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.mixin.accessor.MinecraftClientAccessor;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.client.network.ClientPlayerProfileResolver;
 import net.minecraft.server.GameProfileResolver;
 import net.minecraft.text.MutableText;

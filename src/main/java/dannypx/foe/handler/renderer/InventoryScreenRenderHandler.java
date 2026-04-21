@@ -1,6 +1,5 @@
 package dannypx.foe.handler.renderer;
 
-import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.ScreenHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;

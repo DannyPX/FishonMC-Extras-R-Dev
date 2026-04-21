@@ -4,7 +4,6 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.bar.JumpBar;
-import net.minecraft.client.gui.hud.bar.LocatorBar;
 import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
