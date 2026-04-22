@@ -3,14 +3,13 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CustomHudDataHandler extends Handler {
     private static CustomHudDataHandler INSTANCE = new CustomHudDataHandler();
@@ -49,8 +48,8 @@ public class CustomHudDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(customHudData.uuid == null && minecraftClient.player != null) {
-            customHudData.uuid = minecraftClient.player.getUuid();
+        if(customHudData.uuid == null && minecraft.player != null) {
+            customHudData.uuid = minecraft.player.getUUID();
         } else if(customHudData.uuid != null && this.needsUpdate) {
             this.updateCustomHudData();
         } else if(!CustomHudDataModel.CUSTOM_HUD_DATA_MODEL_VERSION.equals(customHudData.version)) {
@@ -60,8 +59,8 @@ public class CustomHudDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) {
-            this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) {
+            this.setUUID(minecraft.player.getUUID());
             needsRenderUpdate = true;
         }
     }
@@ -93,7 +92,7 @@ public class CustomHudDataHandler extends Handler {
             currentSelectedHud = newName;
         }
 
-        newHud.textLines = list;
+        newHud.stringLines = list;
         newHud.scale = scale;
         newHud.showBackground = showBackground;
         newHud.showElement = showElement;
@@ -183,7 +182,7 @@ public class CustomHudDataHandler extends Handler {
     //region Hud Object
     public static class CustomHud {
         // String, isCentre, isSmall
-        public List<Triplet<String, Boolean, Boolean>> textLines;
+        public List<Triplet<String, Boolean, Boolean>> stringLines;
         public Alignment alignment;
         public int xPos;
         public int yPos;
@@ -192,7 +191,7 @@ public class CustomHudDataHandler extends Handler {
         public boolean showElement;
 
         public CustomHud(
-                List<Triplet<String, Boolean, Boolean>> textLines,
+                List<Triplet<String, Boolean, Boolean>> stringLines,
                 Alignment alignment,
                 int xPos,
                 int yPos,
@@ -200,7 +199,7 @@ public class CustomHudDataHandler extends Handler {
                 boolean showBackground,
                 boolean showElement
         ) {
-            this.textLines = textLines;
+            this.stringLines = stringLines;
             this.alignment = alignment;
             this.xPos = xPos;
             this.yPos = yPos;
@@ -210,7 +209,7 @@ public class CustomHudDataHandler extends Handler {
         }
 
         public CustomHud() {
-            this.textLines = new ArrayList<>(List.of(
+            this.stringLines = new ArrayList<>(List.of(
                     Triplet.of("Example text", false, false)
             ));
             this.alignment = Alignment.TOP_LEFT;
@@ -225,9 +224,9 @@ public class CustomHudDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customHudData", Pair.of(Text.literal("[customHudData]"), TextHelper.literal(getCustomHudData()))
+                "customHudData", Pair.of(Component.literal("[customHudData]"), ComponentHelper.literal(getCustomHudData()))
         );
     }
     //endregion

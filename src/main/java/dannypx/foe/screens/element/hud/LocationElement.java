@@ -1,35 +1,35 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.handler.fetch.BossBarHandler;
-import dannypx.foe.handler.fetch.TabHandler;
+import dannypx.foe.handler.fetch.BossEventHandler;
+import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.config.Configs;
-import dannypx.foe.helper.DrawHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.screens.element.Element;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class LocationElement extends Element {
     //region Fields
-    private final MinecraftClient minecraftClient;
-    private final TextRenderer textRenderer;
+    private final Minecraft minecraft;
+    private final Font font;
 
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 36;
 
-    private static final Identifier LOCATION_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location");
-    private static final Identifier LOCATION_TEXTURE_FLIP = Identifier.of(FishOnMCExtras.MOD_ID, "elements/location_flip");
+    private static final Identifier LOCATION_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/location");
+    private static final Identifier LOCATION_TEXTURE_FLIP = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/location_flip");
     //endregion
 
-    public LocationElement(MinecraftClient minecraftClient) {
+    public LocationElement(Minecraft minecraft) {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.locationElementXPosition.get() / 100f,
@@ -37,11 +37,11 @@ public class LocationElement extends Element {
                 Configs.hudConfig.locationElementAlignment.get(),
                 Configs.hudConfig.locationElementGroup.translation("Location Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
-    public LocationElement(MinecraftClient minecraftClient, boolean isCopy) {
+    public LocationElement(Minecraft minecraft, boolean isCopy) {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.locationElementXPosition.get() / 100f,
@@ -49,21 +49,21 @@ public class LocationElement extends Element {
                 Configs.hudConfig.locationElementAlignment.get(),
                 Configs.hudConfig.locationElementGroup.translation("Location Element"),
                 isCopy);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.locationElementScale.get()));
-        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.locationElementScale.get()));
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.locationElementScale.get()));
+        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.locationElementScale.get()));
 
-        drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().scale(Configs.hudConfig.locationElementScale.get(), Configs.hudConfig.locationElementScale.get());
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(Configs.hudConfig.locationElementScale.get(), Configs.hudConfig.locationElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showLocationElement.get()
-                && TabHandler.instance().isInInstance()
+                && TabOverlayHandler.instance().isInInstance()
         ) {
             // Position
             if(!isCopy) {
@@ -79,62 +79,62 @@ public class LocationElement extends Element {
             };
             int y = Math.round(scaledHeight * yPos);
 
-            this.renderTexture(drawContext, x, y);
-            this.renderText(drawContext, textRenderer, x, y);
+            this.renderTexture(guiGraphics, x, y);
+            this.renderComponent(guiGraphics, font, x, y);
         }
-        drawContext.getMatrices().popMatrix();
+        guiGraphics.pose().popMatrix();
     }
 
-    private void renderText(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
-        int text1x = 24;
-        int text1y = 7;
+    private void renderComponent(GuiGraphics guiGraphics, Font font, int x, int y) {
+        int component1x = 24;
+        int component1y = 7;
 
-        Text temperature = BossBarHandler.instance().getTemperature();
-        Text weather = TextHelper.concat(
-                BossBarHandler.instance().getWeather(),
-                Text.literal(" "),
+        Component temperature = BossEventHandler.instance().getTemperature();
+        Component weather = ComponentHelper.concat(
+                BossEventHandler.instance().getWeather(),
+                Component.literal(" "),
                 temperature
         );
-        int weatherWidth = textRenderer.getWidth(TextHelper.smallText(weather.getString()));
+        int weatherWidth = font.width(ComponentHelper.smallText(weather.getString()));
 
         int text2x = 52;
         int text2y = 7;
 
-        Text locationText = BossBarHandler.instance().getLocation();
-        Text subLocation = BossBarHandler.instance().getSubLocation();
+        Component location = BossEventHandler.instance().getLocation();
+        Component subLocation = BossEventHandler.instance().getSubLocation();
 
-        Text locationTotal = switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case TOP_LEFT -> subLocation.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
-                    locationText,
-                    Text.literal(" | ").formatted(Formatting.DARK_GRAY),
+        Component locationTotal = switch (Configs.hudConfig.locationElementAlignment.get()) {
+            case TOP_LEFT -> subLocation.getString().isBlank() ? ComponentHelper.concat(location) : ComponentHelper.concat(
+                    location,
+                    Component.literal(" | ").withStyle(ChatFormatting.DARK_GRAY),
                     subLocation
             );
-            case TOP_RIGHT -> subLocation.getString().isBlank() ? TextHelper.concat(locationText) : TextHelper.concat(
+            case TOP_RIGHT -> subLocation.getString().isBlank() ? ComponentHelper.concat(location) : ComponentHelper.concat(
                     subLocation,
-                    Text.literal(" | ").formatted(Formatting.DARK_GRAY),
-                    locationText
+                    Component.literal(" | ").withStyle(ChatFormatting.DARK_GRAY),
+                    location
             );
-            default -> Text.empty();
+            default -> Component.empty();
         };
-        int locationWidth = textRenderer.getWidth(TextHelper.smallText(locationTotal.getString()));
+        int locationWidth = font.width(ComponentHelper.smallText(locationTotal.getString()));
 
         int text3x = 16;
         int text3y = 26;
 
-        Text timeText = BossBarHandler.instance().getTime();
-        int timeWidth = textRenderer.getWidth(TextHelper.smallText(timeText.getString()));
+        Component time = BossEventHandler.instance().getTime();
+        int timeWidth = font.width(ComponentHelper.smallText(time.getString()));
 
         switch (Configs.hudConfig.locationElementAlignment.get()) {
             case TOP_LEFT -> {
-                DrawHelper.drawText(drawContext, textRenderer,
+                GuiGraphicsHelper.drawText(guiGraphics, font,
                         weather,
-                        x + text1x - (weatherWidth / 2), y + text1y,
+                        x + component1x - (weatherWidth / 2), y + component1y,
                         true,
                         true,
                         false,
                         true);
 
-                DrawHelper.drawText(drawContext, textRenderer,
+                GuiGraphicsHelper.drawText(guiGraphics, font,
                         locationTotal,
                         x + text2x, y + text2y,
                         true,
@@ -142,8 +142,8 @@ public class LocationElement extends Element {
                         false,
                         true);
 
-                DrawHelper.drawText(drawContext, textRenderer,
-                        timeText,
+                GuiGraphicsHelper.drawText(guiGraphics, font,
+                        time,
                         x + text3x, y + text3y,
                         true,
                         true,
@@ -151,15 +151,15 @@ public class LocationElement extends Element {
                         true);
             }
             case TOP_RIGHT -> {
-                DrawHelper.drawText(drawContext, textRenderer,
+                GuiGraphicsHelper.drawText(guiGraphics, font,
                         weather,
-                        x - text1x - (weatherWidth / 2), y + text1y,
+                        x - component1x - (weatherWidth / 2), y + component1y,
                         true,
                         true,
                         false,
                         true);
 
-                DrawHelper.drawText(drawContext, textRenderer,
+                GuiGraphicsHelper.drawText(guiGraphics, font,
                         locationTotal,
                         x - text2x - locationWidth, y + text2y,
                         true,
@@ -167,8 +167,8 @@ public class LocationElement extends Element {
                         false,
                         true);
 
-                DrawHelper.drawText(drawContext, textRenderer,
-                        timeText,
+                GuiGraphicsHelper.drawText(guiGraphics, font,
+                        time,
                         x - text3x - timeWidth, y + text3y,
                         true,
                         true,
@@ -178,14 +178,14 @@ public class LocationElement extends Element {
         }
     }
 
-    private void renderTexture(DrawContext drawContext, int x, int y) {
+    private void renderTexture(GuiGraphics guiGraphics, int x, int y) {
         switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case TOP_LEFT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+            case TOP_LEFT -> guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                     LOCATION_TEXTURE,
                     x, y,
                     width, height
             );
-            case TOP_RIGHT -> drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+            case TOP_RIGHT -> guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                     LOCATION_TEXTURE_FLIP,
                     x - width, y,
                     width, height

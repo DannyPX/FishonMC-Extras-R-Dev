@@ -1,50 +1,50 @@
 package dannypx.foe.screens.element.hud;
 
 import dannypx.foe.FishOnMCExtras;
-import dannypx.foe.handler.fetch.TabHandler;
+import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.InventoryHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.helper.DrawHelper;
-import dannypx.foe.helper.TextHelper;
-import dannypx.foe.item.FishingRodNbtObject;
-import dannypx.foe.item.NbtObject;
+import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.item.FishingRodTagObject;
+import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
 
 public class HotbarElement extends Element {
     //region Fields
-    private final MinecraftClient minecraftClient;
-    private final TextRenderer textRenderer;
+    private final Minecraft minecraft;
+    private final Font font;
 
     private static final int WIDTH = 220;
     private static final int HEIGHT = 51;
 
-    private static final Identifier HOTBAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/hotbar");
+    private static final Identifier HOTBAR_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/hotbar");
     private static final int HOTBAR_WIDTH = 170;
     private static final int HOTBAR_HEIGHT = 26;
 
-    private static final Identifier GEAR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/gear");
+    private static final Identifier GEAR_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/gear");
     private static final int GEAR_WIDTH = 60;
     private static final int GEAR_HEIGHT = 24;
 
-    private static final Identifier SLOT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/slot");
+    private static final Identifier SLOT_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/slot");
     private static final int SLOT_WIDTH = 24;
     private static final int SLOT_HEIGHT = 24;
 
-    private static final Identifier SELECTOR_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "elements/selector");
+    private static final Identifier SELECTOR_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/selector");
     private static final int SELECTOR_WIDTH = 20;
     private static final int SELECTOR_HEIGHT = 24;
 
@@ -52,7 +52,7 @@ public class HotbarElement extends Element {
     private long heldItemTooltipFade = 0L;
     //endregion
 
-    public HotbarElement(MinecraftClient minecraftClient) {
+    public HotbarElement(Minecraft minecraft) {
         super(WIDTH,
                 HEIGHT,
                 Configs.hudConfig.hotbarElementXPosition.get() / 100f,
@@ -60,11 +60,11 @@ public class HotbarElement extends Element {
                 Configs.hudConfig.hotbarElementAlignment.get(),
                 Configs.hudConfig.hotbarElementGroup.translation("Hotbar Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
-    public HotbarElement(MinecraftClient minecraftClient, boolean isCopy) {
+    public HotbarElement(Minecraft minecraft, boolean isCopy) {
         super(WIDTH,
                 HEIGHT,
                 Configs.hudConfig.hotbarElementXPosition.get() / 100f,
@@ -72,18 +72,18 @@ public class HotbarElement extends Element {
                 Configs.hudConfig.hotbarElementAlignment.get(),
                 Configs.hudConfig.hotbarElementGroup.translation("Hotbar Element"),
                 isCopy);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.hotbarElementScale.get()));
-        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.hotbarElementScale.get()));
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.hotbarElementScale.get()));
+        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.hotbarElementScale.get()));
 
-        drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().scale(Configs.hudConfig.hotbarElementScale.get(), Configs.hudConfig.hotbarElementScale.get());
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(Configs.hudConfig.hotbarElementScale.get(), Configs.hudConfig.hotbarElementScale.get());
 
         if(LoadingHandler.instance().isLoadingDone() && Configs.hudConfig.showHotbarElement.get()) {
             // Position
@@ -102,23 +102,23 @@ public class HotbarElement extends Element {
             int y = scaledHeight
                     - Math.round(scaledHeight * yPos) - HEIGHT;
 
-            this.renderHotbar(drawContext, x, y);
-            this.renderSelector(drawContext, x, y);
-            this.renderItems(drawContext, textRenderer, x, y);
-            this.renderSelectedItemName(drawContext, textRenderer, x, y);
-            if(Configs.hudConfig.showHotbarParts.get() && TabHandler.instance().isInInstance()) this.renderParts(drawContext, x, y);
-            if(Configs.hudConfig.showHotbarArmor.get() && TabHandler.instance().isInInstance()) this.renderArmor(drawContext, x, y);
-            if(Configs.hudConfig.showHotbarBait.get() && TabHandler.instance().isInInstance()) this.renderBait(drawContext, textRenderer, x, y);
+            this.renderHotbar(guiGraphics, x, y);
+            this.renderSelector(guiGraphics, x, y);
+            this.renderItems(guiGraphics, font, x, y);
+            this.renderSelectedItemName(guiGraphics, font, x, y);
+            if(Configs.hudConfig.showHotbarParts.get() && TabOverlayHandler.instance().isInInstance()) this.renderParts(guiGraphics, x, y);
+            if(Configs.hudConfig.showHotbarArmor.get() && TabOverlayHandler.instance().isInInstance()) this.renderArmor(guiGraphics, x, y);
+            if(Configs.hudConfig.showHotbarBait.get() && TabOverlayHandler.instance().isInInstance()) this.renderBait(guiGraphics, font, x, y);
         }
-        drawContext.getMatrices().popMatrix();
+        guiGraphics.pose().popMatrix();
     }
 
-    private void renderHotbar(DrawContext drawContext, int x, int y) {
+    private void renderHotbar(GuiGraphics drawContext, int x, int y) {
         //region Texture
         int hotbarX = 25;
         int hotbarY = 25;
 
-        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+        drawContext.blitSprite(RenderPipelines.GUI_TEXTURED,
                 HOTBAR_TEXTURE,
                 x + hotbarX, y + hotbarY,
                 HOTBAR_WIDTH, HOTBAR_HEIGHT
@@ -126,9 +126,9 @@ public class HotbarElement extends Element {
         //endregion
     }
 
-    private void renderItems(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
+    private void renderItems(GuiGraphics guiGraphics, Font font, int x, int y) {
         //region Items
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             int itemX = 30;
             int itemY = 30;
 
@@ -136,17 +136,17 @@ public class HotbarElement extends Element {
             int countY = 41;
 
             for(int i = 0; i < 9; i++) {
-                ItemStack item = minecraftClient.player.getInventory().getMainStacks().get(i);
-                Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(item);
+                ItemStack item = minecraft.player.getInventory().getNonEquipmentItems().get(i);
+                Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(item);
 
-                drawContext.drawItem(item, x + itemX + (18 * i), y + itemY);
+                guiGraphics.renderItem(item, x + itemX + (18 * i), y + itemY);
 
                 if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
                     int count = validatedItem.value2().getCount();
-                    Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
-                    int countWidth = textRenderer.getWidth(countText);
+                    Component countComponent = ComponentHelper.literal(ComponentHelper.smallText(ComponentHelper.shortenNumber(count, 0)));
+                    int countWidth = font.width(countComponent);
 
-                    if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
+                    if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countComponent,
                             x + countX + (18 * i) - countWidth, y + countY,
                             true,
                             true,
@@ -154,10 +154,10 @@ public class HotbarElement extends Element {
                             false);
                 } else {
                     int count = item.getCount();
-                    Text countText = TextHelper.literal(count);
-                    int countWidth = textRenderer.getWidth(countText);
+                    Component countText = ComponentHelper.literal(count);
+                    int countWidth = font.width(countText);
 
-                    if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
+                    if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countText,
                             x + countX + (18 * i) - countWidth, y + countY - 2,
                             true,
                             true,
@@ -169,15 +169,15 @@ public class HotbarElement extends Element {
         //endregion
     }
 
-    private void renderSelector(DrawContext drawContext, int x, int y) {
+    private void renderSelector(GuiGraphics guiGraphics, int x, int y) {
 
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             //region Texture
             int selectorX = 29;
             int selectorY = 26;
-            int index = minecraftClient.player.getInventory().getSelectedSlot();
+            int index = minecraft.player.getInventory().getSelectedSlot();
 
-            drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                     SELECTOR_TEXTURE,
                     x + selectorX + (18 * index) - 1, y + selectorY,
                     SELECTOR_WIDTH, SELECTOR_HEIGHT
@@ -186,21 +186,21 @@ public class HotbarElement extends Element {
         }
     }
 
-    private void renderSelectedItemName(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
-        if(minecraftClient.player != null) {
-            int index = minecraftClient.player.getInventory().getSelectedSlot();
-            ItemStack selectedStack = minecraftClient.player.getInventory().getMainStacks().get(index);
+    private void renderSelectedItemName(GuiGraphics guiGraphics, Font font, int x, int y) {
+        if(minecraft.player != null) {
+            int index = minecraft.player.getInventory().getSelectedSlot();
+            ItemStack selectedStack = minecraft.player.getInventory().getNonEquipmentItems().get(index);
 
             int itemNameX = x + (WIDTH / 2);
-            int itemNameY = y - textRenderer.fontHeight - 2;
-            int width = textRenderer.getWidth(selectedStack.getName());
+            int itemNameY = y - font.lineHeight - 2;
+            int width = font.width(selectedStack.getHoverName());
 
             if(selectedSlot != index) {
                 selectedSlot = index;
                 this.heldItemTooltipFade = System.currentTimeMillis();
             }
 
-            itemNameX = itemNameX - (textRenderer.getWidth(selectedStack.getName()) / 2);
+            itemNameX = itemNameX - (font.width(selectedStack.getHoverName()) / 2);
 
             if (selectedStack.isEmpty()) {
                 this.heldItemTooltipFade = 0;
@@ -208,17 +208,17 @@ public class HotbarElement extends Element {
                 long time = Math.min(500, this.heldItemTooltipFade + 2000 - System.currentTimeMillis());
                 float alpha = Math.min((((float) time) / 500) * 255, 255);
                 if(alpha > 5f) {
-                    drawContext.drawTextWithBackground(textRenderer, selectedStack.getName(), itemNameX, itemNameY, width, ColorHelper.withAlpha((int) alpha, Colors.WHITE));
+                    guiGraphics.drawStringWithBackdrop(font, selectedStack.getHoverName(), itemNameX, itemNameY, width, ARGB.color((int) alpha, CommonColors.WHITE));
                 }
             }
         }
     }
 
-    private void renderParts(DrawContext drawContext, int x, int y) {
+    private void renderParts(GuiGraphics guiGraphics, int x, int y) {
         //region Texture
         int gearX = 35;
 
-        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                 GEAR_TEXTURE,
                 x + gearX, y,
                 GEAR_WIDTH, GEAR_HEIGHT
@@ -226,27 +226,27 @@ public class HotbarElement extends Element {
         //endregion
 
         //region Items
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             int partsX = 39;
             int partsY = 4;
 
-            FishingRodNbtObject fishingRodNbtObject = InventoryHandler.instance().getCurrentFishingRod();
-            ItemStack reel = fishingRodNbtObject.getReelItem().isEmpty() ? ItemStack.EMPTY : fishingRodNbtObject.getReelItem().getFirst().getItemStack();
-            ItemStack pole = fishingRodNbtObject.getPoleItem().isEmpty() ? ItemStack.EMPTY : fishingRodNbtObject.getPoleItem().getFirst().getItemStack();
-            ItemStack line = fishingRodNbtObject.getLineItem().isEmpty() ? ItemStack.EMPTY : fishingRodNbtObject.getLineItem().getFirst().getItemStack();
+            FishingRodTagObject fishingRodTagObject = InventoryHandler.instance().getCurrentFishingRod();
+            ItemStack reel = fishingRodTagObject.getReelItem().isEmpty() ? ItemStack.EMPTY : fishingRodTagObject.getReelItem().getFirst().getItemStack();
+            ItemStack pole = fishingRodTagObject.getPoleItem().isEmpty() ? ItemStack.EMPTY : fishingRodTagObject.getPoleItem().getFirst().getItemStack();
+            ItemStack line = fishingRodTagObject.getLineItem().isEmpty() ? ItemStack.EMPTY : fishingRodTagObject.getLineItem().getFirst().getItemStack();
 
-            drawContext.drawItem(reel, x + partsX, y + partsY);
-            drawContext.drawItem(pole, x + partsX + 18, y + partsY);
-            drawContext.drawItem(line, x + partsX + 36, y + partsY);
+            guiGraphics.renderItem(reel, x + partsX, y + partsY);
+            guiGraphics.renderItem(pole, x + partsX + 18, y + partsY);
+            guiGraphics.renderItem(line, x + partsX + 36, y + partsY);
         }
         //endregion
     }
 
-    private void renderArmor(DrawContext drawContext, int x, int y) {
+    private void renderArmor(GuiGraphics guiGraphics, int x, int y) {
         //region Texture
         int gearX = 125;
 
-        drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                 GEAR_TEXTURE,
                 x + gearX, y,
                 GEAR_WIDTH, GEAR_HEIGHT
@@ -254,23 +254,23 @@ public class HotbarElement extends Element {
         //endregion
 
         //region Items
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             int armorX = 129;
             int armorY = 4;
 
-            ItemStack chestplate = minecraftClient.player.getEquippedStack(EquipmentSlot.CHEST);
-            ItemStack leggings = minecraftClient.player.getEquippedStack(EquipmentSlot.LEGS);
-            ItemStack boots = minecraftClient.player.getEquippedStack(EquipmentSlot.FEET);
+            ItemStack chestplate = minecraft.player.getItemBySlot(EquipmentSlot.CHEST);
+            ItemStack leggings = minecraft.player.getItemBySlot(EquipmentSlot.LEGS);
+            ItemStack boots = minecraft.player.getItemBySlot(EquipmentSlot.FEET);
 
-            drawContext.drawItem(chestplate, x + armorX, y + armorY);
-            drawContext.drawItem(leggings, x + armorX + 18, y + armorY);
-            drawContext.drawItem(boots, x + armorX + 36, y + armorY);
+            guiGraphics.renderItem(chestplate, x + armorX, y + armorY);
+            guiGraphics.renderItem(leggings, x + armorX + 18, y + armorY);
+            guiGraphics.renderItem(boots, x + armorX + 36, y + armorY);
         }
         //endregion
     }
 
-    private void renderBait(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
-        if(minecraftClient.player != null) {
+    private void renderBait(GuiGraphics guiGraphics, Font font, int x, int y) {
+        if(minecraft.player != null) {
             int partsX = 4;
             int partsY = 30;
 
@@ -278,27 +278,27 @@ public class HotbarElement extends Element {
             int countX = 21;
             int countY = 41;
 
-            FishingRodNbtObject fishingRodNbtObject = InventoryHandler.instance().getCurrentFishingRod();
-            NbtObject bait = fishingRodNbtObject.getTackleBox().isEmpty() ? null : fishingRodNbtObject.getTackleBox().getFirst();
+            FishingRodTagObject fishingRodTagObject = InventoryHandler.instance().getCurrentFishingRod();
+            TagObject bait = fishingRodTagObject.getTackleBox().isEmpty() ? null : fishingRodTagObject.getTackleBox().getFirst();
             if(bait != null) {
                 //region Texture
                 int baitY = 26;
 
-                drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                         SLOT_TEXTURE,
                         x, y + baitY,
                         SLOT_WIDTH, SLOT_HEIGHT
                 );
                 //endregion
                 //region Items
-                drawContext.drawItem(bait.getItemStack(), x + partsX, y + partsY);
+                guiGraphics.renderItem(bait.getItemStack(), x + partsX, y + partsY);
 
                 if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
                     int count = bait.getCount();
-                    Text countText = TextHelper.literal(TextHelper.smallText(TextHelper.shortenNumber(count, 0)));
-                    int countWidth = textRenderer.getWidth(countText);
+                    Component countText = ComponentHelper.literal(ComponentHelper.smallText(ComponentHelper.shortenNumber(count, 0)));
+                    int countWidth = font.width(countText);
 
-                    if(count > 1) DrawHelper.drawText(drawContext, textRenderer, countText,
+                    if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countText,
                             x + countX - countWidth, y + countY,
                             true,
                             true,
@@ -306,9 +306,9 @@ public class HotbarElement extends Element {
                             true);
 
                     if(Configs.hudConfig.showBaitLock.get()
-                            && fishingRodNbtObject.getDisableBait()
+                            && fishingRodTagObject.getDisableBait()
                     ) {
-                        drawContext.drawText(textRenderer, Text.literal("\uD83D\uDD12"), x + 2, y + baitY, Colors.WHITE, true);
+                        guiGraphics.drawString(font, Component.literal("\uD83D\uDD12"), x + 2, y + baitY, CommonColors.WHITE, true);
                     }
                 }
                 //endregion

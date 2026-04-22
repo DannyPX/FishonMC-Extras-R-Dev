@@ -2,30 +2,31 @@ package dannypx.foe.screens.widget;
 
 import com.mojang.brigadier.StringReader;
 import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.helper.DrawHelper;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.command.argument.ItemStringReader;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.commands.arguments.item.ItemParser;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
-public class SmallButtonWidget extends ClickableWidget {
-    MinecraftClient minecraftClient = MinecraftClient.getInstance();
+public class SmallButtonWidget extends AbstractWidget {
+    Minecraft minecraft = Minecraft.getInstance();
 
 
     private final ClickCallback clickCallback;
@@ -40,20 +41,20 @@ public class SmallButtonWidget extends ClickableWidget {
 
     List<Pair<String, Element>> elements = new ArrayList<>();
 
-    public SmallButtonWidget(int x, int y, int width, int height, String icon, @Nullable Tooltip tooltip, Text message, ClickCallback clickCallback) {
+    public SmallButtonWidget(int x, int y, int width, int height, String icon, @Nullable Tooltip tooltip, Component message, ClickCallback clickCallback) {
         super(x, y, width, height, message);
         this.icon = icon;
         this.clickCallback = clickCallback;
         this.setTooltip(tooltip);
         this.init();
 
-        box = Pair.of("button_box", new BoxElement(minecraftClient,
+        box = Pair.of("button_box", new BoxElement(minecraft,
                 getX(),
                 getY(),
                 1,
                 width, height, true, false));
 
-        box_hover = Pair.of("button_hover_box", new BoxElement(minecraftClient,
+        box_hover = Pair.of("button_hover_box", new BoxElement(minecraft,
                 getX(),
                 getY(),
                 1,
@@ -69,68 +70,68 @@ public class SmallButtonWidget extends ClickableWidget {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBox(context);
-        this.renderIcon(context);
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.renderBox(guiGraphics);
+        this.renderIcon(guiGraphics);
     }
 
-    private void renderBox(DrawContext context) {
-        (hovered ? box_hover : box).value2().render(context, minecraftClient.getRenderTickCounter());
+    private void renderBox(GuiGraphics guiGraphics) {
+        (isHovered ? box_hover : box).value2().render(guiGraphics, minecraft.getDeltaTracker());
     }
 
-    private void renderIcon(DrawContext context) {
+    private void renderIcon(GuiGraphics guiGraphics) {
         Matcher m = PATTERN.matcher(icon);
 
         if (m.matches()) {
             if(m.group(1) != null) {
-                if(minecraftClient.player != null) {
-                    RegistryWrapper.WrapperLookup lookup = minecraftClient.player.getRegistryManager();
+                if(minecraft.player != null) {
+                    HolderLookup.Provider lookup = minecraft.player.registryAccess();
 
-                    ItemStringReader reader = new ItemStringReader(lookup);
+                    ItemParser itemParser = new ItemParser(lookup);
                     StringReader stringReader = new StringReader(icon);
                     try {
-                        ItemStringReader.ItemResult result = reader.consume(stringReader);
+                        ItemParser.ItemResult result = itemParser.parse(stringReader);
 
                         ItemStack itemStack = new ItemStack(result.item(), 1);
-                        itemStack.applyUnvalidatedChanges(result.components());
+                        itemStack.applyComponents(result.components());
 
-                        context.getMatrices().pushMatrix();
-                        context.getMatrices().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
-                        context.getMatrices().scale(12f / 16f, 12f / 16f);
+                        guiGraphics.pose().pushMatrix();
+                        guiGraphics.pose().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
+                        guiGraphics.pose().scale(12f / 16f, 12f / 16f);
 
-                        context.drawItem(itemStack, 0, 0);
+                        guiGraphics.renderItem(itemStack, 0, 0);
 
-                        context.getMatrices().popMatrix();
+                        guiGraphics.pose().popMatrix();
                     } catch (Exception e) {
                         LoggerHandler._debug(e.getMessage());
                     }
                 }
             } else {
-                int textWidth = minecraftClient.textRenderer.getWidth(TextHelper.smallText(icon));
-                context.getMatrices().pushMatrix();
-                context.getMatrices().translate(0.0f, 0.0f);
+                int stringWidth = minecraft.font.width(ComponentHelper.smallText(icon));
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(0.0f, 0.0f);
 
-                DrawHelper.drawText(context,
-                        minecraftClient.textRenderer,
-                        Text.literal(icon),
-                        getX() + (width / 2) - textWidth / 2, getY() + (height / 2) - minecraftClient.textRenderer.fontHeight / 2,
+                GuiGraphicsHelper.drawText(guiGraphics,
+                        minecraft.font,
+                        Component.literal(icon),
+                        getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,
                         true,
                         true,
                         false,
                         true
                 );
 
-                context.getMatrices().popMatrix();
+                guiGraphics.pose().popMatrix();
             }
         }
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    public void onClick(Click click, boolean doubled) {
-        super.onClick(click, doubled);
+    public void onClick(@NotNull MouseButtonEvent mouseButtonEvent, boolean doubled) {
+        super.onClick(mouseButtonEvent, doubled);
         if(clickCallback != null) {
             this.clickCallback.onClick(this);
         }

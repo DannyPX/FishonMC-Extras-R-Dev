@@ -4,20 +4,19 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.helper.DrawHelper;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.List;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class TabRendererHandler extends Handler {
     private static TabRendererHandler INSTANCE = new TabRendererHandler();
@@ -30,8 +29,8 @@ public class TabRendererHandler extends Handler {
     }
 
     //region Fields
-    public void renderCrewTab(DrawContext context, int x1, int y1, int x2, int y2, int color, int indexPlayerEntry, List<PlayerListEntry> playerEntries) {
-        if(color == minecraftClient.options.getTextBackgroundColor(553648127)) {
+    public void renderCrewTab(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int color, int indexPlayerEntry, List<PlayerInfo> playerEntries) {
+        if(color == minecraft.options.getBackgroundColor(553648127)) {
             int index = indexPlayerEntry + 1 >= playerEntries.size() ? 0 : indexPlayerEntry + 1;
 
             if(!ScoreboardHandler.instance().getCrew().getString().isBlank()
@@ -44,25 +43,25 @@ public class TabRendererHandler extends Handler {
                 int height = 16;
                 int width = 40;
 
-                Element crewBox = new BoxElement(MinecraftClient.getInstance(), x1, y1 - (height - 5) - 1, -1, width, height, true, false, true, true, false, true);
-                crewBox.render(context, minecraftClient.getRenderTickCounter());
+                Element crewBox = new BoxElement(Minecraft.getInstance(), x1, y1 - (height - 5) - 1, -1, width, height, true, false, true, true, false, true);
+                crewBox.render(guiGraphics, minecraft.getDeltaTracker());
 
-                Text crewText = Text.literal(ScoreboardHandler.instance().getCrew().getString());
-                DrawHelper.drawText(context, minecraftClient.textRenderer, crewText, x1 + width / 2 - TextHelper.getWidth(minecraftClient.textRenderer, crewText, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraftClient.textRenderer.fontHeight / 2 + 1, true, true, false, true);
+                Component crewText = Component.literal(ScoreboardHandler.instance().getCrew().getString());
+                GuiGraphicsHelper.drawText(guiGraphics, minecraft.font, crewText, x1 + width / 2 - ComponentHelper.getWidth(minecraft.font, crewText, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraft.font.lineHeight / 2 + 1, true, true, false, true);
 
                 // Left Bar
-                Element leftBar = new BoxElement(MinecraftClient.getInstance(), x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);
-                leftBar.render(context, minecraftClient.getRenderTickCounter());
+                Element leftBar = new BoxElement(Minecraft.getInstance(), x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);
+                leftBar.render(guiGraphics, minecraft.getDeltaTracker());
 
                 int gradientWidth = 150;
 
                 // Box
-                DrawHelper.drawHorizontalGradient(context, x1, y1, x1 + gradientWidth, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, 0x88FFAA00, 0x00FFAA00);
+                GuiGraphicsHelper.drawHorizontalGradient(guiGraphics, x1, y1, x1 + gradientWidth, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, 0x88FFAA00, 0x00FFAA00);
 
                 // Border
-                context.drawVerticalLine(x1 - 1, y1 - 1, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, 0xFF000000);
-                DrawHelper.drawHorizontalGradient(context, x1 - 1, y1 - 1, x1 + gradientWidth, y1, 0xFF000000, 0x00000000);
-                DrawHelper.drawHorizontalGradient(context, x1 - 1, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, x1 + gradientWidth, y1 + CrewHandler.instance().getOnlineMembers().size() * 9, 0xFF000000, 0x00000000);
+                guiGraphics.vLine(x1 - 1, y1 - 1, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, 0xFF000000);
+                GuiGraphicsHelper.drawHorizontalGradient(guiGraphics, x1 - 1, y1 - 1, x1 + gradientWidth, y1, 0xFF000000, 0x00000000);
+                GuiGraphicsHelper.drawHorizontalGradient(guiGraphics, x1 - 1, y1 + CrewHandler.instance().getOnlineMembers().size() * 9 - 1, x1 + gradientWidth, y1 + CrewHandler.instance().getOnlineMembers().size() * 9, 0xFF000000, 0x00000000);
             }
         }
     }
@@ -74,9 +73,9 @@ public class TabRendererHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

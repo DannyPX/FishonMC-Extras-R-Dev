@@ -9,16 +9,15 @@ import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
 import dannypx.foe.handler.logic.TimerHandler;
 import dannypx.foe.handler.store.*;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.screens.MainScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class CommandRegistry {
@@ -51,8 +50,8 @@ public class CommandRegistry {
                         .then(command("render")
                                 .then(command("armor").executes(Command.Toggle::toggleArmor))
                                 .then(command("pet_names").executes(Command.Toggle::togglePetNames))
-                                .then(command("bobber_model").executes(Command.Toggle::toggleBobberModel))
-                                .then(command("bait_on_bobber").executes(Command.Toggle::toggleBaitOnBobber))
+                                .then(command("fishingHook_model").executes(Command.Toggle::toggleFishingHookModel))
+                                .then(command("bait_on_fishing_hook").executes(Command.Toggle::toggleBaitOnFishingHook))
                         )
                 )
                 .executes(Command.Foe::openMainScreen)
@@ -66,7 +65,7 @@ public class CommandRegistry {
             }
 
             public static int openMainScreen(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(() -> MinecraftClient.getInstance().setScreen(new MainScreen(MinecraftClient.getInstance().currentScreen)));
+                return executeCommand(() -> Minecraft.getInstance().setScreen(new MainScreen(Minecraft.getInstance().screen)));
             }
         }
 
@@ -74,8 +73,8 @@ public class CommandRegistry {
             public static int importStats(CommandContext<FabricClientCommandSource> context) {
                 StatsScreenHandler.instance().setImportStats(true);
                 return executeCommand(() -> {
-                    if (MinecraftClient.getInstance().player != null) {
-                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand("stats");
+                    if (Minecraft.getInstance().player != null) {
+                        Minecraft.getInstance().player.connection.sendCommand("stats");
                     }
                 });
             }
@@ -92,8 +91,8 @@ public class CommandRegistry {
         static class Crew {
             public static int importCrew(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(() -> {
-                    if (MinecraftClient.getInstance().player != null) {
-                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand("c info");
+                    if (Minecraft.getInstance().player != null) {
+                        Minecraft.getInstance().player.connection.sendCommand("c info");
                     }
                 });
             }
@@ -105,57 +104,57 @@ public class CommandRegistry {
 
         static class Reset {
             public static int resetButton(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Reset buttons to default config").formatted(Formatting.GREEN), () -> CustomButtonDataHandler.instance().resetButtons());
+                return executeCommand(context, Component.literal("Reset buttons to default config").withStyle(ChatFormatting.GREEN), () -> CustomButtonDataHandler.instance().resetButtons());
             }
 
             public static int resetChatTrigger(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Reset chat triggers to default config").formatted(Formatting.GREEN), () -> {
+                return executeCommand(context, Component.literal("Reset chat triggers to default config").withStyle(ChatFormatting.GREEN), () -> {
                     CustomChatTriggerDataHandler.instance().resetChatTriggers();
                     ChatHandler.instance().initChatTrigger();
                 });
             }
 
             public static int resetNotification(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Reset notifications to default config").formatted(Formatting.GREEN), () -> CustomNotificationDataHandler.instance().resetNotifications());
+                return executeCommand(context, Component.literal("Reset notifications to default config").withStyle(ChatFormatting.GREEN), () -> CustomNotificationDataHandler.instance().resetNotifications());
             }
 
             public static int resetTimer(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Reset timers to default config").formatted(Formatting.GREEN), () -> {
+                return executeCommand(context, Component.literal("Reset timers to default config").withStyle(ChatFormatting.GREEN), () -> {
                     CustomTimerDataHandler.instance().resetTimers();
                     TimerHandler.instance().initTimers();
                 });
             }
 
             public static int resetHud(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Reset HUDs to default config").formatted(Formatting.GREEN), () -> CustomHudDataHandler.instance().resetHuds());
+                return executeCommand(context, Component.literal("Reset HUDs to default config").withStyle(ChatFormatting.GREEN), () -> CustomHudDataHandler.instance().resetHuds());
             }
         }
 
         static class Toggle {
             public static int toggleArmor(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Toggled Armor"), () -> {
+                return executeCommand(context, Component.literal("Toggled Armor"), () -> {
                     Configs.rendererConfig.hideArmor.accept(!Configs.rendererConfig.hideArmor.get());
                     Configs.rendererConfig.save();
                 });
             }
 
             public static int togglePetNames(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Toggled Pet Names"), () -> {
+                return executeCommand(context, Component.literal("Toggled Pet Names"), () -> {
                     Configs.rendererConfig.showPetName.accept(!Configs.rendererConfig.showPetName.get());
                     Configs.rendererConfig.save();
                 });
             }
 
-            public static int toggleBobberModel(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Toggled Bobber Model"), () -> {
-                    Configs.rendererConfig.showNewBobber.accept(!Configs.rendererConfig.showNewBobber.get());
+            public static int toggleFishingHookModel(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Toggled Fishing Hook Model"), () -> {
+                    Configs.rendererConfig.showNewFishingHook.accept(!Configs.rendererConfig.showNewFishingHook.get());
                     Configs.rendererConfig.save();
                 });
             }
 
-            public static int toggleBaitOnBobber(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Text.literal("Toggled Bait on Bobber"), () -> {
-                    Configs.rendererConfig.showBaitOnBobber.accept(!Configs.rendererConfig.showBaitOnBobber.get());
+            public static int toggleBaitOnFishingHook(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Toggled Bait on Fishing Hook"), () -> {
+                    Configs.rendererConfig.showBaitOnFishingHook.accept(!Configs.rendererConfig.showBaitOnFishingHook.get());
                     Configs.rendererConfig.save();
                 });
             }
@@ -167,29 +166,29 @@ public class CommandRegistry {
         return ClientCommandManager.literal(command);
     }
 
-    private static int executeCommand(CommandContext<FabricClientCommandSource> context, List<Text> feedback, ExecuteCallback executeCallback) {
-        return executeCommand(context, TextHelper.concat(feedback.toArray(new Text[]{})), executeCallback);
+    private static int executeCommand(CommandContext<FabricClientCommandSource> context, List<Component> feedback, ExecuteCallback executeCallback) {
+        return executeCommand(context, ComponentHelper.concat(feedback.toArray(new Component[]{})), executeCallback);
     }
 
     private static int executeCommand(CommandContext<FabricClientCommandSource> context, String feedback, ExecuteCallback executeCallback) {
-        return executeCommand(context, Text.literal(feedback), executeCallback);
+        return executeCommand(context, Component.literal(feedback), executeCallback);
     }
 
     private static int executeCommand(ExecuteCallback executeCallback) {
-        MinecraftClient.getInstance().send(executeCallback::execute);
+        Minecraft.getInstance().schedule(executeCallback::execute);
         return 1;
     }
 
-    private static int executeCommand(CommandContext<FabricClientCommandSource> context, Text feedback, ExecuteCallback executeCallback) {
-        MinecraftClient.getInstance().send(executeCallback::execute);
+    private static int executeCommand(CommandContext<FabricClientCommandSource> context, Component feedback, ExecuteCallback executeCallback) {
+        Minecraft.getInstance().schedule(executeCallback::execute);
         return sendFeedback(context, feedback);
     }
 
-    private static int sendFeedback(CommandContext<FabricClientCommandSource> context, Text feedback) {
+    private static int sendFeedback(CommandContext<FabricClientCommandSource> context, Component feedback) {
         context.getSource().sendFeedback(
-                TextHelper.concat(
-                        Text.literal("FoER ").formatted(Formatting.DARK_GREEN, Formatting.BOLD),
-                        Text.literal("» ").formatted(Formatting.DARK_GRAY),
+                ComponentHelper.concat(
+                        Component.literal("FoER ").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD),
+                        Component.literal("» ").withStyle(ChatFormatting.DARK_GRAY),
                         feedback
                 )
 

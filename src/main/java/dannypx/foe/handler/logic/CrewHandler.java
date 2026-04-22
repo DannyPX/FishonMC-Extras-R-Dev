@@ -3,22 +3,21 @@ package dannypx.foe.handler.logic;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.store.CrewDataHandler;
-import dannypx.foe.helper.TextHelper;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.TextValue;
+import dannypx.foe.type.custom_text.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Box;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 public class CrewHandler extends Handler {
     private static CrewHandler INSTANCE = new CrewHandler();
@@ -57,7 +56,7 @@ public class CrewHandler extends Handler {
         return isCrewNearby;
     }
 
-    public Pair<Boolean, CustomTextValue> getCrew(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getCrew(String[] params) {
         if(params.length > 0) {
             Pattern crewListPattern = Pattern.compile("^(online|offline|is_crew_nearby)$");
             Pattern intPattern = Pattern.compile("^-?\\d+$");
@@ -70,7 +69,7 @@ public class CrewHandler extends Handler {
                     case "online" -> list = getOnlineMembers();
                     case "offline" -> list = getOfflineMembers();
                     case "is_crew_nearby" -> {
-                        return PlaceholderHandler.getTextValue(new TextValue(TextHelper.literal(isCrewNearby(), true)));
+                        return PlaceholderHandler.getPlaceholderValue(new ComponentValue(ComponentHelper.literal(isCrewNearby(), true)));
                     }
                     default -> list = new ArrayList<>();
                 }
@@ -83,8 +82,8 @@ public class CrewHandler extends Handler {
                     if(list.size() > index) {
                         Pair<UUID, String> crew = list.get(index);
                         return switch (params[2]) {
-                            case "id" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(crew.value1())));
-                            case "name" -> PlaceholderHandler.getTextValue(new StringValue(crew.value2()));
+                            case "id" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(crew.value1())));
+                            case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(crew.value2()));
                             default -> PlaceholderHandler.noResult();
                         };
                     }
@@ -110,8 +109,8 @@ public class CrewHandler extends Handler {
             if(crewListOrdered.isEmpty()) this.updateCrewOrderedList(CrewDataHandler.instance().getCrewData().crewList);
         }
 
-        if(minecraftClient.player != null
-                && minecraftClient.world != null
+        if(minecraft.player != null
+                && minecraft.level != null
         ) {
             this.checkCrewNearby();
         }
@@ -122,17 +121,17 @@ public class CrewHandler extends Handler {
     }
 
     private void checkCrewNearby() {
-        Box searchBox = minecraftClient.player.getBoundingBox().expand(10d);
-        ClientWorld world = minecraftClient.world;
+        AABB searchBox = minecraft.player.getBoundingBox().inflate(10d);
+        ClientLevel world = minecraft.level;
 
-        List<PlayerEntity> playerEntities = world.getEntitiesByClass(
-                PlayerEntity.class,
+        List<Player> playerEntities = world.getEntitiesOfClass(
+                Player.class,
                 searchBox,
                 playerEntity -> {
-                    if(playerEntity.getUuid().equals(minecraftClient.player.getUuid())) return false;
+                    if(playerEntity.getUUID().equals(minecraft.player.getUUID())) return false;
 
-                    return CrewDataHandler.instance().getCrewData().crewList.containsKey(playerEntity.getUuid())
-                            && playerEntity.getEntityPos().distanceTo(minecraftClient.player.getEntityPos()) < 10d;
+                    return CrewDataHandler.instance().getCrewData().crewList.containsKey(playerEntity.getUUID())
+                            && playerEntity.position().distanceTo(minecraft.player.position()) < 10d;
                 }
         );
 
@@ -151,8 +150,8 @@ public class CrewHandler extends Handler {
         onlineMembers.clear();
         offlineMembers.clear();
         crewListOrdered.forEach(crew -> {
-            PlayerListEntry playerListEntry = minecraftClient.getNetworkHandler().getPlayerListEntry(crew.value1());
-            if(playerListEntry != null) {
+            PlayerInfo playerInfo = minecraft.getConnection().getPlayerInfo(crew.value1());
+            if(playerInfo != null) {
                 onlineMembers.add(crew);
             } else {
                 offlineMembers.add(crew);
@@ -160,11 +159,11 @@ public class CrewHandler extends Handler {
         });
     }
 
-    public void updatePlayerToOffline(UUID id) {
+    public void updatePlayerToOffline(UUID uuid) {
         AtomicReference<Pair<UUID, String>> updatedMember = new AtomicReference<>();
 
         onlineMembers.removeIf(crew -> {
-            if(crew.value1().equals(id)) {
+            if(crew.value1().equals(uuid)) {
                 updatedMember.set(crew);
                 return true;
             }
@@ -181,11 +180,11 @@ public class CrewHandler extends Handler {
         }
     }
 
-    public void updatePlayerToOnline(UUID id) {
+    public void updatePlayerToOnline(UUID uuid) {
         AtomicReference<Pair<UUID, String>> updatedMember = new AtomicReference<>();
 
         offlineMembers.removeIf(crew -> {
-            if(crew.value1().equals(id)) {
+            if(crew.value1().equals(uuid)) {
                 updatedMember.set(crew);
                 return true;
             }
@@ -236,9 +235,9 @@ public class CrewHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

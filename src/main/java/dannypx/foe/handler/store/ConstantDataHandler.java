@@ -4,19 +4,18 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
-import dannypx.foe.type.custom_text.TextValue;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import dannypx.foe.type.custom_text.PlaceholderValue;
+import dannypx.foe.type.custom_text.ComponentValue;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class ConstantDataHandler extends Handler {
     private static ConstantDataHandler INSTANCE = new ConstantDataHandler();
@@ -48,7 +47,7 @@ public class ConstantDataHandler extends Handler {
         this.needsUpdate = false;
     }
 
-    public Pair<Boolean, CustomTextValue> getConstantData(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getConstantData(String[] params) {
         if(params.length > 0) {
             Pattern categoryPattern = Pattern.compile("^(fish|pet)$");
 
@@ -58,24 +57,24 @@ public class ConstantDataHandler extends Handler {
             ) {
                 return switch (params[1]) {
                     case "fish" -> {
-                        Map<String, Text> subCat = getConstantData().fishData.getOrDefault(params[2], null);
+                        Map<String, Component> subCat = getConstantData().fishData.getOrDefault(params[2], null);
                         if(subCat != null) {
-                            Text field = subCat.getOrDefault(params[3], Text.empty());
-                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field));
+                            Component field = subCat.getOrDefault(params[3], Component.empty());
+                            if(!Objects.equals(field, Component.empty())) yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(field));
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
-                        Map<String, Text> subCat = getConstantData().petData.getOrDefault(params[2], null);
+                        Map<String, Component> subCat = getConstantData().petData.getOrDefault(params[2], null);
                         if(subCat != null) {
                             String param = params[3];
 
                             if(Objects.equals(params[2], "rating")) {
-                                param = TextHelper.smallText(params[3]);
+                                param = ComponentHelper.smallText(params[3]);
                             }
 
-                            Text field = subCat.getOrDefault(param, Text.empty());
-                            if(!Objects.equals(field, Text.empty())) yield PlaceholderHandler.getTextValue(new TextValue(field));
+                            Component field = subCat.getOrDefault(param, Component.empty());
+                            if(!Objects.equals(field, Component.empty())) yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(field));
                         }
                         yield PlaceholderHandler.noResult();
                     }
@@ -89,8 +88,8 @@ public class ConstantDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(constantData.uuid == null && minecraftClient.player != null) {
-            constantData.uuid = minecraftClient.player.getUuid();
+        if(constantData.uuid == null && minecraft.player != null) {
+            constantData.uuid = minecraft.player.getUUID();
         } else if(constantData.uuid != null && this.needsUpdate) {
             this.updateConstantData();
         } else if(!ConstantDataModel.CONSTANT_DATA_MODEL_VERSION.equals(constantData.version)) {
@@ -100,15 +99,15 @@ public class ConstantDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
         this.constantData.uuid = uuid;
     }
 
-    public void updateFishData(String category, String field, Text value) {
-        Map<String, Text> categoryData = this.constantData.fishData.getOrDefault(category, new HashMap<>());
+    public void updateFishData(String category, String field, Component value) {
+        Map<String, Component> categoryData = this.constantData.fishData.getOrDefault(category, new HashMap<>());
         if(!categoryData.containsKey(field)) {
             categoryData.put(field, value);
             this.constantData.fishData.put(category, categoryData);
@@ -116,8 +115,8 @@ public class ConstantDataHandler extends Handler {
         }
     }
 
-    public void updatePetData(String category, String field, Text value) {
-        Map<String, Text> categoryData = this.constantData.petData.getOrDefault(category, new HashMap<>());
+    public void updatePetData(String category, String field, Component value) {
+        Map<String, Component> categoryData = this.constantData.petData.getOrDefault(category, new HashMap<>());
         if(!categoryData.containsKey(field)) {
             categoryData.put(field, value);
             this.constantData.petData.put(category, categoryData);
@@ -127,7 +126,7 @@ public class ConstantDataHandler extends Handler {
 
     public void updateItemData(String category, ItemStack itemStack) {
         List<ItemStack> categoryData = this.constantData.itemData.getOrDefault(category, new ArrayList<>());
-        boolean containsItem = categoryData.stream().anyMatch(item -> item.getName().getString().equals(itemStack.getName().getString()));
+        boolean containsItem = categoryData.stream().anyMatch(item -> item.getHoverName().getString().equals(itemStack.getHoverName().getString()));
         if(!containsItem) {
             categoryData.add(itemStack);
             this.constantData.itemData.put(category, categoryData);
@@ -135,12 +134,12 @@ public class ConstantDataHandler extends Handler {
         }
     }
 
-    public Text getConstantFishText(String field) {
-        AtomicReference<Text> fieldText = new AtomicReference<>(Text.empty());
+    public Component getConstantFishComponent(String field) {
+        AtomicReference<Component> fieldText = new AtomicReference<>(Component.empty());
         this.getConstantData().fishData.forEach((key, mapFields) -> {
-            Text result = mapFields.getOrDefault(field, Text.empty());
+            Component result = mapFields.getOrDefault(field, Component.empty());
 
-            if(!Objects.equals(result, Text.empty())) {
+            if(!Objects.equals(result, Component.empty())) {
                 fieldText.set(result);
             }
         });
@@ -148,7 +147,7 @@ public class ConstantDataHandler extends Handler {
         return fieldText.get();
     }
 
-    public static Stream<String> keysFromField(Map<String, Text> map, String value) {
+    public static Stream<String> keysFromField(Map<String, Component> map, String value) {
         return map
                 .entrySet()
                 .stream()
@@ -167,28 +166,28 @@ public class ConstantDataHandler extends Handler {
          * - Size
          * - Variants
          */
-        public Map<String, Map<String, Text>> fishData = new HashMap<>(
+        public Map<String, Map<String, Component>> fishData = new HashMap<>(
                 Map.of(
                         "size", new HashMap<>(Map.of(
-                                "baby", Text.literal("ʙᴀʙʏ").withColor(0x468CE7),
-                                "juvenile", Text.literal("ᴊᴜᴠᴇɴɪʟᴇ").withColor(0x22EA08),
-                                "adult", Text.literal("ᴀᴅᴜʟᴛ").withColor(0x1C7DA0),
-                                "large", Text.literal("ʟᴀʀɢᴇ").withColor(0xFF9000),
-                                "gigantic", Text.literal("ɢɪɢᴀɴᴛɪᴄ").withColor(0xAF3333)
+                                "baby", Component.literal("ʙᴀʙʏ").withColor(0x468CE7),
+                                "juvenile", Component.literal("ᴊᴜᴠᴇɴɪʟᴇ").withColor(0x22EA08),
+                                "adult", Component.literal("ᴀᴅᴜʟᴛ").withColor(0x1C7DA0),
+                                "large", Component.literal("ʟᴀʀɢᴇ").withColor(0xFF9000),
+                                "gigantic", Component.literal("ɢɪɢᴀɴᴛɪᴄ").withColor(0xAF3333)
                         )),
                         "variant", new HashMap<>(Map.of(
-                                "normal", Text.literal("\uF040").formatted(Formatting.WHITE),
-                                "albino", Text.literal("\uF041").formatted(Formatting.WHITE),
-                                "melanistic", Text.literal("\uF042").formatted(Formatting.WHITE),
-                                "trophy", Text.literal("\uF043").formatted(Formatting.WHITE),
-                                "fabled", Text.literal("\uF044").formatted(Formatting.WHITE)
+                                "normal", Component.literal("\uF040").withStyle(ChatFormatting.WHITE),
+                                "albino", Component.literal("\uF041").withStyle(ChatFormatting.WHITE),
+                                "melanistic", Component.literal("\uF042").withStyle(ChatFormatting.WHITE),
+                                "trophy", Component.literal("\uF043").withStyle(ChatFormatting.WHITE),
+                                "fabled", Component.literal("\uF044").withStyle(ChatFormatting.WHITE)
                         )),
                         "rarity", new HashMap<>(Map.of(
-                                "common", Text.literal("\uF033").formatted(Formatting.WHITE),
-                                "rare", Text.literal("\uF034").formatted(Formatting.WHITE),
-                                "epic", Text.literal("\uF035").formatted(Formatting.WHITE),
-                                "legendary", Text.literal("\uF036").formatted(Formatting.WHITE),
-                                "mythical", Text.literal("\uF037").formatted(Formatting.WHITE)
+                                "common", Component.literal("\uF033").withStyle(ChatFormatting.WHITE),
+                                "rare", Component.literal("\uF034").withStyle(ChatFormatting.WHITE),
+                                "epic", Component.literal("\uF035").withStyle(ChatFormatting.WHITE),
+                                "legendary", Component.literal("\uF036").withStyle(ChatFormatting.WHITE),
+                                "mythical", Component.literal("\uF037").withStyle(ChatFormatting.WHITE)
                         ))
                 )
         );
@@ -198,7 +197,7 @@ public class ConstantDataHandler extends Handler {
          * - Rarities
          * - Rating
          */
-        public Map<String, Map<String, Text>> petData = new HashMap<>();
+        public Map<String, Map<String, Component>> petData = new HashMap<>();
 
         public Map<String, List<ItemStack>> itemData = new HashMap<>();
 
@@ -210,9 +209,9 @@ public class ConstantDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "constantData", Pair.of(Text.literal("[constantData]"), TextHelper.literal(getConstantData()))
+                "constantData", Pair.of(Component.literal("[constantData]"), ComponentHelper.literal(getConstantData()))
         );
     }
     //endregion

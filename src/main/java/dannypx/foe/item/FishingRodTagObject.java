@@ -1,0 +1,65 @@
+package dannypx.foe.item;
+
+import dannypx.foe.helper.ItemStackHelper;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+
+public class FishingRodTagObject extends TagObject {
+    private static final String LINE = "line";
+    private List<TagObject> lineItem = List.of();
+    private static final String POLE = "pole";
+    private List<TagObject> poleItem = List.of();
+    private static final String REEL = "reel";
+    private List<TagObject> reelItem = List.of();
+    private static final String TACKLEBOX = "tacklebox";
+    private List<TagObject> tackleBox = List.of();
+    public static final String DISABLE_BAIT = "disableBait";
+
+    public FishingRodTagObject(CompoundTag compoundTag, ItemStack itemStack) {
+        super(compoundTag, itemStack);
+        if(itemStack != ItemStack.EMPTY) {
+            this.init();
+        }
+    }
+
+    private void init() {
+        this.lineItem = this.getItemStackList(LINE);
+        this.poleItem = this.getItemStackList(POLE);
+        this.reelItem = this.getItemStackList(REEL);
+        this.tackleBox = this.getItemStackList(TACKLEBOX);
+    }
+
+    public List<TagObject> getLineItem() {
+        return this.lineItem;
+    }
+
+    public List<TagObject> getPoleItem() {
+        return this.poleItem;
+    }
+
+    public List<TagObject> getReelItem() {
+        return this.reelItem;
+    }
+
+    public List<TagObject> getTackleBox() {
+        return this.tackleBox;
+    }
+
+    public boolean getDisableBait() {
+        if (this.contains(DISABLE_BAIT)) {
+            return this.getBoolean(DISABLE_BAIT);
+        }
+        return false;
+    }
+
+    public static FishingRodTagObject of(@NotNull CompoundTag compoundTag, @NotNull ItemStack itemStack) {
+        return new FishingRodTagObject(compoundTag, itemStack);
+    }
+
+    public static FishingRodTagObject empty() {
+        return new FishingRodTagObject(ItemStackHelper.getTag(ItemStack.EMPTY), ItemStack.EMPTY);
+    }
+}

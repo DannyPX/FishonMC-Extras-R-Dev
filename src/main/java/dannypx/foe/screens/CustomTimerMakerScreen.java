@@ -8,31 +8,29 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.TimerHandler;
 import dannypx.foe.handler.store.CustomTimerDataHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.type.tuple.Quartet;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
 
 public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final Screen parentScreen;
 
     private ButtonListWidget buttonList;
@@ -41,25 +39,25 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private CustomTimerDataHandler.CustomTimer selectedTimer;
 
 
-    private Text header;
+    private Component header;
     private final int widgetHeight = 20;
 
-    private TextFieldWidget nameTextField;
-    private CheckboxWidget useTimerCheckBox;
-    private CheckboxWidget isPeriodCheckBox;
+    private EditBox nameEditBox;
+    private Checkbox useTimerCheckBox;
+    private Checkbox isPeriodCheckBox;
 
     private final int sideWidth = 100;
-    private TextFieldWidget timerTextField;
-    private TextFieldWidget offTimerTextField;
-    private TextFieldWidget offsetTextField;
-    private TextFieldWidget notificationToTriggerTextField;
-    private TextFieldWidget notificationToTriggerEndTextField;
-    private TextFieldWidget cleanUpChatTriggersTextField;
+    private EditBox timerEditBox;
+    private EditBox offTimerEditBox;
+    private EditBox offsetEditBox;
+    private EditBox notificationToTriggerEditBox;
+    private EditBox notificationToTriggerEndEditBox;
+    private EditBox cleanUpChatTriggersEditBox;
     //endregion
 
     //region Methods
     public CustomTimerMakerScreen(Screen parent) {
-        super(Text.literal("Custom Timer Maker Screen"));
+        super(Component.literal("Custom Timer Maker Screen"));
         this.parentScreen = parent;
     }
 
@@ -71,165 +69,165 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBox(context, mouseX, mouseY, delta);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.renderBox(guiGraphics, mouseX, mouseY, delta);
 
-        super.render(context, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta);
 
-        this.renderText(context, mouseX, mouseY, delta);
-        this.renderTooltip(context, mouseX, mouseY, delta);
-        this.buttonList.render(context, mouseX, mouseY, delta);
+        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
+        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
+        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(DrawContext context, int mouseX, int mouseY, float delta) {
+    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if(isPeriodCheckBox.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("'period' mode is for timers that require a period of ON and OFF time").formatted(Formatting.GRAY),
-                    Text.literal("After x seconds of ON time, the timer will be on OFF mode for x seconds, and then back to ON again").formatted(Formatting.GRAY)
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("'period' mode is for timers that require a period of ON and OFF time").withStyle(ChatFormatting.GRAY),
+                    Component.literal("After x seconds of ON time, the timer will be on OFF mode for x seconds, and then back to ON again").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(timerTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Time in seconds").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("When not in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Timer for every x seconds").formatted(Formatting.DARK_GRAY),
-                    Text.empty(),
-                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Time period in seconds whenever it is 'ON'").formatted(Formatting.DARK_GRAY)
+        if(timerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Time in seconds").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Timer for every x seconds").withStyle(ChatFormatting.DARK_GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Time period in seconds whenever it is 'ON'").withStyle(ChatFormatting.DARK_GRAY)
             ), mouseX, mouseY);
         }
 
-        if(offTimerTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Time in seconds").formatted(Formatting.GRAY),
-                    Text.literal("Only for 'period' mode").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Time period in seconds whenever it is 'OFF'").formatted(Formatting.DARK_GRAY)
+        if(offTimerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Time in seconds").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Time period in seconds whenever it is 'OFF'").withStyle(ChatFormatting.DARK_GRAY)
             ), mouseX, mouseY);
         }
 
-        if(offsetTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Time in seconds").formatted(Formatting.GRAY),
-                    Text.literal("Offset of the timer for alignment").formatted(Formatting.GRAY)
+        if(offsetEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Time in seconds").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Offset of the timer for alignment").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(notificationToTriggerTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
-                    Text.empty(),
-                    Text.literal("When not in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Triggers when timer hits 0").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Trigger when OFF timer hits 0").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("- Notification Name").formatted(Formatting.GRAY)
+        if(notificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.empty(),
+                    Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Triggers when timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(notificationToTriggerEndTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
-                    Text.literal("Only for 'period' mode").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Trigger when ON timer hits 0").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("- Notification Name").formatted(Formatting.GRAY)
+        if(notificationToTriggerEndEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(cleanUpChatTriggersTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
-                    Text.empty(),
-                    Text.literal("When not in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Clean chat triggers when timer hits 0").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
-                    Text.literal("Clean chat triggers when ON timer hits 0").formatted(Formatting.GRAY),
-                    Text.empty(),
-                    Text.literal("Split multiple chat triggers with a comma").formatted(Formatting.GRAY)
+        if(cleanUpChatTriggersEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.empty(),
+                    Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Clean chat triggers when timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Clean chat triggers when ON timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("Split multiple chat triggers with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
     }
 
-    private void renderText(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawCenteredTextWithShadow(textRenderer,
+    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.drawCenteredString(font,
                 this.header,
-                (BUTTON_WIDTH + PADDING * 2) + (minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2,
-                Colors.WHITE
+                (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2,
+                CommonColors.WHITE
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Name"),
+        guiGraphics.drawString(font,
+                Component.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING),
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Timer"),
+        guiGraphics.drawString(font,
+                Component.literal("Timer"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 2,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 2,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Off Timer"),
+        guiGraphics.drawString(font,
+                Component.literal("Off Timer"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Offset"),
+        guiGraphics.drawString(font,
+                Component.literal("Offset"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 4,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 4,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Trigger Notif."),
+        guiGraphics.drawString(font,
+                Component.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 5,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 5,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Trigger Notif. End"),
+        guiGraphics.drawString(font,
+                Component.literal("Trigger Notif. End"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 6,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 6,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Clear Triggers"),
+        guiGraphics.drawString(font,
+                Component.literal("Clear Triggers"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 7,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 7,
+                CommonColors.WHITE,
                 true
         );
         try {
             if(selectedTimerId != null) {
                 long timeSeconds = System.currentTimeMillis() / 1000;
-                long adjustedWithOffset = timeSeconds + Integer.parseInt(offsetTextField.getText());
+                long adjustedWithOffset = timeSeconds + Integer.parseInt(offsetEditBox.getValue());
 
-                if(isPeriodCheckBox.isChecked()) {
-                    long timer = Integer.parseInt(timerTextField.getText());
-                    long offTimer = Integer.parseInt(offTimerTextField.getText());
+                if(isPeriodCheckBox.selected()) {
+                    long timer = Integer.parseInt(timerEditBox.getValue());
+                    long offTimer = Integer.parseInt(offTimerEditBox.getValue());
                     long cycle = timer + offTimer;
                     long pos = (adjustedWithOffset - offTimer) % cycle;
                     long remainingOn = cycle - pos;
@@ -241,78 +239,78 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                     boolean isOnTimer = remainingOn < timer;
 
-                    Text onTimerText = TextHelper.concat(
-                            Text.literal("Timer till ").formatted(Formatting.GRAY),
-                            Text.literal("ON").formatted(Formatting.GREEN),
-                            Text.literal(" period ends: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(remainingTime.value3())).formatted(Formatting.YELLOW),
-                            Text.literal(":").formatted(Formatting.YELLOW),
-                            Text.literal(String.format("%02d", remainingTime.value2())).formatted(Formatting.YELLOW),
-                            Text.literal(":").formatted(Formatting.YELLOW),
-                            Text.literal(String.format("%02d", remainingTime.value1())).formatted(Formatting.YELLOW)
+                    Component onTimerText = ComponentHelper.concat(
+                            Component.literal("Timer till ").withStyle(ChatFormatting.GRAY),
+                            Component.literal("ON").withStyle(ChatFormatting.GREEN),
+                            Component.literal(" period ends: ").withStyle(ChatFormatting.GRAY),
+                            Component.literal(String.valueOf(remainingTime.value3())).withStyle(ChatFormatting.YELLOW),
+                            Component.literal(":").withStyle(ChatFormatting.YELLOW),
+                            Component.literal(String.format("%02d", remainingTime.value2())).withStyle(ChatFormatting.YELLOW),
+                            Component.literal(":").withStyle(ChatFormatting.YELLOW),
+                            Component.literal(String.format("%02d", remainingTime.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    Text offTimerText = TextHelper.concat(
-                            Text.literal("Timer till ").formatted(Formatting.GRAY),
-                            Text.literal("OFF").formatted(Formatting.RED),
-                            Text.literal(" period ends: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(remainingTimeMid.value3())).formatted(Formatting.YELLOW),
-                            Text.literal(":").formatted(Formatting.YELLOW),
-                            Text.literal(String.format("%02d", remainingTimeMid.value2())).formatted(Formatting.YELLOW),
-                            Text.literal(":").formatted(Formatting.YELLOW),
-                            Text.literal(String.format("%02d", remainingTimeMid.value1())).formatted(Formatting.YELLOW)
+                    Component offTimerText = ComponentHelper.concat(
+                            Component.literal("Timer till ").withStyle(ChatFormatting.GRAY),
+                            Component.literal("OFF").withStyle(ChatFormatting.RED),
+                            Component.literal(" period ends: ").withStyle(ChatFormatting.GRAY),
+                            Component.literal(String.valueOf(remainingTimeMid.value3())).withStyle(ChatFormatting.YELLOW),
+                            Component.literal(":").withStyle(ChatFormatting.YELLOW),
+                            Component.literal(String.format("%02d", remainingTimeMid.value2())).withStyle(ChatFormatting.YELLOW),
+                            Component.literal(":").withStyle(ChatFormatting.YELLOW),
+                            Component.literal(String.format("%02d", remainingTimeMid.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    context.drawText(textRenderer,
+                    guiGraphics.drawString(font,
                             onTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
-                            Colors.WHITE,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
+                            CommonColors.WHITE,
                             true
                     );
 
-                    context.drawText(textRenderer,
+                    guiGraphics.drawString(font,
                             offTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 1,
-                            Colors.WHITE,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8 + (font.lineHeight + PADDING_QUART) * 1,
+                            CommonColors.WHITE,
                             true
                     );
 
-                    Text isOnTimerText = TextHelper.concat(
-                            Text.literal("Currently in ").formatted(Formatting.GRAY),
-                            isOnTimer ? Text.literal("ON").formatted(Formatting.GREEN) : Text.literal("OFF").formatted(Formatting.RED),
-                            Text.literal(" period").formatted(Formatting.GRAY)
+                    Component isOnTimerText = ComponentHelper.concat(
+                            Component.literal("Currently in ").withStyle(ChatFormatting.GRAY),
+                            isOnTimer ? Component.literal("ON").withStyle(ChatFormatting.GREEN) : Component.literal("OFF").withStyle(ChatFormatting.RED),
+                            Component.literal(" period").withStyle(ChatFormatting.GRAY)
                     );
 
-                    context.drawText(textRenderer,
+                    guiGraphics.drawString(font,
                             isOnTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 2,
-                            Colors.WHITE,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8 + (font.lineHeight + PADDING_QUART) * 2,
+                            CommonColors.WHITE,
                             true
                     );
                 } else {
-                    long interval = Integer.parseInt(timerTextField.getText());
+                    long interval = Integer.parseInt(timerEditBox.getValue());
                     long pos = adjustedWithOffset % interval;
                     long remainingOn = interval - pos;
 
                     Triplet<Long, Long, Long> remainingTime = getTime(remainingOn);
 
-                    Text onTimerText = TextHelper.concat(
-                            Text.literal("Timer: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(remainingTime.value3())).formatted(Formatting.YELLOW),
-                            Text.literal(":").formatted(Formatting.YELLOW),
-                            Text.literal(String.format("%02d", remainingTime.value2())).formatted(Formatting.YELLOW),
-                            Text.literal(":").formatted(Formatting.YELLOW),
-                            Text.literal(String.format("%02d", remainingTime.value1())).formatted(Formatting.YELLOW)
+                    Component onTimerText = ComponentHelper.concat(
+                            Component.literal("Timer: ").withStyle(ChatFormatting.GRAY),
+                            Component.literal(String.valueOf(remainingTime.value3())).withStyle(ChatFormatting.YELLOW),
+                            Component.literal(":").withStyle(ChatFormatting.YELLOW),
+                            Component.literal(String.format("%02d", remainingTime.value2())).withStyle(ChatFormatting.YELLOW),
+                            Component.literal(":").withStyle(ChatFormatting.YELLOW),
+                            Component.literal(String.format("%02d", remainingTime.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    context.drawText(textRenderer,
+                    guiGraphics.drawString(font,
                             onTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
-                            Colors.WHITE,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
+                            CommonColors.WHITE,
                             true
                     );
 
@@ -331,19 +329,19 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return Triplet.of(second, minute, hour);
     }
 
-    private void renderBox(DrawContext context, int mouseX, int mouseY, float delta)
+    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
     {
-        context.fill(
+        guiGraphics.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
-                minecraftClient.getWindow().getScaledWidth(),
-                minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
+                this.minecraft.getWindow().getGuiScaledWidth(),
+                this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
-        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
+        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
     private void renderWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
         widgets.add(this.backButton());
@@ -355,202 +353,202 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         widgets.add(getImportButton());
         widgets.add(getExportButton());
 
-        widgets.add(getNameTextField());
+        widgets.add(getNameEditBox());
         widgets.add(getUseTimerCheckBox());
         widgets.add(getIsPeriodCheckBox());
-        widgets.add(getTimerTextField());
-        widgets.add(getOffTimerTextField());
-        widgets.add(getOffsetTextField());
-        widgets.add(getNotificationToTriggerTextField());
-        widgets.add(getNotificationToTriggerEndTextField());
-        widgets.add(getCleanUpChatTriggersTextField());
+        widgets.add(getTimerEditBox());
+        widgets.add(getOffTimerEditBox());
+        widgets.add(getOffsetEditBox());
+        widgets.add(getNotificationToTriggerEditBox());
+        widgets.add(getNotificationToTriggerEndEditBox());
+        widgets.add(getCleanUpChatTriggersEditBox());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ClickableWidget getNameTextField() {
-        nameTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getNameEditBox() {
+        nameEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + widgetHeight + PADDING,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - (sideWidth + PADDING) * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - (sideWidth + PADDING) * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        nameTextField.setMaxLength(Integer.MAX_VALUE);
+        nameEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        nameTextField.setChangedListener(s -> {
+        nameEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                nameTextField.setPlaceholder(Text.literal(s));
+                nameEditBox.setHint(Component.literal(s));
             }
         });
 
-        return nameTextField;
+        return nameEditBox;
     }
 
-    private ClickableWidget getUseTimerCheckBox() {
-        useTimerCheckBox = CheckboxWidget.builder(
-                        Text.literal("Use Timer"),
-                        textRenderer
+    private AbstractWidget getUseTimerCheckBox() {
+        useTimerCheckBox = Checkbox.builder(
+                        Component.literal("Use Timer"),
+                        font
                 )
-                .pos(minecraftClient.getWindow().getScaledWidth() - (PADDING + sideWidth) * 2
+                .pos(this.minecraft.getWindow().getGuiScaledWidth() - (PADDING + sideWidth) * 2
                         , PADDING + widgetHeight + PADDING)
-                .checked(true)
-                .callback((checkbox, checked) -> {})
+                .selected(true)
+                .onValueChange((checkbox, checked) -> {})
                 .build();
         return useTimerCheckBox;
     }
 
-    private ClickableWidget getIsPeriodCheckBox() {
-        isPeriodCheckBox = CheckboxWidget.builder(
-                        Text.literal("Is Period"),
-                        textRenderer
+    private AbstractWidget getIsPeriodCheckBox() {
+        isPeriodCheckBox = Checkbox.builder(
+                        Component.literal("Is Period"),
+                        font
                 )
-                .pos(minecraftClient.getWindow().getScaledWidth() - (PADDING + sideWidth)
+                .pos(this.minecraft.getWindow().getGuiScaledWidth() - (PADDING + sideWidth)
                         , PADDING + widgetHeight + PADDING)
-                .checked(false)
-                .callback((checkbox, checked) -> {
-                    if(checkbox.isChecked()) {
-                        offTimerTextField.setMaxLength(Integer.MAX_VALUE);
-                        offTimerTextField.setText(String.valueOf(60));
-                        offTimerTextField.setPlaceholder(Text.literal(String.valueOf(60)));
-                        notificationToTriggerEndTextField.setMaxLength(Integer.MAX_VALUE);
+                .selected(false)
+                .onValueChange((checkbox, checked) -> {
+                    if(checkbox.selected()) {
+                        offTimerEditBox.setMaxLength(Integer.MAX_VALUE);
+                        offTimerEditBox.setValue(String.valueOf(60));
+                        offTimerEditBox.setHint(Component.literal(String.valueOf(60)));
+                        notificationToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
                     } else {
-                        offTimerTextField.setMaxLength(0);
-                        offTimerTextField.setText("");
-                        offTimerTextField.setPlaceholder(Text.literal(""));
-                        notificationToTriggerEndTextField.setMaxLength(0);
-                        notificationToTriggerEndTextField.setText("");
-                        notificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
+                        offTimerEditBox.setMaxLength(0);
+                        offTimerEditBox.setValue("");
+                        offTimerEditBox.setHint(Component.literal(""));
+                        notificationToTriggerEndEditBox.setMaxLength(0);
+                        notificationToTriggerEndEditBox.setValue("");
+                        notificationToTriggerEndEditBox.setHint(Component.literal(""));
                     }
                 })
                 .build();
         return isPeriodCheckBox;
     }
 
-    private ClickableWidget getTimerTextField() {
-        timerTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getTimerEditBox() {
+        timerEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 2,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        timerTextField.setMaxLength(Integer.MAX_VALUE);
+        timerEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        timerTextField.setChangedListener(s -> {
+        timerEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                timerTextField.setPlaceholder(Text.literal(s));
+                timerEditBox.setHint(Component.literal(s));
             }
         });
 
-        return timerTextField;
+        return timerEditBox;
     }
 
-    private ClickableWidget getOffTimerTextField() {
-        offTimerTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getOffTimerEditBox() {
+        offTimerEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 3,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        offTimerTextField.setMaxLength(0);
+        offTimerEditBox.setMaxLength(0);
 
-        offTimerTextField.setChangedListener(s -> {
+        offTimerEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                offTimerTextField.setPlaceholder(Text.literal(s));
+                offTimerEditBox.setHint(Component.literal(s));
             }
         });
 
-        return offTimerTextField;
+        return offTimerEditBox;
     }
 
-    private ClickableWidget getOffsetTextField() {
-        offsetTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getOffsetEditBox() {
+        offsetEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 4,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        offsetTextField.setMaxLength(Integer.MAX_VALUE);
+        offsetEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        offsetTextField.setChangedListener(s -> {
+        offsetEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                offsetTextField.setPlaceholder(Text.literal(s));
+                offsetEditBox.setHint(Component.literal(s));
             }
         });
 
-        return offsetTextField;
+        return offsetEditBox;
     }
 
-    private ClickableWidget getNotificationToTriggerTextField() {
-        notificationToTriggerTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getNotificationToTriggerEditBox() {
+        notificationToTriggerEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 5,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        notificationToTriggerTextField.setMaxLength(Integer.MAX_VALUE);
+        notificationToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        notificationToTriggerTextField.setChangedListener(s -> {
+        notificationToTriggerEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                notificationToTriggerTextField.setPlaceholder(Text.literal(s));
+                notificationToTriggerEditBox.setHint(Component.literal(s));
             }
         });
 
-        return notificationToTriggerTextField;
+        return notificationToTriggerEditBox;
     }
 
-    private ClickableWidget getNotificationToTriggerEndTextField() {
-        notificationToTriggerEndTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getNotificationToTriggerEndEditBox() {
+        notificationToTriggerEndEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 6,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        notificationToTriggerEndTextField.setMaxLength(0);
+        notificationToTriggerEndEditBox.setMaxLength(0);
 
-        notificationToTriggerEndTextField.setChangedListener(s -> {
+        notificationToTriggerEndEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                notificationToTriggerEndTextField.setPlaceholder(Text.literal(s));
+                notificationToTriggerEndEditBox.setHint(Component.literal(s));
             }
         });
 
-        return notificationToTriggerEndTextField;
+        return notificationToTriggerEndEditBox;
     }
 
-    private ClickableWidget getCleanUpChatTriggersTextField() {
-        cleanUpChatTriggersTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getCleanUpChatTriggersEditBox() {
+        cleanUpChatTriggersEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 7,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        cleanUpChatTriggersTextField.setMaxLength(Integer.MAX_VALUE);
+        cleanUpChatTriggersEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        cleanUpChatTriggersTextField.setChangedListener(s -> {
+        cleanUpChatTriggersEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                cleanUpChatTriggersTextField.setPlaceholder(Text.literal(s));
+                cleanUpChatTriggersEditBox.setHint(Component.literal(s));
             }
         });
 
-        return cleanUpChatTriggersTextField;
+        return cleanUpChatTriggersEditBox;
     }
 
-    private ClickableWidget getNewButtonElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Create Timer"),
+    private AbstractWidget getNewButtonElementButton() {
+        return Button.builder(
+                        Component.literal("Create Timer"),
                         (button) -> {
                             String id = "Custom Timer " + UUID.randomUUID();
 
@@ -562,13 +560,13 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             buttonEntryMap.put(id, buttonEntry);
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getDeleteButtonElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Delete Selected"),
+    private AbstractWidget getDeleteButtonElementButton() {
+        return Button.builder(
+                        Component.literal("Delete Selected"),
                         (button) -> {
                             if(selectedTimerId != null) {
                                 CustomTimerDataHandler.instance().deleteCustomTimer(selectedTimerId);
@@ -584,17 +582,17 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getImportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Import"),
+    private AbstractWidget getImportButton() {
+        return Button.builder(
+                        Component.literal("Import"),
                         (button) -> {
-                            String rawData = minecraftClient.keyboard.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard();
                             try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
                                 Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTimerDataHandler.CustomTimer.class, Integer.class).getType());
@@ -604,10 +602,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                 }
 
                                 if(data.value4() > FishOnMCExtras.TIMER_VERSION) {
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Could not Import. Imported Timer is made on a newer version"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Could not Import. Imported Timer is made on a newer version"));
                                     return;
                                 }
 
@@ -628,28 +626,28 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                 buttonList.addEntry(buttonEntry);
                                 buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Imported Timer"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Imported Timer"));
                             } catch (Exception e) {
                                 LoggerHandler.error(e);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Could not Import. Data invalid"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Could not Import. Data invalid"));
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Imports from the code on your clipboard")))
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
                 .build();
     }
 
-    private ClickableWidget getExportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Export Selected"),
+    private AbstractWidget getExportButton() {
+        return Button.builder(
+                        Component.literal("Export Selected"),
                         (button) -> {
                             if(selectedTimerId != null) {
                                 try {
@@ -661,7 +659,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                                            ComponentHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Timer: **" + selectedTimerId + "\n" +
@@ -670,31 +668,31 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                             "```\n" +
                                             "-# Using Timer version: " + "`v" + FishOnMCExtras.TIMER_VERSION + "`";
 
-                                    minecraftClient.keyboard.setClipboard(dataToCopy);
+                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Exported Button on your clipboard"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Exported Button on your clipboard"));
                                 } catch (Exception e) {
                                     LoggerHandler.error(e);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("An error has occurred"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("An error has occurred"));
                                 }
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Save first before exporting")))
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
                 .build();
     }
 
-    private ClickableWidget getButtonList() {
+    private AbstractWidget getButtonList() {
         buttonList = new ButtonListWidget(
-                client,
+                minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
                 height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
                 0,
@@ -713,36 +711,36 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return buttonList;
     }
 
-    private ButtonWidget saveBackButton() {
-        return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
+    private Button saveBackButton() {
+        return Button.builder(Component.literal("Save and Return"), button -> {
             if(selectedTimerId != null) {
-                if(nameTextField.getText().isBlank()) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Timer name is empty"));
+                if(nameEditBox.getValue().isBlank()) {
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Timer name is empty"));
 
                     return;
                 }
 
-                if(!Objects.equals(selectedTimerId, nameTextField.getText())
-                        && CustomTimerDataHandler.instance().getCustomTimerData().timerList.containsKey(nameTextField.getText())
+                if(!Objects.equals(selectedTimerId, nameEditBox.getValue())
+                        && CustomTimerDataHandler.instance().getCustomTimerData().timerList.containsKey(nameEditBox.getValue())
                 ) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Timer name already exist"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Timer name already exist"));
 
                     return;
                 }
 
                 try {
-                    Integer.parseInt(timerTextField.getText());
+                    Integer.parseInt(timerEditBox.getValue());
                 } catch (NumberFormatException e) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Timer is not correct format"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Timer is not correct format"));
 
                     LoggerHandler.error(e);
 
@@ -750,14 +748,14 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 }
 
                 try {
-                    if(isPeriodCheckBox.isChecked()) {
-                        Integer.parseInt(offTimerTextField.getText());
+                    if(isPeriodCheckBox.selected()) {
+                        Integer.parseInt(offTimerEditBox.getValue());
                     }
                 } catch (NumberFormatException e) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Off Timer is not correct format"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Off Timer is not correct format"));
 
                     LoggerHandler.error(e);
 
@@ -765,45 +763,45 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 }
 
                 try {
-                    Integer.parseInt(offsetTextField.getText());
+                    Integer.parseInt(offsetEditBox.getValue());
                 } catch (NumberFormatException e) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Offset is not correct format"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Offset is not correct format"));
 
                     LoggerHandler.error(e);
 
                     return;
                 }
 
-                if(isPeriodCheckBox.isChecked()) {
-                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId, nameTextField.getText(), Integer.parseInt(timerTextField.getText()), Integer.parseInt(offTimerTextField.getText()), Integer.parseInt(offsetTextField.getText()), notificationToTriggerTextField.getText(), notificationToTriggerEndTextField.getText(), cleanUpChatTriggersTextField.getText(), useTimerCheckBox.isChecked(), isPeriodCheckBox.isChecked());
+                if(isPeriodCheckBox.selected()) {
+                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId, nameEditBox.getValue(), Integer.parseInt(timerEditBox.getValue()), Integer.parseInt(offTimerEditBox.getValue()), Integer.parseInt(offsetEditBox.getValue()), notificationToTriggerEditBox.getValue(), notificationToTriggerEndEditBox.getValue(), cleanUpChatTriggersEditBox.getValue(), useTimerCheckBox.selected(), isPeriodCheckBox.selected());
                 } else {
-                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId, nameTextField.getText(), Integer.parseInt(timerTextField.getText()), Integer.parseInt(offsetTextField.getText()), notificationToTriggerTextField.getText(), cleanUpChatTriggersTextField.getText(), useTimerCheckBox.isChecked(), isPeriodCheckBox.isChecked());
+                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId, nameEditBox.getValue(), Integer.parseInt(timerEditBox.getValue()), Integer.parseInt(offsetEditBox.getValue()), notificationToTriggerEditBox.getValue(), cleanUpChatTriggersEditBox.getValue(), useTimerCheckBox.selected(), isPeriodCheckBox.selected());
                 }
 
                 TimerHandler.instance().initTimers();
             }
-                    this.close();
+                    this.onClose();
                 })
-                .position(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget backButton() {
-        return ButtonWidget.builder(Text.literal("Return"), button ->
-                    this.close())
-                .position(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button backButton() {
+        return Button.builder(Component.literal("Return"), button ->
+                    this.onClose())
+                .pos(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createTimerEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                ButtonWidget.builder(
-                        Text.literal(id),
+                Button.builder(
+                        Component.literal(id),
                         button -> {
                             selectedTimer = CustomTimerDataHandler.instance().getCustomTimerData().timerList.get(id);
 
@@ -817,92 +815,92 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     }
 
     private void setFields() {
-        this.header = Text.literal(selectedTimerId);
-        nameTextField.setText(selectedTimerId);
-        nameTextField.setPlaceholder(Text.literal(selectedTimerId));
+        this.header = Component.literal(selectedTimerId);
+        nameEditBox.setValue(selectedTimerId);
+        nameEditBox.setHint(Component.literal(selectedTimerId));
 
         if(selectedTimer != null) {
-            if(selectedTimer.useTimer != useTimerCheckBox.isChecked()) {
+            if(selectedTimer.useTimer != useTimerCheckBox.selected()) {
                 useTimerCheckBox.onPress(null);
             }
 
-            if(selectedTimer.isPeriod != isPeriodCheckBox.isChecked()) {
+            if(selectedTimer.isPeriod != isPeriodCheckBox.selected()) {
                 isPeriodCheckBox.onPress(null);
             }
 
-            timerTextField.setText(String.valueOf(selectedTimer.timer));
-            timerTextField.setPlaceholder(Text.literal(String.valueOf(selectedTimer.timer)));
+            timerEditBox.setValue(String.valueOf(selectedTimer.timer));
+            timerEditBox.setHint(Component.literal(String.valueOf(selectedTimer.timer)));
 
-            offsetTextField.setText(String.valueOf(selectedTimer.offset));
-            offsetTextField.setPlaceholder(Text.literal(String.valueOf(selectedTimer.offset)));
+            offsetEditBox.setValue(String.valueOf(selectedTimer.offset));
+            offsetEditBox.setHint(Component.literal(String.valueOf(selectedTimer.offset)));
 
-            notificationToTriggerTextField.setText(selectedTimer.notificationToTrigger);
-            notificationToTriggerTextField.setPlaceholder(Text.literal(selectedTimer.notificationToTrigger));
+            notificationToTriggerEditBox.setValue(selectedTimer.notificationToTrigger);
+            notificationToTriggerEditBox.setHint(Component.literal(selectedTimer.notificationToTrigger));
 
-            cleanUpChatTriggersTextField.setText(selectedTimer.cleanUpChatTrigger);
-            cleanUpChatTriggersTextField.setPlaceholder(Text.literal(selectedTimer.cleanUpChatTrigger));
+            cleanUpChatTriggersEditBox.setValue(selectedTimer.cleanUpChatTrigger);
+            cleanUpChatTriggersEditBox.setHint(Component.literal(selectedTimer.cleanUpChatTrigger));
 
             CodeExecuterHandler.runLater(1, () -> {
                 if(selectedTimer.isPeriod && selectedTimer instanceof CustomTimerDataHandler.CustomTimerPeriod selectedTimerPeriod) {
-                    offTimerTextField.setMaxLength(Integer.MAX_VALUE);
-                    offTimerTextField.setText(String.valueOf(selectedTimerPeriod.offTimer));
-                    offTimerTextField.setPlaceholder(Text.literal(String.valueOf(selectedTimerPeriod.offTimer)));
+                    offTimerEditBox.setMaxLength(Integer.MAX_VALUE);
+                    offTimerEditBox.setValue(String.valueOf(selectedTimerPeriod.offTimer));
+                    offTimerEditBox.setHint(Component.literal(String.valueOf(selectedTimerPeriod.offTimer)));
 
-                    notificationToTriggerEndTextField.setMaxLength(Integer.MAX_VALUE);
-                    notificationToTriggerEndTextField.setText(selectedTimerPeriod.notificationToTriggerEnd);
-                    notificationToTriggerEndTextField.setPlaceholder(Text.literal(selectedTimerPeriod.notificationToTriggerEnd));
+                    notificationToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
+                    notificationToTriggerEndEditBox.setValue(selectedTimerPeriod.notificationToTriggerEnd);
+                    notificationToTriggerEndEditBox.setHint(Component.literal(selectedTimerPeriod.notificationToTriggerEnd));
                 } else {
-                    offTimerTextField.setMaxLength(0);
-                    offTimerTextField.setText("");
-                    offTimerTextField.setPlaceholder(Text.literal(""));
+                    offTimerEditBox.setMaxLength(0);
+                    offTimerEditBox.setValue("");
+                    offTimerEditBox.setHint(Component.literal(""));
 
-                    notificationToTriggerEndTextField.setMaxLength(0);
-                    notificationToTriggerEndTextField.setText("");
-                    notificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
+                    notificationToTriggerEndEditBox.setMaxLength(0);
+                    notificationToTriggerEndEditBox.setValue("");
+                    notificationToTriggerEndEditBox.setHint(Component.literal(""));
                 }
             });
         }
     }
 
     private void resetFields() {
-        this.header = Text.literal("No Timer Selected");
+        this.header = Component.literal("No Timer Selected");
 
-        nameTextField.setText("");
-        nameTextField.setPlaceholder(Text.literal(""));
+        nameEditBox.setValue("");
+        nameEditBox.setHint(Component.literal(""));
 
-        if(useTimerCheckBox.isChecked()) {
+        if(useTimerCheckBox.selected()) {
             useTimerCheckBox.onPress(null);
         }
 
-        if(isPeriodCheckBox.isChecked()) {
+        if(isPeriodCheckBox.selected()) {
             isPeriodCheckBox.onPress(null);
         }
 
-        timerTextField.setText("");
-        timerTextField.setPlaceholder(Text.literal(""));
+        timerEditBox.setValue("");
+        timerEditBox.setHint(Component.literal(""));
 
-        offTimerTextField.setText("");
-        offTimerTextField.setPlaceholder(Text.literal(""));
+        offTimerEditBox.setValue("");
+        offTimerEditBox.setHint(Component.literal(""));
 
-        offsetTextField.setText("");
-        offsetTextField.setPlaceholder(Text.literal(""));
+        offsetEditBox.setValue("");
+        offsetEditBox.setHint(Component.literal(""));
 
-        notificationToTriggerTextField.setText("");
-        notificationToTriggerTextField.setPlaceholder(Text.literal(""));
+        notificationToTriggerEditBox.setValue("");
+        notificationToTriggerEditBox.setHint(Component.literal(""));
 
-        notificationToTriggerEndTextField.setText("");
-        notificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
+        notificationToTriggerEndEditBox.setValue("");
+        notificationToTriggerEndEditBox.setHint(Component.literal(""));
 
-        cleanUpChatTriggersTextField.setText("");
-        cleanUpChatTriggersTextField.setPlaceholder(Text.literal(""));
+        cleanUpChatTriggersEditBox.setValue("");
+        cleanUpChatTriggersEditBox.setHint(Component.literal(""));
 
         selectedTimer = null;
         selectedTimerId = null;
     }
 
     @Override
-    public void close() {
-        this.minecraftClient.setScreen(this.parentScreen);
+    public void onClose() {
+        this.minecraft.setScreen(this.parentScreen);
     }
     //endregion
 }

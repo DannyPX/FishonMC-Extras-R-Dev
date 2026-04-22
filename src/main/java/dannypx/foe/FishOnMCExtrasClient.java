@@ -1,7 +1,7 @@
 package dannypx.foe;
 
 import dannypx.foe.command.CommandRegistry;
-import dannypx.foe.entity.FishingBobberEntityModel;
+import dannypx.foe.entity.FishingHookEntityModel;
 import dannypx.foe.handler.fetch.*;
 import dannypx.foe.handler.logic.*;
 import dannypx.foe.handler.renderer.*;
@@ -19,21 +19,20 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
@@ -55,31 +54,31 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
 
-    private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> texts) {
-        TooltipHandler.instance().fetchTooltip(itemStack, tooltipContext, tooltipType, texts);
+    private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines) {
+        TooltipHandler.instance().fetchTooltip(itemStack, tooltipContext, tooltipType, lines);
     }
 
-    private void onClientStarted(MinecraftClient minecraftClient) {
-        if(minecraftClient.options.getGuiScale().getValue() == 0) {
-            minecraftClient.options.getGuiScale().setValue(3);
-            minecraftClient.options.write();
-            minecraftClient.onResolutionChanged();
+    private void onClientStarted(Minecraft minecraftClient) {
+        if(minecraftClient.options.guiScale().get() == 0) {
+            minecraftClient.options.guiScale().set(3);
+            minecraftClient.options.save();
+            minecraftClient.resizeDisplay();
         }
     }
 
-    private void receiveGameMessage(Text text, boolean overlay) {
-        ChatHandler.instance().onReceiveMessage(text);
+    private void receiveGameMessage(Component message, boolean overlay) {
+        ChatHandler.instance().onReceiveMessage(message);
     }
 
-    private Text modifyGameMessage(Text text, boolean over) {
-        return ChatHandler.instance().onModifyMessage(text);
+    private Component modifyGameMessage(Component message, boolean over) {
+        return ChatHandler.instance().onModifyMessage(message);
     }
 
-    private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
-        return ActionResult.PASS;
+    private InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
-    private void onAfterInitScreen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
+    private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
         SearchHandler.instance().setFocused(false);
         SearchHandler.instance().setOnScreen(false);
 
@@ -91,7 +90,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             InventoryScreenRenderHandler.instance().init(screen);
             ScreenEvents.afterRender(screen).register(InventoryScreenRenderHandler.instance()::render);
             ScreenMouseEvents.afterMouseScroll(screen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
-        } else if(screen instanceof GenericContainerScreen genericContainerScreen) {
+        } else if(screen instanceof ContainerScreen genericContainerScreen) {
             GenericContainerScreenHandler.instance().init(genericContainerScreen);
             ScreenEvents.afterRender(screen).register(GenericContainerScreenHandler.instance()::render);
         } else if(screen instanceof ChatScreen) {
@@ -105,7 +104,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         InventoryHandler.instance().trackFishOffSide();
     }
 
-    private void onBeforeInitScreen(MinecraftClient minecraftClient, Screen screen, int scaledWidth, int scaledHeight) {
+    private void onBeforeInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
         ScreenMouseEvents.afterMouseScroll(screen).register(this::afterMouseScroll);
     }
 
@@ -129,7 +128,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.initHudRenderer();
     }
 
-    private void onLeave(ClientPlayNetworkHandler clientPlayNetworkHandler, MinecraftClient minecraftClient) {
+    private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
         ConnectionHandler.instance().onLeave();
         LoadingHandler.instance().onLeave();
 
@@ -137,7 +136,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
     }
 
-    private void onJoin(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender packetSender, MinecraftClient minecraftClient) {
+    private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
         ConnectionHandler.instance().init();
         if(ConnectionHandler.instance().isOnServer()) {
             ProfileDataHandler.instance().init();
@@ -163,9 +162,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         }
     }
 
-    private void onEndClientTick(MinecraftClient minecraftClient) {
+    private void onEndClientTick(Minecraft minecraft) {
         if(!LoadingHandler.instance().isError()
-                && minecraftClient.getCurrentServerEntry() != null
+                && minecraft.getCurrentServer() != null
                 // Check if on server before ticking
                 && ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
@@ -173,10 +172,10 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             // Check if done loading
             if(LoadingHandler.instance().isLoadingDone()) {
                 // Fetch
-                if(Configs.handlerConfig.tabHandler.get()) TabHandler.instance().tick();
+                if(Configs.handlerConfig.tabOverlayHandler.get()) TabOverlayHandler.instance().tick();
                 if(Configs.handlerConfig.scoreboardHandler.get()) ScoreboardHandler.instance().tick();
-                if(Configs.handlerConfig.clientPlayerHandler.get()) ClientPlayerHandler.instance().tick();
-                if(Configs.handlerConfig.bossBarHandler.get()) BossBarHandler.instance().tick();
+                if(Configs.handlerConfig.localPlayerHandler.get()) LocalPlayerHandler.instance().tick();
+                if(Configs.handlerConfig.bossEventHandler.get()) BossEventHandler.instance().tick();
                 if(Configs.handlerConfig.inventoryHandler.get()) InventoryHandler.instance().tick();
                 if(Configs.handlerConfig.networkHandler.get()) NetworkHandler.instance().tick();
 
@@ -186,7 +185,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 // Logic
                 if(Configs.handlerConfig.keyBindHandler.get()) KeyBindHandler.instance().tick();
                 if(Configs.handlerConfig.catchingHandler.get()) CatchingHandler.instance().tick();
-                if(Configs.handlerConfig.rayCastHandler.get()) RayCastHandler.instance().tick();
+                if(Configs.handlerConfig.rayCastHandler.get()) HitResultHandler.instance().tick();
                 if(Configs.handlerConfig.notifierHandler.get()) NotifierHandler.instance().tick();
                 if(Configs.handlerConfig.crewHandler.get()) CrewHandler.instance().tick();
                 if(Configs.handlerConfig.lightHandler.get()) LightHandler.instance().tick();
@@ -202,6 +201,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void registerEntityModels() {
-        EntityModelLayerRegistry.registerModelLayer(FishingBobberEntityModel.MODEL_LAYER, FishingBobberEntityModel::generateModel);
+        EntityModelLayerRegistry.registerModelLayer(FishingHookEntityModel.MODEL_LAYER, FishingHookEntityModel::generateModel);
     }
 }

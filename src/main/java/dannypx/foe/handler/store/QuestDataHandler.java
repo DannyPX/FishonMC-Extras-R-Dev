@@ -1,23 +1,22 @@
 package dannypx.foe.handler.store;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.fetch.BossBarHandler;
+import dannypx.foe.handler.fetch.BossEventHandler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.fetch.QuestScreenHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.TextHelper;
-import dannypx.foe.item.FishNbtObject;
+import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.item.FishTagObject;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.TextValue;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
+import dannypx.foe.type.custom_text.ComponentValue;
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class QuestDataHandler extends Handler {
     private static QuestDataHandler INSTANCE = new QuestDataHandler();
@@ -37,7 +36,7 @@ public class QuestDataHandler extends Handler {
         return questData;
     }
 
-    public Pair<Boolean, CustomTextValue> getQuestData(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getQuestData(String[] params) {
         if(params.length > 0) {
             Pattern intPattern = Pattern.compile("^-?\\d+$");
             Pattern questPattern = Pattern.compile("^(goal|max|current)$");
@@ -47,14 +46,14 @@ public class QuestDataHandler extends Handler {
                     && intPattern.matcher(params[1]).matches()
                     && questPattern.matcher(params[2]).matches()
             ) {
-                String location = BossBarHandler.instance().getLocation().getString();
+                String location = BossEventHandler.instance().getLocation().getString();
                 List<Quest> questData = this.getQuestData().questList.getOrDefault(location, new ArrayList<>());
                 int index = Integer.parseInt(params[1]);
                 if(questData.size() > index) {
                     return switch (params[2]) {
-                        case "goal" -> PlaceholderHandler.getTextValue(new TextValue(ConstantDataHandler.instance().getConstantFishText(questData.get(index).goal)));
-                        case "max" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).max)));
-                        case "current" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(questData.get(index).current)));
+                        case "goal" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(ConstantDataHandler.instance().getConstantFishComponent(questData.get(index).goal)));
+                        case "max" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(questData.get(index).max)));
+                        case "current" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(questData.get(index).current)));
                         default -> PlaceholderHandler.noResult();
                     };
                 }
@@ -78,8 +77,8 @@ public class QuestDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(questData.uuid == null && minecraftClient.player != null) {
-            questData.uuid = minecraftClient.player.getUuid();
+        if(questData.uuid == null && minecraft.player != null) {
+            questData.uuid = minecraft.player.getUUID();
         } else if(questData.uuid != null && this.needsUpdate) {
             this.updateQuestData();
         } else if(!QuestDataModel.QUEST_DATA_MODEL_VERSION.equals(questData.version)) {
@@ -89,7 +88,7 @@ public class QuestDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
@@ -97,15 +96,15 @@ public class QuestDataHandler extends Handler {
     }
 
     public void setQuest(List<Quest> questList) {
-        String location = BossBarHandler.instance().getLocation().getString();
+        String location = BossEventHandler.instance().getLocation().getString();
 
         questData.questList.put(location, questList);
         LoggerHandler._debug("Quests updated");
         this.needsUpdate = true;
     }
 
-    public void setFish(FishNbtObject fishNbtObject) {
-        questData.questList.getOrDefault(BossBarHandler.instance().getLocation().getString(), new ArrayList<>()).forEach(quest -> {
+    public void setFish(FishTagObject fishNbtObject) {
+        questData.questList.getOrDefault(BossEventHandler.instance().getLocation().getString(), new ArrayList<>()).forEach(quest -> {
             if(Objects.equals(quest.goal, fishNbtObject.getFishSize()) || Objects.equals(quest.goal, fishNbtObject.getRarity())) {
                 quest.addCurrent();
                 this.needsUpdate = true;
@@ -155,9 +154,9 @@ public class QuestDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "questData", Pair.of(Text.literal("[questData]"), TextHelper.literal(getQuestData()))
+                "questData", Pair.of(Component.literal("[questData]"), ComponentHelper.literal(getQuestData()))
         );
     }
     //endregion

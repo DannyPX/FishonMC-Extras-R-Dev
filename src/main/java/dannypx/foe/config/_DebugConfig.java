@@ -16,7 +16,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 @Version(version = 2)
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 @Translatable.Desc("§4WARNING §7Debugging only. Do not touch these unless you know what you are doing")
 public class _DebugConfig extends Config {
     public _DebugConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "debug_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "debug_config"));
     }
 
     @Name("Enable Debug Mode")

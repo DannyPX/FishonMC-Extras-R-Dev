@@ -2,34 +2,34 @@ package dannypx.foe.screens.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.helper.DrawHelper;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> implements ScreenConstants {
+public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNull StatEntry> implements ScreenConstants {
 
-    public StatListWidget(MinecraftClient client, int width, int height, int x, int y, int itemHeight) {
+    public StatListWidget(Minecraft client, int width, int height, int x, int y, int itemHeight) {
         super(client, width, height, y, itemHeight);
         this.setPosition(x - ((width / 4) / 3), y);
     }
 
     @Override
-    protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
+    protected void renderListItems(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         RenderSystem.disableScissorForRenderTypeDraws();
-        super.renderList(context, mouseX, mouseY, delta);
+        super.renderListItems(guiGraphics, mouseX, mouseY, delta);
     }
 
     @Override
@@ -38,12 +38,12 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
     }
 
     @Override
-    protected int getScrollbarX() {
+    protected int scrollBarX() {
         return this.getX() + width - 14;
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
     public int addEntry(StatEntry entry) {
@@ -57,21 +57,21 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
     }
 
     @Override
-    protected void drawMenuListBackground(DrawContext context) {}
+    protected void renderListBackground(@NotNull GuiGraphics guiGraphics) {}
 
     @Override
-    protected void drawHeaderAndFooterSeparators(DrawContext context) {}
+    protected void renderListSeparators(@NotNull GuiGraphics guiGraphics) {}
 
-    public static class StatEntry extends ElementListWidget.Entry<StatEntry>{
+    public static class StatEntry extends ContainerObjectSelectionList.Entry<@NotNull StatEntry>{
         boolean isHeader;
-        Text category;
-        Text field1;
-        Text field2;
-        Text field3;
+        Component category;
+        Component field1;
+        Component field2;
+        Component field3;
         List<ItemStack> itemStacks;
         int width = 0;
 
-        public StatEntry(Text category, Text field1, Text field2, Text field3, List<ItemStack> itemStacks, boolean isHeader) {
+        public StatEntry(Component category, Component field1, Component field2, Component field3, List<ItemStack> itemStacks, boolean isHeader) {
             this.isHeader = isHeader;
             this.category = category;
             this.field1 = field1;
@@ -80,22 +80,22 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
             this.itemStacks = itemStacks;
         }
 
-        public StatEntry(Text category, boolean isHeader) {
+        public StatEntry(Component category, boolean isHeader) {
             this.isHeader = isHeader;
             this.category = category;
-            this.field1 = Text.empty();
-            this.field2 = Text.empty();
-            this.field3 = Text.empty();
+            this.field1 = Component.empty();
+            this.field2 = Component.empty();
+            this.field3 = Component.empty();
             this.itemStacks = List.of();
         }
 
         @Override
-        public List<? extends Selectable> selectableChildren() {
+        public @NotNull List<? extends NarratableEntry> narratables() {
             return List.of();
         }
 
         @Override
-        public List<? extends Element> children() {
+        public @NotNull List<? extends GuiEventListener> children() {
             return List.of();
         }
 
@@ -104,51 +104,51 @@ public class StatListWidget extends EntryListWidget<StatListWidget.StatEntry> im
         }
 
         @Override
-        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             if(!LoadingHandler.instance().isLoadingDone()) {
                 return;
             }
 
-            TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            int height = textRenderer.fontHeight;
+            Font font = Minecraft.getInstance().font;
+            int height = font.lineHeight;
             int posY = getY() - height / 2;
 
 
             if(isHeader) {
                 int headerX = getX() + width / 2;
-                int headerWidth = textRenderer.getWidth(
-                        Text.literal(TextHelper.smallText(category.getString())).setStyle(category.getStyle())
+                int headerWidth = font.width(
+                        Component.literal(ComponentHelper.smallText(category.getString())).setStyle(category.getStyle())
                 );
 
-                DrawHelper.drawText(context, textRenderer, category,
+                GuiGraphicsHelper.drawText(guiGraphics, font, category,
                         headerX - headerWidth / 2, posY,
                         true, true, true, true);
             } else {
-                Text fieldText;
+                Component fieldComponent;
                 if(!itemStacks.isEmpty()) {
-                    fieldText = field2;
-                } else if(!Objects.equals(field2, Text.empty())) {
-                    fieldText = TextHelper.concat(field1, Text.literal(" "), field2);
+                    fieldComponent = field2;
+                } else if(!Objects.equals(field2, Component.empty())) {
+                    fieldComponent = ComponentHelper.concat(field1, Component.literal(" "), field2);
                 } else {
-                    fieldText = field1;
+                    fieldComponent = field1;
                 }
-                int fieldTextX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getY() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
+                int fieldComponentX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getY() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
 
                 int field3X = getX() + (width/4) * 3;
-                int field3Width = textRenderer.getWidth(TextHelper.smallText(field3.getString()));
+                int field3Width = font.width(ComponentHelper.smallText(field3.getString()));
 
-                DrawHelper.drawText(context, textRenderer, fieldText,
-                        fieldTextX, posY,
+                GuiGraphicsHelper.drawText(guiGraphics, font, fieldComponent,
+                        fieldComponentX, posY,
                         true, true, true, true);
 
-                DrawHelper.drawText(context, textRenderer, field3,
+                GuiGraphicsHelper.drawText(guiGraphics, font, field3,
                         field3X - field3Width / 2, posY,
                         true, true, true, true);
 
                 if(!itemStacks.isEmpty()) {
                     long seconds = System.currentTimeMillis() / 1000;
                     int itemIndex = (int) (seconds % itemStacks.size());
-                    context.drawItem(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2);
+                    guiGraphics.renderItem(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2);
                 }
             }
         }

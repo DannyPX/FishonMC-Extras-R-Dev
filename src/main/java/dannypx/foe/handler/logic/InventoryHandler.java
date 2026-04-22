@@ -4,23 +4,23 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.NetworkHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ItemStackHelper;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.TextValue;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
+import dannypx.foe.type.custom_text.ComponentValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 public class InventoryHandler extends Handler {
     private static InventoryHandler INSTANCE = new InventoryHandler();
@@ -34,11 +34,11 @@ public class InventoryHandler extends Handler {
 
     //region Fields
     private final List<UUID> trackedFish = new ArrayList<>();
-    private DefaultedList<ItemStack> snapshotInventory = DefaultedList.ofSize(0);
+    private NonNullList<ItemStack> snapshotInventory = NonNullList.createWithCapacity(0);
     private List<Triplet<Long, ItemStack, Integer>> snapshottedItems = new ArrayList<>();
     private List<Triplet<Long, ItemStack, Integer>> snapshottedRemovedItems = new ArrayList<>();
-    private FishingRodNbtObject currentFishingRod = FishingRodNbtObject.empty();
-    private PetNbtObject currentPet = PetNbtObject.empty();
+    private FishingRodTagObject currentFishingRod = FishingRodTagObject.empty();
+    private PetTagObject currentPet = PetTagObject.empty();
 
     private boolean currentlyLoading = false;
 
@@ -48,8 +48,8 @@ public class InventoryHandler extends Handler {
         return trackedFish;
     }
 
-    public DefaultedList<ItemStack> getSnapshotInventory() {
-        return snapshotInventory.isEmpty() ? DefaultedList.ofSize(0) : snapshotInventory;
+    public NonNullList<ItemStack> getSnapshotInventory() {
+        return snapshotInventory.isEmpty() ? NonNullList.createWithCapacity(0) : snapshotInventory;
     }
 
     public List<Triplet<Long, ItemStack, Integer>> getSnapshottedItems() {
@@ -60,19 +60,19 @@ public class InventoryHandler extends Handler {
         return this.snapshottedItems.stream().map(Triplet::value2).toList();
     }
 
-    protected void setCurrentFishingRod(FishingRodNbtObject currentFishingRod) {
+    protected void setCurrentFishingRod(FishingRodTagObject currentFishingRod) {
         this.currentFishingRod = currentFishingRod;
     }
 
-    public FishingRodNbtObject getCurrentFishingRod() {
+    public FishingRodTagObject getCurrentFishingRod() {
         return this.currentFishingRod;
     }
 
-    protected  void setCurrentPet(PetNbtObject currentPet) {
+    protected  void setCurrentPet(PetTagObject currentPet) {
         this.currentPet = currentPet;
     }
 
-    public PetNbtObject getCurrentPet() {
+    public PetTagObject getCurrentPet() {
         return this.currentPet;
     }
 
@@ -84,7 +84,7 @@ public class InventoryHandler extends Handler {
         return currentEmptySlots;
     }
 
-    public Pair<Boolean, CustomTextValue> getInventory(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getInventory(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(fishing_rod|pet|armor|empty_slots|held_item|slot)$");
 
@@ -93,38 +93,38 @@ public class InventoryHandler extends Handler {
                     case "fishing_rod" -> {
                         if(params.length >= 2) {
                             yield switch(params[1]) {
-                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentFishingRod().getName()));
+                                case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentFishingRod().getName()));
                                 case "line" -> {
-                                    List<NbtObject> list = getCurrentFishingRod().getLineItem();
+                                    List<TagObject> list = getCurrentFishingRod().getLineItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName()));
-                                            default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(list.getFirst().getName()));
+                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
                                 }
                                 case "reel" -> {
-                                    List<NbtObject> list = getCurrentFishingRod().getReelItem();
+                                    List<TagObject> list = getCurrentFishingRod().getReelItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName()));
-                                            default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(list.getFirst().getName()));
+                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
                                 }
                                 case "pole" -> {
-                                    List<NbtObject> list = getCurrentFishingRod().getPoleItem();
+                                    List<TagObject> list = getCurrentFishingRod().getPoleItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getTextValue(new TextValue(list.getFirst().getName()));
-                                            default -> PlaceholderHandler.getNbtTextValue(list.getFirst(), params[2]);
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(list.getFirst().getName()));
+                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
                                 }
-                                default -> PlaceholderHandler.getNbtTextValue(getCurrentFishingRod(), params[1]);
+                                default -> PlaceholderHandler.getNbtValue(getCurrentFishingRod(), params[1]);
                             };
                         }
                         yield PlaceholderHandler.noResult();
@@ -134,73 +134,73 @@ public class InventoryHandler extends Handler {
                                 && hasPet()
                         ) {
                             yield switch(params[1]) {
-                                case "name" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getName()));
-                                case "level" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentPet().getLevel())));
-                                case "level_progress" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getProgress() * 100, 2)));
-                                case "rating" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRatingText()));
-                                case "rating_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getTotalPercent() * 100, 2)));
-                                case "rarity" -> PlaceholderHandler.getTextValue(new TextValue(getCurrentPet().getRarityText()));
-                                case "location_luck_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxLuck() * 100, 2)));
-                                case "location_scale_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxScale() * 100, 2)));
-                                case "climate_luck_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxLuck() * 100, 2)));
-                                case "climate_scale_percent" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxScale() * 100, 2)));
-                                case "location_luck" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationMaxLuck(), 0)));
-                                case "location_scale" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
-                                case "climate_luck" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
-                                case "climate_scale" -> PlaceholderHandler.getTextValue(new StringValue(TextHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
-                                default -> PlaceholderHandler.getNbtTextValue(getCurrentPet(), params[1]);
+                                case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentPet().getName()));
+                                case "level" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getCurrentPet().getLevel())));
+                                case "level_progress" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getProgress() * 100, 2)));
+                                case "rating" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentPet().getRatingComponent()));
+                                case "rating_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getTotalPercent() * 100, 2)));
+                                case "rarity" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentPet().getRarityComponent()));
+                                case "location_luck_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationPercentMaxLuck() * 100, 2)));
+                                case "location_scale_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationPercentMaxScale() * 100, 2)));
+                                case "climate_luck_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimatePercentMaxLuck() * 100, 2)));
+                                case "climate_scale_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimatePercentMaxScale() * 100, 2)));
+                                case "location_luck" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationMaxLuck(), 0)));
+                                case "location_scale" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
+                                case "climate_luck" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
+                                case "climate_scale" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
+                                default -> PlaceholderHandler.getNbtValue(getCurrentPet(), params[1]);
                             };
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "armor" -> {
                         if(params.length == 3
-                                && minecraftClient.player != null
+                                && minecraft.player != null
                         ) {
                             ItemStack stack = ItemStack.EMPTY;
 
                             switch(params[1]) {
-                                case "chestplate" -> stack = minecraftClient.player.getEquippedStack(EquipmentSlot.CHEST);
-                                case "leggings" -> stack = minecraftClient.player.getEquippedStack(EquipmentSlot.LEGS);
-                                case "boots" -> stack = minecraftClient.player.getEquippedStack(EquipmentSlot.FEET);
+                                case "chestplate" -> stack = minecraft.player.getItemBySlot(EquipmentSlot.CHEST);
+                                case "leggings" -> stack = minecraft.player.getItemBySlot(EquipmentSlot.LEGS);
+                                case "boots" -> stack = minecraft.player.getItemBySlot(EquipmentSlot.FEET);
                             }
 
-                            Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(stack);
+                            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
 
                             if(validatedItem.value1()) {
                                 yield switch(params[2]) {
-                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(validatedItem.value2().getName()));
-                                    default -> PlaceholderHandler.getNbtTextValue(validatedItem.value2(), params[2]);
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(validatedItem.value2().getName()));
+                                    default -> PlaceholderHandler.getNbtValue(validatedItem.value2(), params[2]);
                                 };
                             }
                         }
                         yield PlaceholderHandler.noResult();
                     }
-                    case "empty_slots" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getCurrentEmptySlots())));
+                    case "empty_slots" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getCurrentEmptySlots())));
                     case "held_item" -> {
                         if(params.length >= 2
-                                && minecraftClient.player != null
+                                && minecraft.player != null
                         ) {
-                            ItemStack heldItem = minecraftClient.player.getInventory().getSelectedStack();
+                            ItemStack heldItem = minecraft.player.getInventory().getSelectedItem();
                             if(!heldItem.isEmpty()) {
                                 yield switch (params[1]) {
-                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(heldItem.getName()));
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(heldItem.getHoverName()));
                                     case "tooltip" -> {
                                         if(params.length >= 3) {
-                                            if(heldItem.get(DataComponentTypes.LORE) != null) {
-                                                List<Text> lines = heldItem.get(DataComponentTypes.LORE).lines();
+                                            if(heldItem.get(DataComponents.LORE) != null) {
+                                                List<Component> lines = heldItem.get(DataComponents.LORE).lines();
                                                 try {
                                                     int index = Integer.parseInt(params[2]);
 
                                                     if(index < lines.size()) {
-                                                        yield PlaceholderHandler.getTextValue(new TextValue(lines.get(index)));
+                                                        yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(lines.get(index)));
                                                     }
                                                 } catch (Exception ignored) {}
                                             }
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtTextValue(heldItem, params[2]);
+                                    default -> PlaceholderHandler.getNbtValue(heldItem, params[2]);
                                 };
                             }
                         }
@@ -208,31 +208,31 @@ public class InventoryHandler extends Handler {
                     }
                     case "slot" -> {
                         if(params.length >= 3
-                                && minecraftClient.player != null
+                                && minecraft.player != null
                         ) {
                             try {
                                 int slot = Integer.parseInt(params[1]);
-                                ItemStack stack = minecraftClient.player.getInventory().getStack(slot);
+                                ItemStack stack = minecraft.player.getInventory().getItem(slot);
 
                                 if(!stack.isEmpty()) {
                                     yield switch (params[2]) {
-                                        case "name" -> PlaceholderHandler.getTextValue(new TextValue(stack.getName()));
+                                        case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(stack.getHoverName()));
                                         case "tooltip" -> {
                                             if(params.length >= 4) {
-                                                if(stack.get(DataComponentTypes.LORE) != null) {
-                                                    List<Text> lines = stack.get(DataComponentTypes.LORE).lines();
+                                                if(stack.get(DataComponents.LORE) != null) {
+                                                    List<Component> lines = stack.get(DataComponents.LORE).lines();
                                                     try {
                                                         int index = Integer.parseInt(params[3]);
 
                                                         if(index < lines.size()) {
-                                                            yield PlaceholderHandler.getTextValue(new TextValue(lines.get(index)));
+                                                            yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(lines.get(index)));
                                                         }
                                                     } catch (Exception ignored) {}
                                                 }
                                             }
                                             yield PlaceholderHandler.noResult();
                                         }
-                                        default -> PlaceholderHandler.getNbtTextValue(stack, params[2]);
+                                        default -> PlaceholderHandler.getNbtValue(stack, params[2]);
                                     };
                                 }
                             } catch (Exception ignored) {}
@@ -249,7 +249,7 @@ public class InventoryHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             this.tickInventory();
             this.snapshotFishingRod();
             this.snapshotPet();
@@ -260,8 +260,8 @@ public class InventoryHandler extends Handler {
 
     private void tickInventory() {
         if(!snapshotInventory.isEmpty()) {
-            DefaultedList<ItemStack> oldInventory = snapshotInventory;
-            DefaultedList<ItemStack> newInventory = minecraftClient.player.getInventory().getMainStacks();
+            NonNullList<ItemStack> oldInventory = snapshotInventory;
+            NonNullList<ItemStack> newInventory = minecraft.player.getInventory().getNonEquipmentItems();
 
             for(int i = 0; i < newInventory.size(); i++) {
                 ItemStack oldStack = oldInventory.get(i);
@@ -277,7 +277,7 @@ public class InventoryHandler extends Handler {
                             snapshottedRemovedItems.stream()
                                     .noneMatch(
                                             removedItem -> removedItem.value3() == finalI
-                                            && ItemStack.areItemsAndComponentsEqual(removedItem.value2(), newStack)
+                                            && ItemStack.isSameItemSameComponents(removedItem.value2(), newStack)
                                     )
                     ) this.addToSnapshotItems(newStack, newStack.getCount());
                     if(newStack.isEmpty()) this.addToRemovedSnapshotItems(oldStack, i);
@@ -315,7 +315,7 @@ public class InventoryHandler extends Handler {
     }
 
     private void addToSnapshotItems(ItemStack newStack, int count) {
-        LoggerHandler._debug("Snapshotted Item: " + newStack.getName().getString() + " at " + System.currentTimeMillis());
+        LoggerHandler._debug("Snapshotted Item: " + newStack.getHoverName().getString() + " at " + System.currentTimeMillis());
         snapshottedItems.add(Triplet.of(System.currentTimeMillis(), newStack, count));
     }
 
@@ -326,7 +326,7 @@ public class InventoryHandler extends Handler {
     private void snapshotEmptySlots() {
         int empty = 0;
 
-        for (ItemStack stack : minecraftClient.player.getInventory().getMainStacks()) {
+        for (ItemStack stack : minecraft.player.getInventory().getNonEquipmentItems()) {
             if (stack.isEmpty()) {
                 empty++;
             }
@@ -340,9 +340,9 @@ public class InventoryHandler extends Handler {
 
     private void snapshotPet() {
         if(ProfileDataHandler.instance().getProfileData().activePetSlot != -1) {
-            ItemStack pet = minecraftClient.player.getInventory().getMainStacks().get(ProfileDataHandler.instance().getProfileData().activePetSlot);
-            if(!pet.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentPet.getItemStack(), pet)) {
-                Pair<Boolean, @Nullable PetNbtObject> validatedPet = ValidateItem.isPet(pet);
+            ItemStack pet = minecraft.player.getInventory().getNonEquipmentItems().get(ProfileDataHandler.instance().getProfileData().activePetSlot);
+            if(!pet.isEmpty() && !ItemStack.isSameItemSameComponents(currentPet.getItemStack(), pet)) {
+                Pair<Boolean, @Nullable PetTagObject> validatedPet = ValidateItem.isPet(pet);
                 if(validatedPet.value1()) {
                     this.setCurrentPet(validatedPet.value2());
                 }
@@ -350,14 +350,14 @@ public class InventoryHandler extends Handler {
         } else if(ProfileDataHandler.instance().getProfileData().activePetSlot == -1
                 && currentPet.getItemStack() != ItemStack.EMPTY
         ) {
-            currentPet = PetNbtObject.empty();
+            currentPet = PetTagObject.empty();
         }
     }
 
     private void snapshotFishingRod() {
-        ItemStack fishingRod = minecraftClient.player.getInventory().getMainStacks().getFirst();
-        if(!fishingRod.isEmpty() && !ItemStack.areItemsAndComponentsEqual(currentFishingRod.getItemStack(), fishingRod)) {
-            Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
+        ItemStack fishingRod = minecraft.player.getInventory().getNonEquipmentItems().getFirst();
+        if(!fishingRod.isEmpty() && !ItemStack.isSameItemSameComponents(currentFishingRod.getItemStack(), fishingRod)) {
+            Pair<Boolean, @Nullable FishingRodTagObject> validatedFishingRod = ValidateItem.isFishingRod(fishingRod);
             if(validatedFishingRod.value1()) {
                 this.setCurrentFishingRod(validatedFishingRod.value2());
             }
@@ -365,7 +365,7 @@ public class InventoryHandler extends Handler {
     }
 
     public void trackFishOffSide() {
-        if(minecraftClient.player != null
+        if(minecraft.player != null
                 && CatchingHandler.instance().isScanDone()
         ) {
             this.trackAllFish();
@@ -373,9 +373,9 @@ public class InventoryHandler extends Handler {
     }
 
     public void snapshotInventory() {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             snapshotInventory = ItemStackHelper.deepCopy(
-                    minecraftClient.player.getInventory().getMainStacks(),
+                    minecraft.player.getInventory().getNonEquipmentItems(),
                     ItemStack.EMPTY,
                     stack -> stack.isEmpty() ? ItemStack.EMPTY : stack.copy()
             );
@@ -389,10 +389,10 @@ public class InventoryHandler extends Handler {
     }
 
     public boolean trackAllFish() {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             trackedFish.clear();
-            minecraftClient.player.getInventory().getMainStacks().forEach(itemStack -> {
-                Pair<Boolean, FishNbtObject> validatedItem = ValidateItem.isFish(itemStack);
+            minecraft.player.getInventory().getNonEquipmentItems().forEach(itemStack -> {
+                Pair<Boolean, FishTagObject> validatedItem = ValidateItem.isFish(itemStack);
                 if(validatedItem.value1() && validatedItem.value2().isOwn()) {
                     this.addToTrackedFish(validatedItem.value2().getID());
                 }
@@ -403,30 +403,30 @@ public class InventoryHandler extends Handler {
         return false;
     }
 
-    public NbtObject getCurrentHeldItem() {
-        if(minecraftClient.player != null) {
-            ItemStack heldItem = minecraftClient.player.getMainHandStack();
-            Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(heldItem);
+    public TagObject getCurrentHeldItem() {
+        if(minecraft.player != null) {
+            ItemStack heldItem = minecraft.player.getMainHandItem();
+            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(heldItem);
             if(validatedItem.value1()) {
                 return validatedItem.value2();
             }
         }
-        return NbtObject.empty();
+        return TagObject.empty();
     }
     //endregion
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "trackedFish", Pair.of(Text.literal("[trackedFish]"), TextHelper.literal(getTrackedFish())),
-                "snapshotInventory", Pair.of(Text.literal("[snapshotInventory]"), TextHelper.literal(
+                "trackedFish", Pair.of(Component.literal("[trackedFish]"), ComponentHelper.literal(getTrackedFish())),
+                "snapshotInventory", Pair.of(Component.literal("[snapshotInventory]"), ComponentHelper.literal(
                         ItemStackHelper.itemStackListToJson(getSnapshotInventory())
                 )),
-                "currentFishingRod", Pair.of(Text.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack())),
-                "currentPet", Pair.of(Text.literal("[currentPet]"), TextHelper.literal(getCurrentPet().getItemStack())),
-                "currentHeldItem", Pair.of(Text.literal("[currentHeldItem]"), TextHelper.literal(getCurrentHeldItem())),
-                "snapshottedItems", Pair.of(Text.literal("[snapshottedItems]"), TextHelper.literal(getSnapshottedItemstacks()))
+                "currentFishingRod", Pair.of(Component.literal("[currentFishingRod]"), ComponentHelper.literal(getCurrentFishingRod().getItemStack())),
+                "currentPet", Pair.of(Component.literal("[currentPet]"), ComponentHelper.literal(getCurrentPet().getItemStack())),
+                "currentHeldItem", Pair.of(Component.literal("[currentHeldItem]"), ComponentHelper.literal(getCurrentHeldItem())),
+                "snapshottedItems", Pair.of(Component.literal("[snapshottedItems]"), ComponentHelper.literal(getSnapshottedItemstacks()))
         );
     }
     //endregion

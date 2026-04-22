@@ -2,18 +2,18 @@ package dannypx.foe.mixin.inject;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.ConnectionHandler;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.bar.LocatorBar;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LocatorBar.class)
+@Mixin(LocatorBarRenderer.class)
 public abstract class LocatorBarMixin {
-    @Inject(method = "renderBar", at = @At("HEAD"), cancellable = true)
-    private void injectRenderBar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+    @Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)
+    private void injectRenderBackground(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
         ) {
@@ -21,8 +21,8 @@ public abstract class LocatorBarMixin {
         }
     }
 
-    @Inject(method = "renderAddons", at = @At("HEAD"), cancellable = true)
-    private void injectRenderAddons(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    private void injectRender(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
         ) {

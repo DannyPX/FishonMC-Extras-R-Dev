@@ -2,17 +2,16 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.item.ArmorNbtObject;
+import dannypx.foe.item.ArmorTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
 
 public class ArmorRollScreenHandler extends Handler {
     private static ArmorRollScreenHandler INSTANCE = new ArmorRollScreenHandler();
@@ -26,27 +25,27 @@ public class ArmorRollScreenHandler extends Handler {
 
     //region Fields
     private List<ItemStack> rollList = new ArrayList<>();
-    private ArmorNbtObject armor = ArmorNbtObject.empty();
+    private ArmorTagObject armor = ArmorTagObject.empty();
 
     public List<ItemStack> getRollList() {
         return rollList;
     }
 
-    public ArmorNbtObject getArmor() {
+    public ArmorTagObject getArmor() {
         return armor;
     }
     //endregion
 
     //region Methods
-    public void checkArmorRolls(GenericContainerScreenHandler screenHandler) {
+    public void checkArmorRolls(ChestMenu chestMenu) {
         CodeExecuterHandler.runLater(2, () -> {
             rollList.clear();
-            armor = ArmorNbtObject.empty();
+            armor = ArmorTagObject.empty();
             for (int i = 11; i < 16; i++) {
-                rollList.add(screenHandler.getSlot(i).getStack());
+                rollList.add(chestMenu.getSlot(i).getItem());
             }
 
-            Pair<Boolean, ArmorNbtObject> validatedArmor = ValidateItem.isArmor(screenHandler.getSlot(31).getStack());
+            Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(chestMenu.getSlot(31).getItem());
             if(validatedArmor.value1()) {
                 armor = validatedArmor.value2();
             }
@@ -57,9 +56,9 @@ public class ArmorRollScreenHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

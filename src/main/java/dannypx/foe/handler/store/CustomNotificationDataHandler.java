@@ -3,12 +3,11 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CustomNotificationDataHandler extends Handler {
     private static CustomNotificationDataHandler INSTANCE = new CustomNotificationDataHandler();
@@ -43,8 +42,8 @@ public class CustomNotificationDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(customNotificationData.uuid == null && minecraftClient.player != null) {
-            customNotificationData.uuid = minecraftClient.player.getUuid();
+        if(customNotificationData.uuid == null && minecraft.player != null) {
+            customNotificationData.uuid = minecraft.player.getUUID();
         } else if(customNotificationData.uuid != null && this.needsUpdate) {
             this.updateCustomNotificationData();
         } else if(!CustomNotificationDataModel.CUSTOM_NOTIFICATION_DATA_MODEL_VERSION.equals(customNotificationData.version)) {
@@ -54,7 +53,7 @@ public class CustomNotificationDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
@@ -86,7 +85,7 @@ public class CustomNotificationDataHandler extends Handler {
         }
 
         newNotification.name = newName;
-        newNotification.textLines = list;
+        newNotification.stringLines = list;
         newNotification.icon = icon;
 
         customNotificationData.notificationList.put(currentSelectedNotification, newNotification);
@@ -140,18 +139,18 @@ public class CustomNotificationDataHandler extends Handler {
     public static class CustomNotification {
         public String name;
         public String icon;
-        public List<String> textLines;
+        public List<String> stringLines;
 
-        public CustomNotification(String name, String icon, List<String> textLines) {
+        public CustomNotification(String name, String icon, List<String> stringLines) {
             this.name = name;
             this.icon = icon;
-            this.textLines = textLines;
+            this.stringLines = stringLines;
         }
 
         public CustomNotification(String name) {
             this.name = name;
             this.icon = "";
-            this.textLines = new ArrayList<>(List.of(
+            this.stringLines = new ArrayList<>(List.of(
                     "Example line"
             ));
         }
@@ -160,9 +159,9 @@ public class CustomNotificationDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customNotificationData", Pair.of(Text.literal("[customNotificationData]"), TextHelper.literal(getCustomNotificationData()))
+                "customNotificationData", Pair.of(Component.literal("[customNotificationData]"), ComponentHelper.literal(getCustomNotificationData()))
         );
     }
     //endregion

@@ -20,7 +20,7 @@ FOER (FishOnMC-Extras-R) is a QOL mod for play.fishonmc.net. It has many QOL and
   - Also shows count on baits
 - Full real-time statistics tracker
   - Can import stats from your server profile
-- New 3D model for fish bobber
+- New 3D model for fish fishing hook
 - And more...
 
 # 🔨 Configuration

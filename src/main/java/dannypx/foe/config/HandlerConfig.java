@@ -10,7 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedLong;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 @Version(version = 6)
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class HandlerConfig extends Config {
 
     public HandlerConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "handler_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "handler_config"));
     }
 
     //region Fetch Handler Group
@@ -29,19 +29,19 @@ public class HandlerConfig extends Config {
     public ConfigGroup fetchHandlerGroup = new ConfigGroup("fetch_handler_group");
 
     @Desc("§7Data from Player List (Tab)")
-    public ValidatedBoolean tabHandler = new ValidatedBoolean(true);
+    public ValidatedBoolean tabOverlayHandler = new ValidatedBoolean(true);
 
     @Desc("§7Data from Scoreboard")
     public ValidatedBoolean scoreboardHandler = new ValidatedBoolean(true);
 
     @Desc("§7Data from Client Player")
-    public ValidatedBoolean clientPlayerHandler = new ValidatedBoolean(true);
+    public ValidatedBoolean localPlayerHandler = new ValidatedBoolean(true);
 
     @Desc("§7Data from Player Inventory")
     public ValidatedBoolean inventoryHandler = new ValidatedBoolean(true);
 
     @Desc("§7Data from Boss Bar")
-    public ValidatedBoolean bossBarHandler = new ValidatedBoolean(true);
+    public ValidatedBoolean bossEventHandler = new ValidatedBoolean(true);
 
     @Desc("§7Data from Network Handler")
     public ValidatedBoolean networkHandler = new ValidatedBoolean(true);

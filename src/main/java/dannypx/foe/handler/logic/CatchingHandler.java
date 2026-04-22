@@ -4,26 +4,25 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.TitleHandler;
 import dannypx.foe.handler.store.QuestDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
-import dannypx.foe.item.FishNbtObject;
-import dannypx.foe.item.NbtObject;
+import dannypx.foe.item.FishTagObject;
+import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.TextValue;
+import dannypx.foe.type.custom_text.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.type.tuple.Triplet;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Box;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 
 public class CatchingHandler extends Handler {
     private static CatchingHandler INSTANCE = new CatchingHandler();
@@ -40,7 +39,7 @@ public class CatchingHandler extends Handler {
     private boolean scanDone = true;
     private String fishNameToFind = "";
 
-    private FishNbtObject lastCaughtFish = FishNbtObject.empty();
+    private FishTagObject lastCaughtFish = FishTagObject.empty();
     // Rarity Variant Size
     private Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> lastDataFish = null;
 
@@ -48,7 +47,7 @@ public class CatchingHandler extends Handler {
         return scanDone;
     }
 
-    public Pair<Boolean, CustomTextValue> getCatch(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getCatch(String[] params) {
         if(params.length > 2) {
             Pattern fieldPattern = Pattern.compile("^(last_caught)$");
 
@@ -58,19 +57,19 @@ public class CatchingHandler extends Handler {
                         case "fish" -> {
                             if(lastCaughtFish.getItemStack() != ItemStack.EMPTY && lastDataFish != null) {
                                 yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getTextValue(new TextValue(lastCaughtFish.getName()));
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastCaughtFish.getName()));
                                     case "rarity", "variant", "size" -> {
                                         Pair<String, Integer> drystreakData = null;
-                                        Text icon = null;
+                                        Component icon = null;
 
                                         switch (params[2]) {
                                             case "rarity" -> {
                                                 drystreakData = lastDataFish.value1();
-                                                icon = lastCaughtFish.getRarityText();
+                                                icon = lastCaughtFish.getRarityComponent();
                                             }
                                             case "variant" -> {
                                                 drystreakData = lastDataFish.value2();
-                                                icon = lastCaughtFish.getVariantText();
+                                                icon = lastCaughtFish.getVariantComponent();
                                             }
                                             case "size" -> {
                                                 drystreakData = lastDataFish.value3();
@@ -82,15 +81,15 @@ public class CatchingHandler extends Handler {
                                                 && params.length == 4
                                         ) {
                                             yield switch (params[3]) {
-                                                case "name" -> PlaceholderHandler.getTextValue(new StringValue(drystreakData.value1()));
-                                                case "icon" -> PlaceholderHandler.getTextValue(new TextValue(icon), true);
-                                                case "last_drystreak" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(drystreakData.value2())));
+                                                case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(drystreakData.value1()));
+                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(icon), true);
+                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(drystreakData.value2())));
                                                 default -> PlaceholderHandler.noResult();
                                             };
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtTextValue(lastCaughtFish, params[2]);
+                                    default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
                                 };
                             }
                             yield PlaceholderHandler.noResult();
@@ -112,7 +111,7 @@ public class CatchingHandler extends Handler {
 
     private void scanFish() {
         if(!scanDone && System.currentTimeMillis() < startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)) {
-            Pair<Boolean, FishNbtObject> foundFish = this.findFish();
+            Pair<Boolean, FishTagObject> foundFish = this.findFish();
             if(foundFish.value1()) {
                 InventoryHandler.instance().trackAllFish();
 
@@ -139,7 +138,7 @@ public class CatchingHandler extends Handler {
         LoggerHandler._debug("Start finding items");
         LoggerHandler._debug("Start Time: " + System.currentTimeMillis());
         LoggerHandler._debug("Search Window: " + (Configs.handlerConfig.catchingItemsCheckWindow.get() + (System.currentTimeMillis() - startScanTime)));
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             InventoryHandler.instance().getSnapshottedItems().stream()
                     .filter(item -> System.currentTimeMillis() - item.value1()
                             < Configs.handlerConfig.catchingItemsCheckWindow.get() + (System.currentTimeMillis() - startScanTime))
@@ -148,71 +147,71 @@ public class CatchingHandler extends Handler {
     }
 
     private void scanItem(ItemStack itemStack, int count) {
-        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
+        Pair<Boolean, TagObject> validatedItem = ValidateItem.isType(itemStack);
 
         if(validatedItem.value1()) {
             // Store to Stats
             StatsDataHandler.instance().setItem(validatedItem.value2(), count);
 
-            LoggerHandler._debug("Found Item: " + itemStack.getName().getString(), itemStack);
+            LoggerHandler._debug("Found Item: " + itemStack.getHoverName().getString(), itemStack);
         }
     }
 
-    private Pair<Boolean, FishNbtObject> findFish() {
-        FishNbtObject inventoryFish = this.findFishInInventory();
+    private Pair<Boolean, FishTagObject> findFish() {
+        FishTagObject inventoryFish = this.findFishInInventory();
         if(inventoryFish != null) return Pair.of(inventoryFish);
 
-        FishNbtObject worldFish = this.findFishInWorld();
+        FishTagObject worldFish = this.findFishInWorld();
         if(worldFish != null) return Pair.of(worldFish);
 
-        return Pair.ofFalse(FishNbtObject.empty());
+        return Pair.ofFalse(FishTagObject.empty());
     }
 
-    private FishNbtObject findFishInInventory() {
-        AtomicReference<FishNbtObject> foundItemStack = new AtomicReference<>();
+    private FishTagObject findFishInInventory() {
+        AtomicReference<FishTagObject> foundItemStack = new AtomicReference<>();
 
-        if(minecraftClient.player != null) {
-            minecraftClient.player.getInventory().getMainStacks().forEach(itemStack -> {
-                FishNbtObject validatedFish = validateFish(itemStack);
+        if(minecraft.player != null) {
+            minecraft.player.getInventory().getNonEquipmentItems().forEach(itemStack -> {
+                FishTagObject validatedFish = validateFish(itemStack);
                 if(validatedFish != null && foundItemStack.get() == null) foundItemStack.set(validatedFish);
             });
         }
         return foundItemStack.get();
     }
 
-    private FishNbtObject findFishInWorld() {
-        AtomicReference<FishNbtObject> foundItemStack = new AtomicReference<>();
+    private FishTagObject findFishInWorld() {
+        AtomicReference<FishTagObject> foundItemStack = new AtomicReference<>();
 
-        if(minecraftClient.player != null
-                && minecraftClient.world != null
+        if(minecraft.player != null
+                && minecraft.level != null
         ) {
-            ClientWorld world = minecraftClient.world;
-            Box searchBox = minecraftClient.player.getBoundingBox().expand(10d);
+            ClientLevel world = minecraft.level;
+            AABB searchBoundingBox = minecraft.player.getBoundingBox().inflate(10d);
 
-            List<ItemEntity> itemEntities = world.getEntitiesByClass(
+            List<ItemEntity> itemEntities = world.getEntitiesOfClass(
                     ItemEntity.class,
-                    searchBox,
+                    searchBoundingBox,
                     itemEntity -> {
-                        ItemStack itemStack = itemEntity.getStack();
-                        FishNbtObject validatedFish = validateFish(itemStack);
+                        ItemStack itemStack = itemEntity.getItem();
+                        FishTagObject validatedFish = validateFish(itemStack);
                         return validatedFish != null;
                     }
             );
 
             if(!itemEntities.isEmpty() && foundItemStack.get() == null) {
-                foundItemStack.set(ValidateItem.isFish(itemEntities.getFirst().getStack()).value2());
+                foundItemStack.set(ValidateItem.isFish(itemEntities.getFirst().getItem()).value2());
             }
         }
         return foundItemStack.get();
     }
 
-    private FishNbtObject validateFish(ItemStack itemStack) {
+    private FishTagObject validateFish(ItemStack itemStack) {
         if(!itemStack.isEmpty()) {
-            Pair<Boolean, FishNbtObject> validatedFish = ValidateItem.isFish(itemStack);
+            Pair<Boolean, FishTagObject> validatedFish = ValidateItem.isFish(itemStack);
             if(validatedFish.value1()
                     && validatedFish.value2().isOwn()
                     && !InventoryHandler.instance().getTrackedFish().contains(validatedFish.value2().getID())
-                    && fishNameToFind.contains(itemStack.getName().getString())
+                    && fishNameToFind.contains(itemStack.getHoverName().getString())
             ) {
                 return validatedFish.value2();
             }
@@ -221,9 +220,9 @@ public class CatchingHandler extends Handler {
     }
 
     public void scanFishListener() {
-        Text title = TitleHandler.instance().getTitle();
+        Component title = TitleHandler.instance().getTitle();
 
-        if(title.getString().length() != 1 || title.equals(Text.empty())) {
+        if(title.getString().length() != 1 || title.equals(Component.empty())) {
             return;
         }
 
@@ -234,9 +233,9 @@ public class CatchingHandler extends Handler {
     }
 
     public void scanFishNameListener() {
-        Text subTitle = TitleHandler.instance().getSubTitle();
+        Component subTitle = TitleHandler.instance().getSubTitle();
 
-        if(subTitle.equals(Text.empty()) || subTitle.getString().isBlank()) {
+        if(subTitle.equals(Component.empty()) || subTitle.getString().isBlank()) {
             return;
         }
 
@@ -253,9 +252,9 @@ public class CatchingHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

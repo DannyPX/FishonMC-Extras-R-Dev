@@ -4,13 +4,12 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
-import dannypx.foe.type.custom_text.TextValue;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
+import dannypx.foe.type.custom_text.PlaceholderValue;
+import dannypx.foe.type.custom_text.ComponentValue;
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class TitleHandler extends Handler {
     private static TitleHandler INSTANCE = new TitleHandler();
@@ -23,18 +22,18 @@ public class TitleHandler extends Handler {
     }
 
     //region Fields
-    private MutableText title = Text.empty();
-    private MutableText subTitle = Text.empty();
+    private MutableComponent title = Component.empty();
+    private MutableComponent subTitle = Component.empty();
 
-    public MutableText getTitle() {
+    public MutableComponent getTitle() {
         return title;
     }
 
-    public MutableText getSubTitle() {
+    public MutableComponent getSubTitle() {
         return subTitle;
     }
 
-    public Pair<Boolean, CustomTextValue> getTitle(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getTitle(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(title|sub_title)$");
 
@@ -42,8 +41,8 @@ public class TitleHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "title" -> PlaceholderHandler.getTextValue(new TextValue(getTitle()));
-                    case "sub_title" -> PlaceholderHandler.getTextValue(new TextValue(getSubTitle()));
+                    case "title" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getTitle()));
+                    case "sub_title" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getSubTitle()));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -53,31 +52,31 @@ public class TitleHandler extends Handler {
     //endregion
 
     //region Methods
-    public void setTitle(Text title) {
+    public void setTitle(Component title) {
         this.title = title.copy();
         this.forwardTitleEvent(title);
     }
 
-    public void setSubTitle(Text subTitle) {
+    public void setSubTitle(Component subTitle) {
         this.subTitle = subTitle.copy();
         this.forwardSubTitleEvent(subTitle);
     }
 
-    private void forwardTitleEvent(Text title) {
+    private void forwardTitleEvent(Component title) {
         CatchingHandler.instance().scanFishListener();
     }
 
-    private void forwardSubTitleEvent(Text subTitle) {
+    private void forwardSubTitleEvent(Component subTitle) {
         CatchingHandler.instance().scanFishNameListener();
     }
     //endregion
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "title", Pair.of(getTitle(), Text.empty()),
-                "subTitle", Pair.of(getSubTitle(), Text.empty())
+                "title", Pair.of(getTitle(), Component.empty()),
+                "subTitle", Pair.of(getSubTitle(), Component.empty())
         );
     }
     //endregion

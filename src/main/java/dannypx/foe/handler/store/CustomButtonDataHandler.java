@@ -1,15 +1,13 @@
 package dannypx.foe.handler.store;
 
-import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CustomButtonDataHandler extends Handler {
     private static CustomButtonDataHandler INSTANCE = new CustomButtonDataHandler();
@@ -44,8 +42,8 @@ public class CustomButtonDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(customButtonData.uuid == null && minecraftClient.player != null) {
-            customButtonData.uuid = minecraftClient.player.getUuid();
+        if(customButtonData.uuid == null && minecraft.player != null) {
+            customButtonData.uuid = minecraft.player.getUUID();
         } else if(customButtonData.uuid != null && this.needsUpdate) {
             this.updateCustomButtonData();
         } else if(!CustomButtonDataModel.CUSTOM_BUTTON_DATA_MODEL_VERSION.equals(customButtonData.version)) {
@@ -62,7 +60,7 @@ public class CustomButtonDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     public void init(String screenID) {
@@ -267,9 +265,9 @@ public class CustomButtonDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customButtonData", Pair.of(Text.literal("[customButtonData]"), TextHelper.literal(getCustomButtonData()))
+                "customButtonData", Pair.of(Component.literal("[customButtonData]"), ComponentHelper.literal(getCustomButtonData()))
         );
     }
     //endregion

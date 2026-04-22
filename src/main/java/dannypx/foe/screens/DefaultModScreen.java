@@ -3,28 +3,26 @@ package dannypx.foe.screens;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.debug.DebugHandlerScreen;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class DefaultModScreen extends Screen implements ScreenConstants {
-    final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     final Screen parentScreen;
     final boolean isMiddle;
 
-    protected DefaultModScreen(Screen parent, Text title) {
+    protected DefaultModScreen(Screen parent, Component title) {
         super(title);
         this.parentScreen = parent;
         this.isMiddle = false;
     }
 
-    protected DefaultModScreen(Screen parent, Text title, boolean isMiddle) {
+    protected DefaultModScreen(Screen parent, Component title, boolean isMiddle) {
         super(title);
         this.parentScreen = parent;
         this.isMiddle = isMiddle;
@@ -37,43 +35,43 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
     }
 
     private void renderDefaultWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.backButton());
 
         if(!isMiddle && Configs.debugConfig.debugMode.get()) widgets.add(this.debugButton());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ButtonWidget backButton() {
-        return !isMiddle ? ButtonWidget.builder(Text.literal("Return"), button ->
-                        this.close())
-                .position(width - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button backButton() {
+        return !isMiddle ? Button.builder(Component.literal("Return"), button ->
+                        this.onClose())
+                .pos(width - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(50, BUTTON_HEIGHT)
                 .build()
-                : ButtonWidget.builder(Text.literal("Return"), button ->
-                        this.close())
-                .position(width / 2 - 50 / 2, height / 2 - BUTTON_HEIGHT / 2)
+                : Button.builder(Component.literal("Return"), button ->
+                        this.onClose())
+                .pos(width / 2 - 50 / 2, height / 2 - BUTTON_HEIGHT / 2)
                 .size(50, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget debugButton() {
-        return ButtonWidget.builder(Text.literal("Debug"), button ->
-                        minecraftClient.setScreen(new DebugHandlerScreen(minecraftClient.currentScreen)))
-                .position(width - PADDING_HALF - 50 - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button debugButton() {
+        return Button.builder(Component.literal("Debug"), button ->
+                        this.minecraft.setScreen(new DebugHandlerScreen(this.minecraft.screen)))
+                .pos(width - PADDING_HALF - 50 - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(50, BUTTON_HEIGHT)
                 .build();
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
-    public void close() {
-        this.minecraftClient.setScreen(this.parentScreen);
+    public void onClose() {
+        this.minecraft.setScreen(this.parentScreen);
     }
 }

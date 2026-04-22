@@ -1,10 +1,9 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-
 import java.util.List;
 import java.util.Map;
+import net.minecraft.network.chat.MutableComponent;
 
 public class _DebugLogic {
     public static List<String> _getHandlers() {
@@ -14,20 +13,20 @@ public class _DebugLogic {
                 KeyBindHandler.class.getName(),
                 InventoryHandler.class.getName(),
                 NotifierHandler.class.getName(),
-                RayCastHandler.class.getName(),
+                HitResultHandler.class.getName(),
                 SearchHandler.class.getName()
         );
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
-    public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
+    public static Map<String, Map<String, Pair<MutableComponent, MutableComponent>>> _getFields() {
         return Map.of(
                 ConnectionHandler.class.getName(), ConnectionHandler.instance()._getFields(),
                 LoadingHandler.class.getName(), LoadingHandler.instance()._getFields(),
                 KeyBindHandler.class.getName(), KeyBindHandler.instance()._getFields(),
                 InventoryHandler.class.getName(), InventoryHandler.instance()._getFields(),
                 NotifierHandler.class.getName(), NotifierHandler.instance()._getFields(),
-                RayCastHandler.class.getName(), RayCastHandler.instance()._getFields(),
+                HitResultHandler.class.getName(), HitResultHandler.instance()._getFields(),
                 SearchHandler.class.getName(), SearchHandler.instance()._getFields()
         );
     }

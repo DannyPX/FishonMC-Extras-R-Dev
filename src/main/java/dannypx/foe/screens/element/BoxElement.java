@@ -1,23 +1,23 @@
 package dannypx.foe.screens.element;
 
 import dannypx.foe.FishOnMCExtras;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class BoxElement extends Element {
     //region Fields
-    private final MinecraftClient minecraftClient;
-    private final TextRenderer textRenderer;
+    private final Minecraft minecraft;
+    private final Font font;
 
-    private final Identifier BOX_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
-    private final Identifier BOX_SOLID_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_atlas.png");
-    private final Identifier BOX_ALT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_alt_atlas.png");
-    private final Identifier BOX_SOLID_ALT_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_alt_atlas.png");
+    private final Identifier BOX_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
+    private final Identifier BOX_SOLID_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_atlas.png");
+    private final Identifier BOX_ALT_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_alt_atlas.png");
+    private final Identifier BOX_SOLID_ALT_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_alt_atlas.png");
 
     private final boolean isSolid;
     private final boolean isAlt;
@@ -31,16 +31,16 @@ public class BoxElement extends Element {
     private final boolean showLeft;
     //endregion
 
-    public BoxElement(MinecraftClient minecraftClient, int x, int y, int width, int height, boolean isSolid, boolean isAlt) {
+    public BoxElement(Minecraft minecraft, int x, int y, int width, int height, boolean isSolid, boolean isAlt) {
         super(width,
                 height,
                 x,
                 y,
                 null,
-                Text.literal("Box Element"),
+                Component.literal("Box Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
         this.isSolid = isSolid;
         this.isAlt = isAlt;
         this.x = x;
@@ -52,16 +52,16 @@ public class BoxElement extends Element {
         this.showLeft = true;
     }
 
-    public BoxElement(MinecraftClient minecraftClient, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt) {
+    public BoxElement(Minecraft minecraft, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt) {
         super(width,
                 height,
                 x,
                 y,
                 null,
-                Text.literal("Box Element"),
+                Component.literal("Box Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
         this.isSolid = isSolid;
         this.isAlt = isAlt;
         this.x = x;
@@ -73,16 +73,16 @@ public class BoxElement extends Element {
         this.showLeft = true;
     }
 
-    public BoxElement(MinecraftClient minecraftClient, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt, boolean showTop, boolean showRight, boolean showBottom, boolean showLeft) {
+    public BoxElement(Minecraft minecraft, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt, boolean showTop, boolean showRight, boolean showBottom, boolean showLeft) {
         super(width,
                 height,
                 x,
                 y,
                 null,
-                Text.literal("Box Element"),
+                Component.literal("Box Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
         this.isSolid = isSolid;
         this.isAlt = isAlt;
         this.x = x;
@@ -96,15 +96,15 @@ public class BoxElement extends Element {
 
     //region Methods
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        this.renderBox(drawContext);
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        this.renderBox(guiGraphics);
     }
 
-    private void renderBox(DrawContext drawContext) {
+    private void renderBox(GuiGraphics guiGraphics) {
         Identifier TEXTURE = isAlt ? (isSolid ? BOX_SOLID_ALT_TEXTURE : BOX_ALT_TEXTURE) : (isSolid ? BOX_SOLID_TEXTURE : BOX_TEXTURE);
 
         // Top Left
-        if(showTop && showLeft) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showTop && showLeft) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x, this.y,
                 0, 0,
@@ -114,7 +114,7 @@ public class BoxElement extends Element {
         );
 
         // Top
-        if(showTop) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showTop) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x + 5, this.y,
                 5, 0,
@@ -124,7 +124,7 @@ public class BoxElement extends Element {
         );
 
         // Top Right
-        if(showTop && showRight) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showTop && showRight) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 x + this.width - 5, this.y,
                 10, 0,
@@ -134,7 +134,7 @@ public class BoxElement extends Element {
         );
 
         // Centre Left
-        if(showLeft) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showLeft) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x, this.y + 5,
                 0, 5,
@@ -144,7 +144,7 @@ public class BoxElement extends Element {
         );
 
         // Centre
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x + 5, this.y + 5,
                 5, 5,
@@ -154,7 +154,7 @@ public class BoxElement extends Element {
         );
 
         // Centre Right
-        if(showRight) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showRight) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 x + this.width - 5, this.y + 5,
                 10, 5,
@@ -164,7 +164,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom Left
-        if(showLeft && showBottom) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showLeft && showBottom) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x, y + this.height - 5,
                 0, 10,
@@ -174,7 +174,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom
-        if(showBottom) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showBottom) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 this.x + 5, y + this.height - 5,
                 5, 10,
@@ -184,7 +184,7 @@ public class BoxElement extends Element {
         );
 
         // Bottom Right
-        if(showBottom && showRight) drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        if(showBottom && showRight) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 TEXTURE,
                 x + this.width - 5, y + this.height - 5,
                 10, 10,

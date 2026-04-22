@@ -4,20 +4,19 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.TextValue;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardDisplaySlot;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
+import dannypx.foe.type.custom_text.ComponentValue;
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.scores.DisplaySlot;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
 
 public class ScoreboardHandler extends Handler {
     private static ScoreboardHandler INSTANCE = new ScoreboardHandler();
@@ -30,58 +29,58 @@ public class ScoreboardHandler extends Handler {
     }
 
     //region Fields
-    private List<Text> prevResult = new ArrayList<>();
+    private List<Component> prevResult = new ArrayList<>();
 
-    private MutableText date = Text.empty();
-    private MutableText version = Text.empty();
-    private MutableText level = Text.empty();
-    private MutableText wallet = Text.empty();
-    private MutableText credits = Text.empty();
+    private MutableComponent date = Component.empty();
+    private MutableComponent version = Component.empty();
+    private MutableComponent level = Component.empty();
+    private MutableComponent wallet = Component.empty();
+    private MutableComponent credits = Component.empty();
 
-    private MutableText catches = Text.empty();
-    private MutableText locationMin = Text.empty();
-    private MutableText locationMax = Text.empty();
-    private MutableText catchRate = Text.empty();
+    private MutableComponent catches = Component.empty();
+    private MutableComponent locationMin = Component.empty();
+    private MutableComponent locationMax = Component.empty();
+    private MutableComponent catchRate = Component.empty();
 
-    private MutableText crew = Text.empty();
-    private MutableText crewNearby = Text.empty();
+    private MutableComponent crew = Component.empty();
+    private MutableComponent crewNearby = Component.empty();
 
     private boolean noScoreboard = true;
     private boolean hasSentNotification = false;
 
-    public MutableText getLevel() {
+    public MutableComponent getLevel() {
         return level;
     }
 
-    public MutableText getWallet() {
+    public MutableComponent getWallet() {
         return wallet;
     }
 
-    public MutableText getCredits() {
+    public MutableComponent getCredits() {
         return credits;
     }
 
-    public MutableText getCatches() {
+    public MutableComponent getCatches() {
         return catches;
     }
 
-    public MutableText getLocationMin() {
+    public MutableComponent getLocationMin() {
         return locationMin;
     }
 
-    public MutableText getLocationMax() {
+    public MutableComponent getLocationMax() {
         return locationMax;
     }
 
-    public MutableText getCatchRate() {
+    public MutableComponent getCatchRate() {
         return catchRate;
     }
 
-    public MutableText getCrew() {
+    public MutableComponent getCrew() {
         return crew;
     }
 
-    public MutableText isCrewNearby() {
+    public MutableComponent isCrewNearby() {
         return crewNearby;
     }
 
@@ -89,15 +88,15 @@ public class ScoreboardHandler extends Handler {
         return noScoreboard;
     }
 
-    public MutableText getVersion() {
+    public MutableComponent getVersion() {
         return version;
     }
 
-    public MutableText getDate() {
+    public MutableComponent getDate() {
         return date;
     }
 
-    public Pair<Boolean, CustomTextValue> getScoreboard(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getScoreboard(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(level|wallet|credits|catches|location_min|location_max|catch_rate|crew|crew_nearby|version|date)$");
 
@@ -105,17 +104,17 @@ public class ScoreboardHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "level" -> PlaceholderHandler.getTextValue(new TextValue(getLevel()));
-                    case "wallet" -> PlaceholderHandler.getTextValue(new StringValue(getWallet().getString()));
-                    case "credits" -> PlaceholderHandler.getTextValue(new StringValue(getCredits().getString()));
-                    case "catches" -> PlaceholderHandler.getTextValue(new StringValue(getCatches().getString()));
-                    case "location_min" -> PlaceholderHandler.getTextValue(new StringValue(getLocationMin().getString()));
-                    case "location_max" -> PlaceholderHandler.getTextValue(new StringValue(getLocationMax().getString()));
-                    case "catch_rate" -> PlaceholderHandler.getTextValue(new StringValue(getCatchRate().getString()));
-                    case "crew" -> PlaceholderHandler.getTextValue(new StringValue(getCrew().getString()));
-                    case "crew_nearby" -> PlaceholderHandler.getTextValue(new TextValue(isCrewNearby()));
-                    case "version" -> PlaceholderHandler.getTextValue(new StringValue(getVersion().getString()));
-                    case "date" -> PlaceholderHandler.getTextValue(new StringValue(getDate().getString()));
+                    case "level" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getLevel()));
+                    case "wallet" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getWallet().getString()));
+                    case "credits" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCredits().getString()));
+                    case "catches" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCatches().getString()));
+                    case "location_min" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getLocationMin().getString()));
+                    case "location_max" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getLocationMax().getString()));
+                    case "catch_rate" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCatchRate().getString()));
+                    case "crew" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCrew().getString()));
+                    case "crew_nearby" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(isCrewNearby()));
+                    case "version" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getVersion().getString()));
+                    case "date" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getDate().getString()));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -146,29 +145,29 @@ public class ScoreboardHandler extends Handler {
     private void reset() {
         prevResult.clear();
 
-        date = Text.empty();
-        version = Text.empty();
-        level = Text.empty();
-        wallet = Text.empty();
-        credits = Text.empty();
+        date = Component.empty();
+        version = Component.empty();
+        level = Component.empty();
+        wallet = Component.empty();
+        credits = Component.empty();
 
-        catches = Text.empty();
-        locationMin = Text.empty();
-        locationMax = Text.empty();
-        catchRate = Text.empty();
+        catches = Component.empty();
+        locationMin = Component.empty();
+        locationMax = Component.empty();
+        catchRate = Component.empty();
 
-        crew = Text.empty();
-        crewNearby = Text.empty();
+        crew = Component.empty();
+        crewNearby = Component.empty();
 
         noScoreboard = true;
     }
 
     private void fetchFromScoreboard() {
-        if(minecraftClient.player != null) {
-            ScoreboardObjective objective = this.getObjective();
+        if(minecraft.player != null) {
+            Objective objective = this.getObjective();
             if(objective == null) return;
 
-            Pair<Boolean, List<Text>> extractedText = this.extractLines(objective);
+            Pair<Boolean, List<Component>> extractedText = this.extractLines(objective);
             noScoreboard = extractedText.value2().isEmpty();
 
             if(!noScoreboard && extractedText.value1()) {
@@ -177,56 +176,56 @@ public class ScoreboardHandler extends Handler {
         }
     }
 
-    private void extractData(List<Text> texts) {
-        texts.forEach(text -> {
-            date = checkText(text, "/") && !checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
-                    ? text.getSiblings().get(0).copy() : date;
-            version = checkText(text, "/") && !checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
-                    ? text.getSiblings().get(1).copy() : version;
-            level = checkText(text, "┏ ʟᴇᴠᴇʟ") && text.getSiblings().size() > 2
-                    ? text.getSiblings().get(3).copy() : level;
-            wallet = checkText(text, "ᴡᴀʟʟᴇᴛ")
-                    ? text.getSiblings().get(2).copy() : wallet;
-            credits = checkText(text, "ᴄʀᴇᴅɪᴛꜱ")
-                    ? text.getSiblings().get(3).copy() : credits;
-            catches = checkText(text, "ᴄᴀᴛᴄʜᴇꜱ")
-                    ? text.getSiblings().get(2).copy() : catches;
-            locationMin = checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(text, "---")
-                    ? text.getSiblings().get(2).copy() : locationMin;
-            locationMax = checkText(text, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(text, "---")
-                    ? text.getSiblings().get(4).copy() : locationMax;
-            catchRate = checkText(text, "ᴄᴀᴛᴄʜ ʀᴀᴛᴇ")
-                    ? text.getSiblings().get(2).copy() : catchRate;
-            crew = checkText(text, "ᴄʀᴇᴡ:")
-                    ? text.getSiblings().get(3).copy() : crew;
-            crewNearby = checkText(text, "ᴄʀᴇᴡ ɴᴇᴀʀʙʏ")
-                    ? text.getSiblings().get(2).copy() : crewNearby;
+    private void extractData(List<Component> components) {
+        components.forEach(component -> {
+            date = checkText(component, "/") && !checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
+                    ? component.getSiblings().get(0).copy() : date;
+            version = checkText(component, "/") && !checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
+                    ? component.getSiblings().get(1).copy() : version;
+            level = checkText(component, "┏ ʟᴇᴠᴇʟ") && component.getSiblings().size() > 2
+                    ? component.getSiblings().get(3).copy() : level;
+            wallet = checkText(component, "ᴡᴀʟʟᴇᴛ")
+                    ? component.getSiblings().get(2).copy() : wallet;
+            credits = checkText(component, "ᴄʀᴇᴅɪᴛꜱ")
+                    ? component.getSiblings().get(3).copy() : credits;
+            catches = checkText(component, "ᴄᴀᴛᴄʜᴇꜱ")
+                    ? component.getSiblings().get(2).copy() : catches;
+            locationMin = checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(component, "---")
+                    ? component.getSiblings().get(2).copy() : locationMin;
+            locationMax = checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(component, "---")
+                    ? component.getSiblings().get(4).copy() : locationMax;
+            catchRate = checkText(component, "ᴄᴀᴛᴄʜ ʀᴀᴛᴇ")
+                    ? component.getSiblings().get(2).copy() : catchRate;
+            crew = checkText(component, "ᴄʀᴇᴡ:")
+                    ? component.getSiblings().get(3).copy() : crew;
+            crewNearby = checkText(component, "ᴄʀᴇᴡ ɴᴇᴀʀʙʏ")
+                    ? component.getSiblings().get(2).copy() : crewNearby;
         });
     }
 
-    private boolean checkText(Text text, String valueToMatch) {
+    private boolean checkText(Component text, String valueToMatch) {
         return text.getString().contains(valueToMatch);
     }
 
-    private Pair<Boolean, List<Text>> extractLines(ScoreboardObjective objective) {
-        Collection<Team> team = objective.getScoreboard().getTeams();
-        List<Text> textList = team.stream()
-                .map(Team::getPrefix)
+    private Pair<Boolean, List<Component>> extractLines(Objective objective) {
+        Collection<PlayerTeam> team = objective.getScoreboard().getPlayerTeams();
+        List<Component> componentList = team.stream()
+                .map(PlayerTeam::getPlayerPrefix)
                 .filter(prefix -> !prefix.getString().isBlank())
                 .toList();
-        if(!Objects.equals(prevResult, textList)) {
-            prevResult = new ArrayList<>(textList);
+        if(!Objects.equals(prevResult, componentList)) {
+            prevResult = new ArrayList<>(componentList);
             return Pair.of(prevResult);
         }
         return Pair.ofFalse(prevResult);
     }
 
-    private ScoreboardObjective getObjective() {
-        if(minecraftClient.player != null
-                && minecraftClient.player.getScoreboardTeam() != null
+    private Objective getObjective() {
+        if(minecraft.player != null
+                && minecraft.player.getTeam() != null
         ) {
-            Scoreboard scoreboard = minecraftClient.player.getScoreboardTeam().getScoreboard();
-            return scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.SIDEBAR);
+            Scoreboard scoreboard = minecraft.player.getTeam().getScoreboard();
+            return scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
         }
         return null;
     }
@@ -234,20 +233,20 @@ public class ScoreboardHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.ofEntries(
-                Map.entry("version", Pair.of(getVersion(), Text.empty())),
-                Map.entry("date", Pair.of(getDate(), Text.empty())),
-                Map.entry("level", Pair.of(getLevel(), Text.empty())),
-                Map.entry("wallet", Pair.of(getWallet(), Text.empty())),
-                Map.entry("credits", Pair.of(getCredits(), Text.empty())),
-                Map.entry("catches", Pair.of(getCatches(), Text.empty())),
-                Map.entry("locationMin", Pair.of(getLocationMin(), Text.empty())),
-                Map.entry("locationMax", Pair.of(getLocationMax(), Text.empty())),
-                Map.entry("catchRate", Pair.of(getCatchRate(), Text.empty())),
-                Map.entry("crew", Pair.of(getCrew(), Text.empty())),
-                Map.entry("crewNearby", Pair.of(isCrewNearby(), Text.empty())),
-                Map.entry("noScoreboard", Pair.of(TextHelper.literal(isNoScoreboard()), Text.empty()))
+                Map.entry("version", Pair.of(getVersion(), Component.empty())),
+                Map.entry("date", Pair.of(getDate(), Component.empty())),
+                Map.entry("level", Pair.of(getLevel(), Component.empty())),
+                Map.entry("wallet", Pair.of(getWallet(), Component.empty())),
+                Map.entry("credits", Pair.of(getCredits(), Component.empty())),
+                Map.entry("catches", Pair.of(getCatches(), Component.empty())),
+                Map.entry("locationMin", Pair.of(getLocationMin(), Component.empty())),
+                Map.entry("locationMax", Pair.of(getLocationMax(), Component.empty())),
+                Map.entry("catchRate", Pair.of(getCatchRate(), Component.empty())),
+                Map.entry("crew", Pair.of(getCrew(), Component.empty())),
+                Map.entry("crewNearby", Pair.of(isCrewNearby(), Component.empty())),
+                Map.entry("noScoreboard", Pair.of(ComponentHelper.literal(isNoScoreboard()), Component.empty()))
         );
     }
     //endregion

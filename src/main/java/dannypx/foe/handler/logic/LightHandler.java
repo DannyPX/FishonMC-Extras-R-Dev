@@ -4,15 +4,14 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.config.Configs;
-import dannypx.foe.mixin.accessor.WorldRendererAccessor;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
-
+import dannypx.foe.mixin.accessor.LevelRendererAccessor;
 import java.util.Map;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.projectile.FishingHook;
 
 public class LightHandler extends Handler {
     private static LightHandler INSTANCE = new LightHandler();
@@ -31,74 +30,74 @@ public class LightHandler extends Handler {
     //region Methods
     @Override
     public void tick() {
-        this.updateBobberLight();
+        this.updateFishingHookLight();
     }
 
     private int getRadius() {
-        return Configs.rendererConfig.lightRadiusBobber.get();
+        return Configs.rendererConfig.lightRadiusFishingHook.get();
     }
 
     private int getMaxLight() {
-        return Configs.rendererConfig.maxLightLevelBobber.get();
+        return Configs.rendererConfig.maxLightLevelFishingHook.get();
     }
 
-    public void updateBobberLight() {
-        if(minecraftClient.world != null
-                && minecraftClient.player != null
-                && Configs.rendererConfig.showLightBobber.get()
+    public void updateFishingHookLight() {
+        if(minecraft.level != null
+                && minecraft.player != null
+                && Configs.rendererConfig.showLightFishingHook.get()
         ) {
-            FishingBobberEntity bobber = minecraftClient.player.fishHook;
+            FishingHook fishingHook = minecraft.player.fishing;
 
-            if (bobber != null) {
-                BlockPos currentPos = bobber.getBlockPos();
+            if (fishingHook != null) {
+                BlockPos currentPos = fishingHook.blockPosition();
 
                 if (prevPos != null) {
-                    this.scheduleBlockUpdate(prevPos);
+                    this.scheduleSectionUpdate(prevPos);
                 }
 
-                this.scheduleBlockUpdate(currentPos);
+                this.scheduleSectionUpdate(currentPos);
 
                 prevPos = currentPos;
             } else {
                 if (prevPos != null) {
-                    this.scheduleBlockUpdate(prevPos);
+                    this.scheduleSectionUpdate(prevPos);
                 }
                 prevPos = null;
             }
         }
     }
 
-    private void scheduleBlockUpdate(BlockPos pos) {
-        this.scheduleChunkRenders3x3x3(ChunkSectionPos.getSectionCoord(pos.getX()), ChunkSectionPos.getSectionCoord(pos.getY()), ChunkSectionPos.getSectionCoord(pos.getZ()));
+    private void scheduleSectionUpdate(BlockPos pos) {
+        this.setSectionDirtyWithNeighbors(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getY()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
-    private void scheduleChunkRenders3x3x3(int x, int y, int z) {
-        this.scheduleChunkRenders(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
+    private void setSectionDirtyWithNeighbors(int x, int y, int z) {
+        this.setSectionDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
     }
 
-    private void scheduleChunkRenders(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+    private void setSectionDirty(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
         for (int chunkX = minX; chunkX <= maxX; chunkX++) {
             for (int chunkY = minY; chunkY <= maxY; chunkY++) {
                 for (int chunkZ = minZ; chunkZ <= maxZ; chunkZ++) {
-                    ((WorldRendererAccessor) minecraftClient.worldRenderer).foer$scheduleChunkRender(chunkX, chunkY, chunkZ, false);
+                    ((LevelRendererAccessor) minecraft.levelRenderer).foer$setSectionDirty(chunkX, chunkY, chunkZ, false);
                 }
             }
         }
     }
 
-    public int calculateBobberLight(long blockPos, int lightLevel) {
-        if(minecraftClient.player != null
-                && Configs.rendererConfig.showLightBobber.get()
+    public int calculateFishingHookLight(long blockPos, int lightLevel) {
+        if(minecraft.player != null
+                && Configs.rendererConfig.showLightFishingHook.get()
         ) {
-            FishingBobberEntity bobber = minecraftClient.player.fishHook;
-            if(bobber != null) {
-                BlockPos pos = BlockPos.fromLong(blockPos);
+            FishingHook fishingHook = minecraft.player.fishing;
+            if(fishingHook != null) {
+                BlockPos pos = BlockPos.of(blockPos);
 
-                Triplet<Boolean, Double, Double> bobberInRange = calculateIfWithinDistance(pos, bobber);
+                Triplet<Boolean, Double, Double> fishingHookInRange = calculateIfWithinDistance(pos, fishingHook);
 
-                if (bobberInRange.value1()) return lightLevel;
+                if (fishingHookInRange.value1()) return lightLevel;
 
-                double factor = 1.0 - (bobberInRange.value2() / bobberInRange.value3());
+                double factor = 1.0 - (fishingHookInRange.value2() / fishingHookInRange.value3());
                 int dynamicLightLevel = (int)(getMaxLight() * factor);
 
                 if(dynamicLightLevel > lightLevel) {
@@ -109,21 +108,21 @@ public class LightHandler extends Handler {
         return lightLevel;
     }
 
-    public int calculateBobberLight(BlockPos pos, int lightMap) {
-        if(minecraftClient.player != null
-                && Configs.rendererConfig.showLightBobber.get()
+    public int calculateFishingHookLight(BlockPos pos, int lightMap) {
+        if(minecraft.player != null
+                && Configs.rendererConfig.showLightFishingHook.get()
         ) {
-            FishingBobberEntity bobber = minecraftClient.player.fishHook;
-            if(bobber != null) {
-                Triplet<Boolean, Double, Double> bobberInRange = calculateIfWithinDistance(pos, bobber);
+            FishingHook fishingHook = minecraft.player.fishing;
+            if(fishingHook != null) {
+                Triplet<Boolean, Double, Double> fishingHookInRange = calculateIfWithinDistance(pos, fishingHook);
 
-                if (bobberInRange.value1()) return lightMap;
+                if (fishingHookInRange.value1()) return lightMap;
 
-                double factor = 1.0 - (bobberInRange.value2() / bobberInRange.value3());
+                double factor = 1.0 - (fishingHookInRange.value2() / fishingHookInRange.value3());
                 int dynamicLightlevel = (int)(getMaxLight() * factor);
 
                 if(dynamicLightlevel > 0) {
-                    int blockLevel = LightmapTextureManager.getBlockLightCoordinates(lightMap);
+                    int blockLevel = LightTexture.block(lightMap);
                     if (dynamicLightlevel > blockLevel) {
                         int luminance = (int) (dynamicLightlevel * 16.0);
                         lightMap &= 0xfff00000;
@@ -135,10 +134,10 @@ public class LightHandler extends Handler {
         return lightMap;
     }
 
-    private Triplet<Boolean, Double, Double> calculateIfWithinDistance(BlockPos pos, FishingBobberEntity bobber) {
-        double dx = pos.getX() + 0.5 - bobber.getX();
-        double dy = pos.getY() + 0.5 - bobber.getY();
-        double dz = pos.getZ() + 0.5 - bobber.getZ();
+    private Triplet<Boolean, Double, Double> calculateIfWithinDistance(BlockPos pos, FishingHook fishingHook) {
+        double dx = pos.getX() + 0.5 - fishingHook.getX();
+        double dy = pos.getY() + 0.5 - fishingHook.getY();
+        double dz = pos.getZ() + 0.5 - fishingHook.getZ();
 
         double distSq = dx * dx + dy * dy + dz * dz;
         double maxDistSq = getRadius() * getRadius();
@@ -151,9 +150,9 @@ public class LightHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

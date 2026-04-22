@@ -6,27 +6,27 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomHUDWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmLinkScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final Screen parentScreen;
 
     private ButtonListWidget hudList;
@@ -37,7 +37,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     //region Methods
     public CustomHudMakerScreen(Screen parent) {
-        super(Text.literal("Custom HUD Maker Screen"));
+        super(Component.literal("Custom HUD Maker Screen"));
         this.parentScreen = parent;
     }
 
@@ -48,14 +48,14 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        this.hudList.render(context, mouseX, mouseY, delta);
-        this.editCustomHUDWidget.render(context, mouseX, mouseY, delta);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        this.hudList.render(guiGraphics, mouseX, mouseY, delta);
+        this.editCustomHUDWidget.render(guiGraphics, mouseX, mouseY, delta);
     }
 
     private void renderWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
         widgets.add(this.backButton());
@@ -72,24 +72,24 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
         widgets.add(this.wikiButton());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ClickableWidget getEditHudWidget() {
+    private AbstractWidget getEditHudWidget() {
         editCustomHUDWidget = new EditCustomHUDWidget(
                 (BUTTON_WIDTH + PADDING * 2),
                 0,
                 width - (BUTTON_WIDTH + PADDING * 2),
                 height - (BUTTON_HEIGHT + PADDING_HALF) - 3,
-                Text.literal("No Hud Selected")
+                Component.literal("No Hud Selected")
         );
 
         return editCustomHUDWidget;
     }
 
-    private ClickableWidget getNewHudElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Create HUD"),
+    private AbstractWidget getNewHudElementButton() {
+        return Button.builder(
+                        Component.literal("Create HUD"),
                         (button) -> {
                             String id = "Custom Hud #" + UUID.randomUUID();
 
@@ -101,13 +101,13 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                             buttonEntryMap.put(id, buttonEntry);
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getDeleteHudElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Delete Selected"),
+    private AbstractWidget getDeleteHudElementButton() {
+        return Button.builder(
+                        Component.literal("Delete Selected"),
                         (button) -> {
                             if(editCustomHUDWidget.hasSelectedOption) {
                                 CustomHudDataHandler.instance().deleteCustomHud(selectedHud);
@@ -121,26 +121,26 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getImportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Import"),
+    private AbstractWidget getImportButton() {
+        return Button.builder(
+                        Component.literal("Import"),
                         (button) -> {
-                            String rawData = minecraftClient.keyboard.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard();
                             try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
                                 Triplet<String, CustomHudDataHandler.CustomHud, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomHudDataHandler.CustomHud.class, Integer.class).getType());
 
                                 if(data.value3() > FishOnMCExtras.HUD_VERSION) {
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Could not Import. Imported HUD is made on a newer version"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Could not Import. Imported HUD is made on a newer version"));
 
                                     return;
                                 }
@@ -158,29 +158,29 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                 hudList.addEntry(buttonEntry);
                                 buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Imported HUD"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Imported HUD"));
 
                             } catch (Exception e) {
                                 LoggerHandler.error(e);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Could not Import. Data invalid"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Could not Import. Data invalid"));
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Imports from the code on your clipboard")))
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
                 .build();
     }
 
-    private ClickableWidget getExportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Export Selected"),
+    private AbstractWidget getExportButton() {
+        return Button.builder(
+                        Component.literal("Export Selected"),
                         (button) -> {
                             if(editCustomHUDWidget.hasSelectedOption) {
                                 try {
@@ -191,7 +191,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().create().toJson(dataHud))
+                                            ComponentHelper.compress(new GsonBuilder().create().toJson(dataHud))
                                     );
 
                                     String dataToCopy = "**Custom HUD: **" + selectedHud + "\n" +
@@ -200,32 +200,32 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                             "```\n" +
                                             "-# Using HUD version: " + "`v" + FishOnMCExtras.HUD_VERSION + "`";
 
-                                    minecraftClient.keyboard.setClipboard(dataToCopy);
+                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Exported HUD on your clipboard"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Exported HUD on your clipboard"));
                                 } catch (Exception e) {
                                     LoggerHandler.error(e);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("An error has occurred"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("An error has occurred"));
                                 }
                             }
 
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Save first before exporting")))
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
                 .build();
     }
 
-    private ClickableWidget getHudList() {
+    private AbstractWidget getHudList() {
         hudList = new ButtonListWidget(
-                client,
+                minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
                 height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
                 0,
@@ -246,8 +246,8 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     private ButtonListWidget.ButtonEntry createHudEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                ButtonWidget.builder(
-                        Text.literal(id),
+                Button.builder(
+                        Component.literal(id),
                         button -> {
                             selectedHud = id;
                             editCustomHUDWidget.selectHud(
@@ -258,14 +258,14 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         );
     }
 
-    private ButtonWidget saveBackButton() {
-        return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
+    private Button saveBackButton() {
+        return Button.builder(Component.literal("Save and Return"), button -> {
                     if(editCustomHUDWidget.hasSelectedOption) {
                         if(editCustomHUDWidget.newName.isBlank()) {
-                            SystemToast.add(minecraftClient.getToastManager(),
-                                    SystemToast.Type.PERIODIC_NOTIFICATION,
-                                    Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("HUD name is empty"));
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("HUD name is empty"));
 
                             return;
                         }
@@ -274,10 +274,10 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                 !Objects.equals(editCustomHUDWidget.currentSelectedHud, editCustomHUDWidget.newName)
                                 && CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editCustomHUDWidget.newName)
                         ) {
-                            SystemToast.add(minecraftClient.getToastManager(),
-                                    SystemToast.Type.PERIODIC_NOTIFICATION,
-                                    Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("HUD name already exist"));
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("HUD name already exist"));
 
                             return;
                         }
@@ -293,54 +293,54 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                         .map(lineEntry -> Triplet.of(lineEntry.lineString, lineEntry.isCentre, lineEntry.isSmall))
                                         .toList());
                     }
-                    this.close();
+                    this.onClose();
                 })
-                .position(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget backButton() {
-        return ButtonWidget.builder(Text.literal("Return"), button ->
-                    this.close())
-                .position(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button backButton() {
+        return Button.builder(Component.literal("Return"), button ->
+                    this.onClose())
+                .pos(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget addLine() {
-        return ButtonWidget.builder(Text.literal("Add Line"), button -> {
+    private Button addLine() {
+        return Button.builder(Component.literal("Add Line"), button -> {
                     if(editCustomHUDWidget.hasSelectedOption) {
                         editCustomHUDWidget.addNewEntry();
                     }
                 })
-                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Add line to the bottom")))
+                .tooltip(Tooltip.create(Component.literal("Add line to the bottom")))
                 .build();
     }
 
-    private ClickableWidget wikiButton() {
-        return ButtonWidget.builder(Text.literal("Wiki"), button -> {
+    private AbstractWidget wikiButton() {
+        return Button.builder(Component.literal("Wiki"), button -> {
                     String url = "https://github.com/DannyPX/FishOnMC-Extras-R/wiki/Placeholders";
 
-                    minecraftClient.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
-                            Util.getOperatingSystem().open(url);
+                            Util.getPlatform().openUri(url);
                         }
 
-                        minecraftClient.setScreen(null);
+                        this.minecraft.setScreen(null);
                     }, url, true));
                 })
-                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Open Wiki to Placeholders")))
+                .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
                 .build();
     }
 
     @Override
-    public void close() {
-        this.minecraftClient.setScreen(this.parentScreen);
+    public void onClose() {
+        this.minecraft.setScreen(this.parentScreen);
     }
     //endregion
 }

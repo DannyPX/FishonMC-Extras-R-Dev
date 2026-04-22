@@ -10,12 +10,11 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.type_adapter.CustomTimerAdapter;
 import dannypx.foe.type.type_adapter.ItemStackAdapter;
 import dannypx.foe.type.type_adapter.PatternAdapter;
-import dannypx.foe.type.type_adapter.TextAdapter;
+import dannypx.foe.type.type_adapter.ComponentAdapter;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -116,7 +115,7 @@ public class DataFileHandler extends Handler {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
-                .registerTypeAdapter(Text.class, new TextAdapter())
+                .registerTypeAdapter(Component.class, new ComponentAdapter())
                 .registerTypeAdapter(Pattern.class, new PatternAdapter())
                 .registerTypeAdapter(CustomTimerDataHandler.CustomTimer.class, new CustomTimerAdapter())
                 .create();
@@ -141,7 +140,7 @@ public class DataFileHandler extends Handler {
     private void setData(DataModels.DataModelType dataModelType, String json) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
-                .registerTypeAdapter(Text.class, new TextAdapter())
+                .registerTypeAdapter(Component.class, new ComponentAdapter())
                 .registerTypeAdapter(Pattern.class, new PatternAdapter())
                 .registerTypeAdapter(CustomTimerDataHandler.CustomTimer.class, new CustomTimerAdapter())
                 .create();
@@ -175,9 +174,9 @@ public class DataFileHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "isDataLoaded", Pair.of(Text.literal(Boolean.toString(isDataLoaded())), Text.empty())
+                "isDataLoaded", Pair.of(Component.literal(Boolean.toString(isDataLoaded())), Component.empty())
         );
     }
     //endregion

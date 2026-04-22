@@ -5,15 +5,14 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class ProfileDataHandler extends Handler {
     private static ProfileDataHandler INSTANCE = new ProfileDataHandler();
@@ -45,7 +44,7 @@ public class ProfileDataHandler extends Handler {
         this.needsUpdate = false;
     }
 
-    public Pair<Boolean, CustomTextValue> getProfileData(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getProfileData(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(active_pet_slot|has_imported_stats|is_in_crew_chat|has_imported_crew|tournament_contribution)$");
 
@@ -54,11 +53,11 @@ public class ProfileDataHandler extends Handler {
                     && fieldPattern.matcher(params[1]).matches()
             ) {
                 return switch(params[1]) {
-                    case "active_pet_slot" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().activePetSlot)));
-                    case "has_imported_stats" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().hasImportedStats)));
-                    case "is_in_crew_chat" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().isInCrewChat)));
-                    case "has_imported_crew" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().hasImportedCrew)));
-                    case "tournament_contribution" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getProfileData().tournamentContribution)));
+                    case "active_pet_slot" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().activePetSlot)));
+                    case "has_imported_stats" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().hasImportedStats)));
+                    case "is_in_crew_chat" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().isInCrewChat)));
+                    case "has_imported_crew" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().hasImportedCrew)));
+                    case "tournament_contribution" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().tournamentContribution)));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -69,8 +68,8 @@ public class ProfileDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(profileData.uuid == null && minecraftClient.player != null) {
-            profileData.uuid = minecraftClient.player.getUuid();
+        if(profileData.uuid == null && minecraft.player != null) {
+            profileData.uuid = minecraft.player.getUUID();
         } else if(profileData.uuid != null && this.needsUpdate) {
             this.updateProfileData();
         } else if(!ProfileDataModel.PROFILE_DATA_MODEL_VERSION.equals(profileData.version)) {
@@ -80,7 +79,7 @@ public class ProfileDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
@@ -88,9 +87,9 @@ public class ProfileDataHandler extends Handler {
     }
 
     public void updatePet(boolean enablePet) {
-        if (minecraftClient.player != null) {
+        if (minecraft.player != null) {
             if(enablePet) {
-                profileData.activePetSlot = minecraftClient.player.getInventory().getSelectedSlot();
+                profileData.activePetSlot = minecraft.player.getInventory().getSelectedSlot();
             } else {
                 profileData.activePetSlot = -1;
             }
@@ -100,7 +99,7 @@ public class ProfileDataHandler extends Handler {
     }
 
     public void updateImportStats(boolean importedStats) {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             if(importedStats) {
                 NotifierHandler.instance().removeNotification(NotifierHandler.IMPORT_STATS_KEY);
                 profileData.hasImportedStats = true;
@@ -110,21 +109,21 @@ public class ProfileDataHandler extends Handler {
     }
 
     public void updateCrewChat(boolean isInCrewChat) {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             profileData.isInCrewChat = isInCrewChat;
             this.needsUpdate = true;
         }
     }
 
     public void updateTournamentContribution(boolean isTournamentContribution) {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             profileData.tournamentContribution = isTournamentContribution;
             this.needsUpdate = true;
         }
     }
 
     public void updateImportCrew(boolean importedCrew) {
-        if(minecraftClient.player != null) {
+        if(minecraft.player != null) {
             if(importedCrew) {
                 NotifierHandler.instance().removeNotification(NotifierHandler.IMPORT_CREW_KEY);
                 profileData.hasImportedCrew = true;
@@ -154,9 +153,9 @@ public class ProfileDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "profileData", Pair.of(Text.literal("[profileData]"), TextHelper.literal(getProfileData()))
+                "profileData", Pair.of(Component.literal("[profileData]"), ComponentHelper.literal(getProfileData()))
         );
     }
     //endregion

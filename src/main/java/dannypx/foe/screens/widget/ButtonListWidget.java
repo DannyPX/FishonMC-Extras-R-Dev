@@ -1,56 +1,57 @@
 package dannypx.foe.screens.widget;
 
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
-public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEntry> implements ScreenConstants {
+public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@NotNull ButtonEntry> implements ScreenConstants {
 
     private final String headerTitle;
 
-    public ButtonListWidget(MinecraftClient client,
+    public ButtonListWidget(Minecraft minecraft,
                             int width,
                             int height,
                             int top,
                             int bottom,
                             int itemHeight,
                             String title) {
-        super(client, width, height, bottom, itemHeight);
+        super(minecraft, width, height, bottom, itemHeight);
         headerTitle = title;
     }
 
     @Override
-    protected int getScrollbarX() {
+    protected int scrollBarX() {
         return width / 2 + (BUTTON_WIDTH + PADDING * 2) / 2;
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
 
     }
 
     @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        super.renderWidget(context, mouseX, mouseY, deltaTicks);
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float deltaTicks) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, deltaTicks);
 
-        context.drawCenteredTextWithShadow(
-                client.textRenderer,
-                Text.literal(headerTitle),
+        guiGraphics.drawCenteredString(
+                minecraft.font,
+                Component.literal(headerTitle),
                 getX() + getRowWidth() / 2,
                 getY() + 4,
-                Colors.WHITE
+                CommonColors.WHITE
         );
     }
 
@@ -77,21 +78,21 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         super.removeEntry(entry);
     }
 
-    public static class ButtonEntry extends ElementListWidget.Entry<ButtonEntry> {
+    public static class ButtonEntry extends ContainerObjectSelectionList.Entry<@NotNull ButtonEntry> {
 
-        private final ButtonWidget button;
-        private final ButtonWidget smallButton;
-        private final ButtonWidget upButton;
-        private final ButtonWidget downButton;
+        private final Button button;
+        private final Button smallButton;
+        private final Button upButton;
+        private final Button downButton;
 
-        public ButtonEntry(ButtonWidget button) {
+        public ButtonEntry(Button button) {
             this.button = button;
             this.smallButton = null;
             this.upButton = null;
             this.downButton = null;
         }
 
-        public ButtonEntry(ButtonWidget button, ButtonWidget smallButton, ButtonWidget upButton, ButtonWidget downButton) {
+        public ButtonEntry(Button button, Button smallButton, Button upButton, Button downButton) {
             this.button = button;
             this.smallButton = smallButton;
             this.upButton = upButton;
@@ -99,8 +100,8 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         }
 
         @Override
-        public List<? extends Element> children() {
-            List<ButtonWidget> children = new ArrayList<>(List.of(button));
+        public @NotNull List<? extends GuiEventListener> children() {
+            List<Button> children = new ArrayList<>(List.of(button));
 
             if(smallButton != null) {
                 children.add(smallButton);
@@ -113,8 +114,8 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         }
 
         @Override
-        public List<? extends Selectable> selectableChildren() {
-            List<ButtonWidget> children = new ArrayList<>(List.of(button));
+        public @NotNull List<? extends NarratableEntry> narratables() {
+            List<Button> children = new ArrayList<>(List.of(button));
 
             if(smallButton != null) {
                 children.add(smallButton);
@@ -127,8 +128,8 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
         }
 
         @Override
-        public void render(
-                DrawContext context,
+        public void renderContent(
+                @NotNull GuiGraphics guiGraphics,
                 int mouseX,
                 int mouseY,
                 boolean hovered,
@@ -138,33 +139,33 @@ public class ButtonListWidget extends EntryListWidget<ButtonListWidget.ButtonEnt
                     getX() + (getContentWidth() - button.getWidth()) / 2,
                     getY()
             );
-            button.render(context, mouseX, mouseY, delta);
+            button.render(guiGraphics, mouseX, mouseY, delta);
 
             if(smallButton != null) {
                 smallButton.setPosition(
-                        getX() + getContentWidth() - smallButton.getWidth() - PADDING,
+                        getX() + getContentWidth() - smallButton.getWidth() - CONTENT_PADDING,
                         getY()
                 );
 
-                smallButton.render(context, mouseX, mouseY, delta);
+                smallButton.render(guiGraphics, mouseX, mouseY, delta);
             }
 
             if(upButton != null) {
                 upButton.setPosition(
-                        getX() + PADDING,
+                        getX() + CONTENT_PADDING,
                         getY()
                 );
 
-                upButton.render(context, mouseX, mouseY, delta);
+                upButton.render(guiGraphics, mouseX, mouseY, delta);
             }
 
             if(downButton != null) {
                 downButton.setPosition(
-                        getX() + PADDING,
+                        getX() + CONTENT_PADDING,
                         getY() + getContentWidth() / 2
                 );
 
-                downButton.render(context, mouseX, mouseY, delta);
+                downButton.render(guiGraphics, mouseX, mouseY, delta);
             }
         }
     }

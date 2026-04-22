@@ -7,26 +7,25 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.element.NotificationElement;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class NotifierElement extends Element implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient;
-    private final TextRenderer textRenderer;
+    private final Minecraft minecraft;
+    private final Font font;
 
     private final List<NotificationElement> notificationElements = new ArrayList<>();
 
     private static final int WIDTH = 200;
     //endregion
 
-    public NotifierElement(MinecraftClient minecraftClient) {
+    public NotifierElement(Minecraft minecraft) {
         super(WIDTH,
                 50,
                 Configs.hudConfig.notifierElementXPosition.get() / 100f,
@@ -34,11 +33,11 @@ public class NotifierElement extends Element implements ScreenConstants {
                 Configs.hudConfig.notifierElementAlignment.get(),
                 Configs.hudConfig.notifierElementGroup.translation("Notifier Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
-    public NotifierElement(MinecraftClient minecraftClient, boolean isCopy) {
+    public NotifierElement(Minecraft minecraft, boolean isCopy) {
         super(WIDTH,
                 50,
                 Configs.hudConfig.notifierElementXPosition.get() / 100f,
@@ -46,18 +45,18 @@ public class NotifierElement extends Element implements ScreenConstants {
                 Configs.hudConfig.notifierElementAlignment.get(),
                 Configs.hudConfig.notifierElementGroup.translation("Notifier Element"),
                 isCopy);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
-        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
+        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
 
-        drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().scale(Configs.hudConfig.notifierElementScale.get(), Configs.hudConfig.notifierElementScale.get());
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(Configs.hudConfig.notifierElementScale.get(), Configs.hudConfig.notifierElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showNotifierElement.get()
         ) {
@@ -93,17 +92,17 @@ public class NotifierElement extends Element implements ScreenConstants {
                 default -> y;
             };
 
-            this.renderNotifications(drawContext, tickCounter, x, y);
+            this.renderNotifications(guiGraphics, deltaTracker, x, y);
         }
-        drawContext.getMatrices().popMatrix();
+        guiGraphics.pose().popMatrix();
     }
 
-    private void renderNotifications(DrawContext drawContext, RenderTickCounter tickCounter, int x, int y) {
+    private void renderNotifications(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
         AtomicInteger yTranslation = new AtomicInteger(y);
         for (NotificationElement notificationElement : notificationElements) {
             notificationElement.setX(x);
             notificationElement.setY(yTranslation.get());
-            notificationElement.render(drawContext, tickCounter);
+            notificationElement.render(guiGraphics, deltaTracker);
 
             yTranslation.addAndGet(notificationElement.height + PADDING_QUART);
         }
@@ -112,7 +111,7 @@ public class NotifierElement extends Element implements ScreenConstants {
     private Pair<Integer, Integer> assembleNotificationElements() {
         notificationElements.clear();
         NotifierHandler.instance().getNotifications().forEach(notification -> notificationElements.add(new NotificationElement(
-                minecraftClient,
+                minecraft,
                 WIDTH,
                 notification.item,
                 notification.rows,

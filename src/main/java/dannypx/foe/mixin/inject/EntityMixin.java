@@ -2,9 +2,9 @@ package dannypx.foe.mixin.inject;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.ConnectionHandler;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin<T extends Entity, S extends EntityRenderState> {
     @Shadow
-    public abstract Text getName();
+    public abstract Component getName();
 
     @Inject(method = "isCustomNameVisible", at = @At("RETURN"), cancellable = true)
     private void injectIsCustomNameVisible(CallbackInfoReturnable<Boolean> cir) {

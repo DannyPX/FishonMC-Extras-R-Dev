@@ -2,15 +2,14 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class NetworkHandler extends Handler {
     private static NetworkHandler INSTANCE = new NetworkHandler();
@@ -29,7 +28,7 @@ public class NetworkHandler extends Handler {
         return ping;
     }
 
-    public Pair<Boolean, CustomTextValue> getNetwork(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getNetwork(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(ping)$");
 
@@ -37,7 +36,7 @@ public class NetworkHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "ping" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(getPing())));
+                    case "ping" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getPing())));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -54,8 +53,8 @@ public class NetworkHandler extends Handler {
     }
 
     private void fetchFromPlayerListEntry() {
-        if(minecraftClient.player != null && minecraftClient.getNetworkHandler() != null) {
-            PlayerListEntry entry = minecraftClient.getNetworkHandler().getPlayerListEntry(minecraftClient.player.getUuid());
+        if(minecraft.player != null && minecraft.getConnection() != null) {
+            PlayerInfo entry = minecraft.getConnection().getPlayerInfo(minecraft.player.getUUID());
 
             if(entry != null) {
                 ping = entry.getLatency();
@@ -68,9 +67,9 @@ public class NetworkHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

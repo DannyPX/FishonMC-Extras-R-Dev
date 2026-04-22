@@ -1,10 +1,9 @@
 package dannypx.foe.handler.io;
 
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-
 import java.util.List;
 import java.util.Map;
+import net.minecraft.network.chat.MutableComponent;
 
 public class _DebugIO {
     public static List<String> _getHandlers() {
@@ -14,7 +13,7 @@ public class _DebugIO {
     }
 
     /// Handler, Map<Field, Pair<Value, Tooltip>>
-    public static Map<String, Map<String, Pair<MutableText, MutableText>>> _getFields() {
+    public static Map<String, Map<String, Pair<MutableComponent, MutableComponent>>> _getFields() {
         return Map.of(
                 DataFileHandler.class.getName(), DataFileHandler.instance()._getFields()
         );

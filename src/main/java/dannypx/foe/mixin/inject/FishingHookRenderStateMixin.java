@@ -1,0 +1,37 @@
+package dannypx.foe.mixin.inject;
+
+import dannypx.foe.interfaces.IFishingHookRenderState;
+import net.minecraft.client.renderer.entity.state.FishingHookRenderState;
+import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+
+@Mixin(FishingHookRenderState.class)
+public abstract class FishingHookRenderStateMixin implements IFishingHookRenderState {
+
+    @Unique
+    private ItemStack baitStack = ItemStack.EMPTY;
+
+    @Unique
+    private boolean disabledBait = false;
+
+    @Override
+    public ItemStack foer$getBaitStack() {
+        return baitStack;
+    }
+
+    @Override
+    public void foer$setBaitStack(ItemStack stack) {
+        this.baitStack = stack;
+    }
+
+    @Override
+    public boolean foer$isDisabledBait() {
+        return disabledBait;
+    }
+
+    @Override
+    public void foer$setDisabledBait(boolean disabledBait) {
+        this.disabledBait = disabledBait;
+    }
+}

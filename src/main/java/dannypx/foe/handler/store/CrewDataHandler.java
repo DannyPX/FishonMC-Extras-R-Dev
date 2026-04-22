@@ -5,16 +5,15 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.TextHelper;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class CrewDataHandler extends Handler {
     private static CrewDataHandler INSTANCE = new CrewDataHandler();
@@ -34,7 +33,7 @@ public class CrewDataHandler extends Handler {
         return crewData;
     }
 
-    public Pair<Boolean, CustomTextValue> getCrewData(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getCrewData(String[] params) {
         if(params.length > 0) {
             Pattern intPattern = Pattern.compile("^-?\\d+$");
             Pattern crewPattern = Pattern.compile("^(id|name)$");
@@ -49,8 +48,8 @@ public class CrewDataHandler extends Handler {
                 if(crewList.size() > index) {
                     Pair<UUID, String> crew = crewList.get(index);
                     return switch (params[2]) {
-                        case "id" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(crew.value1())));
-                        case "name" -> PlaceholderHandler.getTextValue(new StringValue(crew.value2()));
+                        case "id" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(crew.value1())));
+                        case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(crew.value2()));
                         default -> PlaceholderHandler.noResult();
                     };
                 }
@@ -62,8 +61,8 @@ public class CrewDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(crewData.uuid == null && minecraftClient.player != null) {
-            crewData.uuid = minecraftClient.player.getUuid();
+        if(crewData.uuid == null && minecraft.player != null) {
+            crewData.uuid = minecraft.player.getUUID();
         } else if(crewData.uuid != null && this.needsUpdate) {
             this.updateCrewData();
         } else if(!CrewDataModel.CREW_DATA_MODEL_VERSION.equals(crewData.version)) {
@@ -73,7 +72,7 @@ public class CrewDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
@@ -112,9 +111,9 @@ public class CrewDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "crewData", Pair.of(Text.literal("[crewData]"), TextHelper.literal(getCrewData()))
+                "crewData", Pair.of(Component.literal("[crewData]"), ComponentHelper.literal(getCrewData()))
         );
     }
     //endregion

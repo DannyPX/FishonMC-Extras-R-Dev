@@ -7,29 +7,28 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomButtonDataHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
 
 public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final Screen parentScreen;
     private final String screenId;
 
@@ -38,21 +37,20 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     private String selectedButtonId;
     private CustomButtonDataHandler.CustomButton selectedButton;
 
-
-    private Text header;
+    private Component header;
     private final int widgetHeight = 20;
 
-    private TextFieldWidget nameTextField;
-    private CheckboxWidget showButtonCheckBox;
+    private EditBox nameEditBox;
+    private Checkbox showButtonCheckBox;
     private final int sideWidth = 100;
-    private TextFieldWidget descriptionTextField;
-    private TextFieldWidget actionTextField;
-    private TextFieldWidget iconTextField;
+    private EditBox descriptionEditBox;
+    private EditBox actionEditBox;
+    private EditBox iconEditBox;
     //endregion
 
     //region Methods
     public CustomButtonMakerScreen(Screen parent, String screenId) {
-        super(Text.literal("Custom Button Maker Screen"));
+        super(Component.literal("Custom Button Maker Screen"));
         this.parentScreen = parent;
         this.screenId = screenId;
     }
@@ -66,94 +64,94 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBox(context, mouseX, mouseY, delta);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.renderBox(guiGraphics, mouseX, mouseY, delta);
 
-        super.render(context, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta);
 
-        this.renderText(context, mouseX, mouseY, delta);
-        this.renderTooltip(context, mouseX, mouseY, delta);
-        this.buttonList.render(context, mouseX, mouseY, delta);
+        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
+        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
+        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(DrawContext context, int mouseX, int mouseY, float delta) {
-        if(descriptionTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Can be empty").formatted(Formatting.GRAY)
+    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        if(descriptionEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Can be empty").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(actionTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Must start with \"/\"").formatted(Formatting.GRAY)
+        if(actionEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Must start with \"/\"").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(iconTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Must be a single character or is an item").formatted(Formatting.GRAY),
-                    Text.literal("using one of the following formats: ").formatted(Formatting.GRAY),
-                    Text.literal("\"minecraft:<id>\"").formatted(Formatting.GOLD),
-                    Text.literal("\"minecraft:<id>[<componentData>]\"").formatted(Formatting.GOLD)
+        if(iconEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Must be a single character or is an item").withStyle(ChatFormatting.GRAY),
+                    Component.literal("using one of the following formats: ").withStyle(ChatFormatting.GRAY),
+                    Component.literal("\"minecraft:<id>\"").withStyle(ChatFormatting.GOLD),
+                    Component.literal("\"minecraft:<id>[<componentData>]\"").withStyle(ChatFormatting.GOLD)
 
             ), mouseX, mouseY);
         }
     }
 
-    private void renderText(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawCenteredTextWithShadow(textRenderer,
+    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.drawCenteredString(font,
                 this.header,
-                (BUTTON_WIDTH + PADDING * 2) + (minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2,
-                Colors.WHITE
+                (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2,
+                CommonColors.WHITE
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Name"),
+        guiGraphics.drawString(font,
+                Component.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING),
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Description"),
+        guiGraphics.drawString(font,
+                Component.literal("Description"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 2,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 2,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Command"),
+        guiGraphics.drawString(font,
+                Component.literal("Command"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Icon"),
+        guiGraphics.drawString(font,
+                Component.literal("Icon"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 4,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 4,
+                CommonColors.WHITE,
                 true
         );
     }
 
-    private void renderBox(DrawContext context, int mouseX, int mouseY, float delta)
+    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
     {
-        context.fill(
+        guiGraphics.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
-                minecraftClient.getWindow().getScaledWidth(),
-                minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
+                this.minecraft.getWindow().getGuiScaledWidth(),
+                this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
-        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
+        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
     private void renderWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
         widgets.add(this.backButton());
@@ -165,111 +163,111 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         widgets.add(getImportButton());
         widgets.add(getExportButton());
 
-        widgets.add(getNameTextField());
+        widgets.add(getNameEditBox());
         widgets.add(getShowButtonCheckBox());
-        widgets.add(getDescriptionTextField());
-        widgets.add(getActionTextField());
-        widgets.add(getIconTextField());
+        widgets.add(getDescriptionEditBox());
+        widgets.add(getActionEditBox());
+        widgets.add(getIconEditBox());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ClickableWidget getNameTextField() {
-        nameTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getNameEditBox() {
+        nameEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + widgetHeight + PADDING,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - (sideWidth + PADDING) - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - (sideWidth + PADDING) - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        nameTextField.setMaxLength(Integer.MAX_VALUE);
+        nameEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        nameTextField.setChangedListener(s -> {
+        nameEditBox.setResponder(s -> {
             if(selectedButtonId != null) {
-                nameTextField.setPlaceholder(Text.literal(s));
+                nameEditBox.setHint(Component.literal(s));
             }
         });
 
-        return nameTextField;
+        return nameEditBox;
     }
 
-    private ClickableWidget getShowButtonCheckBox() {
-        showButtonCheckBox = CheckboxWidget.builder(
-                        Text.literal("Show Button"),
-                        textRenderer
+    private AbstractWidget getShowButtonCheckBox() {
+        showButtonCheckBox = Checkbox.builder(
+                        Component.literal("Show Button"),
+                        font
                 )
-                .pos(minecraftClient.getWindow().getScaledWidth() - PADDING - sideWidth
+                .pos(this.minecraft.getWindow().getGuiScaledWidth() - PADDING - sideWidth
                         , PADDING + widgetHeight + PADDING)
-                .checked(true)
-                .callback((checkbox, checked) -> {})
+                .selected(true)
+                .onValueChange((checkbox, checked) -> {})
                 .build();
         return showButtonCheckBox;
     }
 
-    private ClickableWidget getDescriptionTextField() {
-        descriptionTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getDescriptionEditBox() {
+        descriptionEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 2,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        descriptionTextField.setMaxLength(Integer.MAX_VALUE);
+        descriptionEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        descriptionTextField.setChangedListener(s -> {
+        descriptionEditBox.setResponder(s -> {
             if(selectedButtonId != null) {
-                descriptionTextField.setPlaceholder(Text.literal(s));
+                descriptionEditBox.setHint(Component.literal(s));
             }
         });
 
-        return descriptionTextField;
+        return descriptionEditBox;
     }
 
-    private ClickableWidget getActionTextField() {
-        actionTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getActionEditBox() {
+        actionEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 3,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        actionTextField.setMaxLength(Integer.MAX_VALUE);
+        actionEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        actionTextField.setChangedListener(s -> {
+        actionEditBox.setResponder(s -> {
             if(selectedButtonId != null) {
-                actionTextField.setPlaceholder(Text.literal(s));
+                actionEditBox.setHint(Component.literal(s));
             }
         });
 
-        return actionTextField;
+        return actionEditBox;
     }
 
-    private ClickableWidget getIconTextField() {
-        iconTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getIconEditBox() {
+        iconEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 4,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        iconTextField.setMaxLength(Integer.MAX_VALUE);
+        iconEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        iconTextField.setChangedListener(s -> {
+        iconEditBox.setResponder(s -> {
             if(selectedButtonId != null) {
-                iconTextField.setPlaceholder(Text.literal(s));
+                iconEditBox.setHint(Component.literal(s));
             }
         });
 
-        return iconTextField;
+        return iconEditBox;
     }
 
-    private ClickableWidget getNewButtonElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Create Button"),
+    private AbstractWidget getNewButtonElementButton() {
+        return Button.builder(
+                        Component.literal("Create Button"),
                         (button) -> {
                             String id = "Custom Button #" + UUID.randomUUID();
 
@@ -281,13 +279,13 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                             buttonEntryMap.put(id, buttonEntry);
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getDeleteButtonElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Delete Selected"),
+    private AbstractWidget getDeleteButtonElementButton() {
+        return Button.builder(
+                        Component.literal("Delete Selected"),
                         (button) -> {
                             if(selectedButtonId != null) {
                                 CustomButtonDataHandler.instance().deleteButton(screenId, selectedButtonId);
@@ -302,26 +300,26 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getImportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Import"),
+    private AbstractWidget getImportButton() {
+        return Button.builder(
+                        Component.literal("Import"),
                         (button) -> {
-                            String rawData = minecraftClient.keyboard.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard();
                             try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
                                 Pair<CustomButtonDataHandler.CustomButton, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Pair.class, CustomButtonDataHandler.CustomButton.class, Integer.class).getType());
 
                                 if(data.value2() > FishOnMCExtras.BUTTON_VERSION) {
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Could not Import. Imported Button is made on a newer version"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Could not Import. Imported Button is made on a newer version"));
 
                                     return;
                                 }
@@ -339,28 +337,28 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 buttonList.addEntry(buttonEntry);
                                 buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Imported Button"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Imported Button"));
                             } catch (Exception e) {
                                 LoggerHandler.error(e);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Could not Import. Data invalid"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Could not Import. Data invalid"));
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Imports from the code on your clipboard")))
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
                 .build();
     }
 
-    private ClickableWidget getExportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Export Selected"),
+    private AbstractWidget getExportButton() {
+        return Button.builder(
+                        Component.literal("Export Selected"),
                         (button) -> {
                             if(selectedButtonId != null) {
                                 try {
@@ -370,7 +368,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
+                                            ComponentHelper.compress(new GsonBuilder().create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Button: **" + selectedButtonId + "\n" +
@@ -379,31 +377,31 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                             "```\n" +
                                             "-# Using Button version: " + "`v" + FishOnMCExtras.BUTTON_VERSION + "`";
 
-                                    minecraftClient.keyboard.setClipboard(dataToCopy);
+                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Exported Button on your clipboard"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Exported Button on your clipboard"));
                                 } catch (Exception e) {
                                     LoggerHandler.error(e);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("An error has occurred"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("An error has occurred"));
                                 }
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Save first before exporting")))
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
                 .build();
     }
 
-    private ClickableWidget getButtonList() {
+    private AbstractWidget getButtonList() {
         buttonList = new ButtonListWidget(
-                client,
+                this.minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
                 height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
                 0,
@@ -422,74 +420,74 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         return buttonList;
     }
 
-    private ButtonWidget saveBackButton() {
-        return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
+    private Button saveBackButton() {
+        return Button.builder(Component.literal("Save and Return"), button -> {
             if(selectedButtonId != null) {
-                if(nameTextField.getText().isBlank()) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Button name is empty"));
+                if(nameEditBox.getValue().isBlank()) {
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Button name is empty"));
 
                     return;
                 }
 
-                if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().anyMatch(b -> Objects.equals(b.name, nameTextField.getText()))
-                        && !Objects.equals(selectedButton.name, nameTextField.getText())
+                if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().anyMatch(b -> Objects.equals(b.name, nameEditBox.getValue()))
+                        && !Objects.equals(selectedButton.name, nameEditBox.getValue())
                 ) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Button name already exist"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Button name already exist"));
 
                     return;
                 }
 
-                if(!actionTextField.getText().startsWith("/")) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Command must start with /"));
+                if(!actionEditBox.getValue().startsWith("/")) {
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Command must start with /"));
 
                     return;
                 }
 
                 Pattern iconPattern = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.))$");
-                if(!iconPattern.matcher(iconTextField.getText()).matches()) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Icon is not right format"));
+                if(!iconPattern.matcher(iconEditBox.getValue()).matches()) {
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Icon is not right format"));
 
                     return;
                 }
 
                 CustomButtonDataHandler.instance().updateButton(screenId, selectedButton,
-                        nameTextField.getText(),
-                        descriptionTextField.getText(),
-                        actionTextField.getText(),
-                        iconTextField.getText(),
-                        showButtonCheckBox.isChecked());
+                        nameEditBox.getValue(),
+                        descriptionEditBox.getValue(),
+                        actionEditBox.getValue(),
+                        iconEditBox.getValue(),
+                        showButtonCheckBox.selected());
             }
-                    this.close();
+                    this.onClose();
                 })
-                .position(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget backButton() {
-        return ButtonWidget.builder(Text.literal("Return"), button ->
-                    this.close())
-                .position(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button backButton() {
+        return Button.builder(Component.literal("Return"), button ->
+                    this.onClose())
+                .pos(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createButtonEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                ButtonWidget.builder(
-                        Text.literal(TextHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()),
+                Button.builder(
+                        Component.literal(ComponentHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()),
                         button -> {
                             selectedButton = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().filter(buttonObject -> Objects.equals(buttonObject.name, id)).findAny().orElse(null);
 
@@ -499,8 +497,8 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                             }
                         }
                 ).width(BUTTON_WIDTH / 4 * 3).build(),
-                ButtonWidget.builder(
-                                Text.literal("Add"),
+                Button.builder(
+                                Component.literal("Add"),
                                 button -> CodeExecuterHandler.runLater(1, () -> {
                                     String newId = "Custom Hud #" + UUID.randomUUID();
 
@@ -514,10 +512,10 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                     buttonEntryMap.put(newId, buttonEntry);
                                 }))
                         .width(25)
-                        .tooltip(Tooltip.of(Text.literal("Add new button")))
+                        .tooltip(Tooltip.create(Component.literal("Add new button")))
                         .build(),
-                ButtonWidget.builder(
-                                Text.literal("⏶"),
+                Button.builder(
+                                Component.literal("⏶"),
                                 button -> CodeExecuterHandler.runLater(1, () -> {
                                     int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
@@ -528,10 +526,10 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                     }
                                 }))
                         .size(25, 10)
-                        .tooltip(Tooltip.of(Text.literal("Move button up")))
+                        .tooltip(Tooltip.create(Component.literal("Move button up")))
                         .build(),
-                ButtonWidget.builder(
-                                Text.literal("⏷"),
+                Button.builder(
+                                Component.literal("⏷"),
                                 button -> CodeExecuterHandler.runLater(1, () -> {
                                     int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
@@ -542,58 +540,58 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                     }
                                 }))
                         .size(25, 10)
-                        .tooltip(Tooltip.of(Text.literal("Move button down")))
+                        .tooltip(Tooltip.create(Component.literal("Move button down")))
                         .build()
         );
     }
 
     private void setFields() {
-        this.header = TextHelper.parseLegacyWithStyle(selectedButtonId.replace("&", "§")).value1();
-        nameTextField.setText(selectedButtonId);
-        nameTextField.setPlaceholder(Text.literal(selectedButtonId));
+        this.header = ComponentHelper.parseLegacyWithStyle(selectedButtonId.replace("&", "§")).value1();
+        nameEditBox.setValue(selectedButtonId);
+        nameEditBox.setHint(Component.literal(selectedButtonId));
 
         if(selectedButton != null) {
-            if(selectedButton.showButton != showButtonCheckBox.isChecked()) {
+            if(selectedButton.showButton != showButtonCheckBox.selected()) {
                 showButtonCheckBox.onPress(null);
             }
 
-            descriptionTextField.setText(selectedButton.description);
-            descriptionTextField.setPlaceholder(Text.literal(selectedButton.description));
+            descriptionEditBox.setValue(selectedButton.description);
+            descriptionEditBox.setHint(Component.literal(selectedButton.description));
 
-            actionTextField.setText(selectedButton.action);
-            actionTextField.setPlaceholder(Text.literal(selectedButton.action));
+            actionEditBox.setValue(selectedButton.action);
+            actionEditBox.setHint(Component.literal(selectedButton.action));
 
-            iconTextField.setText(selectedButton.icon);
-            iconTextField.setPlaceholder(Text.literal(selectedButton.icon));
+            iconEditBox.setValue(selectedButton.icon);
+            iconEditBox.setHint(Component.literal(selectedButton.icon));
         }
     }
 
     private void resetFields() {
-        this.header = Text.literal("No Button Selected");
+        this.header = Component.literal("No Button Selected");
 
-        nameTextField.setText("");
-        nameTextField.setPlaceholder(Text.literal(""));
+        nameEditBox.setValue("");
+        nameEditBox.setHint(Component.literal(""));
 
-        if(showButtonCheckBox.isChecked()) {
+        if(showButtonCheckBox.selected()) {
             showButtonCheckBox.onPress(null);
         }
 
-        descriptionTextField.setText("");
-        descriptionTextField.setPlaceholder(Text.literal(""));
+        descriptionEditBox.setValue("");
+        descriptionEditBox.setHint(Component.literal(""));
 
-        actionTextField.setText("");
-        actionTextField.setPlaceholder(Text.literal(""));
+        actionEditBox.setValue("");
+        actionEditBox.setHint(Component.literal(""));
 
-        iconTextField.setText("");
-        iconTextField.setPlaceholder(Text.literal(""));
+        iconEditBox.setValue("");
+        iconEditBox.setHint(Component.literal(""));
 
         selectedButton = null;
         selectedButtonId = null;
     }
 
     @Override
-    public void close() {
-        this.minecraftClient.setScreen(this.parentScreen);
+    public void onClose() {
+        this.minecraft.setScreen(this.parentScreen);
     }
     //endregion
 }

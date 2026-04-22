@@ -2,20 +2,16 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.helper.TextHelper;
-import dannypx.foe.type.custom_text.CustomTextValue;
-import dannypx.foe.type.custom_text.TextValue;
+import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.type.custom_text.PlaceholderValue;
+import dannypx.foe.type.custom_text.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +19,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class ChatHandler extends Handler {
     private static ChatHandler INSTANCE = new ChatHandler();
@@ -35,22 +33,22 @@ public class ChatHandler extends Handler {
     }
 
     //region Fields
-    private Map<String, Text> storedChatTriggerText = new HashMap<>();
+    private Map<String, Component> storedChatTriggerComponent = new HashMap<>();
 
     final List<String> blacklistedTextFilters = List.of(
             "REACTIONS »"
     );
 
-    public Pair<Boolean, CustomTextValue> getChat(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getChat(String[] params) {
         if(params.length > 1
-                && minecraftClient.player != null
+                && minecraft.player != null
         ) {
             Pattern fieldPattern = Pattern.compile("^(trigger)$");
 
             if(fieldPattern.matcher(params[0]).matches()
             ) {
                 return switch(params[0]) {
-                    case "trigger" -> PlaceholderHandler.getTextValue(new TextValue(storedChatTriggerText.getOrDefault(params[1], Text.empty())));
+                    case "trigger" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(storedChatTriggerComponent.getOrDefault(params[1], Component.empty())));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -61,51 +59,51 @@ public class ChatHandler extends Handler {
 
     //region Methods
     public void init() {
-        if(storedChatTriggerText.isEmpty()) {
+        if(storedChatTriggerComponent.isEmpty()) {
             this.initChatTrigger();
         }
     }
 
     public void initChatTrigger() {
-        storedChatTriggerText.clear();
+        storedChatTriggerComponent.clear();
         CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.forEach((name, trigger) -> {
-            storedChatTriggerText.put(name, Text.empty());
+            storedChatTriggerComponent.put(name, Component.empty());
         });
     }
 
-    public void onReceiveMessage(Text text) {
-        if(this.inBlackList(text)) return;
+    public void onReceiveMessage(Component component) {
+        if(this.inBlackList(component)) return;
         
-        this.checkPet(text);
-        this.checkChatTrigger(text);
+        this.checkPet(component);
+        this.checkChatTrigger(component);
     }
 
-    private boolean inBlackList(Text text) {
-        return blacklistedTextFilters.stream().anyMatch(filter -> text.getString().startsWith(filter));
+    private boolean inBlackList(Component component) {
+        return blacklistedTextFilters.stream().anyMatch(filter -> component.getString().startsWith(filter));
     }
 
-    private void checkPet(Text text) {
-        if(text.getString().startsWith("PETS » Equipped your")) {
+    private void checkPet(Component component) {
+        if(component.getString().startsWith("PETS » Equipped your")) {
             ProfileDataHandler.instance().updatePet(true);
-        } else if (text.getString().startsWith("PETS » Pet unequipped!")) {
+        } else if (component.getString().startsWith("PETS » Pet unequipped!")) {
             ProfileDataHandler.instance().updatePet(false);
-        } else if(text.getString().startsWith("CREWS » Crew Chat has been enabled")) {
+        } else if(component.getString().startsWith("CREWS » Crew Chat has been enabled")) {
             ProfileDataHandler.instance().updateCrewChat(true);
-        } else if(text.getString().startsWith("CREWS » Crew Chat has been disabled")) {
+        } else if(component.getString().startsWith("CREWS » Crew Chat has been disabled")) {
             ProfileDataHandler.instance().updateCrewChat(false);
-        } else if(text.getString().startsWith("TOURNAMENT You have ENABLED tournament contributions")) {
+        } else if(component.getString().startsWith("TOURNAMENT You have ENABLED tournament contributions")) {
             ProfileDataHandler.instance().updateTournamentContribution(true);
-        } else if(text.getString().startsWith("TOURNAMENT You have DISABLED tournament contributions")) {
+        } else if(component.getString().startsWith("TOURNAMENT You have DISABLED tournament contributions")) {
             ProfileDataHandler.instance().updateTournamentContribution(false);
         }
     }
 
-    private void checkChatTrigger(Text text) {
+    private void checkChatTrigger(Component component) {
         CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.forEach((name, trigger) -> {
             if(!trigger.regex.isBlank()
-                    && trigger.pattern.matcher(text.getString()).matches()
+                    && trigger.pattern.matcher(component.getString()).matches()
             ) {
-                storedChatTriggerText.put(name, text);
+                storedChatTriggerComponent.put(name, component);
                 if(!trigger.notificationToTrigger.isBlank()
                         && trigger.useChatTrigger
                 ) {
@@ -117,14 +115,14 @@ public class ChatHandler extends Handler {
         });
     }
 
-    public Text onModifyMessage(Text text) {
-        text = this.modifyPetMessageWithPercentage(text);
-        return text;
+    public Component onModifyMessage(Component component) {
+        component = this.modifyPetMessageWithPercentage(component);
+        return component;
     }
 
-    private Text modifyPetMessageWithPercentage(Text text) {
+    private Component modifyPetMessageWithPercentage(Component component) {
 
-        String json = TextHelper.textToJson(text);
+        String json = ComponentHelper.ComponentToJson(component);
         if (json.contains("ᴘᴇᴛ ʀᴀᴛɪɴɢ")) {
             String petStr = json.substring(json.indexOf(" Pet\\n"), json.indexOf("ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴏᴘᴇɴ ᴘᴇᴛ ᴍᴇɴᴜ"));
             Pattern statNumber = Pattern.compile("(?<=\\+)(.*?)(?=\")");
@@ -144,16 +142,16 @@ public class ChatHandler extends Handler {
                 StringBuilder builder = new StringBuilder(petStr);
                 String petStrNew = petStr;
 
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 9), " (" + TextHelper.floatToString((Float.parseFloat(petClimateLuck) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 10), " (" + TextHelper.floatToString((Float.parseFloat(petClimateScale) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 13), " (" + TextHelper.floatToString((Float.parseFloat(petLocationLuck) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 14), " (" + TextHelper.floatToString((Float.parseFloat(petLocationScale) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 16), " (" + TextHelper.floatToString((total / multiplier), 0) + "%)").toString();
+                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 9), " (" + ComponentHelper.floatToString((Float.parseFloat(petClimateLuck) * 4 / multiplier), 0) + "%)").toString();
+                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 10), " (" + ComponentHelper.floatToString((Float.parseFloat(petClimateScale) * 4 / multiplier), 0) + "%)").toString();
+                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 13), " (" + ComponentHelper.floatToString((Float.parseFloat(petLocationLuck) * 4 / multiplier), 0) + "%)").toString();
+                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 14), " (" + ComponentHelper.floatToString((Float.parseFloat(petLocationScale) * 4 / multiplier), 0) + "%)").toString();
+                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 16), " (" + ComponentHelper.floatToString((total / multiplier), 0) + "%)").toString();
 
-                return TextHelper.jsonToText(json.replace(petStr, petStrNew));
+                return ComponentHelper.jsonToText(json.replace(petStr, petStrNew));
             }
         }
-        return text;
+        return component;
     }
 
     private static float findMultiplier(String petStr) {
@@ -167,9 +165,9 @@ public class ChatHandler extends Handler {
 
     public void cleanChatTriggerStore(String[] chatTriggers) {
         for (String chatTrigger : chatTriggers) {
-            if(storedChatTriggerText.containsKey(chatTrigger)) {
+            if(storedChatTriggerComponent.containsKey(chatTrigger)) {
                 CodeExecuterHandler.runLater(2, () -> {
-                    storedChatTriggerText.put(chatTrigger, Text.empty());
+                    storedChatTriggerComponent.put(chatTrigger, Component.empty());
                 });
             }
         }
@@ -178,7 +176,7 @@ public class ChatHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
         );
     }

@@ -2,21 +2,17 @@ package dannypx.foe.handler.renderer;
 
 import dannypx.foe.handler.ScreenHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +46,11 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.mainConfig.enableMod.get()
         ) {
-            List<ClickableWidget> widgets = new ArrayList<>();
+            List<AbstractWidget> widgets = new ArrayList<>();
 
             widgets.add(SearchHandler.getSearchBar(
-                    minecraftClient.getWindow().getScaledWidth() / 2 - 80,
-                    minecraftClient.getWindow().getScaledHeight() / 2 - 133,
+                    minecraft.getWindow().getGuiScaledWidth() / 2 - 80,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 - 133,
                     160,
                     20
             ));
@@ -65,25 +61,25 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
 
     public void checkMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         if(isOnScreen
-                && screen instanceof GenericContainerScreen containerScreen
+                && screen instanceof ContainerScreen containerScreen
         ) {
-            int syncId = containerScreen.getScreenHandler().syncId;
+            int syncId = containerScreen.getMenu().containerId;
             int moveSlot = -1;
 
             if(verticalAmount > 0) moveSlot = 46;
             else if (verticalAmount < 0) moveSlot = 52;
 
             if(moveSlot != -1
-                    && !containerScreen.getScreenHandler().getSlot(moveSlot).getStack().isEmpty()
-                    && containerScreen.getScreenHandler().getSlot(moveSlot).getStack().getItem() == Items.GUNPOWDER
-                    && minecraftClient.interactionManager != null
+                    && !containerScreen.getMenu().getSlot(moveSlot).getItem().isEmpty()
+                    && containerScreen.getMenu().getSlot(moveSlot).getItem().getItem() == Items.GUNPOWDER
+                    && minecraft.gameMode != null
             ) {
-                minecraftClient.interactionManager.clickSlot(
+                minecraft.gameMode.handleInventoryMouseClick(
                         syncId,
                         moveSlot,
                         0,
-                        SlotActionType.PICKUP,
-                        minecraftClient.player
+                        ClickType.PICKUP,
+                        minecraft.player
                 );
             }
         }
@@ -93,9 +89,9 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

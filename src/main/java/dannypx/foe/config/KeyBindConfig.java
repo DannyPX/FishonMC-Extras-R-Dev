@@ -7,7 +7,7 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.screen.context.ContextInput;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 @Translatable.Name("Controls")
 public class KeyBindConfig extends Config {
     public KeyBindConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "keybinding_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "keybinding_config"));
     }
 
     @Name("Open FOER Menu")

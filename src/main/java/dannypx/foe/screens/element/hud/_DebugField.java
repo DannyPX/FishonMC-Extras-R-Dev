@@ -3,29 +3,29 @@ package dannypx.foe.screens.element.hud;
 import dannypx.foe.handler.debug._DebugHandler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.helper.DrawHelper;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Quartet;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class _DebugField extends Element {
     //region Fields
-    private final MinecraftClient minecraftClient;
-    private final TextRenderer textRenderer;
+    private final Minecraft minecraft;
+    private final Font font;
 
     private static final int WIDTH = 100;
     private static final int HEIGHT = 16;
     //endregion
 
-    public _DebugField(MinecraftClient minecraftClient) {
+    public _DebugField(Minecraft minecraft) {
         super(WIDTH,
                 HEIGHT,
                 Configs.debugConfig.debugFieldXPosition.get() / 100f,
@@ -33,11 +33,11 @@ public class _DebugField extends Element {
                 Configs.debugConfig.debugFieldAlignment.get(),
                 Configs.debugConfig.debugFieldGroup.translation("Debug Field"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
-    public _DebugField(MinecraftClient minecraftClient, boolean isCopy) {
+    public _DebugField(Minecraft minecraft, boolean isCopy) {
         super(WIDTH,
                 HEIGHT,
                 Configs.debugConfig.debugFieldXPosition.get() / 100f,
@@ -45,18 +45,18 @@ public class _DebugField extends Element {
                 Configs.debugConfig.debugFieldAlignment.get(),
                 Configs.debugConfig.debugFieldGroup.translation("Debug Field"),
                 isCopy);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-        int scaledWidth = (int) (minecraftClient.getWindow().getScaledWidth() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
-        int scaledHeight = (int) (minecraftClient.getWindow().getScaledHeight() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
+        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
 
-        drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().scale(Configs.debugConfig.debugFieldElementScale.get(), Configs.debugConfig.debugFieldElementScale.get());
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(Configs.debugConfig.debugFieldElementScale.get(), Configs.debugConfig.debugFieldElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.debugConfig.debugFieldElement.get()
                 && Configs.debugConfig.debugMode.get()
@@ -82,38 +82,38 @@ public class _DebugField extends Element {
                 default -> 0;
             };
 
-            this.renderText(drawContext, textRenderer, x, y);
+            this.renderTextComponent(guiGraphics, font, x, y);
         }
-        drawContext.getMatrices().popMatrix();
+        guiGraphics.pose().popMatrix();
     }
 
-    private void renderText(DrawContext drawContext, TextRenderer textRenderer, int x, int y) {
-        Text fieldText;
+    private void renderTextComponent(GuiGraphics guiGraphics, Font font, int x, int y) {
+        Component fieldText;
 
-        Quartet<String, String, MutableText, MutableText> field = _DebugHandler.instance()._getField(
+        Quartet<String, String, MutableComponent, MutableComponent> field = _DebugHandler.instance()._getField(
                 Configs.debugConfig.debugFieldHandlerChoice.get(),
                 Configs.debugConfig.debugFieldFieldChoice.get()
         );
 
         if(field == null) {
-            fieldText = Text.empty().append(Text.literal(TextHelper.smallText("Field and Handler combination does not exist")).formatted(Formatting.RED));
+            fieldText = Component.empty().append(Component.literal(ComponentHelper.smallText("Field and Handler combination does not exist")).withStyle(ChatFormatting.RED));
         } else {
-            fieldText = TextHelper.concat(
-                    Text.literal(TextHelper.smallText("DEBUG ")).formatted(Formatting.RED),
-                    Text.literal(field.value2()).formatted(Formatting.GRAY),
-                    Text.literal(": ").formatted(Formatting.DARK_GRAY),
+            fieldText = ComponentHelper.concat(
+                    Component.literal(ComponentHelper.smallText("DEBUG ")).withStyle(ChatFormatting.RED),
+                    Component.literal(field.value2()).withStyle(ChatFormatting.GRAY),
+                    Component.literal(": ").withStyle(ChatFormatting.DARK_GRAY),
                     field.value3()
             );
         }
 
-        int width = textRenderer.getWidth(fieldText);
-        int height = textRenderer.fontHeight;
+        int width = font.width(fieldText);
+        int height = font.lineHeight;
 
         switch (Configs.debugConfig.debugFieldAlignment.get()) {
-            case TOP_LEFT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y, true, true, false, false);
-            case TOP_RIGHT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y, true, true, false, false);
-            case BOTTOM_LEFT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x, y - height, true, true, false, false);
-            case BOTTOM_RIGHT -> DrawHelper.drawText(drawContext, textRenderer, fieldText, x - width, y - height, true, true, false, false);
+            case TOP_LEFT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x, y, true, true, false, false);
+            case TOP_RIGHT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x - width, y, true, true, false, false);
+            case BOTTOM_LEFT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x, y - height, true, true, false, false);
+            case BOTTOM_RIGHT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x - width, y - height, true, true, false, false);
         }
     }
     //endregion

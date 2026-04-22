@@ -5,9 +5,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import dannypx.foe.helper.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-
 import java.io.IOException;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemStackAdapter extends TypeAdapter<ItemStack> {
     @Override

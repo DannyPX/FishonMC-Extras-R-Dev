@@ -1,15 +1,14 @@
 package dannypx.foe.handler;
 
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.MutableText;
-
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.MutableComponent;
 
 public abstract class Handler {
-    protected static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    protected static final Minecraft minecraft = Minecraft.getInstance();
 
     public void init() {}
     public void tick() {}
-    protected abstract Map<String, Pair<MutableText, MutableText>> _getFields();
+    protected abstract Map<String, Pair<MutableComponent, MutableComponent>> _getFields();
 }

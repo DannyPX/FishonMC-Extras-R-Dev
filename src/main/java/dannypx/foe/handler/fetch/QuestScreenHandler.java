@@ -5,18 +5,17 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.store.QuestDataHandler;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class QuestScreenHandler extends Handler {
     private static QuestScreenHandler INSTANCE = new QuestScreenHandler();
@@ -32,18 +31,18 @@ public class QuestScreenHandler extends Handler {
     //endregion
 
     //region Methods
-    public void checkQuests(GenericContainerScreenHandler genericContainerScreenHandler) {
+    public void checkQuests(ChestMenu chestMenu) {
         List<QuestDataHandler.Quest> questList = new ArrayList<>();
 
         CodeExecuterHandler.runLater(2, () -> {
-            genericContainerScreenHandler.slots.forEach(slot -> {
-                if (minecraftClient.player != null
-                        && slot.inventory != minecraftClient.player.getInventory()
-                        && slot.getStack().isIn(ItemTags.SHULKER_BOXES)
-                        && slot.getStack().getItem() != Items.WHITE_SHULKER_BOX
-                        && slot.getStack().getName().getString().startsWith("Fishing Quest")
+            chestMenu.slots.forEach(slot -> {
+                if (minecraft.player != null
+                        && slot.container != minecraft.player.getInventory()
+                        && slot.getItem().is(ItemTags.SHULKER_BOXES)
+                        && slot.getItem().getItem() != Items.WHITE_SHULKER_BOX
+                        && slot.getItem().getHoverName().getString().startsWith("Fishing Quest")
                 ) {
-                    QuestDataHandler.Quest quest = this.extractQuestData(slot.getStack());
+                    QuestDataHandler.Quest quest = this.extractQuestData(slot.getItem());
 
                     if(quest != null) {
                         questList.add(quest);
@@ -58,8 +57,8 @@ public class QuestScreenHandler extends Handler {
     }
 
     private QuestDataHandler.Quest extractQuestData(ItemStack stack) {
-        if(stack.get(DataComponentTypes.LORE) != null) {
-            List<Text> lines = stack.get(DataComponentTypes.LORE).lines();
+        if(stack.get(DataComponents.LORE) != null) {
+            List<Component> lines = stack.get(DataComponents.LORE).lines();
             if(lines.size() > 6) {
                 String goal = lines.get(3).getSiblings().get(3).getString().toLowerCase(Locale.US).trim();
                 int max = Integer.parseInt(lines.get(6).getSiblings().get(5).getString());
@@ -67,7 +66,7 @@ public class QuestScreenHandler extends Handler {
 
                 String location = lines.get(4).getString();
 
-                if(location.contains(BossBarHandler.instance().getLocation().getString().trim())) {
+                if(location.contains(BossEventHandler.instance().getLocation().getString().trim())) {
                     return new QuestDataHandler.Quest(goal, max, current);
                 }
             }
@@ -76,7 +75,7 @@ public class QuestScreenHandler extends Handler {
     }
 
     public void checkForCompletedQuests() {
-        List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.getOrDefault(BossBarHandler.instance().getLocation().getString(), new ArrayList<>());
+        List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.getOrDefault(BossEventHandler.instance().getLocation().getString(), new ArrayList<>());
 
         quests.forEach(quest -> {
             if(quest.isDone()) {
@@ -87,7 +86,7 @@ public class QuestScreenHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
         );
     }

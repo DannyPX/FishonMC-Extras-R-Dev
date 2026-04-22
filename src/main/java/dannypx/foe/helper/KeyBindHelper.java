@@ -3,9 +3,8 @@ package dannypx.foe.helper;
 import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindSimple;
 import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindUnbound;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
-
+import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Map;
 
 public class KeyBindHelper {
@@ -170,8 +169,8 @@ public class KeyBindHelper {
 
     public static String getTranslatableKey(ValidatedKeybind validatedKeybind) {
         if(validatedKeybind.get() instanceof FzzyKeybindSimple fzzyKeybindSimple) {
-            InputUtil.Key key = InputUtil.Type.KEYSYM.createFromCode(fzzyKeybindSimple.getInputCode());
-            return key.getTranslationKey();
+            InputConstants.Key key = InputConstants.Type.KEYSYM.getOrCreate(fzzyKeybindSimple.getInputCode());
+            return key.getName();
         } else if (validatedKeybind.get() instanceof FzzyKeybindUnbound) {
             return "Not Bound";
         }
@@ -186,7 +185,7 @@ public class KeyBindHelper {
                 && !validatedKeybind.needsCtrl()
                 && validatedKeybind.get() instanceof FzzyKeybindSimple fzzyKeybindSimple
         ) {
-            return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), fzzyKeybindSimple.getInputCode());
+            return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), fzzyKeybindSimple.getInputCode());
         }
 
         return false;

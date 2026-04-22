@@ -1,21 +1,10 @@
 package dannypx.foe.screens.debug;
 
 import dannypx.foe.handler.debug._DebugHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.DefaultModScreen;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -23,23 +12,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
 
 public class DebugHandlerScreen extends DefaultModScreen {
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    private final Minecraft minecraftClient = Minecraft.getInstance();
 
     private ButtonListWidget handlerList;
     private String selectedHandler;
     private String hoveredName = "";
-    private Pair<MutableText, MutableText> hoveredValue = Pair.of(Text.empty(), Text.empty());
+    private Pair<MutableComponent, MutableComponent> hoveredValue = Pair.of(Component.empty(), Component.empty());
 
     private final List<String> handlerNames;
-    private Map<String, Map<String, Pair<MutableText, MutableText>>> handlerFields;
+    private Map<String, Map<String, Pair<MutableComponent, MutableComponent>>> handlerFields;
     //endregion
 
     //region Methods
     public DebugHandlerScreen(Screen parent) {
-        super(parent, Text.literal("Debug Handler Screen"));
+        super(parent, Component.literal("Debug Handler Screen"));
         handlerNames = _DebugHandler.instance()._getHandlerNames();
     }
 
@@ -50,11 +50,11 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
         this.updateFields();
-        this.handlerList.render(context, mouseX, mouseY, delta);
-        this.renderHandlerFields(context, mouseX, mouseY, delta);
+        this.handlerList.render(guiGraphics, mouseX, mouseY, delta);
+        this.renderHandlerFields(guiGraphics, mouseX, mouseY, delta);
     }
 
     private void updateFields() {
@@ -62,17 +62,17 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     private void renderWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         //Scrollable Handler List Widget
         widgets.add(getHandlerList());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ClickableWidget getHandlerList() {
+    private AbstractWidget getHandlerList() {
         handlerList = new ButtonListWidget(
-                client,
+                minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
                 height,
                 0,
@@ -83,8 +83,8 @@ public class DebugHandlerScreen extends DefaultModScreen {
 
         // Add buttons
         handlerNames.forEach(handler -> handlerList.addEntry(new ButtonListWidget.ButtonEntry(
-                ButtonWidget.builder(
-                        Text.literal(handler.replace("dannypx.foe.handler.", "")),
+                Button.builder(
+                        Component.literal(handler.replace("dannypx.foe.handler.", "")),
                         button -> selectedHandler = handler
                 ).width(BUTTON_WIDTH).build()
         )));
@@ -92,28 +92,28 @@ public class DebugHandlerScreen extends DefaultModScreen {
         return handlerList;
     }
 
-    private void renderHandlerFields(DrawContext context, int mouseX, int mouseY, float delta) {
+    private void renderHandlerFields(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if(selectedHandler != null) {
             AtomicInteger atomicInteger = new AtomicInteger(0);
             handlerFields.get(selectedHandler).forEach((name, value) -> {
-                Text text = TextHelper.concat(
-                        Text.literal(name).formatted(Formatting.BOLD),
-                        Text.literal(": "),
+                Component component = ComponentHelper.concat(
+                        Component.literal(name).withStyle(ChatFormatting.BOLD),
+                        Component.literal(": "),
                         value.value1()
                 );
 
                 int textx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
-                int texty = PADDING + (textRenderer.fontHeight + LINE_SPACING) * atomicInteger.getAndIncrement();
-                int textwidth = textRenderer.getWidth(text);
-                int textHeight = textRenderer.fontHeight;
-                int color = Colors.WHITE;
+                int texty = PADDING + (font.lineHeight + LINE_SPACING) * atomicInteger.getAndIncrement();
+                int textwidth = font.width(component);
+                int textHeight = font.lineHeight;
+                int color = CommonColors.WHITE;
 
-                context.drawText(textRenderer, text, textx, texty, color, true);
+                context.drawString(font, component, textx, texty, color, true);
 
                 if(mouseX >= textx && mouseX <= textx + textwidth
                         && mouseY >= texty && mouseY <= texty + textHeight) {
-                    if(!Objects.equals(value.value2(), Text.empty())) {
-                        context.drawTooltip(value.value2(), mouseX, mouseY);
+                    if(!Objects.equals(value.value2(), Component.empty())) {
+                        context.setTooltipForNextFrame(value.value2(), mouseX, mouseY);
                     }
 
                     hoveredName = name;
@@ -124,31 +124,31 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
 
         this.copyText(input);
 
         return super.keyPressed(input);
     }
 
-    public void copyText(KeyInput input) {
+    public void copyText(KeyEvent input) {
         boolean ctrl = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0
                 || (input.modifiers() & GLFW.GLFW_MOD_SUPER) != 0;
 
         if(ctrl && input.key() == GLFW.GLFW_KEY_C) {
             String json;
-            if(Objects.equals(hoveredValue.value2(), Text.empty())) {
-                json = TextHelper.textToJsonPretty(hoveredValue.value1());
+            if(Objects.equals(hoveredValue.value2(), Component.empty())) {
+                json = ComponentHelper.textToJsonPretty(hoveredValue.value1());
             } else {
                 json = hoveredValue.value2().getString();
             }
 
-            minecraftClient.keyboard.setClipboard(json);
+            minecraftClient.keyboardHandler.setClipboard(json);
 
             SystemToast.add(minecraftClient.getToastManager(),
-                    SystemToast.Type.PERIODIC_NOTIFICATION,
-                    Text.literal("Fish On Extras Rebirth"),
-                    Text.literal("Copied " + hoveredName + " JSON"));
+                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                    Component.literal("Fish On Extras Rebirth"),
+                    Component.literal("Copied " + hoveredName + " JSON"));
         }
     }
     //endregion

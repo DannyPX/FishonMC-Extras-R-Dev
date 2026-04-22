@@ -3,46 +3,46 @@ package dannypx.foe.screens.widget;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.MathHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
-public class EditCustomHUDWidget extends ClickableWidget implements ScreenConstants {
-    MinecraftClient minecraftClient = MinecraftClient.getInstance();
+public class EditCustomHUDWidget extends AbstractWidget implements ScreenConstants {
+    Minecraft minecraft = Minecraft.getInstance();
 
     private final List<LineEntry> entries = new ArrayList<>();
     private LineEntry focusedEntry = null;
 
-    private Text header;
+    private Component header;
     private final int headerHeight = 20;
 
-    private final int textFieldHeight = 20;
+    private final int editBoxHeight = 20;
 
-    private final TextFieldWidget idTextField;
+    private final EditBox idEditBox;
     public String newName;
 
-    private final TextFieldWidget scaleTextField;
+    private final EditBox scaleEditBox;
     public float scale;
 
-    private final CheckboxWidget showBackgroundCheckBox;
+    private final Checkbox showBackgroundCheckBox;
     public boolean showBackground;
 
-    private final CheckboxWidget showElementCheckBox;
+    private final Checkbox showElementCheckBox;
     public boolean showElement;
 
     public boolean hasSelectedOption = false;
@@ -51,43 +51,43 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
     private int scrollOffset = 0;
     private final int scrollbarWidth = 6;
 
-    public EditCustomHUDWidget(int x, int y, int width, int height, Text header) {
-        super(x, y, width, height, Text.empty());
+    public EditCustomHUDWidget(int x, int y, int width, int height, Component header) {
+        super(x, y, width, height, Component.empty());
         this.header = header;
-        idTextField = new TextFieldWidget(
-                minecraftClient.textRenderer,
+        idEditBox = new EditBox(
+                minecraft.font,
                 getX() + PADDING,
                 getY() + headerHeight + PADDING,
                 width / 3 - PADDING - PADDING_HALF,
-                textFieldHeight,
-                Text.empty()
+                editBoxHeight,
+                Component.empty()
         );
-        idTextField.setMaxLength(Integer.MAX_VALUE);
+        idEditBox.setMaxLength(Integer.MAX_VALUE);
 
         newName = "";
 
-        idTextField.setChangedListener(s -> {
+        idEditBox.setResponder(s -> {
             if (hasSelectedOption) {
                 newName = s;
             }
-            idTextField.setPlaceholder(Text.literal(s));
+            idEditBox.setHint(Component.literal(s));
         });
 
-        idTextField.setText("");
+        idEditBox.setValue("");
 
-        scaleTextField = new TextFieldWidget(
-                minecraftClient.textRenderer,
-                getX() + width / 3 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF,
+        scaleEditBox = new EditBox(
+                minecraft.font,
+                getX() + width / 3 + minecraft.font.width("Scale") + PADDING_HALF,
                 getY() + headerHeight + PADDING,
                 40,
-                textFieldHeight,
-                Text.empty()
+                editBoxHeight,
+                Component.empty()
         );
-        scaleTextField.setMaxLength(5);
+        scaleEditBox.setMaxLength(5);
 
         scale = 1.0f;
 
-        scaleTextField.setChangedListener(s -> {
+        scaleEditBox.setResponder(s -> {
             if (hasSelectedOption) {
                 try {
                     scale = Float.parseFloat(s);
@@ -95,29 +95,29 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
                     scale = 1.0f;
                 }
             }
-            scaleTextField.setPlaceholder(Text.literal(s));
+            scaleEditBox.setHint(Component.literal(s));
         });
 
-        scaleTextField.setText("");
+        scaleEditBox.setValue("");
 
-        showBackgroundCheckBox = CheckboxWidget.builder(Text.literal("Show Background"), minecraftClient.textRenderer)
+        showBackgroundCheckBox = Checkbox.builder(Component.literal("Show Background"), minecraft.font)
                 .pos(
-                        getX() + width / 3 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF + 40 + PADDING_HALF,
+                        getX() + width / 3 + minecraft.font.width("Scale") + PADDING_HALF + 40 + PADDING_HALF,
                         getY() + headerHeight + PADDING
                 )
-                .checked(true)
-                .callback((checkbox, checked) -> showBackground = checked)
+                .selected(true)
+                .onValueChange((checkbox, checked) -> showBackground = checked)
                 .build();
         showBackground = true;
 
-        showElementCheckBox = CheckboxWidget.builder(Text.literal("Show Element"), minecraftClient.textRenderer)
+        showElementCheckBox = Checkbox.builder(Component.literal("Show Element"), minecraft.font)
                 .pos(
-                        getX() + width / 3 + minecraftClient.textRenderer.getWidth("Scale") + PADDING_HALF + 40 + PADDING_HALF
-                                + minecraftClient.textRenderer.getWidth("Show Background") + PADDING_HALF + 16 + PADDING_HALF,
+                        getX() + width / 3 + minecraft.font.width("Scale") + PADDING_HALF + 40 + PADDING_HALF
+                                + minecraft.font.width("Show Background") + PADDING_HALF + 16 + PADDING_HALF,
                         getY() + headerHeight + PADDING
                 )
-                .checked(true)
-                .callback((checkbox, checked) -> showElement = checked)
+                .selected(true)
+                .onValueChange((checkbox, checked) -> showElement = checked)
                 .build();
         showElement = true;
     }
@@ -132,21 +132,21 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         newName = id;
         scale = customHud.scale;
         currentSelectedHud = id;
-        header = Text.literal(id);
-        idTextField.setText(id);
-        idTextField.setPlaceholder(Text.literal(id));
-        scaleTextField.setText(String.format(Locale.US, "%f", customHud.scale));
-        scaleTextField.setPlaceholder(Text.literal(String.format(Locale.US, "%f", customHud.scale)));
+        header = Component.literal(id);
+        idEditBox.setValue(id);
+        idEditBox.setHint(Component.literal(id));
+        scaleEditBox.setValue(String.format(Locale.US, "%f", customHud.scale));
+        scaleEditBox.setHint(Component.literal(String.format(Locale.US, "%f", customHud.scale)));
         showBackground = customHud.showBackground;
-        if(customHud.showBackground != showBackgroundCheckBox.isChecked()) {
+        if(customHud.showBackground != showBackgroundCheckBox.selected()) {
             showBackgroundCheckBox.onPress(null);
         }
         showElement = customHud.showElement;
-        if(customHud.showElement != showElementCheckBox.isChecked()) {
+        if(customHud.showElement != showElementCheckBox.selected()) {
             showElementCheckBox.onPress(null);
         }
 
-        customHud.textLines.forEach(line -> this.addEntry(new LineEntry(
+        customHud.stringLines.forEach(line -> this.addEntry(new LineEntry(
                 line.value1(),
                 line.value2(),
                 line.value3(),
@@ -210,52 +210,52 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
         scale = 1.0f;
         currentSelectedHud = null;
         showBackground = true;
-        if(!showBackgroundCheckBox.isChecked()) {
+        if(!showBackgroundCheckBox.selected()) {
             showBackgroundCheckBox.onPress(null);
         }
         showElement = true;
-        if(!showElementCheckBox.isChecked()) {
+        if(!showElementCheckBox.selected()) {
             showElementCheckBox.onPress(null);
         }
-        scaleTextField.setText("1.0");
-        scaleTextField.setPlaceholder(Text.literal("1.0"));
-        idTextField.setText("");
-        idTextField.setPlaceholder(Text.literal(""));
-        header = Text.literal("No Hud Selected");
+        scaleEditBox.setValue("1.0");
+        scaleEditBox.setHint(Component.literal("1.0"));
+        idEditBox.setValue("");
+        idEditBox.setHint(Component.literal(""));
+        header = Component.literal("No Hud Selected");
 
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        int entryStartY = getY() + headerHeight + PADDING + textFieldHeight + PADDING;
+    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        int entryStartY = getY() + headerHeight + PADDING + editBoxHeight + PADDING;
 
-        context.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
-        context.drawHorizontalLine(getX(), getRight(), getBottom(), Colors.GRAY);
-        context.drawVerticalLine(getX(), 0, getBottom(), Colors.GRAY);
-        context.drawCenteredTextWithShadow(
-                minecraftClient.textRenderer,
+        guiGraphics.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
+        guiGraphics.hLine(getX(), getRight(), getBottom(), CommonColors.GRAY);
+        guiGraphics.vLine(getX(), 0, getBottom(), CommonColors.GRAY);
+        guiGraphics.drawCenteredString(
+                minecraft.font,
                 header,
                 getX() + width / 2,
                 getY() + PADDING,
-                Colors.WHITE
+                CommonColors.WHITE
         );
 
         // Draw scale text
-        context.drawText(
-                minecraftClient.textRenderer,
+        guiGraphics.drawString(
+                minecraft.font,
                 "Scale",
                 getX() + width / 3,
-                getY() + PADDING + headerHeight + headerHeight / 2 - minecraftClient.textRenderer.fontHeight / 2,
-                Colors.WHITE,
+                getY() + PADDING + headerHeight + headerHeight / 2 - minecraft.font.lineHeight / 2,
+                CommonColors.WHITE,
                 true
         );
 
-        idTextField.render(context, mouseX, mouseY, delta);
-        scaleTextField.render(context, mouseX, mouseY, delta);
-        showBackgroundCheckBox.render(context, mouseX, mouseY, delta);
-        showElementCheckBox.render(context, mouseX, mouseY, delta);
+        idEditBox.render(guiGraphics, mouseX, mouseY, delta);
+        scaleEditBox.render(guiGraphics, mouseX, mouseY, delta);
+        showBackgroundCheckBox.render(guiGraphics, mouseX, mouseY, delta);
+        showElementCheckBox.render(guiGraphics, mouseX, mouseY, delta);
 
-        context.enableScissor(
+        guiGraphics.enableScissor(
                 getX() + PADDING,
                 entryStartY,
                 getRight() - PADDING,
@@ -271,11 +271,11 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
 
             LineEntry entry = entries.get(i);
             entry.setPosition(getX() + PADDING, entryY, width - PADDING - PADDING - scrollbarWidth - PADDING);
-            entry.render(context, mouseX, mouseY, delta);
+            entry.render(guiGraphics, mouseX, mouseY, delta);
         }
 
         int totalContentHeight = entries.size() * LineEntry.HEIGHT;
-        int visibleHeight = height - PADDING - PADDING - headerHeight - textFieldHeight - PADDING * 2;
+        int visibleHeight = height - PADDING - PADDING - headerHeight - editBoxHeight - PADDING * 2;
 
         if (totalContentHeight > visibleHeight) {
             int scrollbarHeight = Math.max(10, visibleHeight * visibleHeight / totalContentHeight);
@@ -284,21 +284,21 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
 
             int scrollbarX = getX() + width - PADDING - scrollbarWidth;
 
-            context.fill(
+            guiGraphics.fill(
                     scrollbarX,
                     scrollbarY,
                     scrollbarX + scrollbarWidth,
                     scrollbarY + scrollbarHeight,
-                    Colors.LIGHT_GRAY
+                    CommonColors.LIGHT_GRAY
             );
         }
 
-        context.disableScissor();
+        guiGraphics.disableScissor();
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean doubled) {
-        if (!isMouseOver(click.x(), click.y())) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
+        if (!isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y())) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
@@ -306,61 +306,61 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             return false;
         }
 
-        if (idTextField.mouseClicked(click, doubled)) {
+        if (idEditBox.mouseClicked(mouseButtonEvent, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
             showBackgroundCheckBox.setFocused(false);
             showElementCheckBox.setFocused(false);
-            idTextField.setFocused(true);
-            scaleTextField.setFocused(false);
+            idEditBox.setFocused(true);
+            scaleEditBox.setFocused(false);
             return true;
         }
 
-        if (scaleTextField.mouseClicked(click, doubled)) {
+        if (scaleEditBox.mouseClicked(mouseButtonEvent, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
             showBackgroundCheckBox.setFocused(false);
             showElementCheckBox.setFocused(false);
-            scaleTextField.setFocused(true);
-            idTextField.setFocused(false);
+            scaleEditBox.setFocused(true);
+            idEditBox.setFocused(false);
             return true;
         }
 
-        if(showBackgroundCheckBox.mouseClicked(click, doubled)) {
+        if(showBackgroundCheckBox.mouseClicked(mouseButtonEvent, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
             showBackgroundCheckBox.setFocused(true);
             showElementCheckBox.setFocused(false);
-            scaleTextField.setFocused(false);
-            idTextField.setFocused(false);
+            scaleEditBox.setFocused(false);
+            idEditBox.setFocused(false);
             return true;
         }
 
-        if(showElementCheckBox.mouseClicked(click, doubled)) {
+        if(showElementCheckBox.mouseClicked(mouseButtonEvent, doubled)) {
             if (focusedEntry != null) {
                 focusedEntry.setFocused(false);
                 focusedEntry = null;
             }
             showBackgroundCheckBox.setFocused(false);
             showElementCheckBox.setFocused(true);
-            scaleTextField.setFocused(false);
-            idTextField.setFocused(false);
+            scaleEditBox.setFocused(false);
+            idEditBox.setFocused(false);
             return true;
         }
 
         for (LineEntry entry : entries) {
-            if (entry.mouseClicked(click, doubled)) {
+            if (entry.mouseClicked(mouseButtonEvent, doubled)) {
                 if (focusedEntry != null && focusedEntry != entry) focusedEntry.setFocused(false);
                 focusedEntry = entry;
                 entry.setFocused(true);
-                idTextField.setFocused(false);
-                scaleTextField.setFocused(false);
+                idEditBox.setFocused(false);
+                scaleEditBox.setFocused(false);
                 showBackgroundCheckBox.setFocused(false);
                 showElementCheckBox.setFocused(false);
                 return true;
@@ -371,27 +371,27 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
-        if (idTextField.isFocused()) return idTextField.keyPressed(input);
-        if (scaleTextField.isFocused()) return scaleTextField.keyPressed(input);
-        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.keyPressed(input);
-        if (showElementCheckBox.isFocused()) return showElementCheckBox.keyPressed(input);
-        if (focusedEntry != null) return focusedEntry.keyPressed(input);
+    public boolean keyPressed(@NotNull KeyEvent keyEvent) {
+        if (idEditBox.isFocused()) return idEditBox.keyPressed(keyEvent);
+        if (scaleEditBox.isFocused()) return scaleEditBox.keyPressed(keyEvent);
+        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.keyPressed(keyEvent);
+        if (showElementCheckBox.isFocused()) return showElementCheckBox.keyPressed(keyEvent);
+        if (focusedEntry != null) return focusedEntry.keyPressed(keyEvent);
         return false;
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
-        if (idTextField.isFocused()) return idTextField.charTyped(input);
-        if (scaleTextField.isFocused()) return scaleTextField.charTyped(input);
-        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.charTyped(input);
-        if (showElementCheckBox.isFocused()) return showElementCheckBox.charTyped(input);
-        if (focusedEntry != null) return focusedEntry.charTyped(input);
+    public boolean charTyped(@NotNull CharacterEvent characterEvent) {
+        if (idEditBox.isFocused()) return idEditBox.charTyped(characterEvent);
+        if (scaleEditBox.isFocused()) return scaleEditBox.charTyped(characterEvent);
+        if (showBackgroundCheckBox.isFocused()) return showBackgroundCheckBox.charTyped(characterEvent);
+        if (showElementCheckBox.isFocused()) return showElementCheckBox.charTyped(characterEvent);
+        if (focusedEntry != null) return focusedEntry.charTyped(characterEvent);
         return false;
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
 
     }
 
@@ -401,32 +401,32 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
 
         scrollOffset -= (int) (verticalAmount * 10);
 
-        int visibleHeight = height - PADDING - PADDING - headerHeight - textFieldHeight - PADDING * 2;
+        int visibleHeight = height - PADDING - PADDING - headerHeight - editBoxHeight - PADDING * 2;
         int totalContentHeight = entries.size() * LineEntry.HEIGHT;
         int maxScroll = Math.max(0, totalContentHeight - visibleHeight);
-        scrollOffset = MathHelper.clamp(scrollOffset, 0, maxScroll);
+        scrollOffset = Mth.clamp(scrollOffset, 0, maxScroll);
 
         return true;
     }
 
     public static class LineEntry {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        Minecraft minecraftClient = Minecraft.getInstance();
 
-        private final TextFieldWidget textFieldWidget;
-        private final CheckboxWidget isCentreWidget;
-        private final CheckboxWidget isSmallWidget;
-        private final ButtonWidget addButton;
-        private final ButtonWidget deleteButton;
+        private final EditBox editBoxWidget;
+        private final Checkbox isCentreWidget;
+        private final Checkbox isSmallWidget;
+        private final Button addButton;
+        private final Button deleteButton;
 
         public String lineString;
         public boolean isCentre;
         public boolean isSmall;
         public int width;
 
-        private static final String isCentreText = "Centered";
-        private static final int CENTRE_TEXT_SPACING = MinecraftClient.getInstance().textRenderer.getWidth(isCentreText);
-        private static final String isSmallText = "Small Text";
-        private static final int SMALL_TEXT_SPACING = MinecraftClient.getInstance().textRenderer.getWidth(isSmallText);
+        private static final String isCentreString = "Centered";
+        private static final int CENTRE_TEXT_SPACING = Minecraft.getInstance().font.width(isCentreString);
+        private static final String isSmallString = "Small Text";
+        private static final int SMALL_TEXT_SPACING = Minecraft.getInstance().font.width(isSmallString);
 
         public static final int HEIGHT = 24;
         private static final int SPACING = 6;
@@ -439,57 +439,57 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             isSmall = defaultIsSmall;
             this.width = width;
 
-            textFieldWidget = new TextFieldWidget(
-                    minecraftClient.textRenderer,
+            editBoxWidget = new EditBox(
+                    minecraftClient.font,
                     0, 0,
                     0, 20,
-                    Text.empty()
+                    Component.empty()
             );
-            textFieldWidget.setMaxLength(Integer.MAX_VALUE);
+            editBoxWidget.setMaxLength(Integer.MAX_VALUE);
 
-            textFieldWidget.setText(defaultLine);
-            int textWidth = width - PADDING - PADDING - 6 - PADDING - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - 20;
-            textFieldWidget.setPlaceholder(Text.literal(
-                    minecraftClient.textRenderer.getWidth(defaultLine) > textWidth
-                    ? minecraftClient.textRenderer.trimToWidth(defaultLine, textWidth) + "..."
+            editBoxWidget.setValue(defaultLine);
+            int stringWidth = width - PADDING - PADDING - 6 - PADDING - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - 20;
+            editBoxWidget.setHint(Component.literal(
+                    minecraftClient.font.width(defaultLine) > stringWidth
+                    ? minecraftClient.font.plainSubstrByWidth(defaultLine, stringWidth) + "..."
                     : defaultLine
             ));
 
-            textFieldWidget.setChangedListener(s -> {
+            editBoxWidget.setResponder(s -> {
                 lineString = s;
-                textFieldWidget.setPlaceholder(Text.literal(s));
+                editBoxWidget.setHint(Component.literal(s));
             });
 
-            isCentreWidget = CheckboxWidget.builder(Text.literal(isCentreText), minecraftClient.textRenderer)
-                    .checked(defaultIsCentre)
-                    .callback((checkbox, checked) -> isCentre = checked)
+            isCentreWidget = Checkbox.builder(Component.literal(isCentreString), minecraftClient.font)
+                    .selected(defaultIsCentre)
+                    .onValueChange((checkbox, checked) -> isCentre = checked)
                     .build();
 
 
-            isSmallWidget = CheckboxWidget.builder(Text.literal(isSmallText), minecraftClient.textRenderer)
-                    .checked(defaultIsSmall)
-                    .callback((checkbox, checked) -> isSmall = checked)
+            isSmallWidget = Checkbox.builder(Component.literal(isSmallString), minecraftClient.font)
+                    .selected(defaultIsSmall)
+                    .onValueChange((checkbox, checked) -> isSmall = checked)
                     .build();
 
-            addButton = ButtonWidget.builder(Text.literal("Add"),
+            addButton = Button.builder(Component.literal("Add"),
                             (buttonWidget) -> callback.onAdd(this))
                     .size(BUTTON_SIZE, 20)
-                    .tooltip(Tooltip.of(Text.literal("Add line")))
+                    .tooltip(Tooltip.create(Component.literal("Add line")))
                     .build();
 
-            deleteButton = ButtonWidget.builder(Text.literal("Del"),
+            deleteButton = Button.builder(Component.literal("Del"),
                     (buttonWidget) -> callback.onDelete(this))
                     .size(BUTTON_SIZE, 20)
-                    .tooltip(Tooltip.of(Text.literal("Delete line")))
+                    .tooltip(Tooltip.create(Component.literal("Delete line")))
                     .build();
         }
 
         public void setPosition(int x, int y, int fullWidth) {
 
-            int textWidth = fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - SPACING;
+            int stringWidth = fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - SPACING;
 
-            textFieldWidget.setPosition(x, y);
-            textFieldWidget.setWidth(textWidth);
+            editBoxWidget.setPosition(x, y);
+            editBoxWidget.setWidth(stringWidth);
 
             isCentreWidget.setPosition(
                     x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING,
@@ -514,42 +514,42 @@ public class EditCustomHUDWidget extends ClickableWidget implements ScreenConsta
             );
         }
 
-        public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-            textFieldWidget.render(context, mouseX, mouseY, delta);
-            isCentreWidget.render(context, mouseX, mouseY, delta);
-            isSmallWidget.render(context, mouseX, mouseY, delta);
-            addButton.render(context, mouseX, mouseY, delta);
-            deleteButton.render(context, mouseX, mouseY, delta);
+        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+            editBoxWidget.render(guiGraphics, mouseX, mouseY, delta);
+            isCentreWidget.render(guiGraphics, mouseX, mouseY, delta);
+            isSmallWidget.render(guiGraphics, mouseX, mouseY, delta);
+            addButton.render(guiGraphics, mouseX, mouseY, delta);
+            deleteButton.render(guiGraphics, mouseX, mouseY, delta);
 
-            this.renderTooltips(context, mouseX, mouseY, delta);
+            this.renderTooltips(guiGraphics, mouseX, mouseY, delta);
         }
 
-        private void renderTooltips(DrawContext context, int mouseX, int mouseY, float delta) {
-            if(textFieldWidget.isFocused()
-                    && textFieldWidget.isMouseOver(mouseX, mouseY)) {
-                context.drawTooltip(minecraftClient.textRenderer, Text.literal("You can also use placeholders. See wiki"), mouseX, mouseY);
+        private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+            if(editBoxWidget.isFocused()
+                    && editBoxWidget.isMouseOver(mouseX, mouseY)) {
+                guiGraphics.setTooltipForNextFrame(minecraftClient.font, Component.literal("You can also use placeholders. See wiki"), mouseX, mouseY);
             }
         }
 
-        public boolean mouseClicked(Click click, boolean doubled) {
-            if (textFieldWidget.mouseClicked(click, doubled)) return true;
-            if (isCentreWidget.mouseClicked(click, doubled)) return false;
-            if (isSmallWidget.mouseClicked(click, doubled)) return false;
-            if(addButton.mouseClicked(click, doubled)) return false;
-            if(deleteButton.mouseClicked(click, doubled)) return false;
+        public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
+            if (editBoxWidget.mouseClicked(mouseButtonEvent, doubled)) return true;
+            if (isCentreWidget.mouseClicked(mouseButtonEvent, doubled)) return false;
+            if (isSmallWidget.mouseClicked(mouseButtonEvent, doubled)) return false;
+            if(addButton.mouseClicked(mouseButtonEvent, doubled)) return false;
+            if(deleteButton.mouseClicked(mouseButtonEvent, doubled)) return false;
             return false;
         }
 
         public void setFocused(boolean focused) {
-            textFieldWidget.setFocused(focused);
+            editBoxWidget.setFocused(focused);
         }
 
-        public boolean keyPressed(KeyInput input) {
-            return textFieldWidget.keyPressed(input);
+        public boolean keyPressed(KeyEvent keyEvent) {
+            return editBoxWidget.keyPressed(keyEvent);
         }
 
-        public boolean charTyped(CharInput input) {
-            return textFieldWidget.charTyped(input);
+        public boolean charTyped(CharacterEvent characterEvent) {
+            return editBoxWidget.charTyped(characterEvent);
         }
 
 

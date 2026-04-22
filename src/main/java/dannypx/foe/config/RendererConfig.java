@@ -10,7 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 @Version(version = 4)
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
     public RendererConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "renderer_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "renderer_config"));
     }
 
     @Name("Item Marker")
@@ -44,26 +44,26 @@ public class RendererConfig extends Config {
     @Name("Show pet names")
     public ValidatedBoolean showPetName = new ValidatedBoolean(true);
 
-    @Name("Use the 3D bobber texture")
-    public ValidatedBoolean showNewBobber = new ValidatedBoolean(true);
+    @Name("Use the 3D fishing hook texture")
+    public ValidatedBoolean showNewFishingHook = new ValidatedBoolean(true);
 
-    @Name("Bobber Light")
-    @Desc("§7This is the light that emits from the bobber")
-    public ConfigGroup bobberLightGroup = new ConfigGroup("bobber_light_renderer_group");
+    @Name("Fishing Hook Light")
+    @Desc("§7This is the light that emits from the fishing hook")
+    public ConfigGroup fishingHookLightGroup = new ConfigGroup("fishing_hook_light_renderer_group");
 
-    @Name("Emit light from bobber")
-    public ValidatedBoolean showLightBobber = new ValidatedBoolean(true);
+    @Name("Emit light from fishing hook")
+    public ValidatedBoolean showLightFishingHook = new ValidatedBoolean(true);
 
     @Name("Light Radius")
-    public ValidatedInt lightRadiusBobber = new ValidatedInt(5, 15, 0, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedInt lightRadiusFishingHook = new ValidatedInt(5, 15, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @ConfigGroup.Pop
     @Name("Max Light Level")
-    public ValidatedInt maxLightLevelBobber = new ValidatedInt(10, 15, 0, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedInt maxLightLevelFishingHook = new ValidatedInt(10, 15, 0, ValidatedNumber.WidgetType.SLIDER);
 
     @ConfigGroup.Pop
-    @Name("Show bait on bobber")
-    public ValidatedBoolean showBaitOnBobber = new ValidatedBoolean(true);
+    @Name("Show bait on fishing hook")
+    public ValidatedBoolean showBaitOnFishingHook = new ValidatedBoolean(true);
 
     @Name("Hide armor on players")
     public ValidatedBoolean hideArmor = new ValidatedBoolean(false);

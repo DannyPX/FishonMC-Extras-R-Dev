@@ -1,9 +1,9 @@
 package dannypx.foe.screens.element;
 
 import dannypx.foe.type.Alignment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.Text;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 public abstract class Element {
     public int width;
@@ -11,10 +11,10 @@ public abstract class Element {
     public Alignment alignment;
     public float xPos;
     public float yPos;
-    public Text message;
+    public Component message;
     public final boolean isCopy;
 
-    protected Element(int width, int height, float xPos, float yPos, Alignment alignment, Text message, boolean isCopy) {
+    protected Element(int width, int height, float xPos, float yPos, Alignment alignment, Component message, boolean isCopy) {
         this.width = width;
         this.height = height;
         this.xPos = xPos;
@@ -24,7 +24,7 @@ public abstract class Element {
         this.isCopy = isCopy;
     }
 
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {}
+    public void render(GuiGraphics drawContext, DeltaTracker tickCounter) {}
 
     public void setXPercent(float percent) {
         xPos = percent;

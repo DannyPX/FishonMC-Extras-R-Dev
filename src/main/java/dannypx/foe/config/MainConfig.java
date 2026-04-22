@@ -8,7 +8,7 @@ import me.fzzyhmstrs.fzzy_config.api.FileType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 @Version(version = 1)
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @IgnoreVisibility
 public class MainConfig extends Config {
     public MainConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "main_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "main_config"));
     }
 
     @Name("§7§oDev§8§o: §f§oEnable Mod")

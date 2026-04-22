@@ -3,8 +3,7 @@ package dannypx.foe.handler.logic;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.type.tuple.Pair;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.text.MutableText;
-
+import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +56,7 @@ public class CodeExecuterHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
         );
     }

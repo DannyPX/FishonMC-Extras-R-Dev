@@ -1,16 +1,15 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class ConnectionHandler extends Handler {
     private static ConnectionHandler INSTANCE = new ConnectionHandler();
@@ -34,7 +33,7 @@ public class ConnectionHandler extends Handler {
         return wasOnServer;
     }
 
-    public Pair<Boolean, CustomTextValue> getConnection(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getConnection(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(is_on_server|was_on_server)$");
 
@@ -42,8 +41,8 @@ public class ConnectionHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "is_on_server" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isOnServer())));
-                    case "was_on_server" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(wasOnServer())));
+                    case "is_on_server" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isOnServer())));
+                    case "was_on_server" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(wasOnServer())));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -72,20 +71,20 @@ public class ConnectionHandler extends Handler {
     }
 
     private boolean checkFOMCAddress() {
-        ServerInfo serverEntry = minecraftClient.getCurrentServerEntry();
-        if(serverEntry != null) {
-            return serverEntry.address.equalsIgnoreCase("play.fishonmc.net")
-                    || serverEntry.address.equalsIgnoreCase("asia.fishonmc.net")
-                    || serverEntry.address.equalsIgnoreCase("fishonmc.net");
+        ServerData serverData = minecraft.getCurrentServer();
+        if(serverData != null) {
+            return serverData.ip.equalsIgnoreCase("play.fishonmc.net")
+                    || serverData.ip.equalsIgnoreCase("asia.fishonmc.net")
+                    || serverData.ip.equalsIgnoreCase("fishonmc.net");
         } return false;
     }
     //endregion
 
     //region Dev
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "isOnServer", Pair.of(TextHelper.literal(isOnServer()), Text.empty()),
-                "wasOnServer", Pair.of(TextHelper.literal(wasOnServer()), Text.empty())
+                "isOnServer", Pair.of(ComponentHelper.literal(isOnServer()), Component.empty()),
+                "wasOnServer", Pair.of(ComponentHelper.literal(wasOnServer()), Component.empty())
         );
     }
     //endregion

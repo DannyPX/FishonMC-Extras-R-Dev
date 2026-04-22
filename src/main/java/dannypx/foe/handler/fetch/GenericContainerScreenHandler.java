@@ -8,15 +8,14 @@ import dannypx.foe.handler.renderer.PersonalVaultScreenRenderHandler;
 import dannypx.foe.handler.renderer.PresetsScreenRenderHandler;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 import java.util.Objects;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class GenericContainerScreenHandler extends Handler {
     private static GenericContainerScreenHandler INSTANCE = new GenericContainerScreenHandler();
@@ -46,7 +45,7 @@ public class GenericContainerScreenHandler extends Handler {
     //endregion
 
     //region Methods
-    public void init(GenericContainerScreen genericContainerScreen) {
+    public void init(ContainerScreen genericContainerScreen) {
         if(!Configs.handlerConfig.genericContainerScreenHandler.get()) {
             return;
         }
@@ -54,13 +53,13 @@ public class GenericContainerScreenHandler extends Handler {
         this.checkIsOfTitle(genericContainerScreen);
     }
 
-    private void checkIsOfTitle(GenericContainerScreen genericContainerScreen) {
+    private void checkIsOfTitle(ContainerScreen genericContainerScreen) {
         this.lastContainerScreen = genericContainerScreen.getTitle().getString();
 
         if (Objects.equals(genericContainerScreen.getTitle().getString(), QUEST_SCREEN_CONTAINER)) {
-            QuestScreenHandler.instance().checkQuests(genericContainerScreen.getScreenHandler());
+            QuestScreenHandler.instance().checkQuests(genericContainerScreen.getMenu());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STATS_SCREEN_CONTAINER)) {
-            StatsScreenHandler.instance().checkStats(genericContainerScreen.getScreenHandler());
+            StatsScreenHandler.instance().checkStats(genericContainerScreen.getMenu());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
             AuctionHouseScreenRenderHandler.instance().init(genericContainerScreen);
         } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
@@ -68,7 +67,7 @@ public class GenericContainerScreenHandler extends Handler {
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STORAGE_SCREEN_CONTAINER)) {
             ChestScreenRenderHandler.instance().init(genericContainerScreen);
         } else if (genericContainerScreen.getTitle().getString().startsWith(ARMOR_MENU_SCREEN_CONTAINER)) {
-            ArmorRollScreenHandler.instance().checkArmorRolls(genericContainerScreen.getScreenHandler());
+            ArmorRollScreenHandler.instance().checkArmorRolls(genericContainerScreen.getMenu());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), PRESETS_SCREEN_CONTAINER)) {
             PresetsScreenRenderHandler.instance().init(genericContainerScreen);
         } else if(Objects.equals(genericContainerScreen.getTitle().getString(), GENERIC_SCREEN_CONTAINER)) {
@@ -76,13 +75,13 @@ public class GenericContainerScreenHandler extends Handler {
         }
     }
 
-    private void checkIsOfItem(GenericContainerScreen genericContainerScreen) {
+    private void checkIsOfItem(ContainerScreen genericContainerScreen) {
         CodeExecuterHandler.runLater(2, () -> {
-            net.minecraft.screen.GenericContainerScreenHandler genericContainerScreenHandler = genericContainerScreen.getScreenHandler();
+            net.minecraft.world.inventory.ChestMenu genericContainerScreenHandler = genericContainerScreen.getMenu();
 
             // Crew Info
-            ItemStack crewInfoStack = genericContainerScreenHandler.getSlot(13).getStack();
-            if(Objects.equals(crewInfoStack.getName().getString(), "Crew Info")) {
+            ItemStack crewInfoStack = genericContainerScreenHandler.getSlot(13).getItem();
+            if(Objects.equals(crewInfoStack.getHoverName().getString(), "Crew Info")) {
                 CrewScreenHandler.instance().checkCrewInfo(genericContainerScreenHandler);
             }
         });
@@ -91,14 +90,14 @@ public class GenericContainerScreenHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "lastContainerScreen", Pair.of(Text.literal(getLastContainerScreen()), Text.empty())
+                "lastContainerScreen", Pair.of(Component.literal(getLastContainerScreen()), Component.empty())
         );
     }
 
-    public void render(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-        if(screen instanceof GenericContainerScreen genericContainerScreen) {
+    public void render(Screen screen, GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
+        if(screen instanceof ContainerScreen genericContainerScreen) {
             if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
                 AuctionHouseScreenRenderHandler.instance().renderButtonHelp(drawContext, true, true);
             } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {

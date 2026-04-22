@@ -2,11 +2,10 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class LoggerHandler {
     //region Methods
@@ -22,21 +21,21 @@ public class LoggerHandler {
         FishOnMCExtras.LOGGER.info("[FoER] {}", m);
     }
 
-    public static void info(Text m) {
+    public static void info(Component m) {
         LoggerHandler.info(m.getString());
     }
 
     public static void _debug(String m) {
-        _debug(Text.literal(m).formatted(Formatting.YELLOW));
+        _debug(Component.literal(m).withStyle(ChatFormatting.YELLOW));
     }
 
     public static void _debug(String m, ItemStack item) {
-        _debug(Text.literal(m).formatted(Formatting.YELLOW), item);
+        _debug(Component.literal(m).withStyle(ChatFormatting.YELLOW), item);
     }
 
-    public static void _debug(Text m) {
+    public static void _debug(Component m) {
         if(Configs.debugConfig.debugMode.get()) {
-            LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
+            LoggerHandler.info(Component.empty().append("DEBUG: ").append(m));
 
             if(Configs.debugConfig.showNotification.get()) {
                 NotifierHandler.instance().addNotification(
@@ -47,9 +46,9 @@ public class LoggerHandler {
         }
     }
 
-    public static void _debug(Text m, ItemStack item) {
+    public static void _debug(Component m, ItemStack item) {
         if(Configs.debugConfig.debugMode.get()) {
-            LoggerHandler.info(Text.empty().append("DEBUG: ").append(m));
+            LoggerHandler.info(Component.empty().append("DEBUG: ").append(m));
 
             if(Configs.debugConfig.showNotification.get()) {
                 NotifierHandler.instance().addNotification(

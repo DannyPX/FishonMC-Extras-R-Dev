@@ -1,18 +1,18 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.item.FishingRodNbtObject;
+import dannypx.foe.item.FishingRodTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class LoadingHandler extends Handler {
     private static LoadingHandler INSTANCE = new LoadingHandler();
@@ -40,7 +40,7 @@ public class LoadingHandler extends Handler {
         isError = error;
     }
 
-    public Pair<Boolean, CustomTextValue> getLoading(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getLoading(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(is_loading_done|is_error)$");
 
@@ -48,8 +48,8 @@ public class LoadingHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "is_loading_done" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isLoadingDone())));
-                    case "is_error" -> PlaceholderHandler.getTextValue(new StringValue(String.valueOf(isError())));
+                    case "is_loading_done" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isLoadingDone())));
+                    case "is_error" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isError())));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -60,8 +60,8 @@ public class LoadingHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(minecraftClient.player != null) {
-            ItemStack firstSlot = minecraftClient.player.getInventory().getMainStacks().getFirst();
+        if(minecraft.player != null) {
+            ItemStack firstSlot = minecraft.player.getInventory().getNonEquipmentItems().getFirst();
 
             if(this.checkFishingRodLoaded(firstSlot)) {
                 isLoadingDone = this.scanFish();
@@ -85,7 +85,7 @@ public class LoadingHandler extends Handler {
     }
 
     private boolean checkFishingRodLoaded(ItemStack itemStack) {
-        Pair<Boolean, @Nullable FishingRodNbtObject> validatedFishingRod = ValidateItem.isFishingRod(itemStack);
+        Pair<Boolean, @Nullable FishingRodTagObject> validatedFishingRod = ValidateItem.isFishingRod(itemStack);
 
         if(validatedFishingRod.value1()) {
             InventoryHandler.instance().setCurrentFishingRod(validatedFishingRod.value2());
@@ -100,9 +100,9 @@ public class LoadingHandler extends Handler {
     //endregion
 
     //region Dev
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "isLoadingDone", Pair.of(Text.literal(Boolean.toString(isLoadingDone())), Text.empty())
+                "isLoadingDone", Pair.of(Component.literal(Boolean.toString(isLoadingDone())), Component.empty())
         );
     }
     //endregion

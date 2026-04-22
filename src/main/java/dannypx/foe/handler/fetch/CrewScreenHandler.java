@@ -6,14 +6,13 @@ import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.store.CrewDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class CrewScreenHandler extends Handler {
     private static CrewScreenHandler INSTANCE = new CrewScreenHandler();
@@ -29,25 +28,25 @@ public class CrewScreenHandler extends Handler {
     //endregion
 
     //region Methods
-    public void checkCrewInfo(GenericContainerScreenHandler genericContainerScreenHandler) {
-        ItemStack crewInfoStack = genericContainerScreenHandler.getSlot(13).getStack();
+    public void checkCrewInfo(ChestMenu chestMenu) {
+        ItemStack crewInfoStack = chestMenu.getSlot(13).getItem();
         if(!ScoreboardHandler.instance().getCrew().getString().isBlank()
-                && crewInfoStack.get(DataComponentTypes.LORE) != null
+                && crewInfoStack.get(DataComponents.LORE) != null
         ) {
-            List<Text> textList = crewInfoStack.get(DataComponentTypes.LORE).lines();
-            if(textList.size() > 3
-                    && textList.get(2).getSiblings().size() > 4
-                    && Objects.equals(textList.get(2).getSiblings().get(3).getString(), ScoreboardHandler.instance().getCrew().getString())
+            List<Component> componentList = crewInfoStack.get(DataComponents.LORE).lines();
+            if(componentList.size() > 3
+                    && componentList.get(2).getSiblings().size() > 4
+                    && Objects.equals(componentList.get(2).getSiblings().get(3).getString(), ScoreboardHandler.instance().getCrew().getString())
             ) {
                 Map<UUID, Pair<String, ItemStack>> crewMembers = new HashMap<>();
 
                 for (int i = 28; i < 44; i++) {
-                    ItemStack itemStack = genericContainerScreenHandler.getSlot(i).getStack();
+                    ItemStack itemStack = chestMenu.getSlot(i).getItem();
                     if(itemStack.getItem() == Items.PLAYER_HEAD
-                            && itemStack.get(DataComponentTypes.PROFILE) != null
-                            && itemStack.get(DataComponentTypes.PROFILE).getGameProfile().id() != null
+                            && itemStack.get(DataComponents.PROFILE) != null
+                            && itemStack.get(DataComponents.PROFILE).partialProfile().id() != null
                     ) {
-                        crewMembers.put(itemStack.get(DataComponentTypes.PROFILE).getGameProfile().id(), Pair.of(itemStack.get(DataComponentTypes.PROFILE).getGameProfile().name(), itemStack));
+                        crewMembers.put(itemStack.get(DataComponents.PROFILE).partialProfile().id(), Pair.of(itemStack.get(DataComponents.PROFILE).partialProfile().name(), itemStack));
                     }
                 }
 
@@ -69,9 +68,9 @@ public class CrewScreenHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "key", Pair.of(Text.literal("value"), Text.empty())
+                "key", Pair.of(Component.literal("value"), Component.empty())
         );
     }
     //endregion

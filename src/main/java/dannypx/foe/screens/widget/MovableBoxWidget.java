@@ -1,23 +1,23 @@
 package dannypx.foe.screens.widget;
 
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.screens.element.Element;
-import dannypx.foe.helper.DrawHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
 
-public class MovableBoxWidget extends ClickableWidget implements ScreenConstants {
-    private final MinecraftClient minecraftClient;
+public class MovableBoxWidget extends AbstractWidget implements ScreenConstants {
+    private final Minecraft minecraft;
     private final Callback callback;
     private final List<Alignment> alignmentList;
     private Element element;
@@ -27,12 +27,12 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     private int originalX;
     private int originalY;
 
-    public MovableBoxWidget(MinecraftClient minecraftClient,
+    public MovableBoxWidget(Minecraft minecraft,
                             Element element,
                             List<Alignment> alignmentList,
                             Callback callback) {
         super(1, 1, 1, 1, element.message);
-        this.minecraftClient = minecraftClient;
+        this.minecraft = minecraft;
         this.callback = callback;
         this.alignmentList = alignmentList;
         setup(element);
@@ -43,17 +43,17 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
         switch (element.alignment) {
             case LEFT, TOP_LEFT, BOTTOM_LEFT -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
+                this.setX(Math.round(minecraft.getWindow().getGuiScaledWidth() * element.xPos));
                 this.originalX = this.getX();
             }
             case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> {
-                this.setX(minecraftClient.getWindow().getScaledWidth()
-                        - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
-                this.originalX = minecraftClient.getWindow().getScaledWidth() - this.getX();
+                this.setX(minecraft.getWindow().getGuiScaledWidth()
+                        - Math.round(minecraft.getWindow().getGuiScaledWidth() * element.xPos));
+                this.originalX = minecraft.getWindow().getGuiScaledWidth() - this.getX();
                 this.setX(this.getX() - element.width);
             }
             case TOP, BOTTOM -> {
-                this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
+                this.setX(Math.round(minecraft.getWindow().getGuiScaledWidth() * element.xPos));
                 this.originalX = this.getX();
                 this.setX(this.getX() - (element.width / 2));
             }
@@ -61,17 +61,17 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
 
         switch (element.alignment) {
             case TOP_LEFT, TOP, TOP_RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
+                this.setY(Math.round(minecraft.getWindow().getGuiScaledHeight() * element.yPos));
                 this.originalY = this.getY();
             }
             case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> {
-                this.setY(minecraftClient.getWindow().getScaledHeight()
-                        - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
-                this.originalY = minecraftClient.getWindow().getScaledHeight() - this.getY();
+                this.setY(minecraft.getWindow().getGuiScaledHeight()
+                        - Math.round(minecraft.getWindow().getGuiScaledHeight() * element.yPos));
+                this.originalY = minecraft.getWindow().getGuiScaledHeight() - this.getY();
                 this.setY(this.getY() - element.height);
             }
             case LEFT, RIGHT -> {
-                this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
+                this.setY(Math.round(minecraft.getWindow().getGuiScaledHeight() * element.yPos));
                 this.originalY = this.getY();
                 this.setY(this.getY() - (element.height / 2));
             }
@@ -82,197 +82,197 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBox(context);
-        this.renderTooltip(context, mouseX, mouseY);
-        this.renderAlignment(context);
-        this.element.render(context, MinecraftClient.getInstance().getRenderTickCounter());
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.renderBox(guiGraphics);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.renderAlignment(guiGraphics);
+        this.element.render(guiGraphics, Minecraft.getInstance().getDeltaTracker());
     }
 
-    private void renderAlignment(DrawContext context) {
-        int screenWidth = minecraftClient.getWindow().getScaledWidth();
-        int screenHeight = minecraftClient.getWindow().getScaledHeight();
+    private void renderAlignment(GuiGraphics guiGraphics) {
+        int screenWidth = minecraft.getWindow().getGuiScaledWidth();
+        int screenHeight = minecraft.getWindow().getGuiScaledHeight();
 
         switch (element.alignment) {
             case TOP_LEFT -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1,
                         getY() - 1,
                         getX() + 1,
                         getY() + 1,
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() - 1, getY() - 1,
                         0,0,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case TOP_RIGHT -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1 + getWidth(),
                         getY() - 1,
                         getX() + 1 + getWidth(),
                         getY() + 1,
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() + 1 + getWidth(), getY() - 1,
                         screenWidth,0,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case BOTTOM_LEFT -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1,
                         getY() - 1 + getHeight(),
                         getX() + 1,
                         getY() + 1 + getHeight(),
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() - 1, getY() + 1 + getHeight(),
                         0, screenHeight,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case BOTTOM_RIGHT -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1 + getWidth(),
                         getY() - 1 + getHeight(),
                         getX() + 1 + getWidth(),
                         getY() + 1 + getHeight(),
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() + 1 + getWidth(), getY() + 1 + getHeight(),
                         screenWidth, screenHeight,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case TOP -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1 + (getWidth() / 2),
                         getY() - 1,
                         getX() + 1 + (getWidth() / 2),
                         getY() + 1,
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() + (getWidth() / 2), getY() - 1,
                         screenWidth / 2, 0,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case BOTTOM -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1 + (getWidth() / 2),
                         getY() - 1 + getHeight(),
                         getX() + 1 + (getWidth() / 2),
                         getY() + 1 + getHeight(),
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() + (getWidth() / 2), getY() + 1 + getHeight(),
                         screenWidth / 2, screenHeight,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case LEFT -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1,
                         getY() - 1 + (getHeight() / 2),
                         getX() + 1,
                         getY() + 1 + (getHeight() / 2),
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() - 1, getY() + (getHeight() / 2),
                         0, screenHeight / 2,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
             case RIGHT -> {
-                context.fill(
+                guiGraphics.fill(
                         getX() - 1 + getWidth(),
                         getY() - 1 + (getHeight() / 2),
                         getX() + 1 + getWidth(),
                         getY() + 1 + (getHeight() / 2),
-                        Colors.RED
+                        CommonColors.RED
                 );
 
-                DrawHelper.drawLine(context,
+                GuiGraphicsHelper.drawLine(guiGraphics,
                         getX() + 1 + getWidth(), getY() + (getHeight() / 2),
                         screenWidth, screenHeight / 2,
-                        Colors.RED
+                        CommonColors.RED
                 );
             }
         }
     }
 
-    private void renderTooltip(DrawContext context, int mouseX, int mouseY) {
+    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(this.isHovered()) {
-            List<Text> text = List.of(
-                    Text.literal(element.message.getString()).formatted(Formatting.BOLD, Formatting.GOLD),
-                    TextHelper.concat(Text.literal("X Position: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(Math.round(element.xPos * 100f)))),
-                    TextHelper.concat(Text.literal("Y Position: ").formatted(Formatting.GRAY),
-                            Text.literal(String.valueOf(Math.round(element.yPos * 100f)))),
-                    TextHelper.concat(Text.literal("Alignment: ").formatted(Formatting.GRAY),
-                            Text.literal(element.alignment.toString())),
-                    Text.empty(),
-                    Text.literal("Hold Left Click and Drag to change position").formatted(Formatting.ITALIC),
-                    Text.literal("Right Click to cycle Alignment").formatted(Formatting.ITALIC),
-                    Text.literal("Middle Click to open " + element.message.getString() + " config")
-                            .formatted(Formatting.ITALIC)
+            List<Component> text = List.of(
+                    Component.literal(element.message.getString()).withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD),
+                    ComponentHelper.concat(Component.literal("X Position: ").withStyle(ChatFormatting.GRAY),
+                            Component.literal(String.valueOf(Math.round(element.xPos * 100f)))),
+                    ComponentHelper.concat(Component.literal("Y Position: ").withStyle(ChatFormatting.GRAY),
+                            Component.literal(String.valueOf(Math.round(element.yPos * 100f)))),
+                    ComponentHelper.concat(Component.literal("Alignment: ").withStyle(ChatFormatting.GRAY),
+                            Component.literal(element.alignment.toString())),
+                    Component.empty(),
+                    Component.literal("Hold Left Click and Drag to change position").withStyle(ChatFormatting.ITALIC),
+                    Component.literal("Right Click to cycle Alignment").withStyle(ChatFormatting.ITALIC),
+                    Component.literal("Middle Click to open " + element.message.getString() + " config")
+                            .withStyle(ChatFormatting.ITALIC)
 
             );
 
-            context.drawTooltip(minecraftClient.textRenderer, text, mouseX, mouseY);
+            guiGraphics.setComponentTooltipForNextFrame(minecraft.font, text, mouseX, mouseY);
         }
     }
 
-    private void renderBox(DrawContext context) {
+    private void renderBox(GuiGraphics guiGraphics) {
         switch (element.alignment) {
-            case LEFT, TOP_LEFT, BOTTOM_LEFT -> DrawHelper.drawHorizontalGradient(context,
+            case LEFT, TOP_LEFT, BOTTOM_LEFT -> GuiGraphicsHelper.drawHorizontalGradient(guiGraphics,
                     getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY,
+                    this.isHovered() ? CommonColors.GRAY : CommonColors.DARK_GRAY,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555);
-            case RIGHT, TOP_RIGHT, BOTTOM_RIGHT -> DrawHelper.drawHorizontalGradient(context,
+            case RIGHT, TOP_RIGHT, BOTTOM_RIGHT -> GuiGraphicsHelper.drawHorizontalGradient(guiGraphics,
                     getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555,
-                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY);
-            case TOP -> context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
+                    this.isHovered() ? CommonColors.GRAY : CommonColors.DARK_GRAY);
+            case TOP -> guiGraphics.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
-                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY,
+                    this.isHovered() ? CommonColors.GRAY : CommonColors.DARK_GRAY,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555);
-            case BOTTOM -> context.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
+            case BOTTOM -> guiGraphics.fillGradient(getX() - PADDING_QUART, getY() - PADDING_QUART,
                     getX() + getWidth() + PADDING_QUART, getY() + getHeight() + PADDING_QUART,
                     this.isHovered() ? 0x00AAAAAA : 0x00555555,
-                    this.isHovered() ? Colors.GRAY : Colors.DARK_GRAY);
+                    this.isHovered() ? CommonColors.GRAY : CommonColors.DARK_GRAY);
         }
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    public void onClick(Click click, boolean doubled) {
+    public void onClick(MouseButtonEvent click, boolean doubled) {
         if (this.active && this.visible && this.isMouseOver(click.x(), click.y())) {
             if (click.button() == 0) {
-                this.playDownSound(MinecraftClient.getInstance().getSoundManager());
+                this.playDownSound(Minecraft.getInstance().getSoundManager());
                 this.onClick(click, doubled);
             } else if (click.button() == 1) {
-                this.playDownSound(MinecraftClient.getInstance().getSoundManager());
+                this.playDownSound(Minecraft.getInstance().getSoundManager());
 
                 element.alignment = this.nextAlignment();
                 this.setup(element);
@@ -286,11 +286,11 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
     }
 
     @Override
-    protected void onDrag(Click click, double offsetX, double offsetY) {
-        super.onDrag(click, offsetX, offsetY);
+    protected void onDrag(@NotNull MouseButtonEvent mouseButtonEvent, double offsetX, double offsetY) {
+        super.onDrag(mouseButtonEvent, offsetX, offsetY);
 
-        int currentWidth = minecraftClient.getWindow().getScaledWidth();
-        int currentHeight = minecraftClient.getWindow().getScaledHeight();
+        int currentWidth = minecraft.getWindow().getGuiScaledWidth();
+        int currentHeight = minecraft.getWindow().getGuiScaledHeight();
 
         switch (element.alignment) {
             case LEFT, TOP, BOTTOM, TOP_LEFT, BOTTOM_LEFT-> this.deltaX += deltaX;
@@ -308,35 +308,35 @@ public class MovableBoxWidget extends ClickableWidget implements ScreenConstants
         element.setYPercent((float) calculatedPercentY / 100F);
 
         switch (element.alignment) {
-            case LEFT, TOP_LEFT, BOTTOM_LEFT -> this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos));
-            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> this.setX(minecraftClient.getWindow().getScaledWidth()
-                    - Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos)
+            case LEFT, TOP_LEFT, BOTTOM_LEFT -> this.setX(Math.round(minecraft.getWindow().getGuiScaledWidth() * element.xPos));
+            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> this.setX(minecraft.getWindow().getGuiScaledWidth()
+                    - Math.round(minecraft.getWindow().getGuiScaledWidth() * element.xPos)
                     - element.width);
-            case TOP, BOTTOM -> this.setX(Math.round(minecraftClient.getWindow().getScaledWidth() * element.xPos) - (element.width / 2));
+            case TOP, BOTTOM -> this.setX(Math.round(minecraft.getWindow().getGuiScaledWidth() * element.xPos) - (element.width / 2));
         }
 
         switch (element.alignment) {
-            case TOP_LEFT, TOP, TOP_RIGHT -> this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos));
-            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.setY(minecraftClient.getWindow().getScaledHeight()
-                    - Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos)
+            case TOP_LEFT, TOP, TOP_RIGHT -> this.setY(Math.round(minecraft.getWindow().getGuiScaledHeight() * element.yPos));
+            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.setY(minecraft.getWindow().getGuiScaledHeight()
+                    - Math.round(minecraft.getWindow().getGuiScaledHeight() * element.yPos)
                     - element.height);
-            case LEFT, RIGHT -> this.setY(Math.round(minecraftClient.getWindow().getScaledHeight() * element.yPos) - (element.height / 2));
+            case LEFT, RIGHT -> this.setY(Math.round(minecraft.getWindow().getGuiScaledHeight() * element.yPos) - (element.height / 2));
         }
     }
 
     @Override
-    public void onRelease(Click click) {
-        super.onRelease(click);
+    public void onRelease(@NotNull MouseButtonEvent mouseButtonEvent) {
+        super.onRelease(mouseButtonEvent);
 
         switch (element.alignment) {
             case LEFT, TOP_LEFT, BOTTOM_LEFT -> this.originalX = getX();
-            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> this.originalX = minecraftClient.getWindow().getScaledWidth() - (getX() + element.width);
+            case RIGHT, BOTTOM_RIGHT, TOP_RIGHT -> this.originalX = minecraft.getWindow().getGuiScaledWidth() - (getX() + element.width);
             case TOP, BOTTOM -> this.originalX = getX() + (element.width / 2);
         }
 
         switch (element.alignment) {
             case TOP_LEFT, TOP, TOP_RIGHT -> this.originalY = getY();
-            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.originalY = minecraftClient.getWindow().getScaledHeight() - (getY() + element.height);
+            case BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT -> this.originalY = minecraft.getWindow().getGuiScaledHeight() - (getY() + element.height);
             case LEFT, RIGHT -> this.originalY = getY() + (element.height / 2);
         }
 

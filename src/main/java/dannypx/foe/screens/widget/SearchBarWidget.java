@@ -1,55 +1,55 @@
 package dannypx.foe.screens.widget;
 
 import dannypx.foe.handler.logic.SearchHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
 
-public class SearchBarWidget extends TextFieldWidget {
-    private final List<Text> hoverInfo;
-    private TextRenderer textRenderer;
+public class SearchBarWidget extends EditBox {
+    private final List<Component> hoverInfo;
+    private Font font;
 
-    public SearchBarWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, List<Text> hoverInfo) {
-        super(textRenderer, x, y, width, height, null, text);
+    public SearchBarWidget(Font font, int x, int y, int width, int height, Component text, List<Component> hoverInfo) {
+        super(font, x, y, width, height, null, text);
         this.hoverInfo = hoverInfo;
-        this.textRenderer = textRenderer;
+        this.font = font;
     }
 
     @Override
-    public void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-        super.renderWidget(drawContext, mouseX, mouseY, delta);
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, delta);
         SearchHandler.instance().setFocused(this.isFocused());
 
         // Hover Info
         if(this.isHovered() && this.isFocused()) {
-            drawContext.getMatrices().pushMatrix();
+            guiGraphics.pose().pushMatrix();
             try {
                 float scale = .75f;
-                drawContext.getMatrices().scale(scale, scale);
+                guiGraphics.pose().scale(scale, scale);
 
                 int padding = 4;
-                int lineHeight = textRenderer.fontHeight + 1;
-                int length = hoverInfo.stream().map(textRenderer::getWidth).max(Integer::compareTo).orElse(0);
+                int lineHeight = font.lineHeight + 1;
+                int length = hoverInfo.stream().map(font::width).max(Integer::compareTo).orElse(0);
                 int lines = hoverInfo.size() * lineHeight;
-                int x = (int) (((float) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) * (1 / scale));
+                int x = (int) (((float) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) * (1 / scale));
 
-                drawContext.fill(x - length / 2 - padding, 0, x + length / 2 + padding, padding * 2 + lines, Colors.BLACK);
+                guiGraphics.fill(x - length / 2 - padding, 0, x + length / 2 + padding, padding * 2 + lines, CommonColors.BLACK);
 
-                drawContext.drawHorizontalLine(x - length / 2 - padding, x + length / 2 + padding, 0, Colors.GRAY);
-                drawContext.drawHorizontalLine(x - length / 2 - padding, x + length / 2 + padding, padding * 2 + lines, Colors.GRAY);
-                drawContext.drawVerticalLine(x - length / 2 - padding, 0, padding * 2 + lines, Colors.GRAY);
-                drawContext.drawVerticalLine(x + length / 2 + padding, 0, padding * 2 + lines, Colors.GRAY);
+                guiGraphics.hLine(x - length / 2 - padding, x + length / 2 + padding, 0, CommonColors.GRAY);
+                guiGraphics.hLine(x - length / 2 - padding, x + length / 2 + padding, padding * 2 + lines, CommonColors.GRAY);
+                guiGraphics.vLine(x - length / 2 - padding, 0, padding * 2 + lines, CommonColors.GRAY);
+                guiGraphics.vLine(x + length / 2 + padding, 0, padding * 2 + lines, CommonColors.GRAY);
 
                 AtomicInteger count = new AtomicInteger(0);
-                hoverInfo.forEach(text -> drawContext.drawText(textRenderer, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, Colors.WHITE, true));
+                hoverInfo.forEach(text -> guiGraphics.drawString(font, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, CommonColors.WHITE, true));
             } finally {
-                drawContext.getMatrices().popMatrix();
+                guiGraphics.pose().popMatrix();
             }
         }
     }

@@ -3,16 +3,15 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Pattern;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CustomTimerDataHandler extends Handler {
     private static CustomTimerDataHandler INSTANCE = new CustomTimerDataHandler();
@@ -49,8 +48,8 @@ public class CustomTimerDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(customTimerData.uuid == null && minecraftClient.player != null) {
-            customTimerData.uuid = minecraftClient.player.getUuid();
+        if(customTimerData.uuid == null && minecraft.player != null) {
+            customTimerData.uuid = minecraft.player.getUUID();
         } else if(customTimerData.uuid != null && this.needsUpdate) {
             this.updateCustomTimerData();
         } else if(!CustomTimerDataModel.CUSTOM_TIMER_DATA_MODEL_VERSION.equals(customTimerData.version)) {
@@ -60,7 +59,7 @@ public class CustomTimerDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
@@ -190,9 +189,9 @@ public class CustomTimerDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customTimerData", Pair.of(Text.literal("[customTimerData]"), TextHelper.literal(getCustomTimerData()))
+                "customTimerData", Pair.of(Component.literal("[customTimerData]"), ComponentHelper.literal(getCustomTimerData()))
         );
     }
     //endregion

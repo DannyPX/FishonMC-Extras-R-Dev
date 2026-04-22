@@ -6,28 +6,28 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomNotificationDataHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomNotificationWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmLinkScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class CustomNotificationMakerScreen extends Screen implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final Screen parentScreen;
 
     private ButtonListWidget buttonList;
@@ -38,7 +38,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     //region Methods
     public CustomNotificationMakerScreen(Screen parent) {
-        super(Text.literal("Custom Notification Maker Screen"));
+        super(Component.literal("Custom Notification Maker Screen"));
         this.parentScreen = parent;
     }
 
@@ -49,14 +49,14 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        this.buttonList.render(context, mouseX, mouseY, delta);
-        this.editCustomNotificationWidget.render(context, mouseX, mouseY, delta);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
+        this.editCustomNotificationWidget.render(guiGraphics, mouseX, mouseY, delta);
     }
 
     private void renderWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
         widgets.add(this.backButton());
@@ -72,24 +72,24 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
         widgets.add(this.wikiButton());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ClickableWidget getEditNotificationWidget() {
+    private AbstractWidget getEditNotificationWidget() {
         editCustomNotificationWidget = new EditCustomNotificationWidget(
                 (BUTTON_WIDTH + PADDING * 2),
                 0,
                 width - (BUTTON_WIDTH + PADDING * 2),
                 height - (BUTTON_HEIGHT + PADDING_HALF) - 3,
-                Text.literal("No Notification Selected")
+                Component.literal("No Notification Selected")
         );
 
         return editCustomNotificationWidget;
     }
 
-    private ClickableWidget getNewNotificationElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Create Notification"),
+    private AbstractWidget getNewNotificationElementButton() {
+        return Button.builder(
+                        Component.literal("Create Notification"),
                         (button) -> {
                             String id = "Custom Notification #" + UUID.randomUUID();
 
@@ -101,13 +101,13 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                             buttonEntryMap.put(id, buttonEntry);
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getDeleteNotificationElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Delete Selected"),
+    private AbstractWidget getDeleteNotificationElementButton() {
+        return Button.builder(
+                        Component.literal("Delete Selected"),
                         (button) -> {
                             if(editCustomNotificationWidget.hasSelectedOption) {
                                 CustomNotificationDataHandler.instance().deleteCustomNotification(selectedNotification);
@@ -121,26 +121,26 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getImportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Import"),
+    private AbstractWidget getImportButton() {
+        return Button.builder(
+                        Component.literal("Import"),
                         (button) -> {
-                            String rawData = minecraftClient.keyboard.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard();
                             try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
                                 Triplet<String, CustomNotificationDataHandler.CustomNotification, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomNotificationDataHandler.CustomNotification.class, Integer.class).getType());
 
                                 if(data.value3() > FishOnMCExtras.NOTIFICATION_VERSION) {
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Could not Import. Imported Notification is made on a newer version"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Could not Import. Imported Notification is made on a newer version"));
 
                                     return;
                                 }
@@ -158,29 +158,29 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                 buttonList.addEntry(buttonEntry);
                                 buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Imported Notification"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Imported Notification"));
 
                             } catch (Exception e) {
                                 LoggerHandler.error(e);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Could not Import. Data invalid"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Could not Import. Data invalid"));
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Imports from the code on your clipboard")))
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
                 .build();
     }
 
-    private ClickableWidget getExportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Export Selected"),
+    private AbstractWidget getExportButton() {
+        return Button.builder(
+                        Component.literal("Export Selected"),
                         (button) -> {
                             if(editCustomNotificationWidget.hasSelectedOption) {
                                 try {
@@ -190,7 +190,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                             FishOnMCExtras.NOTIFICATION_VERSION
                                     );
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().create().toJson(dataNotification))
+                                            ComponentHelper.compress(new GsonBuilder().create().toJson(dataNotification))
                                     );
 
                                     String dataToCopy = "**Custom Notification: **" + selectedNotification + "\n" +
@@ -199,31 +199,31 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                             "```\n" +
                                             "-# Using Notification version: " + "`v" + FishOnMCExtras.NOTIFICATION_VERSION + "`";
 
-                                    minecraftClient.keyboard.setClipboard(dataToCopy);
+                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Exported Notification on your clipboard"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Exported Notification on your clipboard"));
                                 } catch (Exception e) {
                                     LoggerHandler.error(e);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("An error has occurred"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("An error has occurred"));
                                 }
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Save first before exporting")))
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
                 .build();
     }
 
-    private ClickableWidget getButtonList() {
+    private AbstractWidget getButtonList() {
         buttonList = new ButtonListWidget(
-                client,
+                minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
                 height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
                 0,
@@ -244,8 +244,8 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     private ButtonListWidget.ButtonEntry createNotificationEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                ButtonWidget.builder(
-                        Text.literal(id),
+                Button.builder(
+                        Component.literal(id),
                         button -> {
                             selectedNotification = id;
                             editCustomNotificationWidget.selectNotification(
@@ -256,14 +256,14 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
         );
     }
 
-    private ButtonWidget saveBackButton() {
-        return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
+    private Button saveBackButton() {
+        return Button.builder(Component.literal("Save and Return"), button -> {
                     if(editCustomNotificationWidget.hasSelectedOption) {
                         if(editCustomNotificationWidget.newName.isBlank()) {
-                            SystemToast.add(minecraftClient.getToastManager(),
-                                    SystemToast.Type.PERIODIC_NOTIFICATION,
-                                    Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("Notification name is empty"));
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Notification name is empty"));
 
                             return;
                         }
@@ -272,10 +272,10 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                 !Objects.equals(editCustomNotificationWidget.currentSelectedNotification, editCustomNotificationWidget.newName)
                                 && CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.containsKey(editCustomNotificationWidget.newName)
                         ) {
-                            SystemToast.add(minecraftClient.getToastManager(),
-                                    SystemToast.Type.PERIODIC_NOTIFICATION,
-                                    Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("Notification name already exist"));
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Notification name already exist"));
 
                             return;
                         }
@@ -283,10 +283,10 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
                         Pattern iconPattern = Pattern.compile("^(?:([a-z0-9_]+:[a-z0-9_]+)(?:\\[(.*)\\])?)?$");
                         if(!iconPattern.matcher(editCustomNotificationWidget.icon).matches()) {
-                            SystemToast.add(minecraftClient.getToastManager(),
-                                    SystemToast.Type.PERIODIC_NOTIFICATION,
-                                    Text.literal("Fish On Extras Rebirth"),
-                                    Text.literal("Icon is wrong format"));
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Icon is wrong format"));
 
                             return;
                         }
@@ -301,54 +301,54 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                         .toList()
                         );
                     }
-                    this.close();
+                    this.onClose();
                 })
-                .position(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget backButton() {
-        return ButtonWidget.builder(Text.literal("Return"), button ->
-                    this.close())
-                .position(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button backButton() {
+        return Button.builder(Component.literal("Return"), button ->
+                    this.onClose())
+                .pos(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget addLine() {
-        return ButtonWidget.builder(Text.literal("Add Line"), button -> {
+    private Button addLine() {
+        return Button.builder(Component.literal("Add Line"), button -> {
                     if(editCustomNotificationWidget.hasSelectedOption) {
                         editCustomNotificationWidget.addNewEntry();
                     }
                 })
-                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Add line to the bottom")))
+                .tooltip(Tooltip.create(Component.literal("Add line to the bottom")))
                 .build();
     }
 
-    private ClickableWidget wikiButton() {
-        return ButtonWidget.builder(Text.literal("Wiki"), button -> {
+    private AbstractWidget wikiButton() {
+        return Button.builder(Component.literal("Wiki"), button -> {
                     String url = "https://github.com/DannyPX/FishOnMC-Extras-R/wiki/Placeholders";
 
-                    minecraftClient.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
-                            Util.getOperatingSystem().open(url);
+                            Util.getPlatform().openUri(url);
                         }
 
-                        minecraftClient.setScreen(null);
+                        this.minecraft.setScreen(null);
                     }, url, true));
                 })
-                .position(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
-                .tooltip(Tooltip.of(Text.literal("Open Wiki to Placeholders")))
+                .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
                 .build();
     }
 
     @Override
-    public void close() {
-        this.minecraftClient.setScreen(this.parentScreen);
+    public void onClose() {
+        this.minecraft.setScreen(this.parentScreen);
     }
     //endregion
 }

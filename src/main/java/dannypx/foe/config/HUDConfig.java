@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 @Version(version = 2)
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @Translatable.Desc("§7Configure HUD elements")
 public class HUDConfig extends Config {
     public HUDConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "hud_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_config"));
     }
 
     @Name("Profile Element")

@@ -3,13 +3,12 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.*;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class CustomChatTriggerDataHandler extends Handler {
     private static CustomChatTriggerDataHandler INSTANCE = new CustomChatTriggerDataHandler();
@@ -44,8 +43,8 @@ public class CustomChatTriggerDataHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(customChatTriggerData.uuid == null && minecraftClient.player != null) {
-            customChatTriggerData.uuid = minecraftClient.player.getUuid();
+        if(customChatTriggerData.uuid == null && minecraft.player != null) {
+            customChatTriggerData.uuid = minecraft.player.getUUID();
         } else if(customChatTriggerData.uuid != null && this.needsUpdate) {
             this.updateCustomChatTriggerData();
         } else if(!CustomChatTriggerDataModel.CUSTOM_CHAT_TRIGGER_DATA_MODEL_VERSION.equals(customChatTriggerData.version)) {
@@ -55,7 +54,7 @@ public class CustomChatTriggerDataHandler extends Handler {
     }
 
     public void init() {
-        if(minecraftClient.player != null) this.setUUID(minecraftClient.player.getUuid());
+        if(minecraft.player != null) this.setUUID(minecraft.player.getUUID());
     }
 
     private void setUUID(UUID uuid) {
@@ -188,9 +187,9 @@ public class CustomChatTriggerDataHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customChatTriggerData", Pair.of(Text.literal("[customChatTriggerData]"), TextHelper.literal(getCustomChatTriggerData()))
+                "customChatTriggerData", Pair.of(Component.literal("[customChatTriggerData]"), ComponentHelper.literal(getCustomChatTriggerData()))
         );
     }
     //endregion

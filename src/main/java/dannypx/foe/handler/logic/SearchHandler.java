@@ -2,24 +2,23 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.helper.MathHelper;
-import dannypx.foe.helper.TextHelper;
-import dannypx.foe.item.NbtObject;
-import dannypx.foe.item.PetNbtObject;
+import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.item.TagObject;
+import dannypx.foe.item.PetTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.search.*;
 import dannypx.foe.screens.widget.SearchBarWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class SearchHandler extends Handler {
     private static SearchHandler INSTANCE = new SearchHandler();
@@ -109,121 +108,121 @@ public class SearchHandler extends Handler {
         }
     }
 
-    public static ClickableWidget getSearchBar(int x, int y, int width, int height) {
-        SearchBarWidget searchBarWidget = new SearchBarWidget(minecraftClient.textRenderer, x, y, width, height,
-                Text.literal("Search Bar"),
+    public static AbstractWidget getSearchBar(int x, int y, int width, int height) {
+        SearchBarWidget searchBarWidget = new SearchBarWidget(minecraft.font, x, y, width, height,
+                Component.literal("Search Bar"),
                 new ArrayList<>(Arrays.asList(
-                        Text.literal("Search Item Names in the search bar").formatted(Formatting.WHITE),
-                        Text.literal("NBT fields can be compared against specific values for more granular filtering").formatted(Formatting.GRAY),
-                        Text.empty(),
-                        Text.literal("Granular filtering").formatted(Formatting.WHITE, Formatting.BOLD),
-                        Text.literal("- Allowed Operators").formatted(Formatting.GRAY, Formatting.BOLD),
-                        Text.literal("=  ==  !=  <  >  <=  >=").formatted(Formatting.GOLD),
-                        Text.empty(),
-                        Text.literal("- Non NBT fields").formatted(Formatting.GRAY, Formatting.BOLD),
-                        Text.literal("Pets").formatted(Formatting.GRAY),
-                        Text.literal("rating  lluck  lscale  cluck  cscale").formatted(Formatting.DARK_AQUA),
-                        Text.literal("lluck_percent  lscale_percent  cluck_percent  cscale_percent").formatted(Formatting.DARK_AQUA),
-                        Text.literal("Other").formatted(Formatting.GRAY),
-                        Text.literal("tooltip").formatted(Formatting.DARK_AQUA),
-                        Text.empty(),
-                        Text.literal("- Examples").formatted(Formatting.GRAY, Formatting.BOLD),
-                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
-                        TextHelper.concat(
-                                Text.literal("Pet").formatted(Formatting.GREEN)
+                        Component.literal("Search Item Names in the search bar").withStyle(ChatFormatting.WHITE),
+                        Component.literal("NBT fields can be compared against specific values for more granular filtering").withStyle(ChatFormatting.GRAY),
+                        Component.empty(),
+                        Component.literal("Granular filtering").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
+                        Component.literal("- Allowed Operators").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD),
+                        Component.literal("=  ==  !=  <  >  <=  >=").withStyle(ChatFormatting.GOLD),
+                        Component.empty(),
+                        Component.literal("- Non NBT fields").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD),
+                        Component.literal("Pets").withStyle(ChatFormatting.GRAY),
+                        Component.literal("rating  lluck  lscale  cluck  cscale").withStyle(ChatFormatting.DARK_AQUA),
+                        Component.literal("lluck_percent  lscale_percent  cluck_percent  cscale_percent").withStyle(ChatFormatting.DARK_AQUA),
+                        Component.literal("Other").withStyle(ChatFormatting.GRAY),
+                        Component.literal("tooltip").withStyle(ChatFormatting.DARK_AQUA),
+                        Component.empty(),
+                        Component.literal("- Examples").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD),
+                        Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
+                        ComponentHelper.concat(
+                                Component.literal("Pet").withStyle(ChatFormatting.GREEN)
                         ),
-                        Text.empty(),
-                        TextHelper.concat(
-                                Text.literal("Search any item that has the word ").formatted(Formatting.GRAY),
-                                Text.literal("Pet ").formatted(Formatting.GREEN),
-                                Text.literal("in it").formatted(Formatting.GRAY)
-                        ).formatted(Formatting.ITALIC),
-                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
-                        TextHelper.concat(
-                                Text.literal("tooltip").formatted(Formatting.DARK_AQUA),
-                                Text.literal("=").formatted(Formatting.GOLD),
-                                Text.literal("\"tunas\"").formatted(Formatting.GREEN)
+                        Component.empty(),
+                        ComponentHelper.concat(
+                                Component.literal("Search any item that has the word ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("Pet ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("in it").withStyle(ChatFormatting.GRAY)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
+                        ComponentHelper.concat(
+                                Component.literal("tooltip").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("=").withStyle(ChatFormatting.GOLD),
+                                Component.literal("\"tunas\"").withStyle(ChatFormatting.GREEN)
                         ),
-                        Text.empty(),
-                        TextHelper.concat(
-                                Text.literal("Search item ").formatted(Formatting.GRAY),
-                                Text.literal("tooltip ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("that has the word ").formatted(Formatting.GRAY),
-                                Text.literal("tunas ").formatted(Formatting.GREEN),
-                                Text.literal("in it").formatted(Formatting.GRAY)
-                        ).formatted(Formatting.ITALIC),
-                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
-                        TextHelper.concat(
-                                Text.literal("rating").formatted(Formatting.DARK_AQUA),
-                                Text.literal(">").formatted(Formatting.GOLD),
-                                Text.literal("90  ").formatted(Formatting.GREEN),
-                                Text.literal("lscale_percent").formatted(Formatting.DARK_AQUA),
-                                Text.literal(">=").formatted(Formatting.GOLD),
-                                Text.literal("80").formatted(Formatting.GREEN)
+                        Component.empty(),
+                        ComponentHelper.concat(
+                                Component.literal("Search item ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("tooltip ").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("that has the word ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("tunas ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("in it").withStyle(ChatFormatting.GRAY)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
+                        ComponentHelper.concat(
+                                Component.literal("rating").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal(">").withStyle(ChatFormatting.GOLD),
+                                Component.literal("90  ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("lscale_percent").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal(">=").withStyle(ChatFormatting.GOLD),
+                                Component.literal("80").withStyle(ChatFormatting.GREEN)
                         ),
-                        Text.empty(),
-                        TextHelper.concat(
-                                Text.literal("Search items that is of ").formatted(Formatting.GRAY),
-                                Text.literal("pet rating ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("higher than ").formatted(Formatting.GOLD),
-                                Text.literal("90").formatted(Formatting.GREEN),
-                                Text.literal("%").formatted(Formatting.GRAY)
-                        ).formatted(Formatting.ITALIC),
-                        TextHelper.concat(
-                                Text.literal("AND ").formatted(Formatting.GOLD),
-                                Text.literal("is of ").formatted(Formatting.GRAY),
-                                Text.literal("location scale ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("higher than or equal to ").formatted(Formatting.GOLD),
-                                Text.literal("80").formatted(Formatting.GREEN),
-                                Text.literal("%").formatted(Formatting.GRAY)
-                        ).formatted(Formatting.ITALIC),
-                        Text.literal("----------------------------------------").formatted(Formatting.DARK_GRAY),
-                        TextHelper.concat(
-                                Text.literal("type").formatted(Formatting.DARK_AQUA),
-                                Text.literal("=").formatted(Formatting.GOLD),
-                                Text.literal("\"armor\"  ").formatted(Formatting.GREEN),
-                                Text.literal("rarity").formatted(Formatting.DARK_AQUA),
-                                Text.literal("=").formatted(Formatting.GOLD),
-                                Text.literal("\"mythical\"  ").formatted(Formatting.GREEN),
-                                Text.literal("quality").formatted(Formatting.DARK_AQUA),
-                                Text.literal(">").formatted(Formatting.GOLD),
-                                Text.literal("96  ").formatted(Formatting.GREEN),
-                                Text.literal("Subtropical").formatted(Formatting.GREEN)
+                        Component.empty(),
+                        ComponentHelper.concat(
+                                Component.literal("Search items that is of ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("pet rating ").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("higher than ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("90").withStyle(ChatFormatting.GREEN),
+                                Component.literal("%").withStyle(ChatFormatting.GRAY)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        ComponentHelper.concat(
+                                Component.literal("AND ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("is of ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("location scale ").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("higher than or equal to ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("80").withStyle(ChatFormatting.GREEN),
+                                Component.literal("%").withStyle(ChatFormatting.GRAY)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
+                        ComponentHelper.concat(
+                                Component.literal("type").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("=").withStyle(ChatFormatting.GOLD),
+                                Component.literal("\"armor\"  ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("rarity").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("=").withStyle(ChatFormatting.GOLD),
+                                Component.literal("\"mythical\"  ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("quality").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal(">").withStyle(ChatFormatting.GOLD),
+                                Component.literal("96  ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("Subtropical").withStyle(ChatFormatting.GREEN)
                         ),
-                        Text.empty(),
-                        TextHelper.concat(
-                                Text.literal("Search items that is of ").formatted(Formatting.GRAY),
-                                Text.literal("type ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("equal to ").formatted(Formatting.GOLD),
-                                Text.literal("armor").formatted(Formatting.GREEN)
-                        ).formatted(Formatting.ITALIC),
-                        TextHelper.concat(
-                                Text.literal("AND ").formatted(Formatting.GOLD),
-                                Text.literal("is of ").formatted(Formatting.GRAY),
-                                Text.literal("rarity ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("equal to ").formatted(Formatting.GOLD),
-                                Text.literal("mythical").formatted(Formatting.GREEN)
-                        ).formatted(Formatting.ITALIC),
-                        TextHelper.concat(
-                                Text.literal("AND ").formatted(Formatting.GOLD),
-                                Text.literal("is of ").formatted(Formatting.GRAY),
-                                Text.literal("quality ").formatted(Formatting.DARK_AQUA),
-                                Text.literal("higher than ").formatted(Formatting.GOLD),
-                                Text.literal("94").formatted(Formatting.GREEN),
-                                Text.literal("%").formatted(Formatting.GRAY)
-                        ).formatted(Formatting.ITALIC),
-                        TextHelper.concat(
-                                Text.literal("AND ").formatted(Formatting.GOLD),
-                                Text.literal("search any item that has the word ").formatted(Formatting.GRAY),
-                                Text.literal("Subtropical ").formatted(Formatting.GREEN),
-                                Text.literal("in it").formatted(Formatting.GRAY)
-                        ).formatted(Formatting.ITALIC)
+                        Component.empty(),
+                        ComponentHelper.concat(
+                                Component.literal("Search items that is of ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("type ").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("equal to ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("armor").withStyle(ChatFormatting.GREEN)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        ComponentHelper.concat(
+                                Component.literal("AND ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("is of ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("rarity ").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("equal to ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("mythical").withStyle(ChatFormatting.GREEN)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        ComponentHelper.concat(
+                                Component.literal("AND ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("is of ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("quality ").withStyle(ChatFormatting.DARK_AQUA),
+                                Component.literal("higher than ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("94").withStyle(ChatFormatting.GREEN),
+                                Component.literal("%").withStyle(ChatFormatting.GRAY)
+                        ).withStyle(ChatFormatting.ITALIC),
+                        ComponentHelper.concat(
+                                Component.literal("AND ").withStyle(ChatFormatting.GOLD),
+                                Component.literal("search any item that has the word ").withStyle(ChatFormatting.GRAY),
+                                Component.literal("Subtropical ").withStyle(ChatFormatting.GREEN),
+                                Component.literal("in it").withStyle(ChatFormatting.GRAY)
+                        ).withStyle(ChatFormatting.ITALIC)
                 ))
         );
-        searchBarWidget.setText(SearchHandler.instance().getLastInput());
-        searchBarWidget.setPlaceholder(Text.literal("Search Item Names").formatted(Formatting.GRAY));
+        searchBarWidget.setValue(SearchHandler.instance().getLastInput());
+        searchBarWidget.setHint(Component.literal("Search Item Names").withStyle(ChatFormatting.GRAY));
 
-        searchBarWidget.setChangedListener(SearchHandler.instance()::parseSearch);
+        searchBarWidget.setResponder(SearchHandler.instance()::parseSearch);
 
         return searchBarWidget;
     }
@@ -237,9 +236,9 @@ public class SearchHandler extends Handler {
         }
 
         // Filter out if name doesn't contain search
-        if(!itemStack.getName().getString().toLowerCase(Locale.US).contains(searchRemainder.toLowerCase(Locale.US))
-                || (itemStack.get(DataComponentTypes.TOOLTIP_DISPLAY) != null
-                && itemStack.get(DataComponentTypes.TOOLTIP_DISPLAY).hideTooltip())
+        if(!itemStack.getHoverName().getString().toLowerCase(Locale.US).contains(searchRemainder.toLowerCase(Locale.US))
+                || (itemStack.get(DataComponents.TOOLTIP_DISPLAY) != null
+                && itemStack.get(DataComponents.TOOLTIP_DISPLAY).hideTooltip())
         ) {
             return false;
         }
@@ -277,11 +276,11 @@ public class SearchHandler extends Handler {
             case StringValue stringValue -> {
                 if(searchFilter.key.equalsIgnoreCase("tooltip")) {
                     if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
-                        if(itemStack.get(DataComponentTypes.LORE) != null) {
-                            List<Text> textList = itemStack.get(DataComponentTypes.LORE).lines();
+                        if(itemStack.get(DataComponents.LORE) != null) {
+                            List<Component> textList = itemStack.get(DataComponents.LORE).lines();
                             AtomicBoolean hasText = new AtomicBoolean(false);
                             textList.forEach(text -> {
-                                String convertedText = TextHelper.normalLetter(text.getString());
+                                String convertedText = ComponentHelper.normalLetter(text.getString());
                                 if(convertedText.toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US))) hasText.set(true);
                             });
                             yield hasText.get();
@@ -308,10 +307,10 @@ public class SearchHandler extends Handler {
             case StringValue str -> {
                 if(searchFilter.key.equalsIgnoreCase("type")) {
                     if(searchFilter.operator == Operator.SHORT_EQUAL) {
-                        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
+                        Pair<Boolean, TagObject> validatedItem = ValidateItem.isType(itemStack);
                         yield validatedItem.value2().getType().toLowerCase(Locale.US).contains(str.value().toLowerCase(Locale.US));
                     } else if (searchFilter.operator == Operator.EQUAL) {
-                        Pair<Boolean, NbtObject> validatedItem = ValidateItem.isType(itemStack);
+                        Pair<Boolean, TagObject> validatedItem = ValidateItem.isType(itemStack);
                         yield validatedItem.value2().getType().toLowerCase(Locale.US).equalsIgnoreCase(str.value().toLowerCase(Locale.US));
                     } else {
                         yield false;
@@ -329,14 +328,14 @@ public class SearchHandler extends Handler {
             return "false";
         }
 
-        Pair<Boolean, PetNbtObject> validatedPet = ValidateItem.isPet(itemStack);
+        Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(itemStack);
         if(validatedPet.value1()) {
             return switch (searchFilter.value) {
                 // Rating
                 case StringValue stringValue -> {
                     if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
                         if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
-                            yield TextHelper.normalLetter(validatedPet.value2().getRatingText().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
+                            yield ComponentHelper.normalLetter(validatedPet.value2().getRatingComponent().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
                         }
                         yield "false";
                     }
@@ -389,12 +388,12 @@ public class SearchHandler extends Handler {
         return switch (searchFilter.value) {
             case StringValue stringValue -> {
                 if(searchFilter.operator == Operator.SHORT_EQUAL) {
-                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack);
                     if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
                         yield validatedItem.value2().getString(searchFilter.key).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US));
                     }
                 } else if(searchFilter.operator == Operator.EQUAL) {
-                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack);
                     if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
                         yield validatedItem.value2().getString(searchFilter.key).toLowerCase(Locale.US).equalsIgnoreCase(stringValue.value().toLowerCase(Locale.US));
                     }
@@ -403,7 +402,7 @@ public class SearchHandler extends Handler {
             }
             case BooleanValue booleanValue -> {
                 if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
-                    Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                    Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack);
                     if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
                         yield validatedItem.value2().getBoolean(searchFilter.key) == booleanValue.value();
                     }
@@ -411,7 +410,7 @@ public class SearchHandler extends Handler {
                 yield false;
             }
             case FloatValue floatValue -> {
-                Pair<Boolean, NbtObject> validatedItem = ValidateItem.isServerItem(itemStack);
+                Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack);
                 if(validatedItem.value1() && validatedItem.value2().contains(searchFilter.key)) {
                     yield switch (validatedItem.value2().getType(searchFilter.key)) {
                         case 3 -> MathHelper.checkOperation( searchFilter, floatValue, (float) validatedItem.value2().getInt(searchFilter.key));
@@ -443,12 +442,12 @@ public class SearchHandler extends Handler {
     //region Dev
     /// Field, Pair<Value, Tooltip>
     @Override
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "searchRemainder", Pair.of(Text.literal(getSearchRemainder()), Text.empty()),
-                "lastInput", Pair.of(Text.literal(getLastInput()), Text.empty()),
-                "isFocused", Pair.of(TextHelper.literal(isFocused()), Text.empty()),
-                "filters", Pair.of(Text.literal("[filters]"), TextHelper.literal(getFilters()))
+                "searchRemainder", Pair.of(Component.literal(getSearchRemainder()), Component.empty()),
+                "lastInput", Pair.of(Component.literal(getLastInput()), Component.empty()),
+                "isFocused", Pair.of(ComponentHelper.literal(isFocused()), Component.empty()),
+                "filters", Pair.of(Component.literal("[filters]"), ComponentHelper.literal(getFilters()))
         );
     }
     //endregion

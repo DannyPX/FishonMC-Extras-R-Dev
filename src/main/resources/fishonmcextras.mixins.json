@@ -3,9 +3,9 @@
   "package": "dannypx.foe.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "inject.BlockLightStorageMixin",
+    "inject.BlockLightSectionStorageMixin",
     "inject.EntityMixin",
-    "inject.FishingBobberEntityMixin"
+    "inject.FishingHookEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -14,26 +14,26 @@
     "requireAnnotations": true
   },
   "client": [
-    "accessor.BossBarHudAccessor",
+    "accessor.BossHealthOverlayAccessor",
     "accessor.ChatScreenAccessor",
-    "accessor.MinecraftClientAccessor",
-    "accessor.PlayerListHudAccessor",
-    "accessor.WorldRendererAccessor",
-    "inject.ArmorFeatureRendererMixin",
-    "inject.BarMixin",
-    "inject.BossBarHudMixin",
-    "inject.ClientPlayNetworkHandlerMixin",
-    "inject.DrawContextMixin",
-    "inject.ExperienceBarMixin",
-    "inject.FishingBobberEntityRendererMixin",
-    "inject.FishingBobberEntityStateMixin",
-    "inject.HandledScreenMixin",
-    "inject.InGameHudMixin",
-    "inject.JumpBarMixin",
+    "accessor.MinecraftAccessor",
+    "accessor.PlayerTabOverlayAccessor",
+    "accessor.LevelRendererAccessor",
+    "inject.HumanoidArmorLayerMixin",
+    "inject.ContextualBarRendererMixin",
+    "inject.BossHealthOverlayMixin",
+    "inject.ClientPacketListenerMixin",
+    "inject.GuiGraphicsMixin",
+    "inject.ExperienceBarRendererMixin",
+    "inject.FishingHookRendererMixin",
+    "inject.FishingHookRenderStateMixin",
+    "inject.AbstractContainerScreenMixin",
+    "inject.GuiMixin",
+    "inject.JumpableVehicleBarMixin",
     "inject.LocatorBarMixin",
-    "inject.PlayerListHudMixin",
-    "inject.RecipeBookScreenMixin",
+    "inject.PlayerTabOverlayMixin",
+    "inject.AbstractRecipeBookScreenMixin",
     "inject.RecipeBookWidgetMixin",
-    "inject.WorldRendererMixin"
+    "inject.LevelRendererMixin"
   ]
 }

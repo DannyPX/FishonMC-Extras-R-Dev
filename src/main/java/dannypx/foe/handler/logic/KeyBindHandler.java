@@ -1,18 +1,16 @@
 package dannypx.foe.handler.logic;
 
-import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.CustomTextValue;
+import dannypx.foe.type.custom_text.PlaceholderValue;
 import dannypx.foe.type.custom_text.StringValue;
 import dannypx.foe.screens.MainScreen;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class KeyBindHandler extends Handler {
     private static KeyBindHandler INSTANCE = new KeyBindHandler();
@@ -31,7 +29,7 @@ public class KeyBindHandler extends Handler {
         return isPressingInspect;
     }
 
-    public Pair<Boolean, CustomTextValue> getKeyBind(String[] params) {
+    public Pair<Boolean, PlaceholderValue> getKeyBind(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(open_main_keybind|inspect_keybind)$");
 
@@ -39,8 +37,8 @@ public class KeyBindHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "open_main_keybind" -> PlaceholderHandler.getTextValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)));
-                    case "inspect_keybind" -> PlaceholderHandler.getTextValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)));
+                    case "open_main_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)));
+                    case "inspect_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -51,10 +49,10 @@ public class KeyBindHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(minecraftClient.currentScreen == null
+        if(minecraft.screen == null
                 && KeyBindHelper.isPressed(Configs.keyBindConfig.openMainKeybind)
         ) {
-            minecraftClient.setScreen(new MainScreen(minecraftClient.currentScreen));
+            minecraft.setScreen(new MainScreen(minecraft.screen));
         }
 
         isPressingInspect = KeyBindHelper.isPressed(Configs.keyBindConfig.inspectKeybind);
@@ -63,10 +61,10 @@ public class KeyBindHandler extends Handler {
 
     //region Dev
     /// Field, Pair<Value, Tooltip>
-    protected Map<String, Pair<MutableText, MutableText>> _getFields() {
+    protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "openMainKeybind", Pair.of(Text.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)), Text.empty()),
-                "inspectKeybind", Pair.of(Text.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)), Text.empty())
+                "openMainKeybind", Pair.of(Component.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)), Component.empty()),
+                "inspectKeybind", Pair.of(Component.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)), Component.empty())
         );
     }
     //endregion

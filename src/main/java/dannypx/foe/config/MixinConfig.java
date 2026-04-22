@@ -7,7 +7,7 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 @Version(version = 4)
@@ -15,84 +15,80 @@ import org.jetbrains.annotations.NotNull;
 @Translatable.Desc("§4WARNING §7These are the toggles to mixins. Do not touch these unless you know what you are doing")
 public class MixinConfig extends Config {
     public MixinConfig() {
-        super(Identifier.of(FishOnMCExtras.MOD_ID, "mixin_config"));
+        super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "mixin_config"));
     }
 
-    @Name("ArmorFeatureRenderer Mixin")
-    public ConfigGroup armorFeatureRendererMixinGroup = new ConfigGroup("armor_feature_renderer_mixin_group");
+    @Name("HumanoidArmorLayerMixin Mixin")
+    public ConfigGroup humanoidArmorLayerMixinGroup = new ConfigGroup("humanoid_armor_layer_mixin_group");
 
     @ConfigGroup.Pop
-    public ValidatedBoolean armorFeatureRendererRenderArmor = new ValidatedBoolean(true);
+    public ValidatedBoolean humanoidArmorLayerMixinRenderArmorPiece = new ValidatedBoolean(true);
 
-    @Name("BossBar Mixin")
-    public ConfigGroup bossBarMixinGroup = new ConfigGroup("bossbar_mixin_group");
+    @Name("BossHealthOverlay Mixin")
+    public ConfigGroup bossHealthOverlayMixinGroup = new ConfigGroup("boss_health_overlay_mixin_group");
 
     @ConfigGroup.Pop
-    public ValidatedBoolean bossBarDisableRender = new ValidatedBoolean(true);
+    public ValidatedBoolean bossHealthOverlayMixinRender = new ValidatedBoolean(true);
 
     @Name("ClientPlayNetworkHandler Mixin")
     public ConfigGroup clientPlayNetworkHandlerMixinGroup = new ConfigGroup("client_play_network_handler_mixin_group");
 
-    public ValidatedBoolean clientPlayNetworkHandlerOnPlayerList = new ValidatedBoolean(true);
+    public ValidatedBoolean clientPacketListenerMixinHandlePlayerInfoUpdate = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
-    public ValidatedBoolean clientPlayNetworkHandlerOnPlayerRemove = new ValidatedBoolean(true);
+    public ValidatedBoolean clientPacketListenerMixinHandlePlayerInfoRemove = new ValidatedBoolean(true);
 
     @Name("DrawContext Mixin")
     public ConfigGroup drawContextMixinGroup = new ConfigGroup("drawcontext_mixin_group");
 
-    public ValidatedBoolean drawContextAlterDrawStackCount = new ValidatedBoolean(true);
+    public ValidatedBoolean GuiGraphicsMixinRenderItemCount = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
-    public ValidatedBoolean drawContextAlterDrawStackOverlay = new ValidatedBoolean(true);
+    public ValidatedBoolean GuiGraphicsMixinAlterDrawStackOverlay = new ValidatedBoolean(true);
 
-    @Name("FishingBobberEntityRenderer Mixin")
-    public ConfigGroup fishingBobberEntityRendererMixinGroup = new ConfigGroup("fishing_bobber_entity_renderer_mixin_group");
+    @Name("FishingHookEntityRenderer Mixin")
+    public ConfigGroup fishingHookEntityRendererMixinGroup = new ConfigGroup("fishing_fishing_hook_entity_renderer_mixin_group");
 
-    public ValidatedBoolean fishingBobberEntityRendererVertex = new ValidatedBoolean(true);
-
-    @ConfigGroup.Pop
-    public ValidatedBoolean fishingBobberEntityRendererRender = new ValidatedBoolean(true);
-
-    @Name("HandledScreen Mixin")
-    public ConfigGroup handledScreenMixinGroup = new ConfigGroup("handled_screen_mixin_group");
+    public ValidatedBoolean fishingHookRendererMixinVertex = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
-    public ValidatedBoolean handledScreenMixinGroupKeyPressed = new ValidatedBoolean(true);
+    public ValidatedBoolean fishingHookRendererMixinRender = new ValidatedBoolean(true);
 
-    @Name("InGameHud Mixin")
-    public ConfigGroup inGameHudMixinGroup = new ConfigGroup("in_game_hud");
-
-    public ValidatedBoolean inGameHudSetTitle = new ValidatedBoolean(true);
-
-    public ValidatedBoolean inGameHudSetSubtitle = new ValidatedBoolean(true);
-
-    public ValidatedBoolean inGameHudRenderHeldItemToolTip = new ValidatedBoolean(true);
-
-    public ValidatedBoolean inGameHudRenderScoreBoardSidebar = new ValidatedBoolean(true);
-
-    public ValidatedBoolean inGameHudRenderExperienceBar = new ValidatedBoolean(true);
-
-    public ValidatedBoolean inGameHudRenderExperienceLevel = new ValidatedBoolean(true);
+    @Name("AbstractContainerScreen Mixin")
+    public ConfigGroup abstractContainerScreenMixinGroup = new ConfigGroup("abstract_container_screen_mixin_group");
 
     @ConfigGroup.Pop
-    public ValidatedBoolean inGameHudRenderHotbar = new ValidatedBoolean(true);
+    public ValidatedBoolean abstractContainerScreenMixinKeyPressed = new ValidatedBoolean(true);
 
-    @Name("PlayerListHud Mixin")
-    public ConfigGroup playerListHudMixinGroup = new ConfigGroup("player_list_hud_mixin_group");
+    @Name("Gui Mixin")
+    public ConfigGroup guiMixinGroup = new ConfigGroup("gui_hud");
 
-    public ValidatedBoolean playerListHudRedirectRender = new ValidatedBoolean(true);
+    public ValidatedBoolean guiMixinSetTitle = new ValidatedBoolean(true);
 
-    public ValidatedBoolean playerListHudInjectRender = new ValidatedBoolean(true);
+    public ValidatedBoolean guiMixinSetSubtitle = new ValidatedBoolean(true);
 
-    @ConfigGroup.Pop
-    public ValidatedBoolean playerListHudCollectPlayerEntries = new ValidatedBoolean(true);
+    public ValidatedBoolean guiMixinRenderSelectedItemName = new ValidatedBoolean(true);
 
-    @Name("RecipeBookScreen Mixin")
-    public ConfigGroup recipeBookScreenMixinGroup = new ConfigGroup("recipe_book_screen");
+    public ValidatedBoolean guiMixinRenderScoreBoardSidebar = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
-    public ValidatedBoolean recipeBookScreenAddRecipeBook = new ValidatedBoolean(true);
+    public ValidatedBoolean guiMixinRenderItemHotbar = new ValidatedBoolean(true);
+
+    @Name("PlayerTabOverlayMixin Mixin")
+    public ConfigGroup playerTabOverlayMixinGroup = new ConfigGroup("player_tab_overlay_mixin_group");
+
+    public ValidatedBoolean playerTabOverlayMixinRedirectRender = new ValidatedBoolean(true);
+
+    public ValidatedBoolean playerTabOverlayMixinInjectRender = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean playerTabOverlayMixinCollectPlayerEntries = new ValidatedBoolean(true);
+
+    @Name("AbstractRecipeBookScreen Mixin")
+    public ConfigGroup abstractRecipeBookScreenMixinGroup = new ConfigGroup("abstract_recipe_book_screen");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean abstractRecipeBookScreenMixinAddRecipeBook = new ValidatedBoolean(true);
 
     @Name("RecipeBookWidget Mixin")
     public ConfigGroup recipeBookWidgetMixinGroup = new ConfigGroup("recipe_book_widget");
@@ -100,11 +96,11 @@ public class MixinConfig extends Config {
     @ConfigGroup.Pop
     public ValidatedBoolean recipeBookWidgetIsOpen = new ValidatedBoolean(true);
 
-    @Name("BlockLightStorage Mixin")
-    public ConfigGroup blockLightStorageMixinGroup = new ConfigGroup("block_light_storage_mixin_group");
+    @Name("BlockLightSectionStorageMixin Mixin")
+    public ConfigGroup blockLightSectionStorageMixinGroup = new ConfigGroup("block_light_section_stroage_mixin_group");
 
     @ConfigGroup.Pop
-    public ValidatedBoolean blockLightStorageMixinGetLight = new ValidatedBoolean(true);
+    public ValidatedBoolean blockLightSectionStorageMixinGetLightValue = new ValidatedBoolean(true);
 
     @Name("Entity Mixin")
     public ConfigGroup entityMixinGroup = new ConfigGroup("entity_mixin_group");

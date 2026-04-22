@@ -7,31 +7,30 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
-import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
 
 public class CustomChatTriggerMakerScreen extends Screen implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient = MinecraftClient.getInstance();
     private final Screen parentScreen;
 
     private ButtonListWidget buttonList;
@@ -40,20 +39,20 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
     private CustomChatTriggerDataHandler.CustomChatTrigger selectedChatTrigger;
 
 
-    private Text header;
+    private Component header;
     private final int widgetHeight = 20;
 
-    private TextFieldWidget nameTextField;
-    private CheckboxWidget useChatTriggerCheckBox;
+    private EditBox nameEditBox;
+    private Checkbox useChatTriggerCheckBox;
 
     private final int sideWidth = 100;
-    private TextFieldWidget regexTextField;
-    private TextFieldWidget notificationToTriggerTextField;
+    private EditBox regexEditBox;
+    private EditBox notificationToTriggerEditBox;
     //endregion
 
     //region Methods
     public CustomChatTriggerMakerScreen(Screen parent) {
-        super(Text.literal("Custom Chat Trigger Maker Screen"));
+        super(Component.literal("Custom Chat Trigger Maker Screen"));
         this.parentScreen = parent;
     }
 
@@ -65,78 +64,78 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBox(context, mouseX, mouseY, delta);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.renderBox(guiGraphics, mouseX, mouseY, delta);
 
-        super.render(context, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta);
 
-        this.renderText(context, mouseX, mouseY, delta);
-        this.renderTooltip(context, mouseX, mouseY, delta);
-        this.buttonList.render(context, mouseX, mouseY, delta);
+        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
+        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
+        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(DrawContext context, int mouseX, int mouseY, float delta) {
-        if(regexTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Regex").formatted(Formatting.GRAY)
+    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        if(regexEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Regex").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(notificationToTriggerTextField.isMouseOver(mouseX, mouseY)) {
-            context.drawTooltip(textRenderer, List.of(
-                    Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
-                    Text.empty(),
-                    Text.literal("- Notification Name").formatted(Formatting.GRAY)
+        if(notificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.empty(),
+                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
     }
 
-    private void renderText(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawCenteredTextWithShadow(textRenderer,
+    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        guiGraphics.drawCenteredString(font,
                 this.header,
-                (BUTTON_WIDTH + PADDING * 2) + (minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2,
-                Colors.WHITE
+                (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2,
+                CommonColors.WHITE
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Name"),
+        guiGraphics.drawString(font,
+                Component.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING),
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Regex Filter"),
+        guiGraphics.drawString(font,
+                Component.literal("Regex Filter"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 2,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 2,
+                CommonColors.WHITE,
                 true
         );
 
-        context.drawText(textRenderer,
-                Text.literal("Trigger Notif."),
+        guiGraphics.drawString(font,
+                Component.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 3,
-                Colors.WHITE,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
+                CommonColors.WHITE,
                 true
         );
     }
 
-    private void renderBox(DrawContext context, int mouseX, int mouseY, float delta)
+    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
     {
-        context.fill(
+        guiGraphics.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
-                minecraftClient.getWindow().getScaledWidth(),
-                minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
+                this.minecraft.getWindow().getGuiScaledWidth(),
+                this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        context.drawHorizontalLine((BUTTON_WIDTH + PADDING * 2), minecraftClient.getWindow().getScaledWidth(), minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
-        context.drawVerticalLine((BUTTON_WIDTH + PADDING * 2), 0, minecraftClient.getWindow().getScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, Colors.DARK_GRAY);
+        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
     private void renderWidgets() {
-        List<ClickableWidget> widgets = new ArrayList<>();
+        List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
         widgets.add(this.backButton());
@@ -148,90 +147,90 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         widgets.add(getImportButton());
         widgets.add(getExportButton());
 
-        widgets.add(getNameTextField());
+        widgets.add(getNameEditBox());
         widgets.add(getUseChatTriggerCheckBox());
-        widgets.add(getRegexTextField());
-        widgets.add(getNotificationToTriggerTextField());
+        widgets.add(getRegexEditBox());
+        widgets.add(getNotificationToTriggerEditBox());
 
-        widgets.forEach(this::addDrawableChild);
+        widgets.forEach(this::addRenderableWidget);
     }
 
-    private ClickableWidget getNameTextField() {
-        nameTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getNameEditBox() {
+        nameEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + widgetHeight + PADDING,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - (sideWidth + PADDING) - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - (sideWidth + PADDING) - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        nameTextField.setMaxLength(Integer.MAX_VALUE);
+        nameEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        nameTextField.setChangedListener(s -> {
+        nameEditBox.setResponder(s -> {
             if(selectedChatTriggerId != null) {
-                nameTextField.setPlaceholder(Text.literal(s));
+                nameEditBox.setHint(Component.literal(s));
             }
         });
 
-        return nameTextField;
+        return nameEditBox;
     }
 
-    private ClickableWidget getUseChatTriggerCheckBox() {
-        useChatTriggerCheckBox = CheckboxWidget.builder(
-                        Text.literal("Use Trigger"),
-                        textRenderer
+    private AbstractWidget getUseChatTriggerCheckBox() {
+        useChatTriggerCheckBox = Checkbox.builder(
+                        Component.literal("Use Trigger"),
+                        font
                 )
-                .pos(minecraftClient.getWindow().getScaledWidth() - PADDING - sideWidth
+                .pos(this.minecraft.getWindow().getGuiScaledWidth() - PADDING - sideWidth
                         , PADDING + widgetHeight + PADDING)
-                .checked(true)
-                .callback((checkbox, checked) -> {})
+                .selected(true)
+                .onValueChange((checkbox, checked) -> {})
                 .build();
         return useChatTriggerCheckBox;
     }
 
-    private ClickableWidget getRegexTextField() {
-        regexTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getRegexEditBox() {
+        regexEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 2,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        regexTextField.setMaxLength(Integer.MAX_VALUE);
+        regexEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        regexTextField.setChangedListener(s -> {
+        regexEditBox.setResponder(s -> {
             if(selectedChatTriggerId != null) {
-                regexTextField.setPlaceholder(Text.literal(s));
+                regexEditBox.setHint(Component.literal(s));
             }
         });
 
-        return regexTextField;
+        return regexEditBox;
     }
 
-    private ClickableWidget getNotificationToTriggerTextField() {
-        notificationToTriggerTextField = new TextFieldWidget(
-                textRenderer,
+    private AbstractWidget getNotificationToTriggerEditBox() {
+        notificationToTriggerEditBox = new EditBox(
+                font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 3,
-                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
-                Text.empty()
+                Component.empty()
         );
-        notificationToTriggerTextField.setMaxLength(Integer.MAX_VALUE);
+        notificationToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        notificationToTriggerTextField.setChangedListener(s -> {
+        notificationToTriggerEditBox.setResponder(s -> {
             if(selectedChatTriggerId != null) {
-                notificationToTriggerTextField.setPlaceholder(Text.literal(s));
+                notificationToTriggerEditBox.setHint(Component.literal(s));
             }
         });
 
-        return notificationToTriggerTextField;
+        return notificationToTriggerEditBox;
     }
 
-    private ClickableWidget getNewButtonElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Create Chat Trigger"),
+    private AbstractWidget getNewButtonElementButton() {
+        return Button.builder(
+                        Component.literal("Create Chat Trigger"),
                         (button) -> {
                             String id = "Custom Chat Trigger #" + UUID.randomUUID();
 
@@ -243,13 +242,13 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                             buttonEntryMap.put(id, buttonEntry);
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getDeleteButtonElementButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Delete Selected"),
+    private AbstractWidget getDeleteButtonElementButton() {
+        return Button.builder(
+                        Component.literal("Delete Selected"),
                         (button) -> {
                             if(selectedChatTriggerId != null) {
                                 CustomChatTriggerDataHandler.instance().deleteCustomChatTrigger(selectedChatTriggerId);
@@ -265,26 +264,26 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
                 .build();
     }
 
-    private ClickableWidget getImportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Import"),
+    private AbstractWidget getImportButton() {
+        return Button.builder(
+                        Component.literal("Import"),
                         (button) -> {
-                            String rawData = minecraftClient.keyboard.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard();
                             try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
                                 Triplet<String, CustomChatTriggerDataHandler.CustomChatTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomChatTriggerDataHandler.CustomChatTrigger.class, Integer.class).getType());
 
                                 if(data.value3() > FishOnMCExtras.CHAT_TRIGGER_VERSION) {
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Could not Import. Imported Chat Trigger is made on a newer version"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Could not Import. Imported Chat Trigger is made on a newer version"));
                                     return;
                                 }
 
@@ -305,28 +304,28 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                 buttonList.addEntry(buttonEntry);
                                 buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Imported Chat Trigger"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Imported Chat Trigger"));
                             } catch (Exception e) {
                                 LoggerHandler.error(e);
 
-                                SystemToast.add(minecraftClient.getToastManager(),
-                                        SystemToast.Type.PERIODIC_NOTIFICATION,
-                                        Text.literal("Fish On Extras Rebirth"),
-                                        Text.literal("Could not Import. Data invalid"));
+                                SystemToast.add(this.minecraft.getToastManager(),
+                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                        Component.literal("Fish On Extras Rebirth"),
+                                        Component.literal("Could not Import. Data invalid"));
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .position(PADDING_HALF, minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Imports from the code on your clipboard")))
+                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
                 .build();
     }
 
-    private ClickableWidget getExportButton() {
-        return ButtonWidget.builder(
-                        Text.literal("Export Selected"),
+    private AbstractWidget getExportButton() {
+        return Button.builder(
+                        Component.literal("Export Selected"),
                         (button) -> {
                             if(selectedChatTriggerId != null) {
                                 try {
@@ -337,7 +336,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                                            ComponentHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Chat Trigger: **" + selectedChatTriggerId + "\n" +
@@ -346,31 +345,31 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                                             "```\n" +
                                             "-# Using Chat Trigger version: " + "`v" + FishOnMCExtras.CHAT_TRIGGER_VERSION + "`";
 
-                                    minecraftClient.keyboard.setClipboard(dataToCopy);
+                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("Exported Button on your clipboard"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("Exported Button on your clipboard"));
                                 } catch (Exception e) {
                                     LoggerHandler.error(e);
 
-                                    SystemToast.add(minecraftClient.getToastManager(),
-                                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                                            Text.literal("Fish On Extras Rebirth"),
-                                            Text.literal("An error has occurred"));
+                                    SystemToast.add(this.minecraft.getToastManager(),
+                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                            Component.literal("Fish On Extras Rebirth"),
+                                            Component.literal("An error has occurred"));
                                 }
                             }
                         })
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .position(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), minecraftClient.getWindow().getScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
-                .tooltip(Tooltip.of(Text.literal("Save first before exporting")))
+                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
                 .build();
     }
 
-    private ClickableWidget getButtonList() {
+    private AbstractWidget getButtonList() {
         buttonList = new ButtonListWidget(
-                client,
+                this.minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
                 height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
                 0,
@@ -389,65 +388,65 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         return buttonList;
     }
 
-    private ButtonWidget saveBackButton() {
-        return ButtonWidget.builder(Text.literal("Save and Return"), button -> {
+    private Button saveBackButton() {
+        return Button.builder(Component.literal("Save and Return"), button -> {
             if(selectedChatTriggerId != null) {
-                if(nameTextField.getText().isBlank()) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Chat Trigger name is empty"));
+                if(nameEditBox.getValue().isBlank()) {
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Chat Trigger name is empty"));
 
                     return;
                 }
 
-                if(!Objects.equals(selectedChatTriggerId, nameTextField.getText())
-                        && CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.containsKey(nameTextField.getText())
+                if(!Objects.equals(selectedChatTriggerId, nameEditBox.getValue())
+                        && CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.containsKey(nameEditBox.getValue())
                 ) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Chat Trigger name already exist"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Chat Trigger name already exist"));
 
                     return;
                 }
 
                 try {
-                    Pattern.compile(regexTextField.getText());
+                    Pattern.compile(regexEditBox.getValue());
                 } catch (PatternSyntaxException e) {
-                    SystemToast.add(minecraftClient.getToastManager(),
-                            SystemToast.Type.PERIODIC_NOTIFICATION,
-                            Text.literal("Fish On Extras Rebirth"),
-                            Text.literal("Regex cannot be compiled"));
+                    SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                            Component.literal("Fish On Extras Rebirth"),
+                            Component.literal("Regex cannot be compiled"));
 
                     LoggerHandler.error(e);
 
                     return;
                 }
 
-                CustomChatTriggerDataHandler.instance().updateChatTrigger(selectedChatTriggerId, nameTextField.getText(), regexTextField.getText(), notificationToTriggerTextField.getText(), useChatTriggerCheckBox.isChecked());
+                CustomChatTriggerDataHandler.instance().updateChatTrigger(selectedChatTriggerId, nameEditBox.getValue(), regexEditBox.getValue(), notificationToTriggerEditBox.getValue(), useChatTriggerCheckBox.selected());
 
                 ChatHandler.instance().initChatTrigger();
             }
-                    this.close();
+                    this.onClose();
                 })
-                .position(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
-    private ButtonWidget backButton() {
-        return ButtonWidget.builder(Text.literal("Return"), button ->
-                    this.close())
-                .position(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
+    private Button backButton() {
+        return Button.builder(Component.literal("Return"), button ->
+                    this.onClose())
+                .pos(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
                 .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createChatTriggerEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                ButtonWidget.builder(
-                        Text.literal(id),
+                Button.builder(
+                        Component.literal(id),
                         button -> {
                             selectedChatTrigger = CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.get(id);
 
@@ -461,46 +460,46 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
     }
 
     private void setFields() {
-        this.header = Text.literal(selectedChatTriggerId);
-        nameTextField.setText(selectedChatTriggerId);
-        nameTextField.setPlaceholder(Text.literal(selectedChatTriggerId));
+        this.header = Component.literal(selectedChatTriggerId);
+        nameEditBox.setValue(selectedChatTriggerId);
+        nameEditBox.setHint(Component.literal(selectedChatTriggerId));
 
         if(selectedChatTrigger != null) {
-            if(selectedChatTrigger.useChatTrigger != useChatTriggerCheckBox.isChecked()) {
+            if(selectedChatTrigger.useChatTrigger != useChatTriggerCheckBox.selected()) {
                 useChatTriggerCheckBox.onPress(null);
             }
 
-            regexTextField.setText(selectedChatTrigger.regex);
-            regexTextField.setPlaceholder(Text.literal(selectedChatTrigger.regex));
+            regexEditBox.setValue(selectedChatTrigger.regex);
+            regexEditBox.setHint(Component.literal(selectedChatTrigger.regex));
 
-            notificationToTriggerTextField.setText(selectedChatTrigger.notificationToTrigger);
-            notificationToTriggerTextField.setPlaceholder(Text.literal(selectedChatTrigger.notificationToTrigger));
+            notificationToTriggerEditBox.setValue(selectedChatTrigger.notificationToTrigger);
+            notificationToTriggerEditBox.setHint(Component.literal(selectedChatTrigger.notificationToTrigger));
         }
     }
 
     private void resetFields() {
-        this.header = Text.literal("No Chat Trigger Selected");
+        this.header = Component.literal("No Chat Trigger Selected");
 
-        nameTextField.setText("");
-        nameTextField.setPlaceholder(Text.literal(""));
+        nameEditBox.setValue("");
+        nameEditBox.setHint(Component.literal(""));
 
-        if(useChatTriggerCheckBox.isChecked()) {
+        if(useChatTriggerCheckBox.selected()) {
             useChatTriggerCheckBox.onPress(null);
         }
 
-        regexTextField.setText("");
-        regexTextField.setPlaceholder(Text.literal(""));
+        regexEditBox.setValue("");
+        regexEditBox.setHint(Component.literal(""));
 
-        notificationToTriggerTextField.setText("");
-        notificationToTriggerTextField.setPlaceholder(Text.literal(""));
+        notificationToTriggerEditBox.setValue("");
+        notificationToTriggerEditBox.setHint(Component.literal(""));
 
         selectedChatTrigger = null;
         selectedChatTriggerId = null;
     }
 
     @Override
-    public void close() {
-        this.minecraftClient.setScreen(this.parentScreen);
+    public void onClose() {
+        this.minecraft.setScreen(this.parentScreen);
     }
     //endregion
 }

@@ -2,57 +2,56 @@ package dannypx.foe.screens.element;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.helper.DrawHelper;
+import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
 public class NotificationElement extends Element implements ScreenConstants {
     //region Fields
-    private final MinecraftClient minecraftClient;
-    private final TextRenderer textRenderer;
+    private final Minecraft minecraft;
+    private final Font font;
     private int x = 0;
     private int y = 0;
     private final ItemStack itemStack;
     private final int rows;
     private final int columns;
-    private final List<Text> textList;
+    private final List<Component> componentList;
 
     private final int contentHeight;
     private final int contentWidth;
 
-    private static final Identifier BOX_TEXTURE = Identifier.of(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
+    private static final Identifier BOX_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
     private static final int LINE_HEIGHT = 1;
     private static final int BOX_PADDING = 5 + PADDING_QUART;
 
     private boolean isError = false;
     //endregion
 
-    public NotificationElement(MinecraftClient minecraftClient, int width, ItemStack itemStack, int rows, int columns, List<Text> textList) {
+    public NotificationElement(Minecraft minecraft, int width, ItemStack itemStack, int rows, int columns, List<Component> componentList) {
         super(0,
                 0,
                 0,
                 0,
                 null,
-                Text.literal("Notification Element"),
+                Component.literal("Notification Element"),
                 false);
-        this.minecraftClient = minecraftClient;
-        this.textRenderer = minecraftClient.textRenderer;
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
         this.itemStack = itemStack;
         this.rows = rows;
         this.columns = columns;
-        this.textList = textList;
+        this.componentList = componentList;
 
-        contentHeight = Math.max(16 + PADDING_QUART * 2, rows * (textRenderer.fontHeight + LINE_HEIGHT) - LINE_HEIGHT);
+        contentHeight = Math.max(16 + PADDING_QUART * 2, rows * (font.lineHeight + LINE_HEIGHT) - LINE_HEIGHT);
         this.height = BOX_PADDING * 2 + contentHeight;
 
 
@@ -70,51 +69,51 @@ public class NotificationElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         if(isError) {
             return;
         }
-        this.renderBox(drawContext);
-        this.renderItem(drawContext, itemStack);
-        this.renderText(drawContext, textRenderer, textList, rows, columns);
+        this.renderBox(guiGraphics);
+        this.renderItem(guiGraphics, itemStack);
+        this.renderText(guiGraphics, font, componentList, rows, columns);
     }
 
-    private void renderText(DrawContext drawContext, TextRenderer textRenderer, List<Text> textList, int rows, int columns) {
+    private void renderText(GuiGraphics guiGraphics, Font font, List<Component> componentList, int rows, int columns) {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                int textX = itemStack.isEmpty()
+                int componentX = itemStack.isEmpty()
                         ? x + BOX_PADDING + (contentWidth / columns) * column
                         : x + BOX_PADDING + 16 + PADDING_QUART + ((contentWidth - (16 + PADDING_QUART)) / columns) * column;
-                int textY = rows == 1
-                        ? y + this.height / 2 - textRenderer.fontHeight / 2
-                        : y + BOX_PADDING + (textRenderer.fontHeight + LINE_HEIGHT) * row;
+                int componentY = rows == 1
+                        ? y + this.height / 2 - font.lineHeight / 2
+                        : y + BOX_PADDING + (font.lineHeight + LINE_HEIGHT) * row;
 
-                if((row * columns) + column + 1 > textList.size()) {
-                    LoggerHandler.error("Index" + ((row * columns) + column) + " out of bounds for length " + textList.size());
+                if((row * columns) + column + 1 > componentList.size()) {
+                    LoggerHandler.error("Index" + ((row * columns) + column) + " out of bounds for length " + componentList.size());
                     isError = true;
                     return;
                 }
 
-                Text text = textList.get((row * columns) + column);
+                Component component = componentList.get((row * columns) + column);
 
-                if(!Objects.equals(text, Text.empty())) {
-                    DrawHelper.drawText(drawContext, textRenderer, text,
-                            textX, textY,
+                if(!Objects.equals(component, Component.empty())) {
+                    GuiGraphicsHelper.drawText(guiGraphics, font, component,
+                            componentX, componentY,
                             true, true, true, true);
                 }
             }
         }
     }
 
-    private void renderItem(DrawContext drawContext, ItemStack itemStack) {
+    private void renderItem(GuiGraphics guiGraphics, ItemStack itemStack) {
         if(!itemStack.isEmpty()) {
-            drawContext.drawItem(itemStack, x + BOX_PADDING, y + this.height / 2 - 16 / 2);
+            guiGraphics.renderItem(itemStack, x + BOX_PADDING, y + this.height / 2 - 16 / 2);
         }
     }
 
-    private void renderBox(DrawContext drawContext) {
+    private void renderBox(GuiGraphics guiGraphics) {
         // Top Left
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x, this.y,
                 0, 0,
@@ -124,7 +123,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Top
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x + 5, this.y,
                 5, 0,
@@ -134,7 +133,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Top Right
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 x + this.width - 5, this.y,
                 10, 0,
@@ -144,7 +143,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Centre Left
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x, this.y + 5,
                 0, 5,
@@ -154,7 +153,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Centre
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x + 5, this.y + 5,
                 5, 5,
@@ -164,7 +163,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Centre Right
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 x + this.width - 5, this.y + 5,
                 10, 5,
@@ -174,7 +173,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Bottom Left
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x, y + this.height - 5,
                 0, 10,
@@ -184,7 +183,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Bottom
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 this.x + 5, y + this.height - 5,
                 5, 10,
@@ -194,7 +193,7 @@ public class NotificationElement extends Element implements ScreenConstants {
         );
 
         // Bottom Right
-        drawContext.drawTexture(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 x + this.width - 5, y + this.height - 5,
                 10, 10,
