@@ -170,7 +170,7 @@ public class TooltipHandler extends Handler {
                 String username = null;
 
                 if(armorNbtObject.getPlayerUUID() != null) {
-                    username = ProfileHandler.instance().getUsername(armorNbtObject.getPlayerUUID());
+                    username = ProfileHandler.instance().getUsernameFromId(armorNbtObject.getPlayerUUID());
                 }
 
                 Component identifierComponent = ComponentHelper.concat(

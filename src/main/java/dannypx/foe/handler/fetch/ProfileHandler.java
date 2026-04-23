@@ -1,6 +1,8 @@
 package dannypx.foe.handler.fetch;
 
+import com.mojang.authlib.GameProfile;
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.mixin.accessor.MinecraftAccessor;
 import dannypx.foe.type.tuple.Pair;
@@ -27,16 +29,16 @@ public class ProfileHandler extends Handler {
     }
 
     //region Fields
-    private final Map<UUID, String> nameCache = new HashMap<>();
+    private final Map<UUID, GameProfile> profileCache = new HashMap<>();
     private final Map<UUID, Boolean> fetchingUUIDs = new HashMap<>();
     private final ProfileResolver profileResolver;
     //endregion
 
     //region Methods
-    public String getUsername(UUID uuid) {
-        String cached = nameCache.get(uuid);
+    public String getUsernameFromId(UUID uuid) {
+        GameProfile cached = profileCache.get(uuid);
         if (cached != null) {
-            return cached;
+            return cached.name();
         }
 
         if (!fetchingUUIDs.containsKey(uuid)) {
@@ -46,13 +48,16 @@ public class ProfileHandler extends Handler {
 
             profileResolver.fetchById(uuid).ifPresentOrElse(profile ->
                     {
-                        nameCache.put(uuid, profile.name());
+                        profileCache.put(uuid, profile);
                         fetchingUUIDs.remove(uuid);
                     },
-                    () -> {}
+                    () -> {
+                        CodeExecuterHandler.runLater(20, () -> {
+                            fetchingUUIDs.remove(uuid);
+                        });
+                    }
             );
         }
-
         return null;
     }
     //endregion
