@@ -107,11 +107,11 @@ public class SmallButtonWidget extends AbstractWidget {
                     }
                 }
             } else {
-                int stringWidth = minecraft.font.width(ComponentHelper.smallText(icon));
+                int stringWidth = minecraft.font.width(ComponentHelper.smallCaps(icon));
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0.0f, 0.0f);
 
-                GuiGraphicsHelper.drawText(guiGraphics,
+                GuiGraphicsHelper.drawString(guiGraphics,
                         minecraft.font,
                         Component.literal(icon),
                         getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,

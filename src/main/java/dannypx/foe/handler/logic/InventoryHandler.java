@@ -8,9 +8,9 @@ import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;

@@ -7,9 +7,9 @@ import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.type.tuple.Triplet;
@@ -73,7 +73,7 @@ public class CatchingHandler extends Handler {
                                             }
                                             case "size" -> {
                                                 drystreakData = lastDataFish.value3();
-                                                icon = lastCaughtFish.getFishSizeText();
+                                                icon = lastCaughtFish.getFishSizeComponent();
                                             }
                                         }
 

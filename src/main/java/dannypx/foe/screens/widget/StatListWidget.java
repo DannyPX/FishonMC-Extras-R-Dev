@@ -117,10 +117,10 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
             if(isHeader) {
                 int headerX = getX() + width / 2;
                 int headerWidth = font.width(
-                        Component.literal(ComponentHelper.smallText(category.getString())).setStyle(category.getStyle())
+                        Component.literal(ComponentHelper.smallCaps(category.getString())).setStyle(category.getStyle())
                 );
 
-                GuiGraphicsHelper.drawText(guiGraphics, font, category,
+                GuiGraphicsHelper.drawString(guiGraphics, font, category,
                         headerX - headerWidth / 2, posY,
                         true, true, true, true);
             } else {
@@ -135,13 +135,13 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
                 int fieldComponentX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getY() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
 
                 int field3X = getX() + (width/4) * 3;
-                int field3Width = font.width(ComponentHelper.smallText(field3.getString()));
+                int field3Width = font.width(ComponentHelper.smallCaps(field3.getString()));
 
-                GuiGraphicsHelper.drawText(guiGraphics, font, fieldComponent,
+                GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent,
                         fieldComponentX, posY,
                         true, true, true, true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font, field3,
+                GuiGraphicsHelper.drawString(guiGraphics, font, field3,
                         field3X - field3Width / 2, posY,
                         true, true, true, true);
 

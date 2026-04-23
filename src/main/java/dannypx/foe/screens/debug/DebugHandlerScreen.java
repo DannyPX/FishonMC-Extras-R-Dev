@@ -92,7 +92,7 @@ public class DebugHandlerScreen extends DefaultModScreen {
         return handlerList;
     }
 
-    private void renderHandlerFields(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    private void renderHandlerFields(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if(selectedHandler != null) {
             AtomicInteger atomicInteger = new AtomicInteger(0);
             handlerFields.get(selectedHandler).forEach((name, value) -> {
@@ -102,18 +102,18 @@ public class DebugHandlerScreen extends DefaultModScreen {
                         value.value1()
                 );
 
-                int textx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
-                int texty = PADDING + (font.lineHeight + LINE_SPACING) * atomicInteger.getAndIncrement();
-                int textwidth = font.width(component);
-                int textHeight = font.lineHeight;
+                int componentx = (BUTTON_WIDTH + PADDING * 2) + PADDING;
+                int componenty = PADDING + (font.lineHeight + LINE_SPACING) * atomicInteger.getAndIncrement();
+                int componentWidth = font.width(component);
+                int componentHeight = font.lineHeight;
                 int color = CommonColors.WHITE;
 
-                context.drawString(font, component, textx, texty, color, true);
+                guiGraphics.drawString(font, component, componentx, componenty, color, true);
 
-                if(mouseX >= textx && mouseX <= textx + textwidth
-                        && mouseY >= texty && mouseY <= texty + textHeight) {
+                if(mouseX >= componentx && mouseX <= componentx + componentWidth
+                        && mouseY >= componenty && mouseY <= componenty + componentHeight) {
                     if(!Objects.equals(value.value2(), Component.empty())) {
-                        context.setTooltipForNextFrame(value.value2(), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(value.value2(), mouseX, mouseY);
                     }
 
                     hoveredName = name;
@@ -126,19 +126,19 @@ public class DebugHandlerScreen extends DefaultModScreen {
     @Override
     public boolean keyPressed(KeyEvent input) {
 
-        this.copyText(input);
+        this.copyField(input);
 
         return super.keyPressed(input);
     }
 
-    public void copyText(KeyEvent input) {
+    public void copyField(KeyEvent input) {
         boolean ctrl = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0
                 || (input.modifiers() & GLFW.GLFW_MOD_SUPER) != 0;
 
         if(ctrl && input.key() == GLFW.GLFW_KEY_C) {
             String json;
             if(Objects.equals(hoveredValue.value2(), Component.empty())) {
-                json = ComponentHelper.textToJsonPretty(hoveredValue.value1());
+                json = ComponentHelper.componentToJsonPretty(hoveredValue.value1());
             } else {
                 json = hoveredValue.value2().getString();
             }

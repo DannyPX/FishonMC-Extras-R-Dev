@@ -1,4 +1,4 @@
-package dannypx.foe.type.custom_text;
+package dannypx.foe.type.placeholder;
 
 public record StringValue(String value) implements PlaceholderValue {
     @Override

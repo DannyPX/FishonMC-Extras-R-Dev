@@ -239,7 +239,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                     boolean isOnTimer = remainingOn < timer;
 
-                    Component onTimerText = ComponentHelper.concat(
+                    Component onTimerComponent = ComponentHelper.concat(
                             Component.literal("Timer till ").withStyle(ChatFormatting.GRAY),
                             Component.literal("ON").withStyle(ChatFormatting.GREEN),
                             Component.literal(" period ends: ").withStyle(ChatFormatting.GRAY),
@@ -250,7 +250,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Component.literal(String.format("%02d", remainingTime.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    Component offTimerText = ComponentHelper.concat(
+                    Component offTimerComponent = ComponentHelper.concat(
                             Component.literal("Timer till ").withStyle(ChatFormatting.GRAY),
                             Component.literal("OFF").withStyle(ChatFormatting.RED),
                             Component.literal(" period ends: ").withStyle(ChatFormatting.GRAY),
@@ -262,7 +262,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     );
 
                     guiGraphics.drawString(font,
-                            onTimerText,
+                            onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
                             CommonColors.WHITE,
@@ -270,21 +270,21 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     );
 
                     guiGraphics.drawString(font,
-                            offTimerText,
+                            offTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8 + (font.lineHeight + PADDING_QUART) * 1,
                             CommonColors.WHITE,
                             true
                     );
 
-                    Component isOnTimerText = ComponentHelper.concat(
+                    Component isOnTimerComponent = ComponentHelper.concat(
                             Component.literal("Currently in ").withStyle(ChatFormatting.GRAY),
                             isOnTimer ? Component.literal("ON").withStyle(ChatFormatting.GREEN) : Component.literal("OFF").withStyle(ChatFormatting.RED),
                             Component.literal(" period").withStyle(ChatFormatting.GRAY)
                     );
 
                     guiGraphics.drawString(font,
-                            isOnTimerText,
+                            isOnTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8 + (font.lineHeight + PADDING_QUART) * 2,
                             CommonColors.WHITE,
@@ -297,7 +297,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                     Triplet<Long, Long, Long> remainingTime = getTime(remainingOn);
 
-                    Component onTimerText = ComponentHelper.concat(
+                    Component onTimerComponent = ComponentHelper.concat(
                             Component.literal("Timer: ").withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(remainingTime.value3())).withStyle(ChatFormatting.YELLOW),
                             Component.literal(":").withStyle(ChatFormatting.YELLOW),
@@ -307,7 +307,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     );
 
                     guiGraphics.drawString(font,
-                            onTimerText,
+                            onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
                             CommonColors.WHITE,

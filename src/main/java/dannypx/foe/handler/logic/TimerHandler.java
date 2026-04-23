@@ -2,8 +2,8 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.ChatHandler;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.handler.store.CustomTimerDataHandler;
 import dannypx.foe.type.tuple.Triplet;

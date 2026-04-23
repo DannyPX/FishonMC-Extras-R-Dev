@@ -424,9 +424,9 @@ public class EditCustomHUDWidget extends AbstractWidget implements ScreenConstan
         public int width;
 
         private static final String isCentreString = "Centered";
-        private static final int CENTRE_TEXT_SPACING = Minecraft.getInstance().font.width(isCentreString);
+        private static final int CENTRE_STRING_SPACING = Minecraft.getInstance().font.width(isCentreString);
         private static final String isSmallString = "Small Text";
-        private static final int SMALL_TEXT_SPACING = Minecraft.getInstance().font.width(isSmallString);
+        private static final int SMALL_STRING_SPACING = Minecraft.getInstance().font.width(isSmallString);
 
         public static final int HEIGHT = 24;
         private static final int SPACING = 6;
@@ -448,7 +448,7 @@ public class EditCustomHUDWidget extends AbstractWidget implements ScreenConstan
             editBoxWidget.setMaxLength(Integer.MAX_VALUE);
 
             editBoxWidget.setValue(defaultLine);
-            int stringWidth = width - PADDING - PADDING - 6 - PADDING - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - 20;
+            int stringWidth = width - PADDING - PADDING - 6 - PADDING - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_STRING_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_STRING_SPACING - 20;
             editBoxWidget.setHint(Component.literal(
                     minecraftClient.font.width(defaultLine) > stringWidth
                     ? minecraftClient.font.plainSubstrByWidth(defaultLine, stringWidth) + "..."
@@ -486,18 +486,18 @@ public class EditCustomHUDWidget extends AbstractWidget implements ScreenConstan
 
         public void setPosition(int x, int y, int fullWidth) {
 
-            int stringWidth = fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING - SPACING;
+            int stringWidth = fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_STRING_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_STRING_SPACING - SPACING;
 
             editBoxWidget.setPosition(x, y);
             editBoxWidget.setWidth(stringWidth);
 
             isCentreWidget.setPosition(
-                    x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_TEXT_SPACING,
+                    x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_STRING_SPACING - CHECKBOX_SIZE - SPACING - CHECKBOX_SIZE - CENTRE_STRING_SPACING,
                     y
             );
 
             isSmallWidget.setPosition(
-                    x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_TEXT_SPACING - CHECKBOX_SIZE,
+                    x + fullWidth - SPACING - BUTTON_SIZE * 2 - PADDING_QUART - SPACING - SMALL_STRING_SPACING - CHECKBOX_SIZE,
                     y
             );
 

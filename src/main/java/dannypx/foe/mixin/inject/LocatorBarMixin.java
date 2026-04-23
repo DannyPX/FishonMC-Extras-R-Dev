@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LocatorBarRenderer.class)
 public abstract class LocatorBarMixin {
     @Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)
-    private void injectRenderBackground(GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private void injectRenderBackground(GuiGraphics guiGraphics, DeltaTracker tickCounter, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
         ) {

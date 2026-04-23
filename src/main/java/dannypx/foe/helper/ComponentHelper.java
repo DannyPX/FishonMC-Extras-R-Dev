@@ -33,12 +33,12 @@ import java.util.zip.GZIPOutputStream;
 public class ComponentHelper {
     private static final GsonBuilder gson = new GsonBuilder();
 
-    public static MutableComponent concat(Component... texts) {
-        MutableComponent text = Component.empty();
-        for (Component t : texts) {
-            text.append(t);
+    public static MutableComponent concat(Component... components) {
+        MutableComponent component = Component.empty();
+        for (Component t : components) {
+            component.append(t);
         }
-        return text;
+        return component;
     }
 
     public static MutableComponent literal(boolean b) {
@@ -73,8 +73,8 @@ public class ComponentHelper {
         return Component.literal(Float.toString(f));
     }
 
-    public static MutableComponent literal(Component text) {
-        return concat(text);
+    public static MutableComponent literal(Component component) {
+        return concat(component);
     }
 
     @SuppressWarnings("unchecked")
@@ -119,7 +119,7 @@ public class ComponentHelper {
         return gson.setPrettyPrinting().create().toJson(ComponentSerialization.CODEC.listOf().encodeStart(JsonOps.INSTANCE, list).getOrThrow());
     }
 
-    public static String smallText(String string) {
+    public static String smallCaps(String string) {
         return smallLetter(smallNumber(string));
     }
 
@@ -320,33 +320,33 @@ public class ComponentHelper {
         return splitTitleCase(capitalize(s));
     }
 
-    public static int getWidth(Font textRenderer, Component text, boolean isSmall) {
+    public static int getWidth(Font font, Component component, boolean isSmall) {
         AtomicInteger width = new AtomicInteger(0);
-        if(text.getSiblings().isEmpty()) {
-            int calculatedWidth = textRenderer.width(text);
+        if(component.getSiblings().isEmpty()) {
+            int calculatedWidth = font.width(component);
             if(isSmall) {
-                calculatedWidth = textRenderer.width(Component.literal(ComponentHelper.smallText(text.getString())).setStyle(text.getStyle()));
+                calculatedWidth = font.width(Component.literal(ComponentHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
             }
             width.set(width.get() + calculatedWidth);
         } else {
-            text.getSiblings().forEach(text1 -> {
-                int calculatedWidth = getWidth(textRenderer, text1, isSmall);
+            component.getSiblings().forEach(text1 -> {
+                int calculatedWidth = getWidth(font, text1, isSmall);
                 width.set(width.get() + calculatedWidth);
             });
         }
         return width.get();
     }
 
-    public static String ComponentToJson(Component text) {
-        return gson.create().toJson(ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
+    public static String componentToJson(Component component) {
+        return gson.create().toJson(ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, component).getOrThrow());
     }
 
-    public static String textToJsonPretty(Component text) {
-        return gson.setPrettyPrinting().create().toJson(ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, text).getOrThrow());
+    public static String componentToJsonPretty(Component component) {
+        return gson.setPrettyPrinting().create().toJson(ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, component).getOrThrow());
     }
 
     public static Pair<MutableComponent, Style> parseLegacyWithStyle(String input, Style startingStyle) {
-        MutableComponent text = Component.empty();
+        MutableComponent component = Component.empty();
         Pattern pattern = Pattern.compile("(§#[0-9A-Fa-f]{6}|§[0-9A-FK-ORa-fk-or])");
         Matcher matcher = pattern.matcher(input);
 
@@ -355,7 +355,7 @@ public class ComponentHelper {
 
         while (matcher.find()) {
             if (matcher.start() > lastEnd) {
-                text.append(Component.literal(input.substring(lastEnd, matcher.start())).setStyle(currentStyle));
+                component.append(Component.literal(input.substring(lastEnd, matcher.start())).setStyle(currentStyle));
             }
 
             String code = matcher.group();
@@ -373,17 +373,17 @@ public class ComponentHelper {
         }
 
         if (lastEnd < input.length()) {
-            text.append(Component.literal(input.substring(lastEnd)).setStyle(currentStyle));
+            component.append(Component.literal(input.substring(lastEnd)).setStyle(currentStyle));
         }
 
-        return Pair.of(text, currentStyle);
+        return Pair.of(component, currentStyle);
     }
 
     public static Pair<MutableComponent, Style> parseLegacyWithStyle(String input) {
         return parseLegacyWithStyle(input, Style.EMPTY);
     }
 
-    public static List<Component> wrapStyledComponent(Component text, int maxWidth, boolean smallText, Font renderer) {
+    public static List<Component> wrapStyledComponent(Component component, int maxWidth, boolean smallCaps, Font font) {
         List<Component> lines = new ArrayList<>();
         AtomicReference<MutableComponent> currentLine = new AtomicReference<>(Component.empty());
         AtomicInteger currentLineWidth = new AtomicInteger();
@@ -391,7 +391,7 @@ public class ComponentHelper {
         List<Component> currentWord = new ArrayList<>();
         AtomicInteger currentWordWidth = new AtomicInteger();
 
-        text.visit((style, string) -> {
+        component.visit((style, string) -> {
             for (char c : string.toCharArray()) {
                 if (c == ' ') {
                     if (currentLineWidth.get() + currentWordWidth.get() > maxWidth && currentLineWidth.get() > 0) {
@@ -407,7 +407,7 @@ public class ComponentHelper {
                     Component space = Component.literal(" ").setStyle(style);
                     currentLine.get().append(space);
 
-                    currentLineWidth.addAndGet(currentWordWidth.get() + ComponentHelper.getWidth(renderer, Component.literal(" "), smallText));
+                    currentLineWidth.addAndGet(currentWordWidth.get() + ComponentHelper.getWidth(font, Component.literal(" "), smallCaps));
 
                     currentWord.clear();
                     currentWordWidth.set(0);
@@ -427,10 +427,10 @@ public class ComponentHelper {
                     continue;
                 }
 
-                Component charText = Component.literal(String.valueOf(c)).setStyle(style);
-                currentWord.add(charText);
+                Component charComponent = Component.literal(String.valueOf(c)).setStyle(style);
+                currentWord.add(charComponent);
 
-                currentWordWidth.addAndGet(ComponentHelper.getWidth(renderer, Component.literal(String.valueOf(c)), smallText));
+                currentWordWidth.addAndGet(ComponentHelper.getWidth(font, Component.literal(String.valueOf(c)), smallCaps));
             }
             return Optional.empty();
         }, Style.EMPTY);
@@ -438,7 +438,7 @@ public class ComponentHelper {
         if (!currentWord.isEmpty()) {
             if (currentWordWidth.get() > maxWidth) {
                 for (Component part : currentWord) {
-                    int charWidth = ComponentHelper.getWidth(renderer, part, smallText);
+                    int charWidth = ComponentHelper.getWidth(font, part, smallCaps);
                     if (currentLineWidth.get() + charWidth > maxWidth && currentLineWidth.get() > 0) {
                         lines.add(currentLine.get());
                         currentLine.set(Component.empty());
@@ -465,8 +465,8 @@ public class ComponentHelper {
         return lines;
     }
 
-    public static Component substring(Component text, int start, int end) {
-        int length = text.getString().length();
+    public static Component substring(Component component, int start, int end) {
+        int length = component.getString().length();
 
         if (start < 0 || end < 0 || start > end || end > length) {
             return Component.empty();
@@ -475,7 +475,7 @@ public class ComponentHelper {
         MutableComponent result = Component.empty();
         AtomicInteger index = new AtomicInteger(0);
 
-        text.visit((style, string) -> {
+        component.visit((style, string) -> {
             int strStart = index.get();
             int strEnd = strStart + string.length();
 
@@ -529,7 +529,7 @@ public class ComponentHelper {
         return (compressed[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressed[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
     }
 
-    public static Component jsonToText(String json) {
+    public static Component jsonToComponent(String json) {
         return ComponentSerialization.CODEC
                 .decode(JsonOps.INSTANCE, gson.create().fromJson(json, JsonElement.class))
                 .mapOrElse((com.mojang.datafixers.util.Pair::getFirst), (pairError -> Component.empty()));

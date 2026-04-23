@@ -147,7 +147,7 @@ public class KeyBindHelper {
         return "Unknown";
     }
 
-    public static String getKeyText(ValidatedKeybind validatedKeybind) {
+    public static String getKeyString(ValidatedKeybind validatedKeybind) {
         String key = "Unknown";
         if(validatedKeybind.get() instanceof FzzyKeybindSimple) {
             key = getTranslatableKey(validatedKeybind);

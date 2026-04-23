@@ -34,7 +34,7 @@ public abstract class GuiMixin {
     }
 
     @Inject(method = "renderSelectedItemName", at = @At("HEAD"),  cancellable = true)
-    private void injectRenderSelectedItemName(GuiGraphics context, CallbackInfo ci) {
+    private void injectRenderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.guiMixinRenderSelectedItemName.get()

@@ -7,8 +7,8 @@ import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ComponentHelper;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,7 +35,7 @@ public class ChatHandler extends Handler {
     //region Fields
     private Map<String, Component> storedChatTriggerComponent = new HashMap<>();
 
-    final List<String> blacklistedTextFilters = List.of(
+    final List<String> blacklistedMessageFilters = List.of(
             "REACTIONS »"
     );
 
@@ -79,7 +79,7 @@ public class ChatHandler extends Handler {
     }
 
     private boolean inBlackList(Component component) {
-        return blacklistedTextFilters.stream().anyMatch(filter -> component.getString().startsWith(filter));
+        return blacklistedMessageFilters.stream().anyMatch(filter -> component.getString().startsWith(filter));
     }
 
     private void checkPet(Component component) {
@@ -122,7 +122,7 @@ public class ChatHandler extends Handler {
 
     private Component modifyPetMessageWithPercentage(Component component) {
 
-        String json = ComponentHelper.ComponentToJson(component);
+        String json = ComponentHelper.componentToJson(component);
         if (json.contains("ᴘᴇᴛ ʀᴀᴛɪɴɢ")) {
             String petStr = json.substring(json.indexOf(" Pet\\n"), json.indexOf("ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴏᴘᴇɴ ᴘᴇᴛ ᴍᴇɴᴜ"));
             Pattern statNumber = Pattern.compile("(?<=\\+)(.*?)(?=\")");
@@ -148,7 +148,7 @@ public class ChatHandler extends Handler {
                 petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 14), " (" + ComponentHelper.floatToString((Float.parseFloat(petLocationScale) * 4 / multiplier), 0) + "%)").toString();
                 petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 16), " (" + ComponentHelper.floatToString((total / multiplier), 0) + "%)").toString();
 
-                return ComponentHelper.jsonToText(json.replace(petStr, petStrNew));
+                return ComponentHelper.jsonToComponent(json.replace(petStr, petStrNew));
             }
         }
         return component;

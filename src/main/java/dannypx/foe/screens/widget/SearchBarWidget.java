@@ -15,8 +15,8 @@ public class SearchBarWidget extends EditBox {
     private final List<Component> hoverInfo;
     private Font font;
 
-    public SearchBarWidget(Font font, int x, int y, int width, int height, Component text, List<Component> hoverInfo) {
-        super(font, x, y, width, height, null, text);
+    public SearchBarWidget(Font font, int x, int y, int width, int height, Component component, List<Component> hoverInfo) {
+        super(font, x, y, width, height, null, component);
         this.hoverInfo = hoverInfo;
         this.font = font;
     }
@@ -47,7 +47,7 @@ public class SearchBarWidget extends EditBox {
                 guiGraphics.vLine(x + length / 2 + padding, 0, padding * 2 + lines, CommonColors.GRAY);
 
                 AtomicInteger count = new AtomicInteger(0);
-                hoverInfo.forEach(text -> guiGraphics.drawString(font, text, x - length / 2, padding + count.getAndIncrement() * lineHeight, CommonColors.WHITE, true));
+                hoverInfo.forEach(component -> guiGraphics.drawString(font, component, x - length / 2, padding + count.getAndIncrement() * lineHeight, CommonColors.WHITE, true));
             } finally {
                 guiGraphics.pose().popMatrix();
             }

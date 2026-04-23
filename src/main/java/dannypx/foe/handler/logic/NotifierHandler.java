@@ -95,7 +95,7 @@ public class NotifierHandler extends Handler {
                 : ComponentHelper.concat(fish.getRarityComponent());
         Component rarityComponent = fish.getRarityComponent();
         Component variantComponent = fish.getVariantComponent();
-        Component sizeComponent = fish.getFishSizeText();
+        Component sizeComponent = fish.getFishSizeComponent();
 
         Component lengthComponent = ComponentHelper.concat(
                 Component.literal(ComponentHelper.floatToString(fish.getLength(), 2)).withStyle(ChatFormatting.GRAY),
@@ -110,7 +110,7 @@ public class NotifierHandler extends Handler {
         List<Component> notificationComponentList = new ArrayList<>(Arrays.asList(
                 tagComponent,
                 fish.getName(),
-                ComponentHelper.concat(fish.getFishSizeText(), lengthComponent, weightComponent),
+                ComponentHelper.concat(fish.getFishSizeComponent(), lengthComponent, weightComponent),
                 Component.empty(),
                 Component.literal(" - Drystreaks before catch").withStyle(ChatFormatting.GRAY),
                 ComponentHelper.concat(rarityComponent, ComponentHelper.literal(rarityDrystreak.value2())),
@@ -377,7 +377,7 @@ public class NotifierHandler extends Handler {
                 }
             }
 
-            List<MutableComponent> lines = notification.stringLines.stream().map(text -> text.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
+            List<MutableComponent> lines = notification.stringLines.stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
             List<Component> newLines = new ArrayList<>();
 
             lines.forEach(line -> newLines.addAll(ComponentHelper.wrapStyledComponent(line, notification.icon.isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
@@ -409,7 +409,7 @@ public class NotifierHandler extends Handler {
         public final ItemStack item;
         public final int rows;
         public final int columns;
-        public final List<Component> textList;
+        public final List<Component> componentList;
         protected final long startTime;
         protected final int notificationTime;
         protected final UUID uuid;
@@ -419,14 +419,14 @@ public class NotifierHandler extends Handler {
                 int rows,
                 int columns,
                 int notificationTime,
-                List<Component> texts
+                List<Component> componentList
         ) {
             this.item = item;
             this.rows = rows;
             this.columns = columns;
             this.startTime = System.currentTimeMillis();
             this.notificationTime = notificationTime;
-            this.textList = texts;
+            this.componentList = componentList;
             this.uuid = UUID.randomUUID();
         }
 
@@ -434,14 +434,14 @@ public class NotifierHandler extends Handler {
                 int rows,
                 int columns,
                 int notificationTime,
-                List<Component> texts
+                List<Component> componentList
         ) {
             this.item = ItemStack.EMPTY;
             this.rows = rows;
             this.columns = columns;
             this.startTime = System.currentTimeMillis();
             this.notificationTime = notificationTime;
-            this.textList = texts;
+            this.componentList = componentList;
             this.uuid = UUID.randomUUID();
         }
 
@@ -449,28 +449,28 @@ public class NotifierHandler extends Handler {
                 ItemStack item,
                 int rows,
                 int columns,
-                List<Component> texts
+                List<Component> componentList
         ) {
             this.item = item;
             this.rows = rows;
             this.columns = columns;
             this.startTime = System.currentTimeMillis();
             this.notificationTime = Integer.MAX_VALUE;
-            this.textList = texts;
+            this.componentList = componentList;
             this.uuid = UUID.randomUUID();
         }
 
         public Notification(
                 int rows,
                 int columns,
-                List<Component> texts
+                List<Component> componentList
         ) {
             this.item = ItemStack.EMPTY;
             this.rows = rows;
             this.columns = columns;
             this.startTime = System.currentTimeMillis();
             this.notificationTime = Integer.MAX_VALUE;
-            this.textList = texts;
+            this.componentList = componentList;
             this.uuid = UUID.randomUUID();
         }
     }

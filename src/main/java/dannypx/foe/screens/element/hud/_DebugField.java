@@ -82,38 +82,38 @@ public class _DebugField extends Element {
                 default -> 0;
             };
 
-            this.renderTextComponent(guiGraphics, font, x, y);
+            this.renderFieldComponent(guiGraphics, font, x, y);
         }
         guiGraphics.pose().popMatrix();
     }
 
-    private void renderTextComponent(GuiGraphics guiGraphics, Font font, int x, int y) {
-        Component fieldText;
+    private void renderFieldComponent(GuiGraphics guiGraphics, Font font, int x, int y) {
+        Component fieldComponent;
 
-        Quartet<String, String, MutableComponent, MutableComponent> field = _DebugHandler.instance()._getField(
+        Quartet<String, String, MutableComponent, MutableComponent> fieldParts = _DebugHandler.instance()._getField(
                 Configs.debugConfig.debugFieldHandlerChoice.get(),
                 Configs.debugConfig.debugFieldFieldChoice.get()
         );
 
-        if(field == null) {
-            fieldText = Component.empty().append(Component.literal(ComponentHelper.smallText("Field and Handler combination does not exist")).withStyle(ChatFormatting.RED));
+        if(fieldParts == null) {
+            fieldComponent = Component.empty().append(Component.literal(ComponentHelper.smallCaps("Field and Handler combination does not exist")).withStyle(ChatFormatting.RED));
         } else {
-            fieldText = ComponentHelper.concat(
-                    Component.literal(ComponentHelper.smallText("DEBUG ")).withStyle(ChatFormatting.RED),
-                    Component.literal(field.value2()).withStyle(ChatFormatting.GRAY),
+            fieldComponent = ComponentHelper.concat(
+                    Component.literal(ComponentHelper.smallCaps("DEBUG ")).withStyle(ChatFormatting.RED),
+                    Component.literal(fieldParts.value2()).withStyle(ChatFormatting.GRAY),
                     Component.literal(": ").withStyle(ChatFormatting.DARK_GRAY),
-                    field.value3()
+                    fieldParts.value3()
             );
         }
 
-        int width = font.width(fieldText);
+        int width = font.width(fieldComponent);
         int height = font.lineHeight;
 
         switch (Configs.debugConfig.debugFieldAlignment.get()) {
-            case TOP_LEFT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x, y, true, true, false, false);
-            case TOP_RIGHT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x - width, y, true, true, false, false);
-            case BOTTOM_LEFT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x, y - height, true, true, false, false);
-            case BOTTOM_RIGHT -> GuiGraphicsHelper.drawText(guiGraphics, font, fieldText, x - width, y - height, true, true, false, false);
+            case TOP_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x, y, true, true, false, false);
+            case TOP_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x - width, y, true, true, false, false);
+            case BOTTOM_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x, y - height, true, true, false, false);
+            case BOTTOM_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x - width, y - height, true, true, false, false);
         }
     }
     //endregion

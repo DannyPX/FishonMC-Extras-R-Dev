@@ -5,8 +5,8 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.mixin.accessor.BossHealthOverlayAccessor;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -85,7 +85,7 @@ public class BossEventHandler extends Handler {
             bossEventMap.forEach(((uuid, lerpingBossEvent) -> {
                 if(lerpingBossEvent.getName().getString().contains("\uF039") && !Objects.equals(prevBossEvent, lerpingBossEvent.getName().getString())) {
                     prevBossEvent = lerpingBossEvent.getName().getString();
-                    String json = ComponentHelper.ComponentToJson(lerpingBossEvent.getName());
+                    String json = ComponentHelper.componentToJson(lerpingBossEvent.getName());
                     JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 
                     if(jsonObject.get("extra") != null) {
@@ -132,7 +132,7 @@ public class BossEventHandler extends Handler {
                         }
                     }
                 } else if(lerpingBossEvent.getName().getString().contains("\uA201\uEEE1\uA208")) {
-                    JsonObject jsonObject = JsonParser.parseString(ComponentHelper.ComponentToJson(lerpingBossEvent.getName())).getAsJsonObject();
+                    JsonObject jsonObject = JsonParser.parseString(ComponentHelper.componentToJson(lerpingBossEvent.getName())).getAsJsonObject();
 
                     if(jsonObject.get("extra") != null) {
                         JsonObject locationObject = jsonObject.get("extra").getAsJsonArray().get(0).getAsJsonObject();

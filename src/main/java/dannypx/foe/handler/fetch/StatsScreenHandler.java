@@ -145,8 +145,8 @@ public class StatsScreenHandler extends Handler {
         return Triplet.ofFalse("", 0);
     }
 
-    private int extractTotal(Component text) {
-        return ComponentHelper.toIntFromString(text.getSiblings().get(2).getString());
+    private int extractTotal(Component component) {
+        return ComponentHelper.toIntFromString(component.getSiblings().get(2).getString());
     }
     //endregion
 

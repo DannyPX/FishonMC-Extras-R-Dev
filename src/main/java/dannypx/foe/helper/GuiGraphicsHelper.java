@@ -11,38 +11,38 @@ import net.minecraft.util.CommonColors;
 
 public class GuiGraphicsHelper {
     private static final AtomicInteger translationX = new AtomicInteger(0);
-    public static void drawText(GuiGraphics guiGraphics, Font font, Component component, int x, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+    public static void drawString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
         translationX.set(x);
-        drawText(guiGraphics, font, component, y, shadow, middle, hasCustomFont, smallText);
+        drawString(guiGraphics, font, component, y, shadow, middle, hasCustomFont, smallCaps);
     }
 
-    private static void drawText(GuiGraphics guiGraphics, Font font, Component component, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+    private static void drawString(GuiGraphics guiGraphics, Font font, Component component, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
         List<Component> siblings = component.getSiblings();
 
         if(siblings.isEmpty()) {
-            drawText(guiGraphics, font, component.getString(), translationX.get(), y, component.getStyle(), shadow, middle, hasCustomFont, smallText);
+            drawString(guiGraphics, font, component.getString(), translationX.get(), y, component.getStyle(), shadow, middle, hasCustomFont, smallCaps);
 
             int width = font.width(component);
-            if(smallText) {
-                width = font.width(Component.literal(ComponentHelper.smallText(component.getString())).setStyle(component.getStyle()));
+            if(smallCaps) {
+                width = font.width(Component.literal(ComponentHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
             }
 
             translationX.set(translationX.get() + width);
         } else {
-            siblings.forEach(text1 -> drawText(guiGraphics, font, text1, y, shadow, middle, hasCustomFont, smallText));
+            siblings.forEach(text1 -> drawString(guiGraphics, font, text1, y, shadow, middle, hasCustomFont, smallCaps));
         }
     }
 
-    private static void drawText(GuiGraphics guiGraphics, Font font, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
-        drawText(guiGraphics, font, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, shadow, middle, hasCustomFont, smallText);
+    private static void drawString(GuiGraphics guiGraphics, Font font, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
+        drawString(guiGraphics, font, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, shadow, middle, hasCustomFont, smallCaps);
     }
 
-    private static void drawText(GuiGraphics guiGraphics, Font font, List<Character> characterList, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallText) {
+    private static void drawString(GuiGraphics guiGraphics, Font font, List<Character> characterList, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
         if (!characterList.isEmpty()) {
             String glyph = popNextGlyph(characterList);
 
-            if (smallText) {
-                glyph = ComponentHelper.smallText(glyph);
+            if (smallCaps) {
+                glyph = ComponentHelper.smallCaps(glyph);
             }
 
             int cWidth = font.width(Component.literal(glyph).setStyle(style));
@@ -69,7 +69,7 @@ public class GuiGraphicsHelper {
                     shadow
             );
 
-            drawText(guiGraphics, font, characterList, x + cWidth, y, style, shadow, middle, hasCustomFont, smallText);
+            drawString(guiGraphics, font, characterList, x + cWidth, y, style, shadow, middle, hasCustomFont, smallCaps);
         }
     }
 

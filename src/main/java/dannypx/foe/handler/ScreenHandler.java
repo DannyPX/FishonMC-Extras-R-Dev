@@ -20,11 +20,11 @@ public abstract class ScreenHandler implements ScreenConstants {
     protected final Minecraft minecraft = Minecraft.getInstance();
 
     public void init(Screen screen) {}
-    public void render(Screen screen, GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {}
+    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {}
     protected abstract Map<String, Pair<MutableComponent, MutableComponent>> _getFields();
 
-    public void renderButtonHelp(GuiGraphics drawContext, boolean showInspect, boolean showScroll) {
-        Font textRenderer = minecraft.font;
+    public void renderButtonHelp(GuiGraphics guiGraphics, boolean showInspect, boolean showScroll) {
+        Font font = minecraft.font;
         List<Component> listHelp = new ArrayList<>();
 
         if(showInspect) listHelp.add(ComponentHelper.concat(
@@ -34,13 +34,13 @@ public abstract class ScreenHandler implements ScreenConstants {
         if(showScroll) listHelp.add(Component.literal("Scroll through pages \uDB80\uDC67"));
 
         for (int i = 0; i < listHelp.size(); i++) {
-            Component text = listHelp.get(i);
+            Component component = listHelp.get(i);
 
-            drawContext.drawString(
-                    textRenderer, text,
-                    minecraft.getWindow().getGuiScaledWidth() - PADDING - textRenderer.width(text),
-                    minecraft.getWindow().getGuiScaledHeight() - PADDING - textRenderer.lineHeight
-                            - (textRenderer.lineHeight + 12) * i,
+            guiGraphics.drawString(
+                    font, component,
+                    minecraft.getWindow().getGuiScaledWidth() - PADDING - font.width(component),
+                    minecraft.getWindow().getGuiScaledHeight() - PADDING - font.lineHeight
+                            - (font.lineHeight + 12) * i,
                     CommonColors.WHITE,
                     true
             );

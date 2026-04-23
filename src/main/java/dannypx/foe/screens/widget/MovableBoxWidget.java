@@ -219,7 +219,7 @@ public class MovableBoxWidget extends AbstractWidget implements ScreenConstants 
 
     private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(this.isHovered()) {
-            List<Component> text = List.of(
+            List<Component> componentList = List.of(
                     Component.literal(element.message.getString()).withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD),
                     ComponentHelper.concat(Component.literal("X Position: ").withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(Math.round(element.xPos * 100f)))),
@@ -235,7 +235,7 @@ public class MovableBoxWidget extends AbstractWidget implements ScreenConstants 
 
             );
 
-            guiGraphics.setComponentTooltipForNextFrame(minecraft.font, text, mouseX, mouseY);
+            guiGraphics.setComponentTooltipForNextFrame(minecraft.font, componentList, mouseX, mouseY);
         }
     }
 

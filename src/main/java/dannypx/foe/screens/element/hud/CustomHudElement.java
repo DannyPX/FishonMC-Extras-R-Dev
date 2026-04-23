@@ -134,13 +134,13 @@ public class CustomHudElement extends Element implements ScreenConstants {
         AtomicInteger line = new AtomicInteger(0);
         componentLines.forEach(componentParts -> {
             if(componentParts.value1()) {
-                GuiGraphicsHelper.drawText(guiGraphics, font, componentParts.value3(),
+                GuiGraphicsHelper.drawString(guiGraphics, font, componentParts.value3(),
                         componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - ComponentHelper.getWidth(font, componentParts.value3(), componentParts.value2()) / 2,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()
                         );
             } else {
-                GuiGraphicsHelper.drawText(guiGraphics, font, componentParts.value3(),
+                GuiGraphicsHelper.drawString(guiGraphics, font, componentParts.value3(),
                         componentX,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()

@@ -1,4 +1,4 @@
-package dannypx.foe.type.custom_text;
+package dannypx.foe.type.placeholder;
 
 import net.minecraft.network.chat.Component;
 

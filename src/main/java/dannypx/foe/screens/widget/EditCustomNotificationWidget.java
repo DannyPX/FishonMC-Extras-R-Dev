@@ -359,10 +359,10 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
             editBoxWidget.setMaxLength(Integer.MAX_VALUE);
 
             editBoxWidget.setValue(defaultLine);
-            int textWidth = width - BUTTON_SIZE * 2 - PADDING_QUART * 2 - SPACING - 20;
+            int maxStringWidth = width - BUTTON_SIZE * 2 - PADDING_QUART * 2 - SPACING - 20;
             editBoxWidget.setHint(Component.literal(
-                    minecraftClient.font.width(defaultLine) > textWidth
-                    ? minecraftClient.font.plainSubstrByWidth(defaultLine, textWidth) + "..."
+                    minecraftClient.font.width(defaultLine) > maxStringWidth
+                    ? minecraftClient.font.plainSubstrByWidth(defaultLine, maxStringWidth) + "..."
                     : defaultLine
             ));
             editBoxWidget.setResponder(s -> {

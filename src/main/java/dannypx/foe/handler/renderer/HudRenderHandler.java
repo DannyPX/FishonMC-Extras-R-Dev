@@ -69,18 +69,18 @@ public class HudRenderHandler extends Handler {
         }
 
         LoggerHandler._debug("Register Default Elements");
-        elements.forEach(element -> HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (drawContext, tickCounter) -> {
-            if (Configs.mainConfig.enableMod.get()) element.value2().render(drawContext, tickCounter);
+        elements.forEach(element -> HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphics, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) element.value2().render(guiGraphics, deltaTracker);
         }));
 
         LoggerHandler._debug("Register Custom Elements");
-        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (drawContext, renderTickCounter) -> {
-            if (Configs.mainConfig.enableMod.get()) this.render(drawContext, renderTickCounter);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (guiGraphics, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) this.render(guiGraphics, deltaTracker);
         });
 
         LoggerHandler._debug("Register Misc Elements");
-        HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (drawContext, renderTickCounter) -> {
-            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(drawContext, renderTickCounter);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (guiGraphics, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics, deltaTracker);
         });
     }
 
@@ -102,10 +102,10 @@ public class HudRenderHandler extends Handler {
         long time = System.currentTimeMillis();
         int dotCount = (int)((time / 1000) % 4);
 
-        Component loadingText = Component.literal("Loading FOER" + ".".repeat(dotCount));
+        Component loadingComponent = Component.literal("Loading FOER" + ".".repeat(dotCount));
 
-        GuiGraphicsHelper.drawText(guiGraphics, minecraft.font, loadingText,
-                minecraft.getWindow().getGuiScaledWidth() - minecraft.font.width(loadingText) - 8,
+        GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, loadingComponent,
+                minecraft.getWindow().getGuiScaledWidth() - minecraft.font.width(loadingComponent) - 8,
                 minecraft.getWindow().getGuiScaledHeight() - minecraft.font.lineHeight - 8,
                 true, true, false, true
         );

@@ -6,9 +6,9 @@ import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import java.util.*;
 import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
@@ -167,44 +167,44 @@ public class ScoreboardHandler extends Handler {
             Objective objective = this.getObjective();
             if(objective == null) return;
 
-            Pair<Boolean, List<Component>> extractedText = this.extractLines(objective);
-            noScoreboard = extractedText.value2().isEmpty();
+            Pair<Boolean, List<Component>> extractedComponent = this.extractLines(objective);
+            noScoreboard = extractedComponent.value2().isEmpty();
 
-            if(!noScoreboard && extractedText.value1()) {
-                this.extractData(extractedText.value2());
+            if(!noScoreboard && extractedComponent.value1()) {
+                this.extractData(extractedComponent.value2());
             }
         }
     }
 
     private void extractData(List<Component> components) {
         components.forEach(component -> {
-            date = checkText(component, "/") && !checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
+            date = checkComponent(component, "/") && !checkComponent(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
                     ? component.getSiblings().get(0).copy() : date;
-            version = checkText(component, "/") && !checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
+            version = checkComponent(component, "/") && !checkComponent(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ")
                     ? component.getSiblings().get(1).copy() : version;
-            level = checkText(component, "┏ ʟᴇᴠᴇʟ") && component.getSiblings().size() > 2
+            level = checkComponent(component, "┏ ʟᴇᴠᴇʟ") && component.getSiblings().size() > 2
                     ? component.getSiblings().get(3).copy() : level;
-            wallet = checkText(component, "ᴡᴀʟʟᴇᴛ")
+            wallet = checkComponent(component, "ᴡᴀʟʟᴇᴛ")
                     ? component.getSiblings().get(2).copy() : wallet;
-            credits = checkText(component, "ᴄʀᴇᴅɪᴛꜱ")
+            credits = checkComponent(component, "ᴄʀᴇᴅɪᴛꜱ")
                     ? component.getSiblings().get(3).copy() : credits;
-            catches = checkText(component, "ᴄᴀᴛᴄʜᴇꜱ")
+            catches = checkComponent(component, "ᴄᴀᴛᴄʜᴇꜱ")
                     ? component.getSiblings().get(2).copy() : catches;
-            locationMin = checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(component, "---")
+            locationMin = checkComponent(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkComponent(component, "---")
                     ? component.getSiblings().get(2).copy() : locationMin;
-            locationMax = checkText(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkText(component, "---")
+            locationMax = checkComponent(component, "┠ ʟᴏᴄᴀᴛɪᴏɴ") && !checkComponent(component, "---")
                     ? component.getSiblings().get(4).copy() : locationMax;
-            catchRate = checkText(component, "ᴄᴀᴛᴄʜ ʀᴀᴛᴇ")
+            catchRate = checkComponent(component, "ᴄᴀᴛᴄʜ ʀᴀᴛᴇ")
                     ? component.getSiblings().get(2).copy() : catchRate;
-            crew = checkText(component, "ᴄʀᴇᴡ:")
+            crew = checkComponent(component, "ᴄʀᴇᴡ:")
                     ? component.getSiblings().get(3).copy() : crew;
-            crewNearby = checkText(component, "ᴄʀᴇᴡ ɴᴇᴀʀʙʏ")
+            crewNearby = checkComponent(component, "ᴄʀᴇᴡ ɴᴇᴀʀʙʏ")
                     ? component.getSiblings().get(2).copy() : crewNearby;
         });
     }
 
-    private boolean checkText(Component text, String valueToMatch) {
-        return text.getString().contains(valueToMatch);
+    private boolean checkComponent(Component component, String valueToMatch) {
+        return component.getString().contains(valueToMatch);
     }
 
     private Pair<Boolean, List<Component>> extractLines(Objective objective) {

@@ -11,8 +11,8 @@ import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Triplet;
 import org.jetbrains.annotations.NotNull;
 
@@ -94,7 +94,7 @@ public class StatsDataHandler extends Handler {
     }
 
     private Pair<Boolean, PlaceholderValue> getStatsData(Map<String, Map<String, Stat<Integer, Integer>>> category, String subCategory, String field, String type, int total) {
-        if(Objects.equals(subCategory, "rating")) field = ComponentHelper.smallText(field);
+        if(Objects.equals(subCategory, "rating")) field = ComponentHelper.smallCaps(field);
         Map<String, Stat<Integer, Integer>> subCatMap = category.getOrDefault(subCategory, null);
         if(subCatMap != null) {
             return getStatsData(subCatMap, field, type, total);
@@ -145,7 +145,7 @@ public class StatsDataHandler extends Handler {
         ConstantDataHandler.instance().updateFishData(FishTagObject.VARIANT, fish.getVariant(), fish.getVariantComponent());
 
         Pair<String, Integer> sizeDryStreak = this.updateFishData(statsData, FishTagObject.FISH_SIZE, fish.getFishSize(), 1);
-        ConstantDataHandler.instance().updateFishData(FishTagObject.FISH_SIZE, fish.getFishSize(), fish.getFishSizeText());
+        ConstantDataHandler.instance().updateFishData(FishTagObject.FISH_SIZE, fish.getFishSize(), fish.getFishSizeComponent());
 
         return Triplet.of(rarityDrystreak, variantDrystreak, sizeDryStreak);
     }

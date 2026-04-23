@@ -113,12 +113,12 @@ public class HotbarElement extends Element {
         guiGraphics.pose().popMatrix();
     }
 
-    private void renderHotbar(GuiGraphics drawContext, int x, int y) {
+    private void renderHotbar(GuiGraphics guiGraphics, int x, int y) {
         //region Texture
         int hotbarX = 25;
         int hotbarY = 25;
 
-        drawContext.blitSprite(RenderPipelines.GUI_TEXTURED,
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                 HOTBAR_TEXTURE,
                 x + hotbarX, y + hotbarY,
                 HOTBAR_WIDTH, HOTBAR_HEIGHT
@@ -143,10 +143,10 @@ public class HotbarElement extends Element {
 
                 if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
                     int count = validatedItem.value2().getCount();
-                    Component countComponent = ComponentHelper.literal(ComponentHelper.smallText(ComponentHelper.shortenNumber(count, 0)));
+                    Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
                     int countWidth = font.width(countComponent);
 
-                    if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countComponent,
+                    if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
                             x + countX + (18 * i) - countWidth, y + countY,
                             true,
                             true,
@@ -154,10 +154,10 @@ public class HotbarElement extends Element {
                             false);
                 } else {
                     int count = item.getCount();
-                    Component countText = ComponentHelper.literal(count);
-                    int countWidth = font.width(countText);
+                    Component countComponent = ComponentHelper.literal(count);
+                    int countWidth = font.width(countComponent);
 
-                    if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countText,
+                    if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
                             x + countX + (18 * i) - countWidth, y + countY - 2,
                             true,
                             true,
@@ -295,10 +295,10 @@ public class HotbarElement extends Element {
 
                 if(Configs.rendererConfig.useSmallStackCountNumber.get()) {
                     int count = bait.getCount();
-                    Component countText = ComponentHelper.literal(ComponentHelper.smallText(ComponentHelper.shortenNumber(count, 0)));
-                    int countWidth = font.width(countText);
+                    Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
+                    int countWidth = font.width(countComponent);
 
-                    if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countText,
+                    if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
                             x + countX - countWidth, y + countY,
                             true,
                             true,

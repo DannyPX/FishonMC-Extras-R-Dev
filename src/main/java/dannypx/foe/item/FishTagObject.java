@@ -71,13 +71,13 @@ public class FishTagObject extends TagObject {
         return this.getString(FISH_SIZE);
     }
 
-    public Component getFishSizeText() {
+    public Component getFishSizeComponent() {
         if(this.itemStack.get(DataComponents.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
             try {
-                List<Component> textList = this.getLore();
-                return textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
+                List<Component> componentList = this.getLore();
+                return componentList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return Component.empty();
             }
