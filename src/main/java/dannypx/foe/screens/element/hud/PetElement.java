@@ -116,7 +116,7 @@ public class PetElement extends Element {
                     InventoryHandler.instance().getCurrentPet().getRarityComponent(),
                     Component.literal(" "),
                     InventoryHandler.instance().getCurrentPet().getName());
-            int petWidth = font.width(ComponentHelper.smallText(pet.getString()));
+            int petWidth = font.width(ComponentHelper.smallCaps(pet.getString()));
 
             int component2x = 40;
             int component2y = 21;
@@ -140,12 +140,12 @@ public class PetElement extends Element {
                     progressLeftComponent,
                     Component.literal("]").withStyle(ChatFormatting.DARK_GRAY)
             );
-            int levelWidth = font.width(ComponentHelper.smallText(levelComponent.getString()));
+            int levelWidth = font.width(ComponentHelper.smallCaps(levelComponent.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
                 case TOP_LEFT -> {
 
-                    GuiGraphicsHelper.drawText(guiGraphics, font,
+                    GuiGraphicsHelper.drawString(guiGraphics, font,
                             pet,
                             x + component1x, y + component1y,
                             true,
@@ -153,7 +153,7 @@ public class PetElement extends Element {
                             true,
                             true);
 
-                    GuiGraphicsHelper.drawText(guiGraphics, font,
+                    GuiGraphicsHelper.drawString(guiGraphics, font,
                             levelComponent,
                             x + component2x, y + component2y,
                             true,
@@ -162,7 +162,7 @@ public class PetElement extends Element {
                             true);
                 }
                 case TOP_RIGHT -> {
-                    GuiGraphicsHelper.drawText(guiGraphics, font,
+                    GuiGraphicsHelper.drawString(guiGraphics, font,
                             pet,
                             x - component1x - petWidth, y + component1y,
                             true,
@@ -170,7 +170,7 @@ public class PetElement extends Element {
                             true,
                             true);
 
-                    GuiGraphicsHelper.drawText(guiGraphics, font,
+                    GuiGraphicsHelper.drawString(guiGraphics, font,
                             levelComponent,
                             x - component2x - levelWidth, y + component2y,
                             true,
@@ -181,17 +181,17 @@ public class PetElement extends Element {
             }
         } else {
             Component pet = Component.literal("No pet equipped").withStyle(ChatFormatting.GRAY);
-            int petWidth = font.width(ComponentHelper.smallText(pet.getString()));
+            int petWidth = font.width(ComponentHelper.smallCaps(pet.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
-                case TOP_LEFT -> GuiGraphicsHelper.drawText(guiGraphics, font,
+                case TOP_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font,
                         pet,
                         x + component1x, y + component1y,
                         true,
                         true,
                         false,
                         true);
-                case TOP_RIGHT -> GuiGraphicsHelper.drawText(guiGraphics, font,
+                case TOP_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font,
                         pet,
                         x - component1x - petWidth, y + component1y,
                         true,

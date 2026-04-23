@@ -27,7 +27,7 @@ public class ChatScreenRenderHandler extends ScreenHandler {
     }
 
     //region Fields
-    private final Font textRenderer = minecraft.font;
+    private final Font font = minecraft.font;
     //endregion
 
     //region Methods
@@ -36,10 +36,10 @@ public class ChatScreenRenderHandler extends ScreenHandler {
         if(screen instanceof ChatScreen chatScreen) {
             EditBox chatBox = ((ChatScreenAccessor) chatScreen).getInput();
             if(chatBox.getValue().isBlank() && ProfileDataHandler.instance().getProfileData().isInCrewChat) {
-                guiGraphics.drawString(textRenderer,
-                        Component.literal(ComponentHelper.smallText("You are in crew chat")).withStyle(ChatFormatting.GREEN),
+                guiGraphics.drawString(font,
+                        Component.literal(ComponentHelper.smallCaps("You are in crew chat")).withStyle(ChatFormatting.GREEN),
                         4,
-                        minecraft.getWindow().getGuiScaledHeight() - textRenderer.lineHeight - 4,
+                        minecraft.getWindow().getGuiScaledHeight() - font.lineHeight - 4,
                         CommonColors.WHITE,
                         true);
             }

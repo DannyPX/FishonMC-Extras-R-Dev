@@ -39,7 +39,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
     }
 
     //region Fields
-    private final Font textRenderer = minecraft.font;
+    private final Font font = minecraft.font;
 
     List<Pair<String, Element>> elements = new ArrayList<>();
     List<AbstractWidget> widgets = new ArrayList<>();
@@ -79,35 +79,34 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
             if(this.statList != null) {
                 this.statList.render(guiGraphics, mouseX, mouseY, tickDelta);
             }
-            this.renderStatBoxHeaderText(guiGraphics);
-            this.renderButtonBoxText(guiGraphics);
+            this.renderStatBoxHeaderString(guiGraphics);
+            this.renderButtonBoxString(guiGraphics);
         }
     }
 
 
-
-    private void renderButtonBoxText(GuiGraphics guiGraphics) {
+    private void renderButtonBoxString(GuiGraphics guiGraphics) {
         if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()
                 && buttonBoxRows == 0
         ) {
-            guiGraphics.drawCenteredString(textRenderer, Component.literal("You have no custom buttons").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY),
+            guiGraphics.drawCenteredString(font, Component.literal("You have no custom buttons").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY),
                     minecraft.getWindow().getGuiScaledWidth() / 2,
-                    minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 8 - textRenderer.lineHeight / 2,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 8 - font.lineHeight / 2,
                     CommonColors.WHITE);
         }
     }
 
-    private void renderStatBoxHeaderText(GuiGraphics guiGraphics) {
+    private void renderStatBoxHeaderString(GuiGraphics guiGraphics) {
         Component headerText = Component.literal("Fishing Statistics").withStyle(ChatFormatting.BOLD);
-        int headerWidth = textRenderer.width(
-                Component.literal(ComponentHelper.smallText(headerText.getString())).setStyle(headerText.getStyle())
+        int headerWidth = font.width(
+                Component.literal(ComponentHelper.smallCaps(headerText.getString())).setStyle(headerText.getStyle())
         );
 
-        GuiGraphicsHelper.drawText(guiGraphics, textRenderer, headerText,
+        GuiGraphicsHelper.drawString(guiGraphics, font, headerText,
                 minecraft.getWindow().getGuiScaledWidth() / 2 + INVENTORY_TRANSLATION
                         + (STAT_WIDTH - ((STAT_WIDTH / 4) / 3)) / 2 - headerWidth / 2,
                 minecraft.getWindow().getGuiScaledHeight() / 2
-                        - INVENTORY_TOP - 10 + 4 - textRenderer.lineHeight / 2,
+                        - INVENTORY_TOP - 10 + 4 - font.lineHeight / 2,
                 true, true, true, true
         );
     }

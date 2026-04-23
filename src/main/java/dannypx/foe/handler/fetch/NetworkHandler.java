@@ -2,8 +2,8 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Pair;
 import java.util.Map;
 import java.util.regex.Pattern;

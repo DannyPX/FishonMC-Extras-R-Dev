@@ -69,7 +69,7 @@ public class TooltipHandler extends Handler {
 
             if(ItemStack.isSameItemSameComponents(listItem, itemStack)) {
                 Component border = TagObject.getBorderComponent(itemStack);
-                Component borderText = Component.literal(border.getString().trim())
+                Component borderComponent = Component.literal(border.getString().trim())
                         .setStyle(border.getStyle())
                         .append("   ");
 
@@ -88,11 +88,11 @@ public class TooltipHandler extends Handler {
                     int money = ArmorTagObject.calculateMoneyRolls(rolls, tier);
 
                     Component moneyRoll = ComponentHelper.concat(
-                            borderText,
-                            Component.literal(ComponentHelper.smallText("rolls: ")).withStyle(ChatFormatting.GRAY),
+                            borderComponent,
+                            Component.literal(ComponentHelper.smallCaps("rolls: ")).withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(rolls - 1)).withStyle(ChatFormatting.YELLOW),
                             Component.literal("x ").withStyle(ChatFormatting.WHITE),
-                            Component.literal(ComponentHelper.smallText("| spent: ")).withStyle(ChatFormatting.GRAY),
+                            Component.literal(ComponentHelper.smallCaps("| spent: ")).withStyle(ChatFormatting.GRAY),
                             Component.literal("$" + ComponentHelper.shortenNumber(money, 2)).withStyle(ChatFormatting.GREEN)
                     );
 
@@ -127,17 +127,17 @@ public class TooltipHandler extends Handler {
         if(rightClickLine != -1
                 && armorNbtObject.isIdentified()
         ) {
-            Component inspectText = ComponentHelper.concat(
-                    Component.literal(ComponentHelper.smallText("Hold ")),
-                    Component.literal(ComponentHelper.smallText(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind))),
-                    Component.literal(ComponentHelper.smallText(" to see more info"))
+            Component inspectComponent = ComponentHelper.concat(
+                    Component.literal(ComponentHelper.smallCaps("Hold ")),
+                    Component.literal(ComponentHelper.smallCaps(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind))),
+                    Component.literal(ComponentHelper.smallCaps(" to see more info"))
             ).withStyle(ChatFormatting.DARK_GRAY);
-            Component rollHintText = ComponentHelper.concat(
+            Component rollHintComponent = ComponentHelper.concat(
                     border,
-                    inspectText
+                    inspectComponent
             );
 
-            components.add(rightClickLine + 1, rollHintText);
+            components.add(rightClickLine + 1, rollHintComponent);
         }
 
         if(KeyBindHandler.instance().isPressingInspect()) {
@@ -152,10 +152,10 @@ public class TooltipHandler extends Handler {
 
                         Component moneyRoll = ComponentHelper.concat(
                                 border,
-                                Component.literal(ComponentHelper.smallText("  └ rolls: ")).withStyle(ChatFormatting.GRAY),
+                                Component.literal(ComponentHelper.smallCaps("  └ rolls: ")).withStyle(ChatFormatting.GRAY),
                                 Component.literal(String.valueOf(rolls - 1)).withStyle(ChatFormatting.YELLOW),
                                 Component.literal("x ").withStyle(ChatFormatting.WHITE),
-                                Component.literal(ComponentHelper.smallText("| spent: ")).withStyle(ChatFormatting.GRAY),
+                                Component.literal(ComponentHelper.smallCaps("| spent: ")).withStyle(ChatFormatting.GRAY),
                                 Component.literal("$" + ComponentHelper.shortenNumber(money, 2)).withStyle(ChatFormatting.GREEN)
                         );
 
@@ -170,7 +170,7 @@ public class TooltipHandler extends Handler {
                 String username = null;
 
                 if(armorNbtObject.getPlayerUUID() != null) {
-                    username = ProfileHandler.instance().getUsername(armorNbtObject.getPlayerUUID());
+                    username = ProfileHandler.instance().getUsernameFromId(armorNbtObject.getPlayerUUID());
                 }
 
                 Component identifierComponent = ComponentHelper.concat(
@@ -180,7 +180,7 @@ public class TooltipHandler extends Handler {
 
                 Component usernameComponent = ComponentHelper.concat(
                         border,
-                        Component.literal(ComponentHelper.smallText("  Player: ")).withStyle(ChatFormatting.GRAY),
+                        Component.literal(ComponentHelper.smallCaps("  Player: ")).withStyle(ChatFormatting.GRAY),
                         username != null ? Component.literal(username).withStyle(ChatFormatting.YELLOW)
                                 : Component.literal("Loading").withStyle(ChatFormatting.DARK_GRAY)
                 );
@@ -199,8 +199,8 @@ public class TooltipHandler extends Handler {
 
         int priceLine = Minecraft.getInstance().options.advancedItemTooltips ? TagObject.SHOP_PRICE_LINE + 2 : TagObject.SHOP_PRICE_LINE;
 
-        Component priceText = components.get(components.size() - priceLine);
-        return priceText.getString().contains("Price: $");
+        Component priceComponent = components.get(components.size() - priceLine);
+        return priceComponent.getString().contains("Price: $");
     }
 
     private void setPricesPerItem(TagObject tagObject, List<Component> components) {
@@ -216,62 +216,62 @@ public class TooltipHandler extends Handler {
     }
 
 
-    private void setPricesPerItemRaw(TagObject tagObject, List<Component> texts) {
-        if(texts.size() < TagObject.SHOP_PRICE_LINE + 2) {
+    private void setPricesPerItemRaw(TagObject tagObject, List<Component> componentList) {
+        if(componentList.size() < TagObject.SHOP_PRICE_LINE + 2) {
             return;
         }
         int priceLine = Minecraft.getInstance().options.advancedItemTooltips ? TagObject.SHOP_PRICE_LINE + 2 : TagObject.SHOP_PRICE_LINE;
 
-        Component priceText = texts.get(texts.size() - priceLine).copy();
-        float price = ComponentHelper.toIntFromString(priceText.getString().substring(priceText.getString().indexOf("$") + 1));
+        Component priceComponent = componentList.get(componentList.size() - priceLine).copy();
+        float price = ComponentHelper.toIntFromString(priceComponent.getString().substring(priceComponent.getString().indexOf("$") + 1));
 
-        this.setPrice(tagObject, texts, price);
+        this.setPrice(tagObject, componentList, price);
     }
 
-    private void setPrice(TagObject tagObject, List<Component> texts, float price) {
+    private void setPrice(TagObject tagObject, List<Component> componentList, float price) {
         int priceLine = Minecraft.getInstance().options.advancedItemTooltips ? TagObject.SHOP_PRICE_LINE + 2 : TagObject.SHOP_PRICE_LINE;
 
         if(price != 0f) {
             float pricePerItem = price / tagObject.getCount();
             String pricePerItemString = ComponentHelper.shortenNumber(pricePerItem, 2);
 
-            Component pricePerItemText = ComponentHelper.concat(
+            Component pricePerItemComponent = ComponentHelper.concat(
                     Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY),
                     Component.literal("$").withStyle(ChatFormatting.DARK_GREEN),
                     Component.literal(pricePerItemString).withStyle(ChatFormatting.DARK_GREEN),
-                    Component.literal(ComponentHelper.smallText(" per item")).withStyle(ChatFormatting.GRAY),
+                    Component.literal(ComponentHelper.smallCaps(" per item")).withStyle(ChatFormatting.GRAY),
                     Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)
             );
 
 
-            texts.set(texts.size() - priceLine, ComponentHelper.concat(
-                    texts.get(texts.size() - priceLine),
-                    pricePerItemText
+            componentList.set(componentList.size() - priceLine, ComponentHelper.concat(
+                    componentList.get(componentList.size() - priceLine),
+                    pricePerItemComponent
             ));
         }
     }
 
-    private void setPetPercentages(PetTagObject pet, List<Component> texts) {
-        Component cBaseLuckText = ComponentHelper.concat(texts.get(PetTagObject.C_BASE_LUCK_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getClimatePercentMaxLuck(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Component cBaseScaleText = ComponentHelper.concat(texts.get(PetTagObject.C_BASE_SCALE_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getClimatePercentMaxScale(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Component lBaseLuckText = ComponentHelper.concat(texts.get(PetTagObject.L_BASE_LUCK_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getLocationPercentMaxLuck(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Component lBaseScaleText = ComponentHelper.concat(texts.get(PetTagObject.L_BASE_SCALE_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getLocationPercentMaxScale(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Style style = texts.get(PetTagObject.RATING_LINE + 1).getSiblings().getLast().getStyle();
-        Component totalText = ComponentHelper.concat(texts.get(PetTagObject.RATING_LINE + 1),
-                this.getPercentText(MathHelper.percentToString(pet.getTotalPercent(), 1))).setStyle(style);
+    private void setPetPercentages(PetTagObject pet, List<Component> componentList) {
+        Component cBaseLuckComponent = ComponentHelper.concat(componentList.get(PetTagObject.C_BASE_LUCK_LINE + 1),
+                this.getPercentComponent(MathHelper.percentToString(pet.getClimatePercentMaxLuck(), 1))).withStyle(ChatFormatting.DARK_GRAY);
+        Component cBaseScaleComponent = ComponentHelper.concat(componentList.get(PetTagObject.C_BASE_SCALE_LINE + 1),
+                this.getPercentComponent(MathHelper.percentToString(pet.getClimatePercentMaxScale(), 1))).withStyle(ChatFormatting.DARK_GRAY);
+        Component lBaseLuckComponent = ComponentHelper.concat(componentList.get(PetTagObject.L_BASE_LUCK_LINE + 1),
+                this.getPercentComponent(MathHelper.percentToString(pet.getLocationPercentMaxLuck(), 1))).withStyle(ChatFormatting.DARK_GRAY);
+        Component lBaseScaleComponent = ComponentHelper.concat(componentList.get(PetTagObject.L_BASE_SCALE_LINE + 1),
+                this.getPercentComponent(MathHelper.percentToString(pet.getLocationPercentMaxScale(), 1))).withStyle(ChatFormatting.DARK_GRAY);
+        Style style = componentList.get(PetTagObject.RATING_LINE + 1).getSiblings().getLast().getStyle();
+        Component totalComponent = ComponentHelper.concat(componentList.get(PetTagObject.RATING_LINE + 1),
+                this.getPercentComponent(MathHelper.percentToString(pet.getTotalPercent(), 1))).setStyle(style);
 
-        texts.set(PetTagObject.C_BASE_LUCK_LINE + 1, cBaseLuckText);
-        texts.set(PetTagObject.C_BASE_SCALE_LINE + 1, cBaseScaleText);
-        texts.set(PetTagObject.L_BASE_LUCK_LINE + 1, lBaseLuckText);
-        texts.set(PetTagObject.L_BASE_SCALE_LINE + 1, lBaseScaleText);
-        texts.set(PetTagObject.RATING_LINE + 1, totalText);
+        componentList.set(PetTagObject.C_BASE_LUCK_LINE + 1, cBaseLuckComponent);
+        componentList.set(PetTagObject.C_BASE_SCALE_LINE + 1, cBaseScaleComponent);
+        componentList.set(PetTagObject.L_BASE_LUCK_LINE + 1, lBaseLuckComponent);
+        componentList.set(PetTagObject.L_BASE_SCALE_LINE + 1, lBaseScaleComponent);
+        componentList.set(PetTagObject.RATING_LINE + 1, totalComponent);
     }
 
-    private Component getPercentText(String percent) {
+    private Component getPercentComponent(String percent) {
         return ComponentHelper.concat(
                 Component.literal(" ("),
                 Component.literal(percent),

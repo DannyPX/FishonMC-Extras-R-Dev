@@ -14,7 +14,7 @@ public class ComponentAdapter extends TypeAdapter<Component> {
         if(value == null || value.equals(Component.empty())) {
             return;
         }
-        writer.value(ComponentHelper.textToJsonPretty(value));
+        writer.value(ComponentHelper.componentToJsonPretty(value));
     }
 
     @Override
@@ -24,6 +24,6 @@ public class ComponentAdapter extends TypeAdapter<Component> {
             return null;
         }
         String json = reader.nextString();
-        return ComponentHelper.jsonToText(json);
+        return ComponentHelper.jsonToComponent(json);
     }
 }

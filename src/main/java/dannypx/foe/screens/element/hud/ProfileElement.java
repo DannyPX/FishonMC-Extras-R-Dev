@@ -164,7 +164,7 @@ public class ProfileElement extends Element {
                 progressLeftComponent,
                 Component.literal("]").withStyle(ChatFormatting.DARK_GRAY)
         );
-        int levelWidth = font.width(ComponentHelper.smallText(levelComponent.getString()));
+        int levelWidth = font.width(ComponentHelper.smallCaps(levelComponent.getString()));
 
         int component3x = 48;
         int component3y = 34;
@@ -176,7 +176,7 @@ public class ProfileElement extends Element {
                         wallet
                 )
                 : Component.empty().append("\uF012 ");
-        int walletWidth = font.width(ComponentHelper.smallText(walletComponent.getString()));
+        int walletWidth = font.width(ComponentHelper.smallCaps(walletComponent.getString()));
 
         int component4x = 110;
         int component4y = 34;
@@ -185,7 +185,7 @@ public class ProfileElement extends Element {
                 Component.literal("\uF00C "),
                 ScoreboardHandler.instance().getCredits()
         );
-        int creditsWidth = font.width(ComponentHelper.smallText(creditsComponent.getString()));
+        int creditsWidth = font.width(ComponentHelper.smallCaps(creditsComponent.getString()));
 
         switch (Configs.hudConfig.profileElementAlignment.get()) {
             case TOP_LEFT -> {
@@ -195,7 +195,7 @@ public class ProfileElement extends Element {
                         CommonColors.WHITE,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         levelComponent,
                         x + component2x, y + component2y,
                         true,
@@ -203,7 +203,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         walletComponent,
                         x + component3x, y + component3y,
                         true,
@@ -211,7 +211,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         creditsComponent,
                         x + component4x, y + component4y,
                         true,
@@ -226,7 +226,7 @@ public class ProfileElement extends Element {
                         CommonColors.WHITE,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         levelComponent,
                         x - component2x - levelWidth, y + component2y,
                         true,
@@ -234,7 +234,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         walletComponent,
                         x - component3x - walletWidth, y + component3y,
                         true,
@@ -242,7 +242,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         creditsComponent,
                         x - component4x - creditsWidth, y + component4y,
                         true,

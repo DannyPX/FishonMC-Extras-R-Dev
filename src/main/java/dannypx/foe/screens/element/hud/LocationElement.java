@@ -95,10 +95,10 @@ public class LocationElement extends Element {
                 Component.literal(" "),
                 temperature
         );
-        int weatherWidth = font.width(ComponentHelper.smallText(weather.getString()));
+        int weatherWidth = font.width(ComponentHelper.smallCaps(weather.getString()));
 
-        int text2x = 52;
-        int text2y = 7;
+        int component2x = 52;
+        int component2y = 7;
 
         Component location = BossEventHandler.instance().getLocation();
         Component subLocation = BossEventHandler.instance().getSubLocation();
@@ -116,17 +116,17 @@ public class LocationElement extends Element {
             );
             default -> Component.empty();
         };
-        int locationWidth = font.width(ComponentHelper.smallText(locationTotal.getString()));
+        int locationWidth = font.width(ComponentHelper.smallCaps(locationTotal.getString()));
 
-        int text3x = 16;
-        int text3y = 26;
+        int component3x = 16;
+        int component3y = 26;
 
         Component time = BossEventHandler.instance().getTime();
-        int timeWidth = font.width(ComponentHelper.smallText(time.getString()));
+        int timeWidth = font.width(ComponentHelper.smallCaps(time.getString()));
 
         switch (Configs.hudConfig.locationElementAlignment.get()) {
             case TOP_LEFT -> {
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         weather,
                         x + component1x - (weatherWidth / 2), y + component1y,
                         true,
@@ -134,24 +134,24 @@ public class LocationElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         locationTotal,
-                        x + text2x, y + text2y,
+                        x + component2x, y + component2y,
                         true,
                         true,
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         time,
-                        x + text3x, y + text3y,
+                        x + component3x, y + component3y,
                         true,
                         true,
                         false,
                         true);
             }
             case TOP_RIGHT -> {
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         weather,
                         x - component1x - (weatherWidth / 2), y + component1y,
                         true,
@@ -159,17 +159,17 @@ public class LocationElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         locationTotal,
-                        x - text2x - locationWidth, y + text2y,
+                        x - component2x - locationWidth, y + component2y,
                         true,
                         true,
                         false,
                         true);
 
-                GuiGraphicsHelper.drawText(guiGraphics, font,
+                GuiGraphicsHelper.drawString(guiGraphics, font,
                         time,
-                        x - text3x - timeWidth, y + text3y,
+                        x - component3x - timeWidth, y + component3y,
                         true,
                         true,
                         false,

@@ -4,8 +4,8 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.item.FishingRodTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;

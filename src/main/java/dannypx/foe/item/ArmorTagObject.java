@@ -69,15 +69,15 @@ public class ArmorTagObject extends TagObject {
         return 0;
     }
 
-    public Component getQualityText() {
+    public Component getQualityComponent() {
         if(this.itemStack.get(DataComponents.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
-            List<Component> textList = this.getLore();
-            Component qualityText;
+            List<Component> components = this.getLore();
+            Component qualityComponent;
             try {
-                qualityText = textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
-                return qualityText.getString().contains("%") ? qualityText : textList.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
+                qualityComponent = components.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
+                return qualityComponent.getString().contains("%") ? qualityComponent : components.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return Component.empty();
             }

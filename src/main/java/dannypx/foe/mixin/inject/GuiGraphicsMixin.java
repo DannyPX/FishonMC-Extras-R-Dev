@@ -22,22 +22,22 @@ public abstract class GuiGraphicsMixin {
     @Shadow public abstract void drawString(Font font, Component component, int x, int y, int color, boolean shadow);
 
     @Inject(method = "renderItemCount", at = @At("HEAD"), cancellable = true)
-    private void renderItemCountInject(Font textRenderer, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
+    private void renderItemCountInject(Font font, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.rendererConfig.useSmallStackCountNumber.get()
                 && Configs.mixinConfig.GuiGraphicsMixinRenderItemCount.get()
         ) {
-            ItemRendererHandler.instance().drawStackCount((GuiGraphics) (Object) this, textRenderer, stack, x, y);
+            ItemRendererHandler.instance().drawStackCount((GuiGraphics) (Object) this, font, stack, x, y);
             ci.cancel();
         }
     }
 
     @Inject(method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix3x2fStack;pushMatrix()Lorg/joml/Matrix3x2fStack;"))
-    private void renderItemDecorationsInject(Font font, ItemStack stack, int x, int y, String stackCountText, CallbackInfo ci) {
+    private void renderItemDecorationsInject(Font font, ItemStack stack, int x, int y, String stackCountString, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
-                && Configs.mixinConfig.GuiGraphicsMixinAlterDrawStackOverlay.get()
+                && Configs.mixinConfig.GuiGraphicsMixinRenderItemDecorations.get()
         ) {
             ItemRendererHandler.instance().drawRarityMarker((GuiGraphics) (Object) this, font, stack, x, y);
             ItemRendererHandler.instance().drawSearchItem((GuiGraphics) (Object) this, stack, x, y);

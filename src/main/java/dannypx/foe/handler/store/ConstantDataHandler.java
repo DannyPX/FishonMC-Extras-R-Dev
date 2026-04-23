@@ -6,8 +6,8 @@ import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
@@ -70,7 +70,7 @@ public class ConstantDataHandler extends Handler {
                             String param = params[3];
 
                             if(Objects.equals(params[2], "rating")) {
-                                param = ComponentHelper.smallText(params[3]);
+                                param = ComponentHelper.smallCaps(params[3]);
                             }
 
                             Component field = subCat.getOrDefault(param, Component.empty());
@@ -135,16 +135,16 @@ public class ConstantDataHandler extends Handler {
     }
 
     public Component getConstantFishComponent(String field) {
-        AtomicReference<Component> fieldText = new AtomicReference<>(Component.empty());
+        AtomicReference<Component> fieldComponent = new AtomicReference<>(Component.empty());
         this.getConstantData().fishData.forEach((key, mapFields) -> {
             Component result = mapFields.getOrDefault(field, Component.empty());
 
             if(!Objects.equals(result, Component.empty())) {
-                fieldText.set(result);
+                fieldComponent.set(result);
             }
         });
 
-        return fieldText.get();
+        return fieldComponent.get();
     }
 
     public static Stream<String> keysFromField(Map<String, Component> map, String value) {

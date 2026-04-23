@@ -2,8 +2,8 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.ComponentValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.ComponentValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;

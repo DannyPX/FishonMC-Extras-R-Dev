@@ -39,8 +39,8 @@ public class MoveElementScreen extends DefaultModScreen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
     }
 
     private void renderWidgets() {

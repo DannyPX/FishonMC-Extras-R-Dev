@@ -4,8 +4,8 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.custom_text.PlaceholderValue;
-import dannypx.foe.type.custom_text.StringValue;
+import dannypx.foe.type.placeholder.PlaceholderValue;
+import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.screens.MainScreen;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -37,8 +37,8 @@ public class KeyBindHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "open_main_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)));
-                    case "inspect_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)));
+                    case "open_main_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyString(Configs.keyBindConfig.openMainKeybind)));
+                    case "inspect_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind)));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -63,8 +63,8 @@ public class KeyBindHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "openMainKeybind", Pair.of(Component.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.openMainKeybind)), Component.empty()),
-                "inspectKeybind", Pair.of(Component.literal(KeyBindHelper.getKeyText(Configs.keyBindConfig.inspectKeybind)), Component.empty())
+                "openMainKeybind", Pair.of(Component.literal(KeyBindHelper.getKeyString(Configs.keyBindConfig.openMainKeybind)), Component.empty()),
+                "inspectKeybind", Pair.of(Component.literal(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind)), Component.empty())
         );
     }
     //endregion

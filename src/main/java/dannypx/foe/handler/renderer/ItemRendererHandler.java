@@ -102,10 +102,10 @@ public class ItemRendererHandler extends Handler {
         Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
 
         int count = validatedItem.value2().getCount();
-        Component countComponent = ComponentHelper.literal(ComponentHelper.smallText(ComponentHelper.shortenNumber(count, 0)));
+        Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
         int countWidth = font.width(countComponent);
 
-        if(count > 1) GuiGraphicsHelper.drawText(guiGraphics, font, countComponent,
+        if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
                 x + 19 - 2 - countWidth, y + 6 + 4,
                 true,
                 true,
@@ -146,7 +146,7 @@ public class ItemRendererHandler extends Handler {
             Component sizeComponent = ConstantDataHandler.instance().getConstantData().fishData
                     .getOrDefault(FishTagObject.FISH_SIZE, new HashMap<>())
                     .getOrDefault(validatedFish.value2().getFishSize().toLowerCase(Locale.US), Component.empty());
-            if(sizeComponent.getString().isBlank()) sizeComponent = validatedFish.value2().getFishSizeText();
+            if(sizeComponent.getString().isBlank()) sizeComponent = validatedFish.value2().getFishSizeComponent();
 
             if(!sizeComponent.getString().isEmpty()) {
                 sizeComponent = ComponentHelper.substring(sizeComponent, 0, 1);
@@ -176,11 +176,11 @@ public class ItemRendererHandler extends Handler {
         Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(stack);
 
         if(validatedArmor.value1()
-                && !validatedArmor.value2().getQualityText().getString().isBlank()
+                && !validatedArmor.value2().getQualityComponent().getString().isBlank()
         ) {
-            Component qualityArmor = validatedArmor.value2().getQualityText();
+            Component qualityArmor = validatedArmor.value2().getQualityComponent();
             Component qualityRaw = ComponentHelper.substring(qualityArmor, 0, qualityArmor.getString().length() - 1);
-            Component qualityComponent = Component.literal(ComponentHelper.smallText(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
+            Component qualityComponent = Component.literal(ComponentHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityComponent.getString().isEmpty()) {
                 guiGraphics.drawString(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);

@@ -24,7 +24,7 @@ public abstract class Element {
         this.isCopy = isCopy;
     }
 
-    public void render(GuiGraphics drawContext, DeltaTracker tickCounter) {}
+    public void render(GuiGraphics guiGraphics, DeltaTracker tickCounter) {}
 
     public void setXPercent(float percent) {
         xPos = percent;

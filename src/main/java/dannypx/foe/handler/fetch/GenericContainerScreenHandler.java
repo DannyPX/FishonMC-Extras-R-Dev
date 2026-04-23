@@ -96,16 +96,16 @@ public class GenericContainerScreenHandler extends Handler {
         );
     }
 
-    public void render(Screen screen, GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
+    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         if(screen instanceof ContainerScreen genericContainerScreen) {
             if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
-                AuctionHouseScreenRenderHandler.instance().renderButtonHelp(drawContext, true, true);
+                AuctionHouseScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, true);
             } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
-                PersonalVaultScreenRenderHandler.instance().renderButtonHelp(drawContext, true, true);
+                PersonalVaultScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, true);
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STORAGE_SCREEN_CONTAINER)) {
-                ChestScreenRenderHandler.instance().renderButtonHelp(drawContext, true, false);
+                ChestScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, false);
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), PRESETS_SCREEN_CONTAINER)) {
-                PresetsScreenRenderHandler.instance().renderButtonHelp(drawContext, true, true);
+                PresetsScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, true);
             }
         }
     }

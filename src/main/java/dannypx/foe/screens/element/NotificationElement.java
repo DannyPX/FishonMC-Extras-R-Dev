@@ -75,10 +75,10 @@ public class NotificationElement extends Element implements ScreenConstants {
         }
         this.renderBox(guiGraphics);
         this.renderItem(guiGraphics, itemStack);
-        this.renderText(guiGraphics, font, componentList, rows, columns);
+        this.renderComponent(guiGraphics, font, componentList, rows, columns);
     }
 
-    private void renderText(GuiGraphics guiGraphics, Font font, List<Component> componentList, int rows, int columns) {
+    private void renderComponent(GuiGraphics guiGraphics, Font font, List<Component> componentList, int rows, int columns) {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 int componentX = itemStack.isEmpty()
@@ -97,7 +97,7 @@ public class NotificationElement extends Element implements ScreenConstants {
                 Component component = componentList.get((row * columns) + column);
 
                 if(!Objects.equals(component, Component.empty())) {
-                    GuiGraphicsHelper.drawText(guiGraphics, font, component,
+                    GuiGraphicsHelper.drawString(guiGraphics, font, component,
                             componentX, componentY,
                             true, true, true, true);
                 }

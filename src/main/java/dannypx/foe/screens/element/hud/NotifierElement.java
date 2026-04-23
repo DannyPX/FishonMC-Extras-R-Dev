@@ -116,7 +116,7 @@ public class NotifierElement extends Element implements ScreenConstants {
                 notification.item,
                 notification.rows,
                 notification.columns,
-                notification.textList
+                notification.componentList
         )));
 
         return Pair.of(WIDTH, notificationElements.stream().mapToInt(n -> n.height).sum() + PADDING_QUART * notificationElements.size() - PADDING_QUART);

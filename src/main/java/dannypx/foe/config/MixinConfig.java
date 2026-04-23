@@ -38,13 +38,13 @@ public class MixinConfig extends Config {
     @ConfigGroup.Pop
     public ValidatedBoolean clientPacketListenerMixinHandlePlayerInfoRemove = new ValidatedBoolean(true);
 
-    @Name("DrawContext Mixin")
-    public ConfigGroup drawContextMixinGroup = new ConfigGroup("drawcontext_mixin_group");
+    @Name("GuiGraphics Mixin")
+    public ConfigGroup guiGraphicsMixinGroup = new ConfigGroup("gui_graphics_mixin_group");
 
     public ValidatedBoolean GuiGraphicsMixinRenderItemCount = new ValidatedBoolean(true);
 
     @ConfigGroup.Pop
-    public ValidatedBoolean GuiGraphicsMixinAlterDrawStackOverlay = new ValidatedBoolean(true);
+    public ValidatedBoolean GuiGraphicsMixinRenderItemDecorations = new ValidatedBoolean(true);
 
     @Name("FishingHookEntityRenderer Mixin")
     public ConfigGroup fishingHookEntityRendererMixinGroup = new ConfigGroup("fishing_fishing_hook_entity_renderer_mixin_group");
