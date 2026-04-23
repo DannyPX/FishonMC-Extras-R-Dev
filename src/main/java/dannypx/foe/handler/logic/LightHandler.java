@@ -6,11 +6,11 @@ import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.config.Configs;
 import dannypx.foe.mixin.accessor.LevelRendererAccessor;
 import java.util.Map;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.entity.projectile.FishingHook;
 
 public class LightHandler extends Handler {
@@ -122,7 +122,7 @@ public class LightHandler extends Handler {
                 int dynamicLightlevel = (int)(getMaxLight() * factor);
 
                 if(dynamicLightlevel > 0) {
-                    int blockLevel = LightTexture.block(lightMap);
+                    int blockLevel = LightCoordsUtil.block(lightMap);
                     if (dynamicLightlevel > blockLevel) {
                         int luminance = (int) (dynamicLightlevel * 16.0);
                         lightMap &= 0xfff00000;

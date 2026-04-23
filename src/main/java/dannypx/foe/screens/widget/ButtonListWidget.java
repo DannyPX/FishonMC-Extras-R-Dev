@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -15,7 +15,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@NotNull ButtonEntry> implements ScreenConstants {
 
@@ -43,10 +42,10 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float deltaTicks) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, deltaTicks);
+    public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float deltaTicks) {
+        super.extractWidgetRenderState(guiGraphicsExtractor, mouseX, mouseY, deltaTicks);
 
-        guiGraphics.drawCenteredString(
+        guiGraphicsExtractor.centeredText(
                 minecraft.font,
                 Component.literal(headerTitle),
                 getX() + getRowWidth() / 2,
@@ -128,8 +127,8 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
         }
 
         @Override
-        public void renderContent(
-                @NotNull GuiGraphics guiGraphics,
+        public void extractContent(
+                @NotNull GuiGraphicsExtractor guiGraphicsExtractor,
                 int mouseX,
                 int mouseY,
                 boolean hovered,
@@ -139,7 +138,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
                     getX() + (getContentWidth() - button.getWidth()) / 2,
                     getY()
             );
-            button.render(guiGraphics, mouseX, mouseY, delta);
+            button.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
             if(smallButton != null) {
                 smallButton.setPosition(
@@ -147,7 +146,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
                         getY()
                 );
 
-                smallButton.render(guiGraphics, mouseX, mouseY, delta);
+                smallButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
             }
 
             if(upButton != null) {
@@ -156,7 +155,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
                         getY()
                 );
 
-                upButton.render(guiGraphics, mouseX, mouseY, delta);
+                upButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
             }
 
             if(downButton != null) {
@@ -165,7 +164,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
                         getY() + getContentWidth() / 2
                 );
 
-                downButton.render(guiGraphics, mouseX, mouseY, delta);
+                downButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
             }
         }
     }

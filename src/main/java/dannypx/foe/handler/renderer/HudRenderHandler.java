@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -69,49 +69,49 @@ public class HudRenderHandler extends Handler {
         }
 
         LoggerHandler._debug("Register Default Elements");
-        elements.forEach(element -> HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphics, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) element.value2().render(guiGraphics, deltaTracker);
+        elements.forEach(element -> HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphicsExtractor, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker);
         }));
 
         LoggerHandler._debug("Register Custom Elements");
-        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (guiGraphics, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) this.render(guiGraphics, deltaTracker);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (guiGraphicsExtractor, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) this.render(guiGraphicsExtractor, deltaTracker);
         });
 
         LoggerHandler._debug("Register Misc Elements");
-        HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (guiGraphics, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics, deltaTracker);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (guiGraphicsExtractor, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphicsExtractor, deltaTracker);
         });
     }
 
-    private void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        customHudElements.forEach(element -> element.value2().render(guiGraphics, deltaTracker));
+    private void render(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+        customHudElements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker));
     }
 
-    private void renderAfterSubtitles(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        this.renderTooltip(guiGraphics);
+    private void renderAfterSubtitles(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+        this.renderTooltip(guiGraphicsExtractor);
 
         if((!LoadingHandler.instance().isLoadingDone()
                 || ScoreboardHandler.instance().isNoScoreboard()
                 || !ScoreboardHandler.instance().getLevel().getString().trim().equals(String.valueOf(LocalPlayerHandler.instance().getExperienceLevel()))) &&
                 ConnectionHandler.instance().isOnServer()
-        ) this.renderLoading(guiGraphics);
+        ) this.renderLoading(guiGraphicsExtractor);
     }
 
-    private void renderLoading(GuiGraphics guiGraphics) {
+    private void renderLoading(GuiGraphicsExtractor guiGraphicsExtractor) {
         long time = System.currentTimeMillis();
         int dotCount = (int)((time / 1000) % 4);
 
         Component loadingComponent = Component.literal("Loading FOER" + ".".repeat(dotCount));
 
-        GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, loadingComponent,
+        GuiGraphicsHelper.text(guiGraphicsExtractor, minecraft.font, loadingComponent,
                 minecraft.getWindow().getGuiScaledWidth() - minecraft.font.width(loadingComponent) - 8,
                 minecraft.getWindow().getGuiScaledHeight() - minecraft.font.lineHeight - 8,
                 true, true, false, true
         );
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics) {
+    private void renderTooltip(GuiGraphicsExtractor guiGraphicsExtractor) {
         if (Configs.mainConfig.enableMod.get()
                 && LoadingHandler.instance().isLoadingDone()
                 && HitResultHandler.instance().getItemFrameItem() != ItemStack.EMPTY) {
@@ -119,7 +119,7 @@ public class HudRenderHandler extends Handler {
             if (validatedItem.value1()) {
                 int itemX = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2;
                 int itemY = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2;
-                guiGraphics.setTooltipForNextFrame(minecraft.font, validatedItem.value2().getItemStack(), itemX, itemY);
+                guiGraphicsExtractor.setTooltipForNextFrame(minecraft.font, validatedItem.value2().getItemStack(), itemX, itemY);
             }
         }
     }

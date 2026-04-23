@@ -23,7 +23,7 @@
     "inject.ContextualBarRendererMixin",
     "inject.BossHealthOverlayMixin",
     "inject.ClientPacketListenerMixin",
-    "inject.GuiGraphicsMixin",
+    "inject.GuiGraphicsExtractorMixin",
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",
     "inject.FishingHookRenderStateMixin",

@@ -5,6 +5,8 @@ import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.DefaultModScreen;
 import dannypx.foe.screens.widget.ButtonListWidget;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import org.jspecify.annotations.NonNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -14,7 +16,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -50,11 +51,11 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
         this.updateFields();
-        this.handlerList.render(guiGraphics, mouseX, mouseY, delta);
-        this.renderHandlerFields(guiGraphics, mouseX, mouseY, delta);
+        this.handlerList.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.renderHandlerFields(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
     private void updateFields() {
@@ -92,7 +93,7 @@ public class DebugHandlerScreen extends DefaultModScreen {
         return handlerList;
     }
 
-    private void renderHandlerFields(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    private void renderHandlerFields(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         if(selectedHandler != null) {
             AtomicInteger atomicInteger = new AtomicInteger(0);
             handlerFields.get(selectedHandler).forEach((name, value) -> {
@@ -108,12 +109,12 @@ public class DebugHandlerScreen extends DefaultModScreen {
                 int componentHeight = font.lineHeight;
                 int color = CommonColors.WHITE;
 
-                guiGraphics.drawString(font, component, componentx, componenty, color, true);
+                guiGraphicsExtractor.text(font, component, componentx, componenty, color, true);
 
                 if(mouseX >= componentx && mouseX <= componentx + componentWidth
                         && mouseY >= componenty && mouseY <= componenty + componentHeight) {
                     if(!Objects.equals(value.value2(), Component.empty())) {
-                        guiGraphics.setTooltipForNextFrame(value.value2(), mouseX, mouseY);
+                        guiGraphicsExtractor.setTooltipForNextFrame(value.value2(), mouseX, mouseY);
                     }
 
                     hoveredName = name;
@@ -124,7 +125,7 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent input) {
+    public boolean keyPressed(@NonNull KeyEvent input) {
 
         this.copyField(input);
 

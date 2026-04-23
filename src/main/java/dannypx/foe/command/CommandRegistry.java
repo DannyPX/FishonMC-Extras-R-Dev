@@ -12,8 +12,8 @@ import dannypx.foe.handler.store.*;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.screens.MainScreen;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -163,7 +163,7 @@ public class CommandRegistry {
 
     //region Command Builder
     private static LiteralArgumentBuilder<FabricClientCommandSource> command(String command) {
-        return ClientCommandManager.literal(command);
+        return ClientCommands.literal(command);
     }
 
     private static int executeCommand(CommandContext<FabricClientCommandSource> context, List<Component> feedback, ExecuteCallback executeCallback) {

@@ -11,6 +11,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -368,7 +369,7 @@ public class NotifierHandler extends Handler {
                 ItemParser itemParser = new ItemParser(lookup);
                 StringReader stringReader = new StringReader(notification.icon);
                 try {
-                    ItemParser.ItemResult result = itemParser.parse(stringReader);
+                    ItemInput result = itemParser.parse(stringReader);
 
                     itemStack = new ItemStack(result.item(), 1);
                     itemStack.applyComponents(result.components());

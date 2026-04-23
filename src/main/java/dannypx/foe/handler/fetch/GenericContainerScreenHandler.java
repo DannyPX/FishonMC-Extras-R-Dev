@@ -10,7 +10,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.Map;
 import java.util.Objects;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -96,16 +96,16 @@ public class GenericContainerScreenHandler extends Handler {
         );
     }
 
-    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+    public void render(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         if(screen instanceof ContainerScreen genericContainerScreen) {
             if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
-                AuctionHouseScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, true);
+                AuctionHouseScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, true);
             } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
-                PersonalVaultScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, true);
+                PersonalVaultScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, true);
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STORAGE_SCREEN_CONTAINER)) {
-                ChestScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, false);
+                ChestScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, false);
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), PRESETS_SCREEN_CONTAINER)) {
-                PresetsScreenRenderHandler.instance().renderButtonHelp(guiGraphics, true, true);
+                PresetsScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, true);
             }
         }
     }

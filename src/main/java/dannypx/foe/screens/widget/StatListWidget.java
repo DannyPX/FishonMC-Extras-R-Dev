@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -27,9 +27,9 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
     }
 
     @Override
-    protected void renderListItems(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    protected void extractListItems(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         RenderSystem.disableScissorForRenderTypeDraws();
-        super.renderListItems(guiGraphics, mouseX, mouseY, delta);
+        super.extractListItems(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
     @Override
@@ -57,35 +57,35 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
     }
 
     @Override
-    protected void renderListBackground(@NotNull GuiGraphics guiGraphics) {}
+    protected void extractListBackground(@NotNull GuiGraphicsExtractor guiGraphicsExtractor) {}
 
     @Override
-    protected void renderListSeparators(@NotNull GuiGraphics guiGraphics) {}
+    protected void extractListSeparators(@NotNull GuiGraphicsExtractor guiGraphicsExtractor) {}
 
     public static class StatEntry extends ContainerObjectSelectionList.Entry<@NotNull StatEntry>{
         boolean isHeader;
         Component category;
-        Component field1;
-        Component field2;
-        Component field3;
+        Component firstColumnField;
+        Component secondColumnField;
+        Component thirdColumnField;
         List<ItemStack> itemStacks;
         int width = 0;
 
-        public StatEntry(Component category, Component field1, Component field2, Component field3, List<ItemStack> itemStacks, boolean isHeader) {
+        public StatEntry(Component category, Component firstColumnField, Component secondColumnField, Component thirdColumnField, List<ItemStack> itemStacks, boolean isHeader) {
             this.isHeader = isHeader;
             this.category = category;
-            this.field1 = field1;
-            this.field2 = field2;
-            this.field3 = field3;
+            this.firstColumnField = firstColumnField;
+            this.secondColumnField = secondColumnField;
+            this.thirdColumnField = thirdColumnField;
             this.itemStacks = itemStacks;
         }
 
         public StatEntry(Component category, boolean isHeader) {
             this.isHeader = isHeader;
             this.category = category;
-            this.field1 = Component.empty();
-            this.field2 = Component.empty();
-            this.field3 = Component.empty();
+            this.firstColumnField = Component.empty();
+            this.secondColumnField = Component.empty();
+            this.thirdColumnField = Component.empty();
             this.itemStacks = List.of();
         }
 
@@ -104,7 +104,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
         }
 
         @Override
-        public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             if(!LoadingHandler.instance().isLoadingDone()) {
                 return;
             }
@@ -120,35 +120,35 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
                         Component.literal(ComponentHelper.smallCaps(category.getString())).setStyle(category.getStyle())
                 );
 
-                GuiGraphicsHelper.drawString(guiGraphics, font, category,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, category,
                         headerX - headerWidth / 2, posY,
                         true, true, true, true);
             } else {
                 Component fieldComponent;
                 if(!itemStacks.isEmpty()) {
-                    fieldComponent = field2;
-                } else if(!Objects.equals(field2, Component.empty())) {
-                    fieldComponent = ComponentHelper.concat(field1, Component.literal(" "), field2);
+                    fieldComponent = secondColumnField;
+                } else if(!Objects.equals(secondColumnField, Component.empty())) {
+                    fieldComponent = ComponentHelper.concat(firstColumnField, Component.literal(" "), secondColumnField);
                 } else {
-                    fieldComponent = field1;
+                    fieldComponent = firstColumnField;
                 }
                 int fieldComponentX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getY() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
 
                 int field3X = getX() + (width/4) * 3;
-                int field3Width = font.width(ComponentHelper.smallCaps(field3.getString()));
+                int field3Width = font.width(ComponentHelper.smallCaps(thirdColumnField.getString()));
 
-                GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, fieldComponent,
                         fieldComponentX, posY,
                         true, true, true, true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font, field3,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, thirdColumnField,
                         field3X - field3Width / 2, posY,
                         true, true, true, true);
 
                 if(!itemStacks.isEmpty()) {
                     long seconds = System.currentTimeMillis() / 1000;
                     int itemIndex = (int) (seconds % itemStacks.size());
-                    guiGraphics.renderItem(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2);
+                    guiGraphicsExtractor.item(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2);
                 }
             }
         }

@@ -11,8 +11,7 @@ import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomNotificationWidget;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -45,17 +44,17 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
     @Override
     protected void init() {
         super.init();
-        this.renderWidgets();
+        this.extractRenderWidgets();
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
-        this.editCustomNotificationWidget.render(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.buttonList.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.editCustomNotificationWidget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
-    private void renderWidgets() {
+    private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());

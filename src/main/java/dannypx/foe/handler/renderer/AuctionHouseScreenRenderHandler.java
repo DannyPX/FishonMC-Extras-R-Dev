@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ public class AuctionHouseScreenRenderHandler extends ScreenHandler {
                     20
             ));
 
-            widgets.forEach(Screens.getButtons(screen)::add);
+            widgets.forEach(Screens.getWidgets(screen)::add);
         }
     }
 
@@ -74,11 +74,11 @@ public class AuctionHouseScreenRenderHandler extends ScreenHandler {
                     && containerScreen.getMenu().getSlot(moveSlot).getItem().getItem() == Items.GUNPOWDER
                     && minecraft.gameMode != null
             ) {
-                minecraft.gameMode.handleInventoryMouseClick(
+                minecraft.gameMode.handleContainerInput(
                         syncId,
                         moveSlot,
                         0,
-                        ClickType.PICKUP,
+                        ContainerInput.PICKUP,
                         minecraft.player
                 );
             }

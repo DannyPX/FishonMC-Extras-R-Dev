@@ -46,7 +46,7 @@ public class ChestScreenRenderHandler extends ScreenHandler {
                     20
             ));
 
-            widgets.forEach(Screens.getButtons(screen)::add);
+            widgets.forEach(Screens.getWidgets(screen)::add);
         }
     }
     //endregion

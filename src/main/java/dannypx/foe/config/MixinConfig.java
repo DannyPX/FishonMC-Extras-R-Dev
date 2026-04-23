@@ -28,7 +28,7 @@ public class MixinConfig extends Config {
     public ConfigGroup bossHealthOverlayMixinGroup = new ConfigGroup("boss_health_overlay_mixin_group");
 
     @ConfigGroup.Pop
-    public ValidatedBoolean bossHealthOverlayMixinRender = new ValidatedBoolean(true);
+    public ValidatedBoolean bossHealthOverlayMixinExtractRenderState = new ValidatedBoolean(true);
 
     @Name("ClientPlayNetworkHandler Mixin")
     public ConfigGroup clientPlayNetworkHandlerMixinGroup = new ConfigGroup("client_play_network_handler_mixin_group");

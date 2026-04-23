@@ -104,15 +104,21 @@ public class ComponentHelper {
     }
 
     public static MutableComponent literal(ItemStack i) {
-        return Component.empty().append(ItemStackHelper.itemStackToJson(i));
+        if(i != ItemStack.EMPTY) {
+            return Component.empty().append(ItemStackHelper.itemStackToJson(i));
+        }
+        return Component.empty();
     }
 
     public static MutableComponent literal(TagObject currentHeldItem) {
-        return ComponentHelper.concat(
-                Component.literal("name: "), currentHeldItem.getName(), Component.literal("\n"),
-                Component.literal("rarity: "), Component.literal(currentHeldItem.getRarity()), Component.literal("\n"),
-                Component.literal("type: "), Component.literal(currentHeldItem.getType())
-        );
+        if(currentHeldItem.getItemStack() != ItemStack.EMPTY) {
+            return ComponentHelper.concat(
+                    Component.literal("name: "), currentHeldItem.getName(), Component.literal("\n"),
+                    Component.literal("rarity: "), Component.literal(currentHeldItem.getRarity()), Component.literal("\n"),
+                    Component.literal("type: "), Component.literal(currentHeldItem.getType())
+            );
+        }
+        return Component.empty();
     }
 
     public static String componentListToJson(List<Component> list) {

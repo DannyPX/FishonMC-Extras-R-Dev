@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import net.minecraft.client.renderer.entity.state.FishingHookRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.TrackingItemStackRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.projectile.FishingHook;
@@ -46,14 +45,22 @@ public abstract class FishingHookRendererMixin {
         }
     }
 
-    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/FishingHookRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At("RETURN"))
-    private void injectRender(FishingHookRenderState fishingHookRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
+    @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/FishingHookRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At("RETURN"))
+    private void injectRender(FishingHookRenderState fishingHookRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
         if(Configs.rendererConfig.showNewFishingHook.get()
                 && Configs.mixinConfig.fishingHookRendererMixinRender.get()
         ) {
             poseStack.pushPose();
             poseStack.translate(0f, -0.0075f, 0f);
-            submitNodeCollector.submitModel(this.fishingHookModel, fishingHookRenderState, poseStack, FishingHookEntityModel.RENDER_LAYER, fishingHookRenderState.lightCoords, OverlayTexture.NO_OVERLAY, fishingHookRenderState.outlineColor, null);
+            submitNodeCollector.submitModel(
+                    this.fishingHookModel,
+                    fishingHookRenderState,
+                    poseStack,
+                    FishingHookEntityModel.RENDER_LAYER,
+                    fishingHookRenderState.lightCoords,
+                    OverlayTexture.NO_OVERLAY,
+                    fishingHookRenderState.outlineColor,
+                    null);
             poseStack.popPose();
         }
 

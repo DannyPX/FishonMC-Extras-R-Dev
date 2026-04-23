@@ -2,7 +2,7 @@ package dannypx.foe.screens.element;
 
 import dannypx.foe.type.Alignment;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public abstract class Element {
@@ -24,7 +24,7 @@ public abstract class Element {
         this.isCopy = isCopy;
     }
 
-    public void render(GuiGraphics guiGraphics, DeltaTracker tickCounter) {}
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker tickCounter) {}
 
     public void setXPercent(float percent) {
         xPos = percent;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -174,13 +174,13 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         int entryStartY = getY() + headerHeight + PADDING + editBoxHeight + PADDING;
 
-        guiGraphics.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
-        guiGraphics.hLine(getX(), getRight(), getBottom(), CommonColors.GRAY);
-        guiGraphics.vLine(getX(), 0, getBottom(), CommonColors.GRAY);
-        guiGraphics.drawCenteredString(
+        guiGraphicsExtractor.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
+        guiGraphicsExtractor.horizontalLine(getX(), getRight(), getBottom(), CommonColors.GRAY);
+        guiGraphicsExtractor.verticalLine(getX(), 0, getBottom(), CommonColors.GRAY);
+        guiGraphicsExtractor.centeredText(
                 minecraft.font,
                 header,
                 getX() + width / 2,
@@ -189,7 +189,7 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
         );
 
         // Draw scale text
-        guiGraphics.drawString(
+        guiGraphicsExtractor.text(
                 minecraft.font,
                 "Icon",
                 getX() + width / 2,
@@ -198,11 +198,11 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
                 true
         );
 
-        idEditBox.render(guiGraphics, mouseX, mouseY, delta);
-        iconEditBox.render(guiGraphics, mouseX, mouseY, delta);
+        idEditBox.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        iconEditBox.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
         if(iconEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(minecraft.font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(minecraft.font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("Must be an item").withStyle(ChatFormatting.GRAY),
@@ -212,7 +212,7 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
             ), mouseX, mouseY);
         }
 
-        guiGraphics.enableScissor(
+        guiGraphicsExtractor.enableScissor(
                 getX() + PADDING,
                 entryStartY,
                 getRight() - PADDING,
@@ -228,7 +228,7 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
 
             LineEntry entry = entries.get(i);
             entry.setPosition(getX() + PADDING, entryY, width - PADDING - PADDING - scrollbarWidth - PADDING);
-            entry.render(guiGraphics, mouseX, mouseY, delta);
+            entry.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
         }
 
         int totalContentHeight = entries.size() * LineEntry.HEIGHT;
@@ -241,7 +241,7 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
 
             int scrollbarX = getX() + width - PADDING - scrollbarWidth;
 
-            guiGraphics.fill(
+            guiGraphicsExtractor.fill(
                     scrollbarX,
                     scrollbarY,
                     scrollbarX + scrollbarWidth,
@@ -250,7 +250,7 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
             );
         }
 
-        guiGraphics.disableScissor();
+        guiGraphicsExtractor.disableScissor();
     }
 
     @Override
@@ -400,18 +400,18 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
             );
         }
 
-        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-            editBoxWidget.render(guiGraphics, mouseX, mouseY, delta);
-            addButton.render(guiGraphics, mouseX, mouseY, delta);
-            deleteButton.render(guiGraphics, mouseX, mouseY, delta);
+        public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+            editBoxWidget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            addButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            deleteButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-            this.renderTooltips(guiGraphics, mouseX, mouseY, delta);
+            this.renderTooltips(guiGraphicsExtractor, mouseX, mouseY, delta);
         }
 
-        private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        private void renderTooltips(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
             if(editBoxWidget.isFocused()
                     && editBoxWidget.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.setTooltipForNextFrame(minecraftClient.font, Component.literal("You can also use placeholders. See wiki"), mouseX, mouseY);
+                guiGraphicsExtractor.setTooltipForNextFrame(minecraftClient.font, Component.literal("You can also use placeholders. See wiki"), mouseX, mouseY);
             }
         }
 

@@ -9,7 +9,7 @@ import dannypx.foe.screens.element.hud.*;
 import dannypx.foe.screens.widget.MovableBoxWidget;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ public class MoveElementScreen extends DefaultModScreen {
     protected void init() {
         super.init();
         this.assembleCustomHudElements();
-        this.renderWidgets();
+        this.extractRenderWidgets();
     }
 
     private void assembleCustomHudElements() {
@@ -39,11 +39,11 @@ public class MoveElementScreen extends DefaultModScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
-    private void renderWidgets() {
+    private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(new MovableBoxWidget(this.minecraft,

@@ -11,7 +11,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,7 +34,7 @@ public class ItemRendererHandler extends Handler {
     //endregion
 
     //region Methods
-    public void drawRarityMarker(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public void drawRarityMarker(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         if(!Configs.rendererConfig.showRarityMarker.get()) {
             return;
         }
@@ -53,39 +53,39 @@ public class ItemRendererHandler extends Handler {
                 int markerX = x;
                 int markerY = y - 1;
 
-                guiGraphics.pose().pushMatrix();
+                guiGraphicsExtractor.pose().pushMatrix();
 
                 //TOP
                 int bgX = markerX;
                 int bgY = markerY - 1;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
+                guiGraphicsExtractor.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                guiGraphicsExtractor.text(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
+                guiGraphicsExtractor.disableScissor();
 
                 //BOTTOM
                 bgY = markerY + 1;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
+                guiGraphicsExtractor.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                guiGraphicsExtractor.text(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
+                guiGraphicsExtractor.disableScissor();
 
                 //LEFT
                 bgX = markerX - 1;
                 bgY = markerY;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
+                guiGraphicsExtractor.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                guiGraphicsExtractor.text(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
+                guiGraphicsExtractor.disableScissor();
 
                 //RIGHT
                 bgX = markerX + 1;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
+                guiGraphicsExtractor.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
+                guiGraphicsExtractor.text(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
+                guiGraphicsExtractor.disableScissor();
 
-                guiGraphics.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, markerX, markerY, CommonColors.WHITE, false);
-                guiGraphics.disableScissor();
+                guiGraphicsExtractor.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
+                guiGraphicsExtractor.text(font, rarityComponent, markerX, markerY, CommonColors.WHITE, false);
+                guiGraphicsExtractor.disableScissor();
 
-                guiGraphics.pose().popMatrix();
+                guiGraphicsExtractor.pose().popMatrix();
             }
         }
     }
@@ -98,14 +98,14 @@ public class ItemRendererHandler extends Handler {
         return false;
     }
 
-    public void drawStackCount(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public void drawStackCount(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
 
         int count = validatedItem.value2().getCount();
         Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
         int countWidth = font.width(countComponent);
 
-        if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
+        if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
                 x + 19 - 2 - countWidth, y + 6 + 4,
                 true,
                 true,
@@ -114,18 +114,18 @@ public class ItemRendererHandler extends Handler {
         );
     }
 
-    public void drawSearchItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
+    public void drawSearchItem(GuiGraphicsExtractor guiGraphicsExtractor, ItemStack stack, int x, int y) {
         if(SearchHandler.instance().isOnScreen()
                 && SearchHandler.instance().filterItem(stack)) {
-            guiGraphics.hLine(x, x + 16, y, CommonColors.RED);
-            guiGraphics.hLine(x, x + 16, y + 16, CommonColors.RED);
-            guiGraphics.vLine(x, y, y + 16, CommonColors.RED);
-            guiGraphics.vLine(x + 16, y, y + 16, CommonColors.RED);
+            guiGraphicsExtractor.horizontalLine(x, x + 16, y, CommonColors.RED);
+            guiGraphicsExtractor.horizontalLine(x, x + 16, y + 16, CommonColors.RED);
+            guiGraphicsExtractor.verticalLine(x, y, y + 16, CommonColors.RED);
+            guiGraphicsExtractor.verticalLine(x + 16, y, y + 16, CommonColors.RED);
         }
     }
 
 
-    public void drawPetItemEquipped(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
+    public void drawPetItemEquipped(GuiGraphicsExtractor guiGraphicsExtractor, ItemStack stack, int x, int y) {
         if(!Configs.rendererConfig.showPetEquippedMarker.get()) {
             return;
         }
@@ -133,11 +133,11 @@ public class ItemRendererHandler extends Handler {
         Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(stack);
 
         if(validatedPet.value1() && (validatedPet.value2().contains(PetTagObject.ITEM) || validatedPet.value2().contains(PetTagObject.SKIN))) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, petItemMarker, x, y, 16, 16, CommonColors.WHITE);
+            guiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, petItemMarker, x, y, 16, 16, CommonColors.WHITE);
         }
     }
 
-    public void drawFishSize(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public void drawFishSize(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         Pair<Boolean, FishTagObject> validatedFish = ValidateItem.isFish(stack);
 
         if(validatedFish.value1()
@@ -151,12 +151,12 @@ public class ItemRendererHandler extends Handler {
             if(!sizeComponent.getString().isEmpty()) {
                 sizeComponent = ComponentHelper.substring(sizeComponent, 0, 1);
 
-                guiGraphics.drawString(font, sizeComponent, x + 17 - font.width(sizeComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
+                guiGraphicsExtractor.text(font, sizeComponent, x + 17 - font.width(sizeComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
         }
     }
 
-    public void drawPetRating(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public void drawPetRating(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(stack);
 
         if(validatedPet.value1()
@@ -167,12 +167,12 @@ public class ItemRendererHandler extends Handler {
             if(!ratingComponent.getString().isEmpty()) {
                 ratingComponent = ComponentHelper.substring(ratingComponent, 0, 1);
 
-                guiGraphics.drawString(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
+                guiGraphicsExtractor.text(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
         }
     }
 
-    public void drawArmorQuality(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public void drawArmorQuality(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(stack);
 
         if(validatedArmor.value1()
@@ -183,7 +183,7 @@ public class ItemRendererHandler extends Handler {
             Component qualityComponent = Component.literal(ComponentHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityComponent.getString().isEmpty()) {
-                guiGraphics.drawString(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
+                guiGraphicsExtractor.text(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
         }
     }

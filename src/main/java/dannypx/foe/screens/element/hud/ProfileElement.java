@@ -13,7 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -57,12 +57,12 @@ public class ProfileElement extends Element {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
         int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.profileElementScale.get()));
         int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.profileElementScale.get()));
 
-        guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get());
+        guiGraphicsExtractor.pose().pushMatrix();
+        guiGraphicsExtractor.pose().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get());
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.hudConfig.showProfileElement.get()
                 && TabOverlayHandler.instance().isInInstance()
@@ -81,19 +81,19 @@ public class ProfileElement extends Element {
             };
             int y = Math.round(scaledHeight * yPos);
 
-            this.renderTexture(guiGraphics, x, y);
-            this.renderComponent(guiGraphics, font, x, y);
-            this.renderHead(guiGraphics, x, y);
+            this.extractRenderTexture(guiGraphicsExtractor, x, y);
+            this.extractRenderText(guiGraphicsExtractor, font, x, y);
+            this.extractRenderHead(guiGraphicsExtractor, x, y);
         }
-        guiGraphics.pose().popMatrix();
+        guiGraphicsExtractor.pose().popMatrix();
     }
 
-    private void renderHead(GuiGraphics guiGraphics, int x, int y) {
+    private void extractRenderHead(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
         if(minecraft.player != null) {
             Identifier SKIN_TEXTURE = minecraft.player.getSkin().body().texturePath();
             switch (Configs.hudConfig.profileElementAlignment.get()) {
                 case TOP_LEFT -> {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+                    guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x + 8, y + 8,
                             8, 8,
@@ -102,7 +102,7 @@ public class ProfileElement extends Element {
                             64, 64
                     );
 
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+                    guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x + 7, y + 7,
                             40, 8,
@@ -112,7 +112,7 @@ public class ProfileElement extends Element {
                     );
                 }
                 case TOP_RIGHT -> {
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+                    guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x - 8 - 21, y + 8,
                             8, 8,
@@ -121,7 +121,7 @@ public class ProfileElement extends Element {
                             64, 64
                     );
 
-                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+                    guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                             SKIN_TEXTURE,
                             x - 7 - 23, y + 7,
                             40, 8,
@@ -135,7 +135,7 @@ public class ProfileElement extends Element {
         }
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, Font font, int x, int y) {
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, Font font, int x, int y) {
         int component1x = 40;
         int component1y = 9;
 
@@ -189,13 +189,13 @@ public class ProfileElement extends Element {
 
         switch (Configs.hudConfig.profileElementAlignment.get()) {
             case TOP_LEFT -> {
-                guiGraphics.drawString(font,
+                guiGraphicsExtractor.text(font,
                         player,
                         x + component1x, y + component1y,
                         CommonColors.WHITE,
                         true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         levelComponent,
                         x + component2x, y + component2y,
                         true,
@@ -203,7 +203,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         walletComponent,
                         x + component3x, y + component3y,
                         true,
@@ -211,7 +211,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         creditsComponent,
                         x + component4x, y + component4y,
                         true,
@@ -220,13 +220,13 @@ public class ProfileElement extends Element {
                         true);
             }
             case TOP_RIGHT -> {
-                guiGraphics.drawString(font,
+                guiGraphicsExtractor.text(font,
                         player,
                         x - component1x - playerWidth, y + component1y,
                         CommonColors.WHITE,
                         true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         levelComponent,
                         x - component2x - levelWidth, y + component2y,
                         true,
@@ -234,7 +234,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         walletComponent,
                         x - component3x - walletWidth, y + component3y,
                         true,
@@ -242,7 +242,7 @@ public class ProfileElement extends Element {
                         false,
                         true);
 
-                GuiGraphicsHelper.drawString(guiGraphics, font,
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         creditsComponent,
                         x - component4x - creditsWidth, y + component4y,
                         true,
@@ -253,14 +253,14 @@ public class ProfileElement extends Element {
         }
     }
 
-    private void renderTexture(GuiGraphics guiGraphics, int x, int y) {
+    private void extractRenderTexture(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
         switch (Configs.hudConfig.profileElementAlignment.get()) {
-            case TOP_LEFT -> guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
+            case TOP_LEFT -> guiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED,
                     PROFILE_TEXTURE,
                     x, y,
                     width, height
             );
-            case TOP_RIGHT -> guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
+            case TOP_RIGHT -> guiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED,
                     PROFILE_TEXTURE_FLIP,
                     x - width, y,
                     width, height

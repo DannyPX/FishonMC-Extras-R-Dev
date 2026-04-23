@@ -8,7 +8,7 @@ import dannypx.foe.mixin.accessor.ChatScreenAccessor;
 import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,11 +32,11 @@ public class ChatScreenRenderHandler extends ScreenHandler {
 
     //region Methods
     @Override
-    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+    public void render(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         if(screen instanceof ChatScreen chatScreen) {
             EditBox chatBox = ((ChatScreenAccessor) chatScreen).getInput();
             if(chatBox.getValue().isBlank() && ProfileDataHandler.instance().getProfileData().isInCrewChat) {
-                guiGraphics.drawString(font,
+                guiGraphicsExtractor.text(font,
                         Component.literal(ComponentHelper.smallCaps("You are in crew chat")).withStyle(ChatFormatting.GREEN),
                         4,
                         minecraft.getWindow().getGuiScaledHeight() - font.lineHeight - 4,

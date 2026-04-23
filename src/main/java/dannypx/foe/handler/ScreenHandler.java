@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,10 +20,10 @@ public abstract class ScreenHandler implements ScreenConstants {
     protected final Minecraft minecraft = Minecraft.getInstance();
 
     public void init(Screen screen) {}
-    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {}
+    public void render(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {}
     protected abstract Map<String, Pair<MutableComponent, MutableComponent>> _getFields();
 
-    public void renderButtonHelp(GuiGraphics guiGraphics, boolean showInspect, boolean showScroll) {
+    public void renderButtonHelp(GuiGraphicsExtractor guiGraphicsExtractor, boolean showInspect, boolean showScroll) {
         Font font = minecraft.font;
         List<Component> listHelp = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public abstract class ScreenHandler implements ScreenConstants {
         for (int i = 0; i < listHelp.size(); i++) {
             Component component = listHelp.get(i);
 
-            guiGraphics.drawString(
+            guiGraphicsExtractor.text(
                     font, component,
                     minecraft.getWindow().getGuiScaledWidth() - PADDING - font.width(component),
                     minecraft.getWindow().getGuiScaledHeight() - PADDING - font.lineHeight

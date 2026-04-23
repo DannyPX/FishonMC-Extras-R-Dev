@@ -14,8 +14,7 @@ import dannypx.foe.screens.widget.ButtonListWidget;
 import java.util.*;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
@@ -59,22 +58,22 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     protected void init() {
         super.init();
         CustomButtonDataHandler.instance().init(this.screenId);
-        this.renderWidgets();
+        this.extractRenderWidgets();
         this.resetFields();
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderBox(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        this.extractRenderBox(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
-        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
-        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
+        this.extractRenderText(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.extractRenderTooltip(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.buttonList.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    private void extractRenderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if(descriptionEditBox.isMouseOver(mouseX, mouseY)) {
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Can be empty").withStyle(ChatFormatting.GRAY)
@@ -98,15 +97,15 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         }
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawCenteredString(font,
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        guiGraphicsExtractor.centeredText(font,
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2,
                 CommonColors.WHITE
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
@@ -114,7 +113,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Description"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 2,
@@ -122,7 +121,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Command"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
@@ -130,7 +129,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Icon"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 4,
@@ -139,18 +138,18 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         );
     }
 
-    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta)
     {
-        guiGraphics.fill(
+        guiGraphicsExtractor.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
                 this.minecraft.getWindow().getGuiScaledWidth(),
                 this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
-        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.horizontalLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.verticalLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
-    private void renderWidgets() {
+    private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());

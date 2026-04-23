@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -62,14 +62,14 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
         if(!customHud.showElement) { return; }
 
         int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / customHud.scale));
         int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / customHud.scale));
 
-        guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().scale(customHud.scale, customHud.scale);
+        guiGraphicsExtractor.pose().pushMatrix();
+        guiGraphicsExtractor.pose().scale(customHud.scale, customHud.scale);
         if(LoadingHandler.instance().isLoadingDone()
                 && TabOverlayHandler.instance().isInInstance()
         ) {
@@ -108,14 +108,14 @@ public class CustomHudElement extends Element implements ScreenConstants {
                     default -> 0;
                 };
 
-                if(customHud.showBackground) this.renderBox(guiGraphics, deltaTracker, x, y);
-                this.renderComponent(guiGraphics, deltaTracker, x, y);
+                if(customHud.showBackground) this.extractRenderBox(guiGraphicsExtractor, deltaTracker, x, y);
+                this.extractRenderText(guiGraphicsExtractor, deltaTracker, x, y);
             }
         }
-        guiGraphics.pose().popMatrix();
+        guiGraphicsExtractor.pose().popMatrix();
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, int x, int y) {
         int componentX;
         int componentY;
 
@@ -134,13 +134,13 @@ public class CustomHudElement extends Element implements ScreenConstants {
         AtomicInteger line = new AtomicInteger(0);
         componentLines.forEach(componentParts -> {
             if(componentParts.value1()) {
-                GuiGraphicsHelper.drawString(guiGraphics, font, componentParts.value3(),
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, componentParts.value3(),
                         componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - ComponentHelper.getWidth(font, componentParts.value3(), componentParts.value2()) / 2,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()
                         );
             } else {
-                GuiGraphicsHelper.drawString(guiGraphics, font, componentParts.value3(),
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, componentParts.value3(),
                         componentX,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()
@@ -149,7 +149,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         });
     }
 
-    private void renderBox(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, int x, int y) {
         int boxX = x;
         int boxY = y;
 
@@ -167,14 +167,14 @@ public class CustomHudElement extends Element implements ScreenConstants {
         int NIB_HEIGHT = 3;
 
         // Alpha Box
-        guiGraphics.fill(
+        guiGraphicsExtractor.fill(
                 boxX + BOX_PADDING, boxY + BOX_PADDING,
                 boxX + this.boxWidth - BOX_PADDING, boxY + this.boxHeight - BOX_PADDING,
                 0x7f000000
         );
 
         // Top Left
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX, boxY,
                 0, NIB_HEIGHT,
@@ -184,7 +184,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + ATLAS_CORNER, boxY,
                 ATLAS_CORNER, NIB_HEIGHT,
@@ -194,7 +194,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top Right
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + this.boxWidth - ATLAS_CORNER, boxY,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, NIB_HEIGHT,
@@ -204,7 +204,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom Left
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX, boxY + this.boxHeight - ATLAS_CORNER,
                 0, 0,
@@ -214,7 +214,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER + NIB_HEIGHT,
                 ATLAS_CORNER, NIB_HEIGHT,
@@ -224,7 +224,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom Right
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + this.boxWidth - ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, 0,

@@ -17,7 +17,7 @@ import dannypx.foe.type.type_adapter.PatternAdapter;
 import java.util.*;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
@@ -64,31 +64,31 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     @Override
     protected void init() {
         super.init();
-        this.renderWidgets();
+        this.extractRenderWidgets();
         this.resetFields();
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderBox(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        this.extractRenderBox(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
-        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
-        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
+        this.extractRenderText(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.extractRenderTooltip(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.buttonList.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    private void extractRenderTooltip(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         if(isPeriodCheckBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("'period' mode is for timers that require a period of ON and OFF time").withStyle(ChatFormatting.GRAY),
                     Component.literal("After x seconds of ON time, the timer will be on OFF mode for x seconds, and then back to ON again").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
         if(timerEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Time in seconds").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
                     Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
@@ -100,7 +100,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         }
 
         if(offTimerEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Time in seconds").withStyle(ChatFormatting.GRAY),
                     Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
@@ -110,14 +110,14 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         }
 
         if(offsetEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Time in seconds").withStyle(ChatFormatting.GRAY),
                     Component.literal("Offset of the timer for alignment").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
         if(notificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
@@ -131,7 +131,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         }
 
         if(notificationToTriggerEndEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
@@ -143,7 +143,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         }
 
         if(cleanUpChatTriggersEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
@@ -157,15 +157,15 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         }
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawCenteredString(font,
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        guiGraphicsExtractor.centeredText(font,
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2,
                 CommonColors.WHITE
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
@@ -173,7 +173,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Timer"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 2,
@@ -181,7 +181,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Off Timer"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
@@ -189,7 +189,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Offset"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 4,
@@ -197,7 +197,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 5,
@@ -205,7 +205,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Trigger Notif. End"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 6,
@@ -213,7 +213,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Clear Triggers"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 7,
@@ -261,7 +261,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Component.literal(String.format("%02d", remainingTimeMid.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    guiGraphics.drawString(font,
+                    guiGraphicsExtractor.text(font,
                             onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
@@ -269,7 +269,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             true
                     );
 
-                    guiGraphics.drawString(font,
+                    guiGraphicsExtractor.text(font,
                             offTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8 + (font.lineHeight + PADDING_QUART) * 1,
@@ -283,7 +283,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Component.literal(" period").withStyle(ChatFormatting.GRAY)
                     );
 
-                    guiGraphics.drawString(font,
+                    guiGraphicsExtractor.text(font,
                             isOnTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8 + (font.lineHeight + PADDING_QUART) * 2,
@@ -306,7 +306,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Component.literal(String.format("%02d", remainingTime.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    guiGraphics.drawString(font,
+                    guiGraphicsExtractor.text(font,
                             onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                             PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
@@ -329,18 +329,18 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return Triplet.of(second, minute, hour);
     }
 
-    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta)
     {
-        guiGraphics.fill(
+        guiGraphicsExtractor.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
                 this.minecraft.getWindow().getGuiScaledWidth(),
                 this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
-        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.horizontalLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.verticalLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
-    private void renderWidgets() {
+    private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());

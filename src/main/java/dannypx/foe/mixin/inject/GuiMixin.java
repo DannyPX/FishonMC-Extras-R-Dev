@@ -5,7 +5,7 @@ import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import dannypx.foe.config.Configs;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,8 +33,8 @@ public abstract class GuiMixin {
         }
     }
 
-    @Inject(method = "renderSelectedItemName", at = @At("HEAD"),  cancellable = true)
-    private void injectRenderSelectedItemName(GuiGraphics guiGraphics, CallbackInfo ci) {
+    @Inject(method = "extractSelectedItemName", at = @At("HEAD"),  cancellable = true)
+    private void injectExtractSelectedItemName(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.guiMixinRenderSelectedItemName.get()
@@ -43,8 +43,8 @@ public abstract class GuiMixin {
         }
     }
 
-    @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
-    private void injectRenderScoreboardSidebar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "extractScoreboardSidebar", at = @At("HEAD"), cancellable = true)
+    private void injectExtractScoreboardSidebar(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.guiMixinRenderScoreBoardSidebar.get()
@@ -53,8 +53,8 @@ public abstract class GuiMixin {
         }
     }
 
-    @Inject(method = "renderItemHotbar", at = @At("HEAD"), cancellable = true)
-    private void injectRenderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(method = "extractItemHotbar", at = @At("HEAD"), cancellable = true)
+    private void injectExtractItemHotbar(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.guiMixinRenderItemHotbar.get()

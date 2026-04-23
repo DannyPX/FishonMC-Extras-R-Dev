@@ -6,7 +6,7 @@ import dannypx.foe.screens.interfaces.ScreenConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,10 +32,10 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
     @Override
     protected void init() {
         super.init();
-        this.renderDefaultWidgets();
+        this.extractRenderDefaultWidgets();
     }
 
-    private void renderDefaultWidgets() {
+    private void extractRenderDefaultWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.backButton());
@@ -67,8 +67,8 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
     }
 
     @Override
-    public void render(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
     @Override
