@@ -27,9 +27,6 @@ import net.minecraft.resources.Identifier;
 
 public class CustomHudElement extends Element implements ScreenConstants {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
-
     // isCentre, isSmall, Line
     private List<Triplet<Boolean, Boolean, Component>> componentLines = new ArrayList<>();
     private Pair<Integer, Integer> contentDimensions = Pair.of(0, 0);
@@ -47,7 +44,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
     private static final int LINE_HEIGHT = Minecraft.getInstance().font.lineHeight + 1;
     //endregion
 
-    public CustomHudElement(Minecraft minecraft, CustomHudDataHandler.CustomHud customHud, Component message) {
+    public CustomHudElement(CustomHudDataHandler.CustomHud customHud, Component message) {
         super(75,
                 50,
                 customHud.xPos / 100f,
@@ -55,8 +52,6 @@ public class CustomHudElement extends Element implements ScreenConstants {
                 customHud.alignment,
                 message,
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
         this.customHud = customHud;
     }
 
@@ -65,8 +60,8 @@ public class CustomHudElement extends Element implements ScreenConstants {
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         if(!customHud.showElement) { return; }
 
-        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / customHud.scale));
-        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / customHud.scale));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHud.scale));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / customHud.scale));
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(customHud.scale, customHud.scale);
@@ -134,13 +129,13 @@ public class CustomHudElement extends Element implements ScreenConstants {
         AtomicInteger line = new AtomicInteger(0);
         componentLines.forEach(componentParts -> {
             if(componentParts.value1()) {
-                GuiGraphicsHelper.drawString(guiGraphics, font, componentParts.value3(),
-                        componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - ComponentHelper.getWidth(font, componentParts.value3(), componentParts.value2()) / 2,
+                GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
+                        componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - ComponentHelper.getWidth(Minecraft.getInstance().font, componentParts.value3(), componentParts.value2()) / 2,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()
                         );
             } else {
-                GuiGraphicsHelper.drawString(guiGraphics, font, componentParts.value3(),
+                GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
                         componentX,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()
@@ -257,7 +252,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         return Pair.of(
                 Math.max(MIN_WIDTH, componentLines.stream()
                         .mapToInt(
-                                line -> ComponentHelper.getWidth(font, line.value3(), line.value2())
+                                line -> ComponentHelper.getWidth(Minecraft.getInstance().font, line.value3(), line.value2())
                         ).max().orElse(0)),
                 LINE_HEIGHT * componentLines.size()
         );

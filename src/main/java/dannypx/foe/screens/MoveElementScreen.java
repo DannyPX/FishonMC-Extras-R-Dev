@@ -35,7 +35,7 @@ public class MoveElementScreen extends DefaultModScreen {
 
     private void assembleCustomHudElements() {
         customHudElements.clear();
-        CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> customHudElements.add(Pair.of(key, new CustomHudElement(this.minecraft, hud, Component.literal(key)))));
+        CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> customHudElements.add(Pair.of(key, new CustomHudElement(hud, Component.literal(key)))));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MoveElementScreen extends DefaultModScreen {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(new MovableBoxWidget(this.minecraft,
-                new ProfileElement(this.minecraft, true),
+                new ProfileElement(true),
                 Alignment.getTopCorners(),
                 new MovableBoxWidget.Callback() {
                     @Override
@@ -66,7 +66,7 @@ public class MoveElementScreen extends DefaultModScreen {
         ));
 
         widgets.add(new MovableBoxWidget(this.minecraft,
-                new LocationElement(this.minecraft, true),
+                new LocationElement(true),
                 Alignment.getTopCorners(),
                 new MovableBoxWidget.Callback() {
                     @Override
@@ -85,7 +85,7 @@ public class MoveElementScreen extends DefaultModScreen {
         ));
 
         widgets.add(new MovableBoxWidget(this.minecraft,
-                new HotbarElement(this.minecraft, true),
+                new HotbarElement(true),
                 Alignment.getBottom(),
                 new MovableBoxWidget.Callback() {
                     @Override
@@ -104,7 +104,7 @@ public class MoveElementScreen extends DefaultModScreen {
         ));
 
         widgets.add(new MovableBoxWidget(this.minecraft,
-                new PetElement(this.minecraft, true),
+                new PetElement(true),
                 Alignment.getTopCorners(),
                 new MovableBoxWidget.Callback() {
                     @Override
@@ -123,7 +123,7 @@ public class MoveElementScreen extends DefaultModScreen {
         ));
 
         widgets.add(new MovableBoxWidget(this.minecraft,
-                new NotifierElement(this.minecraft, true),
+                new NotifierElement(true),
                 Alignment.getCorners(),
                 new MovableBoxWidget.Callback() {
                     @Override
@@ -141,7 +141,6 @@ public class MoveElementScreen extends DefaultModScreen {
                 }
         ));
 
-        Minecraft minecraft1 = this.minecraft;
         customHudElements.forEach(element -> widgets.add(new MovableBoxWidget(this.minecraft,
                 element.value2(),
                 Alignment.getAll(),
@@ -153,14 +152,14 @@ public class MoveElementScreen extends DefaultModScreen {
 
                     @Override
                     public void onConfig() {
-                        minecraft1.setScreen(new CustomHudMakerScreen(minecraft1.screen));
+                        Minecraft.getInstance().setScreen(new CustomHudMakerScreen(Minecraft.getInstance().screen));
                     }
                 }
         )));
 
         if(Configs.debugConfig.debugMode.get()) {
             widgets.add(new MovableBoxWidget(this.minecraft,
-                    new _DebugField(this.minecraft, true),
+                    new _DebugField(true),
                     Alignment.getCorners(),
                     new MovableBoxWidget.Callback() {
                         @Override

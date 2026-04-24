@@ -47,7 +47,6 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
 
     @Override
     public int addEntry(StatEntry entry) {
-        entry.setWidth(width);
         return super.addEntry(entry);
     }
 
@@ -69,7 +68,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
         Component field2;
         Component field3;
         List<ItemStack> itemStacks;
-        int width = 0;
+        int width = 160;
 
         public StatEntry(Component category, Component field1, Component field2, Component field3, List<ItemStack> itemStacks, boolean isHeader) {
             this.isHeader = isHeader;
@@ -77,6 +76,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
             this.field1 = field1;
             this.field2 = field2;
             this.field3 = field3;
+            this.setHeight(16);
             this.itemStacks = itemStacks;
         }
 
@@ -99,9 +99,9 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
             return List.of();
         }
 
-        public void setWidth(int width) {
-            this.width = width;
-        }
+//        public void setWidth(int width) {
+//            this.width = width;
+//        }
 
         @Override
         public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
@@ -111,7 +111,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
 
             Font font = Minecraft.getInstance().font;
             int height = font.lineHeight;
-            int posY = getY() - height / 2;
+            int posY = getY() - height / 2 + 4;
 
 
             if(isHeader) {

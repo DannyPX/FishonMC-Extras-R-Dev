@@ -16,6 +16,8 @@ public class FishingRodTagObject extends TagObject {
     private List<TagObject> reelItem = List.of();
     private static final String TACKLEBOX = "tacklebox";
     private List<TagObject> tackleBox = List.of();
+    public static final String ACTIVE_BAIT = "activeBait";
+    private List<TagObject> activeBait = List.of();
     public static final String DISABLE_BAIT = "disableBait";
 
     public FishingRodTagObject(CompoundTag compoundTag, ItemStack itemStack) {
@@ -30,6 +32,7 @@ public class FishingRodTagObject extends TagObject {
         this.poleItem = this.getItemStackList(POLE);
         this.reelItem = this.getItemStackList(REEL);
         this.tackleBox = this.getItemStackList(TACKLEBOX);
+        this.activeBait = this.getItemStackList(ACTIVE_BAIT);
     }
 
     public List<TagObject> getLineItem() {
@@ -46,6 +49,10 @@ public class FishingRodTagObject extends TagObject {
 
     public List<TagObject> getTackleBox() {
         return this.tackleBox;
+    }
+
+    public List<TagObject> getActiveBait() {
+        return this.activeBait;
     }
 
     public boolean getDisableBait() {

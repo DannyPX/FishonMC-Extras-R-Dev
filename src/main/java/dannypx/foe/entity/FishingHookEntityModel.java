@@ -16,8 +16,8 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class FishingHookEntityModel<T extends FishingHookRenderState> extends EntityModel<T> {
-    public static final ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "fishing_fishing_hook"), "main");
-    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/entity/fishing_fishing_hook.png");
+    public static final ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "fishing_hook"), "main");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/entity/fishing_hook.png");
 
     public static final RenderType RENDER_LAYER = RenderTypes.entityTranslucent(TEXTURE);
 
