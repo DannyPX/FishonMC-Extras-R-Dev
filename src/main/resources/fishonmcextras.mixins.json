@@ -30,7 +30,6 @@
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",
     "inject.FishingHookRenderStateMixin",
-    "inject.GuiGraphicsMixin",
     "inject.GuiMixin",
     "inject.HumanoidArmorLayerMixin",
     "inject.InventoryScreenMixin",
