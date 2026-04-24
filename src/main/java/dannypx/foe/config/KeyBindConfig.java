@@ -11,7 +11,7 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-@Version(version = 2)
+@Version(version = 3)
 @Translatable.Name("Controls")
 public class KeyBindConfig extends Config {
     public KeyBindConfig() {

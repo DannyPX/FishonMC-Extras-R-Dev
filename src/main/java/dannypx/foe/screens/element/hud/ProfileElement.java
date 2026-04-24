@@ -21,8 +21,6 @@ import net.minecraft.util.CommonColors;
 
 public class ProfileElement extends Element {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
 
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 44;
@@ -31,7 +29,7 @@ public class ProfileElement extends Element {
     private static final Identifier PROFILE_TEXTURE_FLIP = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/profile_flip");
     //endregion
 
-    public ProfileElement(Minecraft minecraft) {
+    public ProfileElement() {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.profileElementXPosition.get() / 100f,
@@ -39,11 +37,9 @@ public class ProfileElement extends Element {
                 Configs.hudConfig.profileElementAlignment.get(),
                 Configs.hudConfig.profileElementGroup.translation("Profile Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
-    public ProfileElement(Minecraft minecraft, boolean isCopy) {
+    public ProfileElement(boolean isCopy) {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.profileElementXPosition.get() / 100f,
@@ -51,15 +47,13 @@ public class ProfileElement extends Element {
                 Configs.hudConfig.profileElementAlignment.get(),
                 Configs.hudConfig.profileElementGroup.translation("Profile Element"),
                 isCopy);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
-        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.profileElementScale.get()));
-        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.profileElementScale.get()));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.profileElementScale.get()));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.profileElementScale.get()));
 
         guiGraphicsExtractor.pose().pushMatrix();
         guiGraphicsExtractor.pose().scale(Configs.hudConfig.profileElementScale.get(), Configs.hudConfig.profileElementScale.get());
@@ -82,15 +76,15 @@ public class ProfileElement extends Element {
             int y = Math.round(scaledHeight * yPos);
 
             this.extractRenderTexture(guiGraphicsExtractor, x, y);
-            this.extractRenderText(guiGraphicsExtractor, font, x, y);
+            this.extractRenderText(guiGraphicsExtractor, Minecraft.getInstance().font, x, y);
             this.extractRenderHead(guiGraphicsExtractor, x, y);
         }
         guiGraphicsExtractor.pose().popMatrix();
     }
 
     private void extractRenderHead(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
-        if(minecraft.player != null) {
-            Identifier SKIN_TEXTURE = minecraft.player.getSkin().body().texturePath();
+        if(Minecraft.getInstance().player != null) {
+            Identifier SKIN_TEXTURE = Minecraft.getInstance().player.getSkin().body().texturePath();
             switch (Configs.hudConfig.profileElementAlignment.get()) {
                 case TOP_LEFT -> {
                     guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED,

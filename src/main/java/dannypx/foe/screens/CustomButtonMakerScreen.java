@@ -402,7 +402,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         buttonList = new ButtonListWidget(
                 this.minecraft,
                 (BUTTON_WIDTH + PADDING * 2),
-                height - ScreenConstants.BUTTON_HEIGHT * 2 - PADDING - PADDING_HALF,
+                height - ScreenConstants.BUTTON_HEIGHT * 3 - PADDING * 2,
                 0,
                 BUTTON_HEIGHT + PADDING_HALF,
                 BUTTON_HEIGHT,

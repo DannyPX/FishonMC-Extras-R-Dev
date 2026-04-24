@@ -49,7 +49,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
                 minecraft.font,
                 Component.literal(headerTitle),
                 getX() + getRowWidth() / 2,
-                getY() + 4,
+                8,
                 CommonColors.WHITE
         );
     }

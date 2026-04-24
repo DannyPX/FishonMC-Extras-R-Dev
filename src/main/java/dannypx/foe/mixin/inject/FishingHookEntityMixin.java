@@ -39,8 +39,8 @@ public abstract class FishingHookEntityMixin implements IFishingHookEntity {
                     && !ItemStack.isSameItemSameComponents(currentFishingRod.getItemStack(), validatedFishingRod.value2().getItemStack())
             ) {
                 currentFishingRod = validatedFishingRod.value2();
-                if(!currentFishingRod.getTackleBox().isEmpty()) {
-                    baitStack = currentFishingRod.getTackleBox().getFirst().getItemStack();
+                if(!currentFishingRod.getActiveBait().isEmpty()) {
+                    baitStack = currentFishingRod.getActiveBait().getFirst().getItemStack();
                     disabledBait = currentFishingRod.getDisableBait();
                 }
             }

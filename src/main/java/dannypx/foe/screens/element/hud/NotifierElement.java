@@ -17,15 +17,12 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class NotifierElement extends Element implements ScreenConstants {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
-
     private final List<NotificationElement> notificationElements = new ArrayList<>();
 
     private static final int WIDTH = 200;
     //endregion
 
-    public NotifierElement(Minecraft minecraft) {
+    public NotifierElement() {
         super(WIDTH,
                 50,
                 Configs.hudConfig.notifierElementXPosition.get() / 100f,
@@ -33,11 +30,9 @@ public class NotifierElement extends Element implements ScreenConstants {
                 Configs.hudConfig.notifierElementAlignment.get(),
                 Configs.hudConfig.notifierElementGroup.translation("Notifier Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
-    public NotifierElement(Minecraft minecraft, boolean isCopy) {
+    public NotifierElement(boolean isCopy) {
         super(WIDTH,
                 50,
                 Configs.hudConfig.notifierElementXPosition.get() / 100f,
@@ -45,15 +40,13 @@ public class NotifierElement extends Element implements ScreenConstants {
                 Configs.hudConfig.notifierElementAlignment.get(),
                 Configs.hudConfig.notifierElementGroup.translation("Notifier Element"),
                 isCopy);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
-        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
-        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
 
         guiGraphicsExtractor.pose().pushMatrix();
         guiGraphicsExtractor.pose().scale(Configs.hudConfig.notifierElementScale.get(), Configs.hudConfig.notifierElementScale.get());
@@ -111,7 +104,7 @@ public class NotifierElement extends Element implements ScreenConstants {
     private Pair<Integer, Integer> assembleNotificationElements() {
         notificationElements.clear();
         NotifierHandler.instance().getNotifications().forEach(notification -> notificationElements.add(new NotificationElement(
-                minecraft,
+                Minecraft.getInstance(),
                 WIDTH,
                 notification.item,
                 notification.rows,

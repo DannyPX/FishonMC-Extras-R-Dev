@@ -20,9 +20,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class PetElement extends Element {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
-
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 37;
 
@@ -30,7 +27,7 @@ public class PetElement extends Element {
     private static final Identifier PET_TEXTURE_FLIP = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/pet_flip");
     //endregion
 
-    public PetElement(Minecraft minecraft) {
+    public PetElement() {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.petElementXPosition.get() / 100f,
@@ -38,11 +35,9 @@ public class PetElement extends Element {
                 Configs.hudConfig.petElementAlignment.get(),
                 Configs.hudConfig.petElementGroup.translation("Pet Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
-    public PetElement(Minecraft minecraft, boolean isCopy) {
+    public PetElement(boolean isCopy) {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.petElementXPosition.get() / 100f,
@@ -50,15 +45,13 @@ public class PetElement extends Element {
                 Configs.hudConfig.petElementAlignment.get(),
                 Configs.hudConfig.petElementGroup.translation("Pet Element"),
                 isCopy);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
-        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.petElementScale.get()));
-        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.petElementScale.get()));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.petElementScale.get()));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.petElementScale.get()));
 
         guiGraphicsExtractor.pose().pushMatrix();
         guiGraphicsExtractor.pose().scale(Configs.hudConfig.petElementScale.get(), Configs.hudConfig.petElementScale.get());
@@ -81,14 +74,14 @@ public class PetElement extends Element {
             int y = Math.round(scaledHeight * yPos);
 
             this.extractRenderTexture(guiGraphicsExtractor, x, y);
-            this.extractRenderText(guiGraphicsExtractor, font, x, y);
+            this.extractRenderText(guiGraphicsExtractor, Minecraft.getInstance().font, x, y);
             this.extractRenderPetIcon(guiGraphicsExtractor, x, y);
         }
         guiGraphicsExtractor.pose().popMatrix();
     }
 
     private void extractRenderPetIcon(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
-        if(minecraft.player != null && InventoryHandler.instance().hasPet()) {
+        if(Minecraft.getInstance().player != null && InventoryHandler.instance().hasPet()) {
             ItemStack pet = InventoryHandler.instance().getCurrentPet().getItemStack();
 
             guiGraphicsExtractor.pose().pushMatrix();

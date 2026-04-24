@@ -12,10 +12,14 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.state.FishingHookRenderState;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.TrackingItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -71,18 +75,18 @@ public abstract class FishingHookRendererMixin {
                 && !bait.isEmpty()
                 && !((IFishingHookRenderState) fishingHookRenderState).foer$isDisabledBait()
         ) {
-            Minecraft minecraftClient = Minecraft.getInstance();
-            if(minecraftClient.getEntityRenderDispatcher().camera != null) {
+            Minecraft minecraft = Minecraft.getInstance();
+            if(minecraft.getEntityRenderDispatcher().camera != null) {
                 poseStack.pushPose();
                 poseStack.translate(0, -0.4, 0);
 
-                poseStack.mulPose(Axis.YP.rotationDegrees(-minecraftClient.getEntityRenderDispatcher().camera.yRot()));
+                poseStack.mulPose(Axis.YP.rotationDegrees(-minecraft.getEntityRenderDispatcher().camera.yRot()));
 
-                ItemModelResolver itemModelManager = minecraftClient.getItemModelResolver();
+                ItemModelResolver itemModelManager = minecraft.getItemModelResolver();
                 TrackingItemStackRenderState itemRenderState = new TrackingItemStackRenderState();
 
-                itemModelManager.updateForTopItem(itemRenderState, bait, ItemDisplayContext.GROUND, minecraftClient.level, null, 0);
-                itemRenderState.submit(poseStack, submitNodeCollector, fishingHookRenderState.lightCoords, OverlayTexture.NO_OVERLAY, CommonColors.BLACK);
+                itemModelManager.updateForTopItem(itemRenderState, bait, ItemDisplayContext.GROUND, minecraft.level, null, 0);
+                itemRenderState.submit(poseStack, submitNodeCollector, fishingHookRenderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
                 poseStack.popPose();
             }

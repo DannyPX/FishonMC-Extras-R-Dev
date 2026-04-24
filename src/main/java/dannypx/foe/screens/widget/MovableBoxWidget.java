@@ -1,5 +1,6 @@
 package dannypx.foe.screens.widget;
 
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.screens.element.Element;
@@ -15,6 +16,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class MovableBoxWidget extends AbstractWidget implements ScreenConstants {
     private final Minecraft minecraft;
@@ -266,11 +268,26 @@ public class MovableBoxWidget extends AbstractWidget implements ScreenConstants 
     protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    public void onClick(MouseButtonEvent click, boolean doubled) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
+        if (!this.isActive()) {
+            return false;
+        } else {
+            boolean bl2 = this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y());
+            if (bl2) {
+                this.playDownSound(Minecraft.getInstance().getSoundManager());
+                this.onClick(mouseButtonEvent, doubled);
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    @Override
+    public void onClick(@NotNull MouseButtonEvent click, boolean doubled) {
         if (this.active && this.visible && this.isMouseOver(click.x(), click.y())) {
             if (click.button() == 0) {
                 this.playDownSound(Minecraft.getInstance().getSoundManager());
-                this.onClick(click, doubled);
             } else if (click.button() == 1) {
                 this.playDownSound(Minecraft.getInstance().getSoundManager());
 
@@ -286,9 +303,8 @@ public class MovableBoxWidget extends AbstractWidget implements ScreenConstants 
     }
 
     @Override
-    protected void onDrag(@NotNull MouseButtonEvent mouseButtonEvent, double offsetX, double offsetY) {
-        super.onDrag(mouseButtonEvent, offsetX, offsetY);
-
+    protected void onDrag(@NotNull MouseButtonEvent mouseButtonEvent, double deltaX, double deltaY) {
+        super.onDrag(mouseButtonEvent, deltaX, deltaY);
         int currentWidth = minecraft.getWindow().getGuiScaledWidth();
         int currentHeight = minecraft.getWindow().getGuiScaledHeight();
 

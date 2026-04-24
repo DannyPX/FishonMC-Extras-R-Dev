@@ -43,14 +43,14 @@ public class TabRendererHandler extends Handler {
                 int height = 16;
                 int width = 40;
 
-                Element crewBox = new BoxElement(Minecraft.getInstance(), x1, y1 - (height - 5) - 1, -1, width, height, true, false, true, true, false, true);
+                Element crewBox = new BoxElement(x1, y1 - (height - 5) - 1, -1, width, height, true, false, true, true, false, true);
                 crewBox.extractRenderState(guiGraphicsExtractor, minecraft.getDeltaTracker());
 
                 Component crewComponent = Component.literal(ScoreboardHandler.instance().getCrew().getString());
                 GuiGraphicsHelper.text(guiGraphicsExtractor, minecraft.font, crewComponent, x1 + width / 2 - ComponentHelper.getWidth(minecraft.font, crewComponent, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraft.font.lineHeight / 2 + 1, true, true, false, true);
 
                 // Left Bar
-                Element leftBar = new BoxElement(Minecraft.getInstance(), x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);
+                Element leftBar = new BoxElement(x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);
                 leftBar.extractRenderState(guiGraphicsExtractor, minecraft.getDeltaTracker());
 
                 int gradientWidth = 150;

@@ -1,6 +1,9 @@
 package dannypx.foe.mixin.inject;
 
 import dannypx.foe.handler.logic.ConnectionHandler;
+import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import dannypx.foe.config.Configs;
 import org.spongepowered.asm.mixin.Mixin;

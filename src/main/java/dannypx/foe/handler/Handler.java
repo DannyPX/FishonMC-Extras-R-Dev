@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.MutableComponent;
 
 public abstract class Handler {
-    protected static final Minecraft minecraft = Minecraft.getInstance();
+    protected static Minecraft minecraft = Minecraft.getInstance();
 
     public void init() {}
     public void tick() {}

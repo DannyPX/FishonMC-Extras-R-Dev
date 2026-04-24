@@ -47,7 +47,6 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
 
     @Override
     public int addEntry(StatEntry entry) {
-        entry.setWidth(width);
         return super.addEntry(entry);
     }
 
@@ -69,7 +68,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
         Component secondColumnField;
         Component thirdColumnField;
         List<ItemStack> itemStacks;
-        int width = 0;
+        int width = 160;
 
         public StatEntry(Component category, Component firstColumnField, Component secondColumnField, Component thirdColumnField, List<ItemStack> itemStacks, boolean isHeader) {
             this.isHeader = isHeader;
@@ -77,6 +76,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
             this.firstColumnField = firstColumnField;
             this.secondColumnField = secondColumnField;
             this.thirdColumnField = thirdColumnField;
+            this.setHeight(16);
             this.itemStacks = itemStacks;
         }
 
@@ -99,10 +99,6 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
             return List.of();
         }
 
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
         @Override
         public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             if(!LoadingHandler.instance().isLoadingDone()) {
@@ -111,7 +107,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
 
             Font font = Minecraft.getInstance().font;
             int height = font.lineHeight;
-            int posY = getY() - height / 2;
+            int posY = getY() - height / 2 + 4;
 
 
             if(isHeader) {

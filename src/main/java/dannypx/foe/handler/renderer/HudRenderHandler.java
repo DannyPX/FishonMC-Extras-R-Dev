@@ -52,7 +52,7 @@ public class HudRenderHandler extends Handler {
     public void tick() {
         if(CustomHudDataHandler.instance().needsRenderUpdate) {
             customHudElements.clear();
-            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> customHudElements.add(Pair.of(key, new CustomHudElement(minecraft, hud, Component.literal(key)))));
+            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> customHudElements.add(Pair.of(key, new CustomHudElement(hud, Component.literal(key)))));
 
             CustomHudDataHandler.instance().needsRenderUpdate = false;
         }
@@ -60,12 +60,12 @@ public class HudRenderHandler extends Handler {
 
     private void renderElements() {
         if(elements.isEmpty()) {
-            elements.add(Pair.of("profile_hud", new ProfileElement(minecraft)));
-            elements.add(Pair.of("location_hud", new LocationElement(minecraft)));
-            elements.add(Pair.of("hotbar_hud", new HotbarElement(minecraft)));
-            elements.add(Pair.of("pet_hud", new PetElement(minecraft)));
-            elements.add(Pair.of("notifier_hud", new NotifierElement(minecraft)));
-            elements.add(Pair.of("debug_field_hud", new _DebugField(minecraft)));
+            elements.add(Pair.of("profile_hud", new ProfileElement()));
+            elements.add(Pair.of("location_hud", new LocationElement()));
+            elements.add(Pair.of("hotbar_hud", new HotbarElement()));
+            elements.add(Pair.of("pet_hud", new PetElement()));
+            elements.add(Pair.of("notifier_hud", new NotifierElement()));
+            elements.add(Pair.of("debug_field_hud", new _DebugField()));
         }
 
         LoggerHandler._debug("Register Default Elements");
