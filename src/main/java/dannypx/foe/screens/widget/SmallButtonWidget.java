@@ -48,14 +48,12 @@ public class SmallButtonWidget extends AbstractWidget {
         this.setTooltip(tooltip);
         this.init();
 
-        box = Pair.of("button_box", new BoxElement(minecraft,
-                getX(),
+        box = Pair.of("button_box", new BoxElement(getX(),
                 getY(),
                 1,
                 width, height, true, false));
 
-        box_hover = Pair.of("button_hover_box", new BoxElement(minecraft,
-                getX(),
+        box_hover = Pair.of("button_hover_box", new BoxElement(getX(),
                 getY(),
                 1,
                 width, height, true, true));

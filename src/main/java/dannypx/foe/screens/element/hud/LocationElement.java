@@ -19,9 +19,6 @@ import net.minecraft.resources.Identifier;
 
 public class LocationElement extends Element {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
-
     private static final int TEXTURE_WIDTH = 160;
     private static final int TEXTURE_HEIGHT = 36;
 
@@ -29,7 +26,7 @@ public class LocationElement extends Element {
     private static final Identifier LOCATION_TEXTURE_FLIP = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/location_flip");
     //endregion
 
-    public LocationElement(Minecraft minecraft) {
+    public LocationElement() {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.locationElementXPosition.get() / 100f,
@@ -37,11 +34,9 @@ public class LocationElement extends Element {
                 Configs.hudConfig.locationElementAlignment.get(),
                 Configs.hudConfig.locationElementGroup.translation("Location Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
-    public LocationElement(Minecraft minecraft, boolean isCopy) {
+    public LocationElement(boolean isCopy) {
         super(TEXTURE_WIDTH,
                 TEXTURE_HEIGHT,
                 Configs.hudConfig.locationElementXPosition.get() / 100f,
@@ -49,15 +44,13 @@ public class LocationElement extends Element {
                 Configs.hudConfig.locationElementAlignment.get(),
                 Configs.hudConfig.locationElementGroup.translation("Location Element"),
                 isCopy);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.locationElementScale.get()));
-        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.locationElementScale.get()));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.locationElementScale.get()));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.locationElementScale.get()));
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(Configs.hudConfig.locationElementScale.get(), Configs.hudConfig.locationElementScale.get());
@@ -80,7 +73,7 @@ public class LocationElement extends Element {
             int y = Math.round(scaledHeight * yPos);
 
             this.renderTexture(guiGraphics, x, y);
-            this.renderComponent(guiGraphics, font, x, y);
+            this.renderComponent(guiGraphics, Minecraft.getInstance().font, x, y);
         }
         guiGraphics.pose().popMatrix();
     }

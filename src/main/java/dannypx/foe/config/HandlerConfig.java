@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 6)
+@Version(version = 7)
 @Translatable.Name("§7§oDev§8§o: §f§oHandlers")
 @Translatable.Desc("§4WARNING §7These are the back-end handlers. Disabling these might stop some " +
         "functions from working. Do not touch these unless you know what you are doing")

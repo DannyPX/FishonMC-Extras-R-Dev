@@ -18,14 +18,11 @@ import dannypx.foe.screens.element.Element;
 
 public class _DebugField extends Element {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
-
     private static final int WIDTH = 100;
     private static final int HEIGHT = 16;
     //endregion
 
-    public _DebugField(Minecraft minecraft) {
+    public _DebugField() {
         super(WIDTH,
                 HEIGHT,
                 Configs.debugConfig.debugFieldXPosition.get() / 100f,
@@ -33,11 +30,9 @@ public class _DebugField extends Element {
                 Configs.debugConfig.debugFieldAlignment.get(),
                 Configs.debugConfig.debugFieldGroup.translation("Debug Field"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
-    public _DebugField(Minecraft minecraft, boolean isCopy) {
+    public _DebugField(boolean isCopy) {
         super(WIDTH,
                 HEIGHT,
                 Configs.debugConfig.debugFieldXPosition.get() / 100f,
@@ -45,15 +40,13 @@ public class _DebugField extends Element {
                 Configs.debugConfig.debugFieldAlignment.get(),
                 Configs.debugConfig.debugFieldGroup.translation("Debug Field"),
                 isCopy);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
     //region Methods
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        int scaledWidth = (int) (minecraft.getWindow().getGuiScaledWidth() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
-        int scaledHeight = (int) (minecraft.getWindow().getGuiScaledHeight() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.debugConfig.debugFieldElementScale.get()));
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(Configs.debugConfig.debugFieldElementScale.get(), Configs.debugConfig.debugFieldElementScale.get());
@@ -82,7 +75,7 @@ public class _DebugField extends Element {
                 default -> 0;
             };
 
-            this.renderFieldComponent(guiGraphics, font, x, y);
+            this.renderFieldComponent(guiGraphics, Minecraft.getInstance().font, x, y);
         }
         guiGraphics.pose().popMatrix();
     }

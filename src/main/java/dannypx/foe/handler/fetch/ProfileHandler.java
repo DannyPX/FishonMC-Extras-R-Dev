@@ -52,7 +52,7 @@ public class ProfileHandler extends Handler {
                         fetchingUUIDs.remove(uuid);
                     },
                     () -> {
-                        CodeExecuterHandler.runLater(20, () -> {
+                        CodeExecuterHandler.runLater(4, () -> {
                             fetchingUUIDs.remove(uuid);
                         });
                     }

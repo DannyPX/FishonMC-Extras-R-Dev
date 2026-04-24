@@ -6,12 +6,15 @@ import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.config.Configs;
 import dannypx.foe.mixin.accessor.LevelRendererAccessor;
 import java.util.Map;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 public class LightHandler extends Handler {
     private static LightHandler INSTANCE = new LightHandler();

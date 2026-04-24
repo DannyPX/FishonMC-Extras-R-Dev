@@ -14,26 +14,29 @@
     "requireAnnotations": true
   },
   "client": [
+    "accessor.AbstractSelectionListEntryAccessor",
     "accessor.BossHealthOverlayAccessor",
     "accessor.ChatScreenAccessor",
+    "accessor.LevelRendererAccessor",
     "accessor.MinecraftAccessor",
     "accessor.PlayerTabOverlayAccessor",
-    "accessor.LevelRendererAccessor",
-    "inject.HumanoidArmorLayerMixin",
-    "inject.ContextualBarRendererMixin",
+    "inject.AbstractContainerScreenMixin",
+    "inject.AbstractRecipeBookScreenMixin",
+    "inject.AbstractSelectionListMixin",
     "inject.BossHealthOverlayMixin",
     "inject.ClientPacketListenerMixin",
-    "inject.GuiGraphicsMixin",
+    "inject.ContextualBarRendererMixin",
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",
     "inject.FishingHookRenderStateMixin",
-    "inject.AbstractContainerScreenMixin",
+    "inject.GuiGraphicsMixin",
     "inject.GuiMixin",
+    "inject.HumanoidArmorLayerMixin",
+    "inject.InventoryScreenMixin",
     "inject.JumpableVehicleBarMixin",
+    "inject.LevelRendererBrightnessGetterMixin",
     "inject.LocatorBarMixin",
     "inject.PlayerTabOverlayMixin",
-    "inject.AbstractRecipeBookScreenMixin",
-    "inject.RecipeBookWidgetMixin",
-    "inject.LevelRendererMixin"
+    "inject.RecipeBookWidgetMixin"
   ]
 }

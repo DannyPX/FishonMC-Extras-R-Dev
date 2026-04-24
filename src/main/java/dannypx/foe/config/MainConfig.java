@@ -11,7 +11,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 1)
+@Version(version = 2)
 @RootConfig
 @Translatable.Name("FishOnExtras Rebirth")
 @IgnoreVisibility

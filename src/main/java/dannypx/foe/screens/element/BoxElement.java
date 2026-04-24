@@ -11,9 +11,6 @@ import net.minecraft.resources.Identifier;
 
 public class BoxElement extends Element {
     //region Fields
-    private final Minecraft minecraft;
-    private final Font font;
-
     private final Identifier BOX_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_atlas.png");
     private final Identifier BOX_SOLID_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_solid_atlas.png");
     private final Identifier BOX_ALT_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "textures/gui/sprites/elements/box_alt_atlas.png");
@@ -31,7 +28,7 @@ public class BoxElement extends Element {
     private final boolean showLeft;
     //endregion
 
-    public BoxElement(Minecraft minecraft, int x, int y, int width, int height, boolean isSolid, boolean isAlt) {
+    public BoxElement(int x, int y, int width, int height, boolean isSolid, boolean isAlt) {
         super(width,
                 height,
                 x,
@@ -39,8 +36,6 @@ public class BoxElement extends Element {
                 null,
                 Component.literal("Box Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
         this.isSolid = isSolid;
         this.isAlt = isAlt;
         this.x = x;
@@ -52,7 +47,7 @@ public class BoxElement extends Element {
         this.showLeft = true;
     }
 
-    public BoxElement(Minecraft minecraft, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt) {
+    public BoxElement(int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt) {
         super(width,
                 height,
                 x,
@@ -60,8 +55,6 @@ public class BoxElement extends Element {
                 null,
                 Component.literal("Box Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
         this.isSolid = isSolid;
         this.isAlt = isAlt;
         this.x = x;
@@ -73,7 +66,7 @@ public class BoxElement extends Element {
         this.showLeft = true;
     }
 
-    public BoxElement(Minecraft minecraft, int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt, boolean showTop, boolean showRight, boolean showBottom, boolean showLeft) {
+    public BoxElement(int x, int y, int z, int width, int height, boolean isSolid, boolean isAlt, boolean showTop, boolean showRight, boolean showBottom, boolean showLeft) {
         super(width,
                 height,
                 x,
@@ -81,8 +74,6 @@ public class BoxElement extends Element {
                 null,
                 Component.literal("Box Element"),
                 false);
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
         this.isSolid = isSolid;
         this.isAlt = isAlt;
         this.x = x;
