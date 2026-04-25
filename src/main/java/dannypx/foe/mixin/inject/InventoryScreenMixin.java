@@ -1,5 +1,7 @@
 package dannypx.foe.mixin.inject;
 
+import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -14,6 +16,11 @@ public abstract class InventoryScreenMixin {
 
     @Inject(method = "extractBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V"))
     private void injectRenderBg(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
-        InventoryScreenRenderHandler.instance().render(Minecraft.getInstance().screen, guiGraphicsExtractor, mouseX, mouseY, deltaTicks);
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.inventoryScreenMixinRenderBg.get()
+        ) {
+            InventoryScreenRenderHandler.instance().render(Minecraft.getInstance().screen, guiGraphicsExtractor, mouseX, mouseY, deltaTicks);
+        }
     }
 }

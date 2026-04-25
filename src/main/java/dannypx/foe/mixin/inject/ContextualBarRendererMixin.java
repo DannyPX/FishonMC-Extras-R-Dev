@@ -16,6 +16,7 @@ public interface ContextualBarRendererMixin {
     private static void injectExtractExperienceLevel(GuiGraphicsExtractor guiGraphicsExtractor, Font font, int level, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.contextualBarRendererMixinRenderExperienceLevel.get()
         ) {
             ci.cancel();
         }

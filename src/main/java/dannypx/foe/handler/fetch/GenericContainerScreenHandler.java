@@ -57,9 +57,9 @@ public class GenericContainerScreenHandler extends Handler {
         this.lastContainerScreen = genericContainerScreen.getTitle().getString();
 
         if (Objects.equals(genericContainerScreen.getTitle().getString(), QUEST_SCREEN_CONTAINER)) {
-            QuestScreenHandler.instance().checkQuests(genericContainerScreen.getMenu());
+            QuestScreenHandler.instance().init(genericContainerScreen);
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STATS_SCREEN_CONTAINER)) {
-            StatsScreenHandler.instance().checkStats(genericContainerScreen.getMenu());
+            StatsScreenHandler.instance().init(genericContainerScreen);
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
             AuctionHouseScreenRenderHandler.instance().init(genericContainerScreen);
         } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
@@ -100,10 +100,13 @@ public class GenericContainerScreenHandler extends Handler {
         if(screen instanceof ContainerScreen genericContainerScreen) {
             if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
                 AuctionHouseScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, true);
+                AuctionHouseScreenRenderHandler.instance().render(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
             } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
                 PersonalVaultScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, true);
+                PersonalVaultScreenRenderHandler.instance().render(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STORAGE_SCREEN_CONTAINER)) {
                 ChestScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, false);
+                ChestScreenRenderHandler.instance().render(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), PRESETS_SCREEN_CONTAINER)) {
                 PresetsScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, true);
             }

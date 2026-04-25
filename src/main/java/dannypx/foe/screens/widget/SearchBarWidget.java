@@ -25,8 +25,10 @@ public class SearchBarWidget extends EditBox {
     public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         super.extractWidgetRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
         SearchHandler.instance().setFocused(this.isFocused());
+    }
 
-        // Hover Info
+
+    public void render(GuiGraphicsExtractor guiGraphicsExtractor, float tickDelta) {
         if(this.isHovered() && this.isFocused()) {
             guiGraphicsExtractor.pose().pushMatrix();
             try {
@@ -39,15 +41,15 @@ public class SearchBarWidget extends EditBox {
                 int lines = hoverInfo.size() * lineHeight;
                 int x = (int) (((float) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) * (1 / scale));
 
-                guiGraphicsExtractor.fill(x - length / 2 - padding, 0, x + length / 2 + padding, padding * 2 + lines, CommonColors.BLACK);
+                guiGraphicsExtractor.fill(x - length / 2 - padding, getY() + getHeight(), x + length / 2 + padding, getY() + getHeight() + padding * 2 + lines, CommonColors.BLACK);
 
-                guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, 0, CommonColors.GRAY);
-                guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, padding * 2 + lines, CommonColors.GRAY);
-                guiGraphicsExtractor.verticalLine(x - length / 2 - padding, 0, padding * 2 + lines, CommonColors.GRAY);
-                guiGraphicsExtractor.verticalLine(x + length / 2 + padding, 0, padding * 2 + lines, CommonColors.GRAY);
+                guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, getY() + getHeight(), CommonColors.GRAY);
+                guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, getY() + getHeight() + padding * 2 + lines, CommonColors.GRAY);
+                guiGraphicsExtractor.verticalLine(x - length / 2 - padding, getY() + getHeight(), getY() + getHeight() + padding * 2 + lines, CommonColors.GRAY);
+                guiGraphicsExtractor.verticalLine(x + length / 2 + padding, getY() + getHeight(), getY() + getHeight() + padding * 2 + lines, CommonColors.GRAY);
 
                 AtomicInteger count = new AtomicInteger(0);
-                hoverInfo.forEach(component -> guiGraphicsExtractor.text(font, component, x - length / 2, padding + count.getAndIncrement() * lineHeight, CommonColors.WHITE, true));
+                hoverInfo.forEach(component -> guiGraphicsExtractor.text(font, component, x - length / 2,getY() + getHeight() + padding + count.getAndIncrement() * lineHeight, CommonColors.WHITE, true));
             } finally {
                 guiGraphicsExtractor.pose().popMatrix();
             }
