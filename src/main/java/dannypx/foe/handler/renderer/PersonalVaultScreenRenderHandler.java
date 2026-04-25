@@ -7,7 +7,7 @@ import dannypx.foe.screens.widget.SearchBarWidget;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -66,10 +66,10 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     }
 
     @Override
-    public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        super.render(screen, guiGraphics, mouseX, mouseY, tickDelta);
+    public void render(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
+        super.render(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
 
-        searchBarWidget.render(guiGraphics, tickDelta);
+        searchBarWidget.render(guiGraphicsExtractor, tickDelta);
     }
 
     public void checkMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
