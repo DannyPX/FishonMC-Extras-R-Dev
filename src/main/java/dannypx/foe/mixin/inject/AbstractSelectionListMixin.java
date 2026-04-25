@@ -1,6 +1,7 @@
 package dannypx.foe.mixin.inject;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.mixin.accessor.AbstractSelectionListEntryAccessor;
 import net.minecraft.client.Minecraft;
@@ -50,7 +51,10 @@ public abstract class AbstractSelectionListMixin {
             @Coerce Object entry,
             CallbackInfoReturnable<Integer> cir
     ) {
-        if(ConnectionHandler.instance().isOnServer()) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.mixinConfig.abstractSelectionListMixinAddEntry.get()
+        ) {
             List<Object> list = (List<Object>) this.children;
 
             ((AbstractSelectionListEntryAccessor) entry).callSetX(this.getRowLeft());
