@@ -64,8 +64,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
     public void init(Screen screen) {
         buttonBoxRows = (CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size() + buttonsPerRow - 1) / buttonsPerRow;
 
-        this.initElements();
         this.initWidgets(screen);
+        this.initElements();
     }
 
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
