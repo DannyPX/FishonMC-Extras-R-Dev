@@ -57,9 +57,11 @@ public class GenericContainerScreenHandler extends Handler {
         this.lastContainerScreen = genericContainerScreen.getTitle().getString();
 
         if (Objects.equals(genericContainerScreen.getTitle().getString(), QUEST_SCREEN_CONTAINER)) {
-            QuestScreenHandler.instance().checkQuests(genericContainerScreen.getMenu());
+            QuestScreenHandler.instance().init(genericContainerScreen);
+//            QuestScreenHandler.instance().checkQuests(genericContainerScreen.getMenu());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), STATS_SCREEN_CONTAINER)) {
-            StatsScreenHandler.instance().checkStats(genericContainerScreen.getMenu());
+            StatsScreenHandler.instance().init(genericContainerScreen);
+//            StatsScreenHandler.instance().checkStats(genericContainerScreen.getMenu());
         } else if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
             AuctionHouseScreenRenderHandler.instance().init(genericContainerScreen);
         } else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
