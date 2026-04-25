@@ -310,13 +310,17 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
     private void initElements() {
         elements.clear();
 
-        elements.add(Pair.of("header_box", new BoxElement(minecraft.getWindow().getGuiScaledWidth() / 2 + INVENTORY_TRANSLATION + (STAT_WIDTH - ((STAT_WIDTH / 4) / 3)) / 2 - 65,
-                minecraft.getWindow().getGuiScaledHeight() / 2 - INVENTORY_TOP - 20 + 4,
-                130, 20, true, false)));
+        if(this.statList != null
+                && Configs.inventoryScreenConfig.showStatsElement.get()
+        ) {
+            elements.add(Pair.of("header_box", new BoxElement(minecraft.getWindow().getGuiScaledWidth() / 2 + INVENTORY_TRANSLATION + (STAT_WIDTH - ((STAT_WIDTH / 4) / 3)) / 2 - 65,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 - INVENTORY_TOP - 20 + 4,
+                    130, 20, true, false)));
 
-        elements.add(Pair.of("stat_box", new BoxElement(minecraft.getWindow().getGuiScaledWidth() / 2 + INVENTORY_TRANSLATION,
-                minecraft.getWindow().getGuiScaledHeight() / 2 - INVENTORY_TOP,
-                STAT_WIDTH - ((STAT_WIDTH / 4) / 3), INVENTORY_HEIGHT, false, false)));
+            elements.add(Pair.of("stat_box", new BoxElement(minecraft.getWindow().getGuiScaledWidth() / 2 + INVENTORY_TRANSLATION,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 - INVENTORY_TOP,
+                    STAT_WIDTH - ((STAT_WIDTH / 4) / 3), INVENTORY_HEIGHT, false, false)));
+        }
 
         buttonBox = Pair.of("button_box", new BoxElement(minecraft.getWindow().getGuiScaledWidth() / 2 - 84,
                 minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 - 5,
