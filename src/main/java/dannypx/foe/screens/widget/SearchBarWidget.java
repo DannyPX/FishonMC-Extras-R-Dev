@@ -44,7 +44,7 @@ public class SearchBarWidget extends EditBox {
 
                 guiGraphicsExtractor.fill(x - length / 2 - padding, 0, x + length / 2 + padding, padding * 2 + lines, CommonColors.BLACK);
 
-                guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, , CommonColors.GRAY);
+                guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, 0, CommonColors.GRAY);
                 guiGraphicsExtractor.horizontalLine(x - length / 2 - padding, x + length / 2 + padding, padding * 2 + lines, CommonColors.GRAY);
                 guiGraphicsExtractor.verticalLine(x - length / 2 - padding, 0, padding * 2 + lines, CommonColors.GRAY);
                 guiGraphicsExtractor.verticalLine(x + length / 2 + padding, 0, padding * 2 + lines, CommonColors.GRAY);
