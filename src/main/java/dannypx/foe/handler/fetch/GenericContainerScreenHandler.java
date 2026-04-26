@@ -15,6 +15,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 
 public class GenericContainerScreenHandler extends Handler {
@@ -77,7 +78,7 @@ public class GenericContainerScreenHandler extends Handler {
 
     private void checkIsOfItem(ContainerScreen genericContainerScreen) {
         CodeExecuterHandler.runLater(2, () -> {
-            net.minecraft.world.inventory.ChestMenu genericContainerScreenHandler = genericContainerScreen.getMenu();
+            ChestMenu genericContainerScreenHandler = genericContainerScreen.getMenu();
 
             // Crew Info
             ItemStack crewInfoStack = genericContainerScreenHandler.getSlot(13).getItem();
