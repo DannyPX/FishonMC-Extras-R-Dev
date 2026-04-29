@@ -27,6 +27,7 @@
     "inject.BossHealthOverlayMixin",
     "inject.ClientPacketListenerMixin",
     "inject.ContextualBarRendererMixin",
+    "inject.EntityRenderDispatcherMixin",
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",
     "inject.FishingHookRenderStateMixin",

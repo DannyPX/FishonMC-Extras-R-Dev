@@ -44,6 +44,10 @@ public class RendererConfig extends Config {
     @Name("Show pet names")
     public ValidatedBoolean showPetName = new ValidatedBoolean(true);
 
+    @Name("Show nameplate on players")
+    public ValidatedBoolean showNamePlate = new ValidatedBoolean(false);
+
+
     @Name("Use the 3D fishing hook texture")
     public ValidatedBoolean showNewFishingHook = new ValidatedBoolean(true);
 

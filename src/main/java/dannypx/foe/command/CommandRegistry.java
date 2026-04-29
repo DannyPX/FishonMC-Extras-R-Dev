@@ -50,6 +50,7 @@ public class CommandRegistry {
                         .then(command("render")
                                 .then(command("armor").executes(Command.Toggle::toggleArmor))
                                 .then(command("pet_names").executes(Command.Toggle::togglePetNames))
+                                .then(command("name_plates").executes(Command.Toggle::toggleNamePlates))
                                 .then(command("fishingHook_model").executes(Command.Toggle::toggleFishingHookModel))
                                 .then(command("bait_on_fishing_hook").executes(Command.Toggle::toggleBaitOnFishingHook))
                         )
@@ -141,6 +142,13 @@ public class CommandRegistry {
             public static int togglePetNames(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Toggled Pet Names"), () -> {
                     Configs.rendererConfig.showPetName.accept(!Configs.rendererConfig.showPetName.get());
+                    Configs.rendererConfig.save();
+                });
+            }
+
+            public static int toggleNamePlates(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Toggled Name Plates"), () -> {
+                    Configs.rendererConfig.showNamePlate.accept(!Configs.rendererConfig.showNamePlate.get());
                     Configs.rendererConfig.save();
                 });
             }
