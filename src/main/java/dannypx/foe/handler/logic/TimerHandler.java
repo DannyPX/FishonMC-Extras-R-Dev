@@ -248,6 +248,7 @@ public class TimerHandler extends Handler {
     }
 
     private boolean crossed(long prev, long curr, long target) {
+        if (curr == prev) return false;
         if(prev <= curr) {
             return prev < target && curr >= target;
         } else {
