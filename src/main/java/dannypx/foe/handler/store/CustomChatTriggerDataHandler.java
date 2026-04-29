@@ -76,8 +76,7 @@ public class CustomChatTriggerDataHandler extends Handler {
         return customChatTriggerData.chatTriggerList.remove(id);
     }
 
-    public void updateChatTrigger(String currentSelectedChatTrigger, String newName, String regex, String notificationToTrigger, boolean useChatTrigger) {
-        CustomChatTrigger newChatTrigger = customChatTriggerData.chatTriggerList.get(currentSelectedChatTrigger);
+    public void updateChatTrigger(String currentSelectedChatTrigger, String newName, String regex, String notificationToTrigger, String chatNotificationToTrigger, boolean useChatTrigger) {        CustomChatTrigger newChatTrigger = customChatTriggerData.chatTriggerList.get(currentSelectedChatTrigger);
 
         if(!Objects.equals(currentSelectedChatTrigger, newName)) {
             newChatTrigger = deleteCustomChatTrigger(currentSelectedChatTrigger);
@@ -88,6 +87,7 @@ public class CustomChatTriggerDataHandler extends Handler {
         newChatTrigger.regex = regex;
         newChatTrigger.pattern = Pattern.compile(regex);
         newChatTrigger.notificationToTrigger = notificationToTrigger;
+        newChatTrigger.chatNotificationToTrigger = chatNotificationToTrigger;
         newChatTrigger.useChatTrigger = useChatTrigger;
 
         customChatTriggerData.chatTriggerList.put(currentSelectedChatTrigger, newChatTrigger);
@@ -103,12 +103,13 @@ public class CustomChatTriggerDataHandler extends Handler {
 
     //region Model
     public static class CustomChatTriggerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_CHAT_TRIGGER_DATA_MODEL_VERSION = "0.1";
+        private static final String CUSTOM_CHAT_TRIGGER_DATA_MODEL_VERSION = "0.2";
 
         private static final Map<String, CustomChatTrigger> defaultChatTriggers = Map.of(
                 "Contest Type", new CustomChatTrigger(
                         "Contest Type",
                         "^Type:.*",
+                        "",
                         "",
                         true
                 ),
@@ -116,11 +117,13 @@ public class CustomChatTriggerDataHandler extends Handler {
                         "Contest Location",
                         "^Location:.*",
                         "",
+                        "",
                         true
                 ),
                 "Contest Level", new CustomChatTrigger(
                         "Contest Level",
                         "^Level:.*",
+                        "",
                         "",
                         true
                 ),
@@ -128,11 +131,13 @@ public class CustomChatTriggerDataHandler extends Handler {
                         "Contest 1st",
                         "^\uF060.*",
                         "",
+                        "",
                         true
                 ),
                 "Contest 2nd", new CustomChatTrigger(
                         "Contest 2nd",
                         "^\uF061.*",
+                        "",
                         "",
                         true
                 ),
@@ -140,11 +145,13 @@ public class CustomChatTriggerDataHandler extends Handler {
                         "Contest 3rd",
                         "^\uF062.*",
                         "",
+                        "",
                         true
                 ),
                 "Contest Placement", new CustomChatTrigger(
                         "Contest Placement",
                         "^You →.*",
+                        "",
                         "",
                         true
                 )
@@ -165,13 +172,15 @@ public class CustomChatTriggerDataHandler extends Handler {
         public String regex;
         public Pattern pattern;
         public String notificationToTrigger;
+        public String chatNotificationToTrigger;
         public boolean useChatTrigger;
 
-        public CustomChatTrigger(String name, String regex, String notificationToTrigger, boolean useChatTrigger) {
+        public CustomChatTrigger(String name, String regex, String notificationToTrigger, String chatNotificationToTrigger, boolean useChatTrigger) {
             this.name = name;
             this.regex = regex;
             this.pattern = Pattern.compile(regex);
             this.notificationToTrigger = notificationToTrigger;
+            this.chatNotificationToTrigger = chatNotificationToTrigger;
             this.useChatTrigger = useChatTrigger;
         }
 
@@ -180,6 +189,7 @@ public class CustomChatTriggerDataHandler extends Handler {
             this.regex = "";
             this.pattern = Pattern.compile("");
             this.notificationToTrigger = "";
+            this.chatNotificationToTrigger = "";
             this.useChatTrigger = true;
         }
     }

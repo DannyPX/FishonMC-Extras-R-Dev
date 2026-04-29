@@ -21,6 +21,7 @@ public class FishOnMCExtras implements ModInitializer {
 	public static Integer HUD_VERSION = FishOnMCExtras.getVersion("hud_version");
 	public static Integer BUTTON_VERSION = FishOnMCExtras.getVersion("button_version");
 	public static Integer NOTIFICATION_VERSION = FishOnMCExtras.getVersion("notification_version");
+	public static Integer CHAT_NOTIFICATION_VERSION = FishOnMCExtras.getVersion("chat_notification_version");
 	public static Integer CHAT_TRIGGER_VERSION = FishOnMCExtras.getVersion("chat_trigger_version");
 	public static Integer TIMER_VERSION = FishOnMCExtras.getVersion("timer_version");
 

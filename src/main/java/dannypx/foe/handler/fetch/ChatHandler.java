@@ -1,6 +1,7 @@
 package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.ChatNotifierHandler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
@@ -104,11 +105,21 @@ public class ChatHandler extends Handler {
                     && trigger.pattern.matcher(component.getString()).matches()
             ) {
                 storedChatTriggerComponent.put(name, component);
-                if(!trigger.notificationToTrigger.isBlank()
+                if(trigger.notificationToTrigger != null
+                        && !trigger.notificationToTrigger.isBlank()
                         && trigger.useChatTrigger
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        NotifierHandler.instance().notifyChatTrigger(trigger.notificationToTrigger);
+                        NotifierHandler.instance().notifyOnTrigger(trigger.notificationToTrigger);
+                    });
+                }
+
+                if(trigger.chatNotificationToTrigger != null
+                        && !trigger.chatNotificationToTrigger.isBlank()
+                        && trigger.useChatTrigger
+                ) {
+                    CodeExecuterHandler.runLater(1, () -> {
+                        ChatNotifierHandler.instance().notifyChatOnTrigger(trigger.chatNotificationToTrigger);
                     });
                 }
             }

@@ -356,7 +356,7 @@ public class NotifierHandler extends Handler {
         );
     }
 
-    public void notifyChatTrigger(String notificationId) {
+    public void notifyOnTrigger(String notificationId) {
         CustomNotificationDataHandler.CustomNotification notification = CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.getOrDefault(notificationId, null);
 
         if(notification != null && minecraft.player != null) {
