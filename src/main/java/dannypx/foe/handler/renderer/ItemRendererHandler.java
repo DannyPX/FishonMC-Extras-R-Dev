@@ -183,7 +183,7 @@ public class ItemRendererHandler extends Handler {
             Component qualityComponent = Component.literal(ComponentHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityComponent.getString().isEmpty()) {
-                guiGraphics.drawString(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
+                guiGraphics.drawString(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 17 - font.lineHeight, CommonColors.WHITE, true);
             }
         }
     }
