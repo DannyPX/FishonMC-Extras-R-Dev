@@ -99,18 +99,26 @@ public class ItemRendererHandler extends Handler {
     }
 
     public void drawStackCount(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+        this.drawStackCount(guiGraphics, font, stack, x, y, true);
+    }
+
+    public void drawStackCount(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y, boolean isSmall) {
         Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
 
-        int count = validatedItem.value2().getCount();
-        Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
+        int count = Configs.rendererConfig.showStackCountOnBait.get()
+                ? validatedItem.value2().getCount()
+                : stack.getCount();
+        Component countComponent = isSmall
+                ? ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)))
+                : ComponentHelper.literal(ComponentHelper.shortenNumber(count, 0));
         int countWidth = font.width(countComponent);
 
         if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
-                x + 19 - 2 - countWidth, y + 6 + 4,
+                x + 19 - 2 - countWidth, isSmall ? y + 6 + 4 : y + 6 + 3,
                 true,
-                true,
+                isSmall,
                 false,
-                true
+                isSmall
         );
     }
 
