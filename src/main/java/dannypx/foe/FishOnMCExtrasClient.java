@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -48,6 +49,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::modifyGameMessage);
+        ClientSendMessageEvents.MODIFY_CHAT.register(this::modifyChatMessage);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
@@ -71,7 +73,11 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private Component modifyGameMessage(Component message, boolean over) {
-        return ChatHandler.instance().onModifyMessage(message);
+        return ChatHandler.instance().onModifyGameMessage(message);
+    }
+
+    private String modifyChatMessage(String text) {
+        return ChatHandler.instance().onModifyChatMessage(text);
     }
 
     private InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
@@ -149,6 +155,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             CustomChatTriggerDataHandler.instance().init();
             CustomChatNotificationDataHandler.instance().init();
             CustomTimerDataHandler.instance().init();
+            CustomEventTriggerDataHandler.instance().init();
 
             ScoreboardHandler.instance().init();
             CrewHandler.instance().init();

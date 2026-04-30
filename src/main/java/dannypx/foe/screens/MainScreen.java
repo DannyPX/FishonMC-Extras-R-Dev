@@ -62,6 +62,7 @@ public class MainScreen extends DefaultModScreen {
         guiGraphics.drawString(font, Component.literal("Notification Version: v" + FishOnMCExtras.NOTIFICATION_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 5, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("Button Version: v" + FishOnMCExtras.BUTTON_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 6, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("Chat Notification Version: v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 7, CommonColors.WHITE, true);
+        guiGraphics.drawString(font, Component.literal("Event Trigger Version: v" + FishOnMCExtras.EVENT_TRIGGER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 8, CommonColors.WHITE, true);
     }
 
     private void renderWidgets() {
@@ -73,6 +74,7 @@ public class MainScreen extends DefaultModScreen {
         widgets.add(customTimerButton());
         widgets.add(customNotificationButton());
         widgets.add(customChatNotificationButton());
+        widgets.add(customEventTriggerButton());
         widgets.add(configButton());
         widgets.add(controlsButton());
 
@@ -102,7 +104,7 @@ public class MainScreen extends DefaultModScreen {
                         this.minecraft.setScreen(new CustomChatTriggerMakerScreen(this.minecraft.screen)))
                 .pos(width / 2 - BUTTON_WIDTH / 2, height / 2 + BUTTON_HEIGHT + PADDING_HALF)
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Notification Creator Screen")))
+                .tooltip(Tooltip.create(Component.literal("Open Custom Chat Trigger Creator Screen")))
                 .build();
     }
 
@@ -130,6 +132,15 @@ public class MainScreen extends DefaultModScreen {
                 .pos(width / 2 + PADDING_HALF, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2)
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Chat Notification Creator Screen")))
+                .build();
+    }
+
+    private Button customEventTriggerButton() {
+        return Button.builder(Component.literal("Create Event Triggers"), button ->
+                        this.minecraft.setScreen(new CustomEventTriggerMakerScreen(this.minecraft.screen)))
+                .pos(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.create(Component.literal("Open Event Trigger Creator Screen")))
                 .build();
     }
 

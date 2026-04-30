@@ -126,6 +126,7 @@ public class CatchingHandler extends Handler {
 
                 lastDataFish = prevStats;
                 lastCaughtFish = foundFish.value2();
+                CodeExecuterHandler.runLater(1, EventHandler.instance()::onCatch);
                 this.scanDone = true;
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){

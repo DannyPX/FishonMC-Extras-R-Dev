@@ -110,11 +110,11 @@ public class NotifierHandler extends Handler {
         List<Component> notificationComponentList = new ArrayList<>(Arrays.asList(
                 tagComponent,
                 fish.getName(),
-                ComponentHelper.concat(fish.getFishSizeComponent(), lengthComponent, weightComponent),
+                ComponentHelper.concat(fish.getFishSizeComponent(), Component.literal(" "), lengthComponent, weightComponent),
                 Component.empty(),
                 Component.literal(" - Drystreaks before catch").withStyle(ChatFormatting.GRAY),
-                ComponentHelper.concat(rarityComponent, ComponentHelper.literal(rarityDrystreak.value2())),
-                ComponentHelper.concat(sizeComponent, ComponentHelper.literal(sizeDryStreak.value2()))
+                ComponentHelper.concat(rarityComponent, Component.literal(" "), ComponentHelper.literal(rarityDrystreak.value2())),
+                ComponentHelper.concat(sizeComponent, Component.literal(" "), ComponentHelper.literal(sizeDryStreak.value2()))
         ));
 
         if(!Objects.equals(fish.getVariant(), "normal")) {

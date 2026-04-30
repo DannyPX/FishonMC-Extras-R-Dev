@@ -215,7 +215,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                             try {
                                 String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
+                                Gson gson = new GsonBuilder().create();
                                 Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, Integer.class).getType());
 
                                 if(data.value3() > FishOnMCExtras.CHAT_NOTIFICATION_VERSION) {

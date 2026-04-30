@@ -5,6 +5,7 @@ import dannypx.foe.handler.logic.ChatNotifierHandler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
+import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ComponentHelper;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,7 +128,22 @@ public class ChatHandler extends Handler {
         });
     }
 
-    public Component onModifyMessage(Component component) {
+    public String onModifyChatMessage(String text) {
+        AtomicReference<String> modified = new AtomicReference<>(text);
+        ConstantDataHandler.instance().getConstantData().fishData.forEach((category, fieldMap) -> {
+            fieldMap.forEach((stringField, textField) -> {
+                if(modified.get().contains(textField.getString().trim())) {
+                    modified.set(modified.get().replace(textField.getString().trim(), ComponentHelper.capitalize(stringField)));
+                }
+            });
+        });
+
+        modified.set(modified.get().replace("FoER » ", ""));
+
+        return modified.get();
+    }
+
+    public Component onModifyGameMessage(Component component) {
         component = this.modifyPetMessageWithPercentage(component);
         return component;
     }

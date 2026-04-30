@@ -53,6 +53,7 @@ public class DataFileHandler extends Handler {
         CustomNotificationDataHandler.instance().tick();
         CustomChatNotificationDataHandler.instance().tick();
         CustomChatTriggerDataHandler.instance().tick();
+        CustomEventTriggerDataHandler.instance().tick();
         CustomTimerDataHandler.instance().tick();
     }
 
@@ -136,6 +137,7 @@ public class DataFileHandler extends Handler {
             case CUSTOM_CHAT_TRIGGER_DATA -> CustomChatTriggerDataHandler.instance().getCustomChatTriggerData();
             case CUSTOM_TIMER_DATA -> CustomTimerDataHandler.instance().getCustomTimerData();
             case CUSTOM_CHAT_NOTIFICATION_DATA -> CustomChatNotificationDataHandler.instance().getCustomChatNotificationData();
+            case CUSTOM_EVENT_TRIGGER_DATA -> CustomEventTriggerDataHandler.instance().getCustomEventTriggerData();
         };
     }
 
@@ -172,6 +174,8 @@ public class DataFileHandler extends Handler {
                     CustomTimerDataHandler.instance().setCustomTimerData(gson.fromJson(json, CustomTimerDataHandler.CustomTimerDataModel.class));
             case CUSTOM_CHAT_NOTIFICATION_DATA ->
                     CustomChatNotificationDataHandler.instance().setCustomChatNotificationData(gson.fromJson(json, CustomChatNotificationDataHandler.CustomChatNotificationDataModel.class));
+            case CUSTOM_EVENT_TRIGGER_DATA ->
+                    CustomEventTriggerDataHandler.instance().setCustomEventTriggerData(gson.fromJson(json, CustomEventTriggerDataHandler.CustomEventTriggerDataModel.class));
         }
     }
     //endregion
