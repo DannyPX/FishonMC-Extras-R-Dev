@@ -14,12 +14,14 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Triplet;
+import dannypx.foe.type.tuple.Unit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.Nullable;
 
 public class StatsDataHandler extends Handler {
     private static StatsDataHandler INSTANCE = new StatsDataHandler();
@@ -165,13 +167,7 @@ public class StatsDataHandler extends Handler {
         return Pair.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
-    public void setItem(TagObject item, int count) {
-        Pair<Boolean, PetTagObject> isPet = ValidateItem.isPet(item);
-        if(isPet.value1()) setPet(isPet.value2());
-        else setOtherItem(item, count);
-    }
-
-    private void setPet(PetTagObject pet) {
+    public Pair<Pair<String, Integer>, Pair<String, Integer>> setPet(PetTagObject pet) {
         statsData.petTotal++;
 
         Pair<String, Integer> rarityDrystreak = this.updatePetData(statsData, PetTagObject.RARITY, pet.getRarity());
@@ -182,6 +178,8 @@ public class StatsDataHandler extends Handler {
 
         // Notify Pet
         NotifierHandler.instance().notifyPet(pet, rarityDrystreak, ratingDrystreak);
+
+        return Pair.of(rarityDrystreak, ratingDrystreak);
     }
 
     // Field, Old Drystreak
@@ -197,12 +195,14 @@ public class StatsDataHandler extends Handler {
         return Pair.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
-    private void setOtherItem(TagObject item, int count) {
+    public Pair<String, Integer> setOtherItem(TagObject item, int count) {
         Pair<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
         ConstantDataHandler.instance().updateItemData(item.getType(), item.getItemStack());
 
         // Notify Item
         NotifierHandler.instance().notifyItem(item, count, itemDrystreak);
+
+        return itemDrystreak;
     }
 
     private Pair<String, Integer> updateOtherItemData(StatsDataModel statsData, String item, int valueToAdd) {
