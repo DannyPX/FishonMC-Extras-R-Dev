@@ -15,7 +15,6 @@
   },
   "client": [
     "accessor.AbstractSelectionListAccessor",
-    "accessor.AbstractSelectionListEntryAccessor",
     "accessor.BossHealthOverlayAccessor",
     "accessor.ChatScreenAccessor",
     "accessor.LevelRendererAccessor",
