@@ -43,7 +43,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.onInit();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::onClientStarted);
-        ScreenEvents.BEFORE_INIT.register(this::onBeforeInitScreen);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
@@ -85,16 +84,9 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
-        SearchHandler.instance().setFocused(false);
-        SearchHandler.instance().setOnScreen(false);
-
-        PersonalVaultScreenRenderHandler.instance().setOnScreen(false);
-        AuctionHouseScreenRenderHandler.instance().setOnScreen(false);
-        PresetsScreenRenderHandler.instance().setOnScreen(false);
-
-        if(screen instanceof InventoryScreen) {
-            InventoryScreenRenderHandler.instance().init(screen);
-            ScreenMouseEvents.afterMouseScroll(screen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
+        if(screen instanceof InventoryScreen inventoryScreen) {
+            InventoryScreenRenderHandler.instance().init(inventoryScreen);
+            ScreenMouseEvents.afterMouseScroll(inventoryScreen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
         } else if(screen instanceof ContainerScreen genericContainerScreen) {
             GenericContainerScreenHandler.instance().init(genericContainerScreen);
             ScreenEvents.afterRender(screen).register(GenericContainerScreenHandler.instance()::render);
@@ -107,18 +99,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
     private void onRemoveScreen(Screen screen) {
         InventoryHandler.instance().trackFishOffSide();
-    }
-
-    private void onBeforeInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
-        ScreenMouseEvents.afterMouseScroll(screen).register(this::afterMouseScroll);
-    }
-
-    private boolean afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {
-        PersonalVaultScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
-        AuctionHouseScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
-        PresetsScreenRenderHandler.instance().checkMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
-
-        return false;
     }
 
     private void initHudRenderer() {
