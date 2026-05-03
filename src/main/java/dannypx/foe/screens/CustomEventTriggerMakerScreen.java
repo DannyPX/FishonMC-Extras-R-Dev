@@ -339,7 +339,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
                                 Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomEventTriggerDataHandler.CustomEventTrigger.class, Integer.class).getType());
 
-                                if(data.value3() > FishOnMCExtras.CHAT_TRIGGER_VERSION) {
+                                if(data.value3() > FishOnMCExtras.EVENT_TRIGGER_VERSION) {
                                     SystemToast.add(this.minecraft.getToastManager(),
                                             SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                             Component.literal("Fish On Extras Rebirth"),
