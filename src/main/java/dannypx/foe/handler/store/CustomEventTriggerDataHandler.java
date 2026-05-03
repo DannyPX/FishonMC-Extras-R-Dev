@@ -110,7 +110,14 @@ public class CustomEventTriggerDataHandler extends Handler {
         private static final String CUSTOM_EVENT_TRIGGER_DATA_MODEL_VERSION = "0.1";
 
         private static final Map<String, CustomEventTrigger> defaultEventTriggers = Map.of(
-
+            "Variant On Catch Trigger",
+                new CustomEventTrigger(
+                        "Variant On Catch Trigger",
+                        EventTrigger.ON_CATCH,
+                        "",
+                        "Variant Notification",
+                        true
+                )
         );
 
         //Name Notification, Notification

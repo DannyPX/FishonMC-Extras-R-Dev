@@ -42,7 +42,9 @@ public class CommandRegistry {
                 .then(command("reset_to_defaults")
                         .then(command("button").executes(Command.Reset::resetButton))
                         .then(command("chat_trigger").executes(Command.Reset::resetChatTrigger))
+                        .then(command("event_trigger").executes(Command.Reset::resetEventTrigger))
                         .then(command("notification").executes(Command.Reset::resetNotification))
+                        .then(command("chat_notification").executes(Command.Reset::resetChatNotification))
                         .then(command("timer").executes(Command.Reset::resetTimer))
                         .then(command("hud").executes(Command.Reset::resetHud))
                 )
@@ -115,8 +117,20 @@ public class CommandRegistry {
                 });
             }
 
+            public static int resetEventTrigger(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Reset event triggers to default config").withStyle(ChatFormatting.GREEN), () -> {
+                    CustomEventTriggerDataHandler.instance().resetEventTrigger();
+                });
+            }
+
             public static int resetNotification(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(context, Component.literal("Reset notifications to default config").withStyle(ChatFormatting.GREEN), () -> CustomNotificationDataHandler.instance().resetNotifications());
+                return executeCommand(context, Component.literal("Reset notifications to default config").withStyle(ChatFormatting.GREEN), () ->
+                        CustomNotificationDataHandler.instance().resetNotifications());
+            }
+
+            public static int resetChatNotification(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Reset chat notifications to default config").withStyle(ChatFormatting.GREEN), () ->
+                        CustomChatNotificationDataHandler.instance().resetChatNotifications());
             }
 
             public static int resetTimer(CommandContext<FabricClientCommandSource> context) {

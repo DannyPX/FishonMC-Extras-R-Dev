@@ -103,7 +103,8 @@ public class CustomChatNotificationDataHandler extends Handler {
         private static final String CUSTOM_CHAT_NOTIFICATION_DATA_MODEL_VERSION = "0.1";
 
         private static final Map<String, String> defaultNotifications = Map.of(
-
+            "Variant Notification",
+                "%or.(<or.(<condition.(<catch.last_caught.fish.variant.name>=albino)>,<condition.(<catch.last_caught.fish.variant.name>=melanistic)>)>,<or.(<condition.(<catch.last_caught.fish.variant.name>=trophy)>,false)>)%&7Caught a %catch.last_caught.fish.variant.icon% &7fish with a drystreak of &e%catch.last_caught.fish.variant.last_drystreak%"
         );
 
         //Name Notification, Notification
