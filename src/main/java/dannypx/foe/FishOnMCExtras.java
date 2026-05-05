@@ -18,6 +18,7 @@ public class FishOnMCExtras implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static String VERSION = FishOnMCExtras.getModVersion();
 	public static List<String> AUTHORS = FishOnMCExtras.getAuthors();
+	public static List<String> CONTRIBUTORS = FishOnMCExtras.getContributors();
 	public static Integer HUD_VERSION = FishOnMCExtras.getVersion("hud_version");
 	public static Integer BUTTON_VERSION = FishOnMCExtras.getVersion("button_version");
 	public static Integer NOTIFICATION_VERSION = FishOnMCExtras.getVersion("notification_version");
@@ -41,6 +42,13 @@ public class FishOnMCExtras implements ModInitializer {
 	private static List<String> getAuthors() {
 		if(getModContainer().isPresent()) {
 			return getModContainer().get().getMetadata().getAuthors().stream().map(Person::getName).toList();
+		}
+		return List.of();
+	}
+
+	private static List<String> getContributors() {
+		if(getModContainer().isPresent()) {
+			return getModContainer().get().getMetadata().getContributors().stream().map(Person::getName).toList();
 		}
 		return List.of();
 	}
