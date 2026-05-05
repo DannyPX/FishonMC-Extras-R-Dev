@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.type.tuple.Pair;
@@ -80,6 +81,7 @@ public class DataFileHandler extends Handler {
 
         } catch (IOException e) {
             LoggerHandler.error(e);
+            LoadingHandler.instance().setError(true);
         }
         return false;
     }
@@ -96,6 +98,7 @@ public class DataFileHandler extends Handler {
             LoggerHandler._debug("Updating file: " + dataModelType.FILENAME + ".json");
         } catch (IOException e) {
             LoggerHandler.error(e);
+            LoadingHandler.instance().setError(true);
         }
         return true;
     }
