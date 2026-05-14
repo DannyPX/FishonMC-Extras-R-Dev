@@ -682,10 +682,22 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                 String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
-                                Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTimerDataHandler.CustomTimer.class, Integer.class).getType());
+                                Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> data = gson.fromJson(json, TypeToken.getParameterized(
+                                        Quartet.class,
+                                        String.class,
+                                        CustomTimerDataHandler.CustomTimer.class,
+                                        Boolean.class,
+                                        Integer.class).getType()
+                                );
 
                                 if(data.value3()) {
-                                    data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTimerDataHandler.CustomTimerPeriod.class, Integer.class).getType());
+                                    data = gson.fromJson(json, TypeToken.getParameterized(
+                                            Quartet.class,
+                                            String.class,
+                                            CustomTimerDataHandler.CustomTimer.class,
+                                            Boolean.class,
+                                            Integer.class).getType()
+                                    );
                                 }
 
                                 if(data.value4() > FishOnMCExtras.TIMER_VERSION) {
