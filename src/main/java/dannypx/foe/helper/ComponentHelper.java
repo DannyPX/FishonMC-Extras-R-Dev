@@ -282,7 +282,7 @@ public class ComponentHelper {
     }
 
     public static int toIntFromString(String value) {
-        value = value.trim();
+        value = value.trim().replace(",", "");
         if(value.contains("K")) {
             return (int) (Float.parseFloat(value.substring(0, value.indexOf("K"))) * 1000f);
         } else if(value.contains("M")) {
