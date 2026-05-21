@@ -4,7 +4,6 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.type.custom_value.*;
-import dannypx.foe.type.event.EventTrigger;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import net.minecraft.ChatFormatting;
@@ -172,11 +171,11 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 defaultValueEditBox.setValue(String.valueOf(numberValue.value()));
                 defaultValueEditBox.setHint(Component.literal(String.valueOf(numberValue.value())));
             }
-            case ErrorValue errorValue -> {
+            case ErrorValue ignored -> {
                 defaultValueEditBox.setValue("");
                 defaultValueEditBox.setHint(Component.empty());
             }
-            case EmptyValue emptyValue -> {
+            case EmptyValue ignored -> {
                 defaultValueEditBox.setValue("");
                 defaultValueEditBox.setHint(Component.empty());
             }
@@ -728,28 +727,28 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 conditionEditBoxWidget.setFocused(false);
                 valueToUseEditBoxWidget.setFocused(false);
                 return true;
-            };
+            }
             if(trackerActionEditBoxWidget.mouseClicked(mouseButtonEvent, doubled)) {
                 actionIdEditBoxWidget.setFocused(false);
                 trackerActionEditBoxWidget.setFocused(true);
                 conditionEditBoxWidget.setFocused(false);
                 valueToUseEditBoxWidget.setFocused(false);
                 return true;
-            };
+            }
             if(conditionEditBoxWidget.mouseClicked(mouseButtonEvent, doubled)) {
                 actionIdEditBoxWidget.setFocused(false);
                 trackerActionEditBoxWidget.setFocused(false);
                 conditionEditBoxWidget.setFocused(true);
                 valueToUseEditBoxWidget.setFocused(false);
                 return true;
-            };
+            }
             if(valueToUseEditBoxWidget.mouseClicked(mouseButtonEvent, doubled)) {
                 actionIdEditBoxWidget.setFocused(false);
                 trackerActionEditBoxWidget.setFocused(false);
                 conditionEditBoxWidget.setFocused(false);
                 valueToUseEditBoxWidget.setFocused(true);
                 return true;
-            };
+            }
             if(addButton.mouseClicked(mouseButtonEvent, doubled)) return false;
             if(deleteButton.mouseClicked(mouseButtonEvent, doubled)) return false;
             return false;

@@ -4,7 +4,6 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -14,6 +13,8 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class MainScreen extends DefaultModScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
 
         int screenWidth = this.minecraft.getWindow().getGuiScaledWidth();

@@ -251,7 +251,7 @@ public class TimerHandler extends Handler {
                 lastTrigger.put(timer, time);
                 callback.run();
             }
-        };
+        }
     }
 
     private boolean crossed(long prev, long curr, long target) {

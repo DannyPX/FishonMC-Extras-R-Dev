@@ -4,11 +4,9 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.KeyBindHandler;
 import dannypx.foe.helper.KeyBindHelper;
-import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.item.ArmorTagObject;
 import dannypx.foe.item.TagObject;
-import dannypx.foe.item.PetTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
 import java.util.List;
@@ -19,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -53,7 +50,7 @@ public class TooltipHandler extends Handler {
         } else {
             if(itemStack.getItem() == Items.ENDER_EYE
                     && itemStack.get(DataComponents.LORE) != null
-                    && itemStack.get(DataComponents.LORE).lines().get(0).getString().contains("Bonus Slot")
+                    && itemStack.get(DataComponents.LORE).lines().getFirst().getString().contains("Bonus Slot")
             ) {
                 this.setArmorRoll(itemStack, components);
             }

@@ -4,12 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.custom_value.*;
-import dannypx.foe.type.placeholder.ComponentValue;
-import dannypx.foe.type.placeholder.StringValue;
-import dannypx.foe.type.tuple.Pair;
-import net.minecraft.network.chat.Component;
 
 import java.io.IOException;
 

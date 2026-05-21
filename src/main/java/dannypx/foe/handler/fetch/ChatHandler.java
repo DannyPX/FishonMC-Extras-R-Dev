@@ -13,16 +13,12 @@ import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -155,15 +151,6 @@ public class ChatHandler extends Handler {
 
     public Component onModifyGameMessage(Component component) {
         return component;
-    }
-
-    private static float findMultiplier(String petStr) {
-        if (petStr.indexOf('\uf033') != -1) return 1f;
-        else if (petStr.indexOf('\uf034') != -1) return 2f;
-        else if (petStr.indexOf('\uf035') != -1) return 3f;
-        else if (petStr.indexOf('\uf036') != -1) return 5f;
-        else if (petStr.indexOf('\uf037') != -1) return 7.5f;
-        return 1;
     }
 
     public void cleanChatTriggerStore(String[] chatTriggers) {
