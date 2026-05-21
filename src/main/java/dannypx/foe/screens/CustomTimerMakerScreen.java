@@ -265,8 +265,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
         guiGraphics.drawString(font,
                 Component.literal("Trigger Notif. End"),
-                (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 6,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 5,
                 CommonColors.WHITE,
                 true
         );
@@ -274,15 +274,15 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         guiGraphics.drawString(font,
                 Component.literal("Trigger C.Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 7,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 6,
                 CommonColors.WHITE,
                 true
         );
 
         guiGraphics.drawString(font,
                 Component.literal("Trigger C.Notif. End"),
-                (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 6,
                 CommonColors.WHITE,
                 true
         );
@@ -290,15 +290,15 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         guiGraphics.drawString(font,
                 Component.literal("Trigger Tracker"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 9,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 7,
                 CommonColors.WHITE,
                 true
         );
 
         guiGraphics.drawString(font,
                 Component.literal("Trigger Track. End"),
-                (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 10,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 7,
                 CommonColors.WHITE,
                 true
         );
@@ -306,7 +306,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         guiGraphics.drawString(font,
                 Component.literal("Clear Triggers"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
-                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 11,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 8,
                 CommonColors.WHITE,
                 true
         );
@@ -355,7 +355,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 9,
                             CommonColors.WHITE,
                             true
                     );
@@ -363,7 +363,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             offTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12 + (font.lineHeight + PADDING_QUART) * 1,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 9 + (font.lineHeight + PADDING_QUART) * 1,
                             CommonColors.WHITE,
                             true
                     );
@@ -377,7 +377,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             isOnTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12 + (font.lineHeight + PADDING_QUART) * 2,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 9 + (font.lineHeight + PADDING_QUART) * 2,
                             CommonColors.WHITE,
                             true
                     );
@@ -400,7 +400,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 9,
                             CommonColors.WHITE,
                             true
                     );
@@ -597,7 +597,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 5,
-                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2 - sideWidth - PADDING,
                 widgetHeight,
                 Component.empty()
         );
@@ -615,9 +615,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private AbstractWidget getNotificationToTriggerEndEditBox() {
         notificationToTriggerEndEditBox = new EditBox(
                 font,
-                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 6,
-                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2,
+                PADDING + (widgetHeight + PADDING) * 5,
+                (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2 - sideWidth,
                 widgetHeight,
                 Component.empty()
         );
@@ -636,8 +636,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         chatNotificationToTriggerEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 7,
-                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                PADDING + (widgetHeight + PADDING) * 6,
+                (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2 - sideWidth - PADDING,
                 widgetHeight,
                 Component.empty()
         );
@@ -655,9 +655,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private AbstractWidget getChatNotificationToTriggerEndEditBox() {
         chatNotificationToTriggerEndEditBox = new EditBox(
                 font,
-                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 8,
-                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2,
+                PADDING + (widgetHeight + PADDING) * 6,
+                (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2 - sideWidth,
                 widgetHeight,
                 Component.empty()
         );
@@ -676,8 +676,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         trackerToTriggerEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 9,
-                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                PADDING + (widgetHeight + PADDING) * 7,
+                (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2 - sideWidth - PADDING,
                 widgetHeight,
                 Component.empty()
         );
@@ -695,9 +695,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private AbstractWidget getTrackerToTriggerEndEditBox() {
         trackerToTriggerEndEditBox = new EditBox(
                 font,
-                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 10,
-                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2,
+                PADDING + (widgetHeight + PADDING) * 7,
+                (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2) / 2 - sideWidth,
                 widgetHeight,
                 Component.empty()
         );
@@ -716,7 +716,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         cleanUpChatTriggersEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 11,
+                PADDING + (widgetHeight + PADDING) * 8,
                 this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
                 Component.empty()
