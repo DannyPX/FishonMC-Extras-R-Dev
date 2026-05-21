@@ -42,9 +42,6 @@ public class TooltipHandler extends Handler {
     public void fetchTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
         Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack);
         if(validatedItem.value1()) {
-            Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(validatedItem.value2());
-            if(validatedPet.value1()) this.setPetPercentages(validatedPet.value2(), components);
-
             Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(validatedItem.value2());
             if(validatedArmor.value1()) this.setArmorRolls(validatedArmor.value2(), components);
 
@@ -249,26 +246,6 @@ public class TooltipHandler extends Handler {
                     pricePerItemComponent
             ));
         }
-    }
-
-    private void setPetPercentages(PetTagObject pet, List<Component> componentList) {
-        Component cBaseLuckComponent = ComponentHelper.concat(componentList.get(PetTagObject.C_BASE_LUCK_LINE + 1),
-                this.getPercentComponent(MathHelper.percentToString(pet.getClimatePercentMaxLuck(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Component cBaseScaleComponent = ComponentHelper.concat(componentList.get(PetTagObject.C_BASE_SCALE_LINE + 1),
-                this.getPercentComponent(MathHelper.percentToString(pet.getClimatePercentMaxScale(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Component lBaseLuckComponent = ComponentHelper.concat(componentList.get(PetTagObject.L_BASE_LUCK_LINE + 1),
-                this.getPercentComponent(MathHelper.percentToString(pet.getLocationPercentMaxLuck(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Component lBaseScaleComponent = ComponentHelper.concat(componentList.get(PetTagObject.L_BASE_SCALE_LINE + 1),
-                this.getPercentComponent(MathHelper.percentToString(pet.getLocationPercentMaxScale(), 1))).withStyle(ChatFormatting.DARK_GRAY);
-        Style style = componentList.get(PetTagObject.RATING_LINE + 1).getSiblings().getLast().getStyle();
-        Component totalComponent = ComponentHelper.concat(componentList.get(PetTagObject.RATING_LINE + 1),
-                this.getPercentComponent(MathHelper.percentToString(pet.getTotalPercent(), 1))).setStyle(style);
-
-        componentList.set(PetTagObject.C_BASE_LUCK_LINE + 1, cBaseLuckComponent);
-        componentList.set(PetTagObject.C_BASE_SCALE_LINE + 1, cBaseScaleComponent);
-        componentList.set(PetTagObject.L_BASE_LUCK_LINE + 1, lBaseLuckComponent);
-        componentList.set(PetTagObject.L_BASE_SCALE_LINE + 1, lBaseScaleComponent);
-        componentList.set(PetTagObject.RATING_LINE + 1, totalComponent);
     }
 
     private Component getPercentComponent(String percent) {

@@ -154,41 +154,6 @@ public class ChatHandler extends Handler {
     }
 
     public Component onModifyGameMessage(Component component) {
-        component = this.modifyPetMessageWithPercentage(component);
-        return component;
-    }
-
-    private Component modifyPetMessageWithPercentage(Component component) {
-
-        String json = ComponentHelper.componentToJson(component);
-        if (json.contains("ᴘᴇᴛ ʀᴀᴛɪɴɢ")) {
-            String petStr = json.substring(json.indexOf(" Pet\\n"), json.indexOf("ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴏᴘᴇɴ ᴘᴇᴛ ᴍᴇɴᴜ"));
-            Pattern statNumber = Pattern.compile("(?<=\\+)(.*?)(?=\")");
-            Matcher statNumberMatcher = statNumber.matcher(petStr);
-
-            if(statNumberMatcher.find()) {
-                List<String> matches = statNumberMatcher.results().map(MatchResult::group).toList();
-
-                String petClimateLuck = matches.get(matches.size() - 7);
-                String petClimateScale = matches.get(matches.size() - 5);
-                String petLocationLuck = matches.get(matches.size() - 3);
-                String petLocationScale = matches.getLast();
-
-                float multiplier = findMultiplier(petStr);
-                float total = Stream.of(petClimateLuck, petClimateScale, petLocationLuck, petLocationScale).mapToInt(Integer::parseInt).sum();
-
-                StringBuilder builder = new StringBuilder(petStr);
-                String petStrNew = petStr;
-
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 9), " (" + ComponentHelper.floatToString((Float.parseFloat(petClimateLuck) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 10), " (" + ComponentHelper.floatToString((Float.parseFloat(petClimateScale) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 13), " (" + ComponentHelper.floatToString((Float.parseFloat(petLocationLuck) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 14), " (" + ComponentHelper.floatToString((Float.parseFloat(petLocationScale) * 4 / multiplier), 0) + "%)").toString();
-                petStrNew = builder.insert(StringUtils.ordinalIndexOf(petStrNew, "\\n", 16), " (" + ComponentHelper.floatToString((total / multiplier), 0) + "%)").toString();
-
-                return ComponentHelper.jsonToComponent(json.replace(petStr, petStrNew));
-            }
-        }
         return component;
     }
 
