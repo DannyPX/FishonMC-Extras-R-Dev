@@ -49,6 +49,7 @@ public class CustomChatNotificationDataHandler extends Handler {
             this.updateCustomChatNotificationData();
         } else if(!CustomChatNotificationDataModel.CUSTOM_CHAT_NOTIFICATION_DATA_MODEL_VERSION.equals(customChatNotificationData.version)) {
             customChatNotificationData.version = CustomChatNotificationDataModel.CUSTOM_CHAT_NOTIFICATION_DATA_MODEL_VERSION;
+            this.updateDefault();
             needsUpdate = true;
         }
     }
@@ -88,6 +89,17 @@ public class CustomChatNotificationDataHandler extends Handler {
         newChatNotification = newText;
 
         customChatNotificationData.notificationList.put(currentSelectedChatNotification, newChatNotification);
+        needsUpdate = true;
+    }
+
+    public void updateDefault() {
+        CustomChatNotificationDataModel.defaultNotifications.forEach((key, timer) -> {
+            customChatNotificationData.notificationList.putIfAbsent(key, timer);
+        });
+    }
+
+    public void fixDefault() {
+        customChatNotificationData.notificationList.putAll(CustomChatNotificationDataModel.defaultNotifications);
         needsUpdate = true;
     }
 

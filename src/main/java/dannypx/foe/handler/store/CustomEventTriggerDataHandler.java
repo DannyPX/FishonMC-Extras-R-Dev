@@ -53,6 +53,7 @@ public class CustomEventTriggerDataHandler extends Handler {
             this.updateCustomEventTriggerData();
         } else if(!CustomEventTriggerDataModel.CUSTOM_EVENT_TRIGGER_DATA_MODEL_VERSION.equals(customEventTriggerData.version)) {
             customEventTriggerData.version = CustomEventTriggerDataModel.CUSTOM_EVENT_TRIGGER_DATA_MODEL_VERSION;
+            this.updateDefault();
             needsUpdate = true;
         }
     }
@@ -80,7 +81,14 @@ public class CustomEventTriggerDataHandler extends Handler {
         return customEventTriggerData.eventTriggerList.remove(id);
     }
 
-    public void updateEventTrigger(String currentSelectedEventTrigger, String newName, EventTrigger eventTrigger, String notificationToTrigger, String chatNotificationToTrigger, boolean useEventTrigger) {
+    public void updateEventTrigger(String currentSelectedEventTrigger,
+                                   String newName,
+                                   EventTrigger eventTrigger,
+                                   String notificationToTrigger,
+                                   String chatNotificationToTrigger,
+                                   String trackerToTrigger,
+                                   boolean useEventTrigger
+    ) {
         CustomEventTrigger newEventTrigger = customEventTriggerData.eventTriggerList.get(currentSelectedEventTrigger);
 
         if(!Objects.equals(currentSelectedEventTrigger, newName)) {
@@ -92,9 +100,21 @@ public class CustomEventTriggerDataHandler extends Handler {
         newEventTrigger.event = eventTrigger;
         newEventTrigger.notificationToTrigger = notificationToTrigger;
         newEventTrigger.chatNotificationToTrigger = chatNotificationToTrigger;
+        newEventTrigger.trackerToTrigger = trackerToTrigger;
         newEventTrigger.useEventTrigger = useEventTrigger;
 
         customEventTriggerData.eventTriggerList.put(currentSelectedEventTrigger, newEventTrigger);
+        needsUpdate = true;
+    }
+
+    public void updateDefault() {
+        CustomEventTriggerDataModel.defaultEventTriggers.forEach((key, timer) -> {
+            customEventTriggerData.eventTriggerList.putIfAbsent(key, timer);
+        });
+    }
+
+    public void fixDefault() {
+        customEventTriggerData.eventTriggerList.putAll(CustomEventTriggerDataModel.defaultEventTriggers);
         needsUpdate = true;
     }
 
@@ -107,17 +127,33 @@ public class CustomEventTriggerDataHandler extends Handler {
 
     //region Model
     public static class CustomEventTriggerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_EVENT_TRIGGER_DATA_MODEL_VERSION = "0.1";
+        private static final String CUSTOM_EVENT_TRIGGER_DATA_MODEL_VERSION = "0.2";
 
-        private static final Map<String, CustomEventTrigger> defaultEventTriggers = Map.of(
-            "Variant On Catch Trigger",
-                new CustomEventTrigger(
+        private static final Map<String, CustomEventTrigger> defaultEventTriggers = Map.ofEntries(
+                Map.entry("Variant On Catch Trigger", new CustomEventTrigger(
                         "Variant On Catch Trigger",
                         EventTrigger.ON_CATCH,
                         "",
                         "Variant Notification",
+                        "",
                         true
-                )
+                )),
+                Map.entry("Fabled On Catch Add", new CustomEventTrigger(
+                        "Fabled On Catch Add",
+                        EventTrigger.ON_CATCH,
+                        "",
+                        "",
+                        "FabledDrystreak.Add",
+                        true
+                )),
+                Map.entry("Fabled On Catch Set", new CustomEventTrigger(
+                        "Fabled On Catch Set",
+                        EventTrigger.ON_CATCH,
+                        "",
+                        "",
+                        "FabledDrystreak.Set",
+                        true
+                ))
         );
 
         //Name Notification, Notification
@@ -131,17 +167,53 @@ public class CustomEventTriggerDataHandler extends Handler {
 
     //region Event Trigger Object
     public static class CustomEventTrigger {
-        public String name;
-        public EventTrigger event;
-        public String notificationToTrigger;
-        public String chatNotificationToTrigger;
-        public boolean useEventTrigger;
+        private String name;
+        private EventTrigger event;
+        private String notificationToTrigger;
+        private String chatNotificationToTrigger;
+        private String trackerToTrigger;
+        private boolean useEventTrigger;
 
-        public CustomEventTrigger(String name, EventTrigger event, String notificationToTrigger, String chatNotificationToTrigger, boolean useEventTrigger) {
+        public String getName() {
+            return name != null ? name : "";
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public EventTrigger getEvent() {
+            return event != null ? event : EventTrigger.DEFAULT;
+        }
+
+        public String getNotificationToTrigger() {
+            return notificationToTrigger != null ? notificationToTrigger : "";
+        }
+
+        public String getChatNotificationToTrigger() {
+            return chatNotificationToTrigger != null ? chatNotificationToTrigger : "";
+        }
+
+        public String getTrackerToTrigger() {
+            return trackerToTrigger != null ? trackerToTrigger : "";
+        }
+
+        public boolean isUseEventTrigger() {
+            return useEventTrigger;
+        }
+
+        public CustomEventTrigger(String name,
+                                  EventTrigger event,
+                                  String notificationToTrigger,
+                                  String chatNotificationToTrigger,
+                                  String trackerToTrigger,
+                                  boolean useEventTrigger
+        ) {
             this.name = name;
             this.event = event;
             this.notificationToTrigger = notificationToTrigger;
             this.chatNotificationToTrigger = chatNotificationToTrigger;
+            this.trackerToTrigger = trackerToTrigger;
             this.useEventTrigger = useEventTrigger;
         }
 
@@ -150,6 +222,7 @@ public class CustomEventTriggerDataHandler extends Handler {
             this.event = EventTrigger.DEFAULT;
             this.notificationToTrigger = "";
             this.chatNotificationToTrigger = "";
+            this.trackerToTrigger = "";
             this.useEventTrigger = true;
         }
     }

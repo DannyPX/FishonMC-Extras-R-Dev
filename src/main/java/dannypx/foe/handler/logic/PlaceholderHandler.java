@@ -52,6 +52,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("chat", params -> ChatHandler.instance().getChat(params)),
             Map.entry("timer", params -> TimerHandler.instance().getTimer(params)),
             Map.entry("catch", params -> CatchingHandler.instance().getCatch(params)),
+            Map.entry("tracker_data", params -> CustomTrackerDataHandler.instance().getCustomTrackerData(params)),
             Map.entry("constant_data", params -> ConstantDataHandler.instance().getConstantData(params)),
             Map.entry("profile_data", params -> ProfileDataHandler.instance().getProfileData(params)),
             Map.entry("quest_data", params -> QuestDataHandler.instance().getQuestData(params)),

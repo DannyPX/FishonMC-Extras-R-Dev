@@ -52,8 +52,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private EditBox offsetEditBox;
     private EditBox notificationToTriggerEditBox;
     private EditBox notificationToTriggerEndEditBox;
-    private EditBox chatNotificationToTriggerTextField;
-    private EditBox chatNotificationToTriggerEndTextField;
+    private EditBox chatNotificationToTriggerEditBox;
+    private EditBox chatNotificationToTriggerEndEditBox;
+    private EditBox trackerToTriggerEditBox;
+    private EditBox trackerToTriggerEndEditBox;
     private EditBox cleanUpChatTriggersEditBox;
     //endregion
 
@@ -128,7 +130,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.YELLOW)
             ), mouseX, mouseY);
         }
 
@@ -140,11 +142,11 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.YELLOW)
             ), mouseX, mouseY);
         }
 
-        if(chatNotificationToTriggerTextField.isMouseOver(mouseX, mouseY)) {
+        if(chatNotificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
@@ -154,11 +156,11 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("- Chat Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.YELLOW)
             ), mouseX, mouseY);
         }
 
-        if(chatNotificationToTriggerEndTextField.isMouseOver(mouseX, mouseY)) {
+        if(chatNotificationToTriggerEndEditBox.isMouseOver(mouseX, mouseY)) {
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
@@ -166,7 +168,35 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("- Chat Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.YELLOW)
+            ), mouseX, mouseY);
+        }
+
+        if(trackerToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.empty(),
+                    Component.literal("When not in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Triggers when timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.YELLOW),
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.YELLOW)
+            ), mouseX, mouseY);
+        }
+
+        if(trackerToTriggerEndEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
+                    Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.YELLOW),
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.YELLOW)
             ), mouseX, mouseY);
         }
 
@@ -258,9 +288,25 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         );
 
         guiGraphics.drawString(font,
-                Component.literal("Clear Triggers"),
+                Component.literal("Trigger Tracker"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 9,
+                CommonColors.WHITE,
+                true
+        );
+
+        guiGraphics.drawString(font,
+                Component.literal("Trigger Track. End"),
+                (BUTTON_WIDTH + PADDING * 2) + PADDING,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 10,
+                CommonColors.WHITE,
+                true
+        );
+
+        guiGraphics.drawString(font,
+                Component.literal("Clear Triggers"),
+                (BUTTON_WIDTH + PADDING * 2) + PADDING,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 11,
                 CommonColors.WHITE,
                 true
         );
@@ -309,7 +355,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 10,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12,
                             CommonColors.WHITE,
                             true
                     );
@@ -317,7 +363,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             offTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 10 + (font.lineHeight + PADDING_QUART) * 1,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12 + (font.lineHeight + PADDING_QUART) * 1,
                             CommonColors.WHITE,
                             true
                     );
@@ -331,7 +377,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             isOnTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 10 + (font.lineHeight + PADDING_QUART) * 2,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12 + (font.lineHeight + PADDING_QUART) * 2,
                             CommonColors.WHITE,
                             true
                     );
@@ -354,7 +400,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     guiGraphics.drawString(font,
                             onTimerComponent,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 10,
+                            PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 12,
                             CommonColors.WHITE,
                             true
                     );
@@ -406,8 +452,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         widgets.add(getOffsetEditBox());
         widgets.add(getNotificationToTriggerEditBox());
         widgets.add(getNotificationToTriggerEndEditBox());
-        widgets.add(getChatNotificationToTriggerTextField());
-        widgets.add(getChatNotificationToTriggerEndTextField());
+        widgets.add(getChatNotificationToTriggerEditBox());
+        widgets.add(getChatNotificationToTriggerEndEditBox());
+        widgets.add(getTrackerToTriggerEditBox());
+        widgets.add(getTrackerToTriggerEndEditBox());
         widgets.add(getCleanUpChatTriggersEditBox());
 
         widgets.forEach(this::addRenderableWidget);
@@ -460,13 +508,24 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                         offTimerEditBox.setValue(String.valueOf(60));
                         offTimerEditBox.setHint(Component.literal(String.valueOf(60)));
                         notificationToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
+                        chatNotificationToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
+                        trackerToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
                     } else {
                         offTimerEditBox.setMaxLength(0);
                         offTimerEditBox.setValue("");
                         offTimerEditBox.setHint(Component.literal(""));
+
                         notificationToTriggerEndEditBox.setMaxLength(0);
                         notificationToTriggerEndEditBox.setValue("");
                         notificationToTriggerEndEditBox.setHint(Component.literal(""));
+
+                        chatNotificationToTriggerEndEditBox.setMaxLength(0);
+                        chatNotificationToTriggerEndEditBox.setValue("");
+                        chatNotificationToTriggerEndEditBox.setHint(Component.literal(""));
+
+                        trackerToTriggerEndEditBox.setMaxLength(0);
+                        trackerToTriggerEndEditBox.setValue("");
+                        trackerToTriggerEndEditBox.setHint(Component.literal(""));
                     }
                 })
                 .build();
@@ -573,8 +632,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return notificationToTriggerEndEditBox;
     }
 
-    private AbstractWidget getChatNotificationToTriggerTextField() {
-        chatNotificationToTriggerTextField = new EditBox(
+    private AbstractWidget getChatNotificationToTriggerEditBox() {
+        chatNotificationToTriggerEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 7,
@@ -582,19 +641,19 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 widgetHeight,
                 Component.empty()
         );
-        chatNotificationToTriggerTextField.setMaxLength(Integer.MAX_VALUE);
+        chatNotificationToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        chatNotificationToTriggerTextField.setResponder(s -> {
+        chatNotificationToTriggerEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                chatNotificationToTriggerTextField.setHint(Component.literal(s));
+                chatNotificationToTriggerEditBox.setHint(Component.literal(s));
             }
         });
 
-        return chatNotificationToTriggerTextField;
+        return chatNotificationToTriggerEditBox;
     }
 
-    private AbstractWidget getChatNotificationToTriggerEndTextField() {
-        chatNotificationToTriggerEndTextField = new EditBox(
+    private AbstractWidget getChatNotificationToTriggerEndEditBox() {
+        chatNotificationToTriggerEndEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 8,
@@ -602,22 +661,62 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 widgetHeight,
                 Component.empty()
         );
-        chatNotificationToTriggerEndTextField.setMaxLength(0);
+        chatNotificationToTriggerEndEditBox.setMaxLength(0);
 
-        chatNotificationToTriggerEndTextField.setResponder(s -> {
+        chatNotificationToTriggerEndEditBox.setResponder(s -> {
             if(selectedTimerId != null) {
-                chatNotificationToTriggerEndTextField.setHint(Component.literal(s));
+                chatNotificationToTriggerEndEditBox.setHint(Component.literal(s));
             }
         });
 
-        return chatNotificationToTriggerEndTextField;
+        return chatNotificationToTriggerEndEditBox;
+    }
+
+    private AbstractWidget getTrackerToTriggerEditBox() {
+        trackerToTriggerEditBox = new EditBox(
+                font,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                PADDING + (widgetHeight + PADDING) * 9,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                widgetHeight,
+                Component.empty()
+        );
+        trackerToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
+
+        trackerToTriggerEditBox.setResponder(s -> {
+            if(selectedTimerId != null) {
+                trackerToTriggerEditBox.setHint(Component.literal(s));
+            }
+        });
+
+        return trackerToTriggerEditBox;
+    }
+
+    private AbstractWidget getTrackerToTriggerEndEditBox() {
+        trackerToTriggerEndEditBox = new EditBox(
+                font,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                PADDING + (widgetHeight + PADDING) * 10,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                widgetHeight,
+                Component.empty()
+        );
+        trackerToTriggerEndEditBox.setMaxLength(0);
+
+        trackerToTriggerEndEditBox.setResponder(s -> {
+            if(selectedTimerId != null) {
+                trackerToTriggerEndEditBox.setHint(Component.literal(s));
+            }
+        });
+
+        return trackerToTriggerEndEditBox;
     }
 
     private AbstractWidget getCleanUpChatTriggersEditBox() {
         cleanUpChatTriggersEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 9,
+                PADDING + (widgetHeight + PADDING) * 11,
                 this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
                 Component.empty()
@@ -710,7 +809,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                                 if(CustomTimerDataHandler.instance().getCustomTimerData().timerList.containsKey(data.value1())) {
                                     CustomTimerDataHandler.CustomTimer trigger = data.value2();
-                                    trigger.name = data.value1() + " (Duplicate)";
+                                    trigger.setName(data.value1() + " (Duplicate)");
 
                                     data = Quartet.of(data.value1() + " (Duplicate)", trigger, data.value3(), data.value4());
                                 }
@@ -801,10 +900,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         );
 
         CustomTimerDataHandler.instance().getCustomTimerData().timerList.forEach((name, timer) -> {
-            ButtonListWidget.ButtonEntry buttonEntry = createTimerEntry(timer.name);
+            ButtonListWidget.ButtonEntry buttonEntry = createTimerEntry(timer.getName());
 
             buttonList.addEntry(buttonEntry);
-            buttonEntryMap.put(timer.name, buttonEntry);
+            buttonEntryMap.put(timer.getName(), buttonEntry);
         });
 
         return buttonList;
@@ -882,8 +981,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Integer.parseInt(offsetEditBox.getValue()),
                             notificationToTriggerEditBox.getValue(),
                             notificationToTriggerEndEditBox.getValue(),
-                            chatNotificationToTriggerTextField.getValue(),
-                            chatNotificationToTriggerEndTextField.getValue(),
+                            chatNotificationToTriggerEditBox.getValue(),
+                            chatNotificationToTriggerEndEditBox.getValue(),
+                            trackerToTriggerEditBox.getValue(),
+                            trackerToTriggerEndEditBox.getValue(),
                             cleanUpChatTriggersEditBox.getValue(),
                             useTimerCheckBox.selected(),
                             isPeriodCheckBox.selected());
@@ -893,7 +994,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Integer.parseInt(timerEditBox.getValue()),
                             Integer.parseInt(offsetEditBox.getValue()),
                             notificationToTriggerEditBox.getValue(),
-                            chatNotificationToTriggerTextField.getValue(),
+                            chatNotificationToTriggerEditBox.getValue(),
+                            trackerToTriggerEditBox.getValue(),
                             cleanUpChatTriggersEditBox.getValue(),
                             useTimerCheckBox.selected(),
                             isPeriodCheckBox.selected());
@@ -938,35 +1040,49 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         nameEditBox.setHint(Component.literal(selectedTimerId));
 
         if(selectedTimer != null) {
-            if(selectedTimer.useTimer != useTimerCheckBox.selected()) {
+            if(selectedTimer.isUseTimer() != useTimerCheckBox.selected()) {
                 useTimerCheckBox.onPress(null);
             }
 
-            if(selectedTimer.isPeriod != isPeriodCheckBox.selected()) {
+            if(selectedTimer.isPeriod() != isPeriodCheckBox.selected()) {
                 isPeriodCheckBox.onPress(null);
             }
 
-            timerEditBox.setValue(String.valueOf(selectedTimer.timer));
-            timerEditBox.setHint(Component.literal(String.valueOf(selectedTimer.timer)));
+            timerEditBox.setValue(String.valueOf(selectedTimer.getTimer()));
+            timerEditBox.setHint(Component.literal(String.valueOf(selectedTimer.getTimer())));
 
-            offsetEditBox.setValue(String.valueOf(selectedTimer.offset));
-            offsetEditBox.setHint(Component.literal(String.valueOf(selectedTimer.offset)));
+            offsetEditBox.setValue(String.valueOf(selectedTimer.getOffset()));
+            offsetEditBox.setHint(Component.literal(String.valueOf(selectedTimer.getOffset())));
 
-            notificationToTriggerEditBox.setValue(selectedTimer.notificationToTrigger);
-            notificationToTriggerEditBox.setHint(Component.literal(selectedTimer.notificationToTrigger));
+            notificationToTriggerEditBox.setValue(selectedTimer.getNotificationToTrigger());
+            notificationToTriggerEditBox.setHint(Component.literal(selectedTimer.getNotificationToTrigger()));
 
-            cleanUpChatTriggersEditBox.setValue(selectedTimer.cleanUpChatTrigger);
-            cleanUpChatTriggersEditBox.setHint(Component.literal(selectedTimer.cleanUpChatTrigger));
+            chatNotificationToTriggerEditBox.setValue(selectedTimer.getChatNotificationToTrigger());
+            chatNotificationToTriggerEditBox.setHint(Component.literal(selectedTimer.getChatNotificationToTrigger()));
+
+            trackerToTriggerEditBox.setValue(selectedTimer.getTrackerToTrigger());
+            trackerToTriggerEditBox.setHint(Component.literal(selectedTimer.getTrackerToTrigger()));
+
+            cleanUpChatTriggersEditBox.setValue(selectedTimer.getCleanUpChatTrigger());
+            cleanUpChatTriggersEditBox.setHint(Component.literal(selectedTimer.getCleanUpChatTrigger()));
 
             CodeExecuterHandler.runLater(1, () -> {
-                if(selectedTimer.isPeriod && selectedTimer instanceof CustomTimerDataHandler.CustomTimerPeriod selectedTimerPeriod) {
+                if(selectedTimer.isPeriod() && selectedTimer instanceof CustomTimerDataHandler.CustomTimerPeriod selectedTimerPeriod) {
                     offTimerEditBox.setMaxLength(Integer.MAX_VALUE);
-                    offTimerEditBox.setValue(String.valueOf(selectedTimerPeriod.offTimer));
-                    offTimerEditBox.setHint(Component.literal(String.valueOf(selectedTimerPeriod.offTimer)));
+                    offTimerEditBox.setValue(String.valueOf(selectedTimerPeriod.getOffTimer()));
+                    offTimerEditBox.setHint(Component.literal(String.valueOf(selectedTimerPeriod.getOffTimer())));
 
                     notificationToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
-                    notificationToTriggerEndEditBox.setValue(selectedTimerPeriod.notificationToTriggerEnd);
-                    notificationToTriggerEndEditBox.setHint(Component.literal(selectedTimerPeriod.notificationToTriggerEnd));
+                    notificationToTriggerEndEditBox.setValue(selectedTimerPeriod.getNotificationToTriggerEnd());
+                    notificationToTriggerEndEditBox.setHint(Component.literal(selectedTimerPeriod.getNotificationToTriggerEnd()));
+
+                    chatNotificationToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
+                    chatNotificationToTriggerEndEditBox.setValue(selectedTimerPeriod.getChatNotificationToTriggerEnd());
+                    chatNotificationToTriggerEndEditBox.setHint(Component.literal(selectedTimerPeriod.getChatNotificationToTriggerEnd()));
+
+                    trackerToTriggerEndEditBox.setMaxLength(Integer.MAX_VALUE);
+                    trackerToTriggerEndEditBox.setValue(selectedTimerPeriod.getTrackerToTriggerEnd());
+                    trackerToTriggerEndEditBox.setHint(Component.literal(selectedTimerPeriod.getTrackerToTriggerEnd()));
                 } else {
                     offTimerEditBox.setMaxLength(0);
                     offTimerEditBox.setValue("");
@@ -975,6 +1091,14 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     notificationToTriggerEndEditBox.setMaxLength(0);
                     notificationToTriggerEndEditBox.setValue("");
                     notificationToTriggerEndEditBox.setHint(Component.literal(""));
+
+                    chatNotificationToTriggerEndEditBox.setMaxLength(0);
+                    chatNotificationToTriggerEndEditBox.setValue("");
+                    chatNotificationToTriggerEndEditBox.setHint(Component.literal(""));
+
+                    trackerToTriggerEndEditBox.setMaxLength(0);
+                    trackerToTriggerEndEditBox.setValue("");
+                    trackerToTriggerEndEditBox.setHint(Component.literal(""));
                 }
             });
         }
@@ -1008,6 +1132,18 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
         notificationToTriggerEndEditBox.setValue("");
         notificationToTriggerEndEditBox.setHint(Component.literal(""));
+
+        chatNotificationToTriggerEditBox.setValue("");
+        chatNotificationToTriggerEditBox.setHint(Component.literal(""));
+
+        chatNotificationToTriggerEndEditBox.setValue("");
+        chatNotificationToTriggerEndEditBox.setHint(Component.literal(""));
+
+        trackerToTriggerEditBox.setValue("");
+        trackerToTriggerEditBox.setHint(Component.literal(""));
+
+        trackerToTriggerEndEditBox.setValue("");
+        trackerToTriggerEndEditBox.setHint(Component.literal(""));
 
         cleanUpChatTriggersEditBox.setValue("");
         cleanUpChatTriggersEditBox.setHint(Component.literal(""));

@@ -16,7 +16,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -48,7 +47,8 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
     private final int sideWidth = 100;
     private EditBox regexEditBox;
     private EditBox notificationToTriggerEditBox;
-    private EditBox chatNotificationToTriggerTextField;
+    private EditBox chatNotificationToTriggerEditBox;
+    private EditBox trackerToTriggerEditBox;
     //endregion
 
     //region Methods
@@ -86,15 +86,24 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
-                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        if(chatNotificationToTriggerTextField.isMouseOver(mouseX, mouseY)) {
+        if(chatNotificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
-                    Component.literal("- Chat Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.GRAY)
+            ), mouseX, mouseY);
+        }
+
+        if(trackerToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.empty(),
+                    Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.GRAY),
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
     }
@@ -138,6 +147,14 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                 CommonColors.WHITE,
                 true
         );
+
+        guiGraphics.drawString(font,
+                Component.literal("Trigger Tracker"),
+                (BUTTON_WIDTH + PADDING * 2) + PADDING,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 5,
+                CommonColors.WHITE,
+                true
+        );
     }
 
     private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
@@ -168,7 +185,8 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         widgets.add(getUseChatTriggerCheckBox());
         widgets.add(getRegexEditBox());
         widgets.add(getNotificationToTriggerEditBox());
-        widgets.add(getChatNotificationToTriggerTextField());
+        widgets.add(getChatNotificationToTriggerEditBox());
+        widgets.add(getTrackerToTriggerEditBox());
 
         widgets.forEach(this::addRenderableWidget);
     }
@@ -246,8 +264,8 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         return notificationToTriggerEditBox;
     }
 
-    private AbstractWidget getChatNotificationToTriggerTextField() {
-        chatNotificationToTriggerTextField = new EditBox(
+    private AbstractWidget getChatNotificationToTriggerEditBox() {
+        chatNotificationToTriggerEditBox = new EditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 4,
@@ -255,15 +273,35 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                 widgetHeight,
                 Component.empty()
         );
-        chatNotificationToTriggerTextField.setMaxLength(Integer.MAX_VALUE);
+        chatNotificationToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
 
-        chatNotificationToTriggerTextField.setResponder(s -> {
+        chatNotificationToTriggerEditBox.setResponder(s -> {
             if(selectedChatTriggerId != null) {
-                chatNotificationToTriggerTextField.setHint(Component.literal(s));
+                chatNotificationToTriggerEditBox.setHint(Component.literal(s));
             }
         });
 
-        return chatNotificationToTriggerTextField;
+        return chatNotificationToTriggerEditBox;
+    }
+
+    private AbstractWidget getTrackerToTriggerEditBox() {
+        trackerToTriggerEditBox = new EditBox(
+                font,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                PADDING + (widgetHeight + PADDING) * 5,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                widgetHeight,
+                Component.empty()
+        );
+        trackerToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
+
+        trackerToTriggerEditBox.setResponder(s -> {
+            if(selectedChatTriggerId != null) {
+                trackerToTriggerEditBox.setHint(Component.literal(s));
+            }
+        });
+
+        return trackerToTriggerEditBox;
     }
 
     private AbstractWidget getNewButtonElementButton() {
@@ -327,7 +365,7 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
 
                                 if(CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.containsKey(data.value1())) {
                                     CustomChatTriggerDataHandler.CustomChatTrigger trigger = data.value2();
-                                    trigger.name = data.value1() + " (Duplicate)";
+                                    trigger.setName(data.value1() + " (Duplicate)");
 
                                     data = Triplet.of(data.value1() + " (Duplicate)", trigger, data.value3());
                                 }
@@ -417,10 +455,10 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         );
 
         CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.forEach((name, chatTrigger) -> {
-            ButtonListWidget.ButtonEntry buttonEntry = createChatTriggerEntry(chatTrigger.name);
+            ButtonListWidget.ButtonEntry buttonEntry = createChatTriggerEntry(chatTrigger.getName());
 
             buttonList.addEntry(buttonEntry);
-            buttonEntryMap.put(chatTrigger.name, buttonEntry);
+            buttonEntryMap.put(chatTrigger.getName(), buttonEntry);
         });
 
         return buttonList;
@@ -466,7 +504,8 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
                         nameEditBox.getValue(),
                         regexEditBox.getValue(),
                         notificationToTriggerEditBox.getValue(),
-                        chatNotificationToTriggerTextField.getValue(),
+                        chatNotificationToTriggerEditBox.getValue(),
+                        trackerToTriggerEditBox.getValue(),
                         useChatTriggerCheckBox.selected());
 
                 ChatHandler.instance().initChatTrigger();
@@ -508,18 +547,21 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         nameEditBox.setHint(Component.literal(selectedChatTriggerId));
 
         if(selectedChatTrigger != null) {
-            if(selectedChatTrigger.useChatTrigger != useChatTriggerCheckBox.selected()) {
+            if(selectedChatTrigger.isUseChatTrigger() != useChatTriggerCheckBox.selected()) {
                 useChatTriggerCheckBox.onPress(null);
             }
 
-            regexEditBox.setValue(selectedChatTrigger.regex);
-            regexEditBox.setHint(Component.literal(selectedChatTrigger.regex));
+            regexEditBox.setValue(selectedChatTrigger.getRegex());
+            regexEditBox.setHint(Component.literal(selectedChatTrigger.getRegex()));
 
-            notificationToTriggerEditBox.setValue(selectedChatTrigger.notificationToTrigger);
-            notificationToTriggerEditBox.setHint(Component.literal(selectedChatTrigger.notificationToTrigger));
+            notificationToTriggerEditBox.setValue(selectedChatTrigger.getNotificationToTrigger());
+            notificationToTriggerEditBox.setHint(Component.literal(selectedChatTrigger.getNotificationToTrigger()));
 
-            chatNotificationToTriggerTextField.setValue(selectedChatTrigger.chatNotificationToTrigger);
-            chatNotificationToTriggerTextField.setHint(Component.literal(selectedChatTrigger.chatNotificationToTrigger));
+            chatNotificationToTriggerEditBox.setValue(selectedChatTrigger.getChatNotificationToTrigger());
+            chatNotificationToTriggerEditBox.setHint(Component.literal(selectedChatTrigger.getChatNotificationToTrigger()));
+
+            trackerToTriggerEditBox.setValue(selectedChatTrigger.getTrackerToTrigger());
+            trackerToTriggerEditBox.setHint(Component.literal(selectedChatTrigger.getTrackerToTrigger()));
         }
     }
 
@@ -539,8 +581,11 @@ public class CustomChatTriggerMakerScreen extends Screen implements ScreenConsta
         notificationToTriggerEditBox.setValue("");
         notificationToTriggerEditBox.setHint(Component.literal(""));
 
-        chatNotificationToTriggerTextField.setValue("");
-        chatNotificationToTriggerTextField.setHint(Component.literal(""));
+        chatNotificationToTriggerEditBox.setValue("");
+        chatNotificationToTriggerEditBox.setHint(Component.literal(""));
+
+        trackerToTriggerEditBox.setValue("");
+        trackerToTriggerEditBox.setHint(Component.literal(""));
 
         selectedChatTrigger = null;
         selectedChatTriggerId = null;

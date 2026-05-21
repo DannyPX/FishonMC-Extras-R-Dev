@@ -362,11 +362,11 @@ public class NotifierHandler extends Handler {
         if(notification != null && minecraft.player != null) {
             ItemStack itemStack = ItemStack.EMPTY;
 
-            if(!notification.icon.isBlank()) {
+            if(!notification.getIcon().isBlank()) {
                 HolderLookup.Provider lookup = minecraft.player.registryAccess();
 
                 ItemParser itemParser = new ItemParser(lookup);
-                StringReader stringReader = new StringReader(notification.icon);
+                StringReader stringReader = new StringReader(notification.getIcon());
                 try {
                     ItemParser.ItemResult result = itemParser.parse(stringReader);
 
@@ -377,10 +377,10 @@ public class NotifierHandler extends Handler {
                 }
             }
 
-            List<MutableComponent> lines = notification.stringLines.stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
+            List<MutableComponent> lines = notification.getStringLines().stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
             List<Component> newLines = new ArrayList<>();
 
-            lines.forEach(line -> newLines.addAll(ComponentHelper.wrapStyledComponent(line, notification.icon.isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
+            lines.forEach(line -> newLines.addAll(ComponentHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
 
             if(itemStack == ItemStack.EMPTY) {
                 this.addNotification(

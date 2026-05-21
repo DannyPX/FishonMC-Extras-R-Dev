@@ -46,6 +46,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
     private EditBox eventEditBox;
     private EditBox notificationToTriggerEditBox;
     private EditBox chatNotificationToTriggerEditBox;
+    private EditBox trackerToTriggerEditBox;
     //endregion
 
     //region Methods
@@ -91,7 +92,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
-                    Component.literal("- Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -99,7 +100,16 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
-                    Component.literal("- Chat Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.GRAY)
+            ), mouseX, mouseY);
+        }
+
+        if(trackerToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+                    Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
+                    Component.empty(),
+                    Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.GRAY),
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
     }
@@ -143,6 +153,14 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 CommonColors.WHITE,
                 true
         );
+
+        guiGraphics.drawString(font,
+                Component.literal("Trigger Tracker"),
+                (BUTTON_WIDTH + PADDING * 2) + PADDING,
+                PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 5,
+                CommonColors.WHITE,
+                true
+        );
     }
 
     private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
@@ -174,6 +192,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         widgets.add(getEventEditBox());
         widgets.add(getNotificationToTriggerEditBox());
         widgets.add(getChatNotificationToTriggerEditBox());
+        widgets.add(getTrackerToTriggerEditBox());
 
         widgets.forEach(this::addRenderableWidget);
     }
@@ -289,6 +308,26 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         return chatNotificationToTriggerEditBox;
     }
 
+    private AbstractWidget getTrackerToTriggerEditBox() {
+        trackerToTriggerEditBox = new EditBox(
+                font,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                PADDING + (widgetHeight + PADDING) * 5,
+                this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                widgetHeight,
+                Component.empty()
+        );
+        trackerToTriggerEditBox.setMaxLength(Integer.MAX_VALUE);
+
+        trackerToTriggerEditBox.setResponder(s -> {
+            if(selectedEventTriggerId != null) {
+                trackerToTriggerEditBox.setHint(Component.literal(s));
+            }
+        });
+
+        return trackerToTriggerEditBox;
+    }
+
     private AbstractWidget getNewButtonElementButton() {
         return Button.builder(
                         Component.literal("Create Event Trigger"),
@@ -349,7 +388,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
 
                                 if(CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.containsKey(data.value1())) {
                                     CustomEventTriggerDataHandler.CustomEventTrigger trigger = data.value2();
-                                    trigger.name = data.value1() + " (Duplicate)";
+                                    trigger.setName(data.value1() + " (Duplicate)");
 
                                     data = Triplet.of(data.value1() + " (Duplicate)", trigger, data.value3());
                                 }
@@ -438,10 +477,10 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         );
 
         CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.forEach((name, eventTrigger) -> {
-            ButtonListWidget.ButtonEntry buttonEntry = createEventTriggerEntry(eventTrigger.name);
+            ButtonListWidget.ButtonEntry buttonEntry = createEventTriggerEntry(eventTrigger.getName());
 
             buttonList.addEntry(buttonEntry);
-            buttonEntryMap.put(eventTrigger.name, buttonEntry);
+            buttonEntryMap.put(eventTrigger.getName(), buttonEntry);
         });
 
         return buttonList;
@@ -486,6 +525,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                         EventTrigger.valueOf(eventEditBox.getValue()),
                         notificationToTriggerEditBox.getValue(),
                         chatNotificationToTriggerEditBox.getValue(),
+                        trackerToTriggerEditBox.getValue(),
                         useEventTriggerCheckBox.selected());
 
             }
@@ -526,18 +566,21 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         nameEditBox.setHint(Component.literal(selectedEventTriggerId));
 
         if(selectedEventTrigger != null) {
-            if(selectedEventTrigger.useEventTrigger != useEventTriggerCheckBox.selected()) {
+            if(selectedEventTrigger.isUseEventTrigger() != useEventTriggerCheckBox.selected()) {
                 useEventTriggerCheckBox.onPress(null);
             }
 
-            eventEditBox.setValue(selectedEventTrigger.event.name());
-            eventEditBox.setHint(Component.literal(selectedEventTrigger.event.name()));
+            eventEditBox.setValue(selectedEventTrigger.getEvent().name());
+            eventEditBox.setHint(Component.literal(selectedEventTrigger.getEvent().name()));
 
-            notificationToTriggerEditBox.setValue(selectedEventTrigger.notificationToTrigger);
-            notificationToTriggerEditBox.setHint(Component.literal(selectedEventTrigger.notificationToTrigger));
+            notificationToTriggerEditBox.setValue(selectedEventTrigger.getNotificationToTrigger());
+            notificationToTriggerEditBox.setHint(Component.literal(selectedEventTrigger.getNotificationToTrigger()));
 
-            chatNotificationToTriggerEditBox.setValue(selectedEventTrigger.chatNotificationToTrigger);
-            chatNotificationToTriggerEditBox.setHint(Component.literal(selectedEventTrigger.chatNotificationToTrigger));
+            chatNotificationToTriggerEditBox.setValue(selectedEventTrigger.getChatNotificationToTrigger());
+            chatNotificationToTriggerEditBox.setHint(Component.literal(selectedEventTrigger.getChatNotificationToTrigger()));
+
+            trackerToTriggerEditBox.setValue(selectedEventTrigger.getTrackerToTrigger());
+            trackerToTriggerEditBox.setHint(Component.literal(selectedEventTrigger.getTrackerToTrigger()));
         }
     }
 
@@ -559,6 +602,9 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
 
         chatNotificationToTriggerEditBox.setValue("");
         chatNotificationToTriggerEditBox.setHint(Component.literal(""));
+
+        trackerToTriggerEditBox.setValue("");
+        trackerToTriggerEditBox.setHint(Component.literal(""));
 
         selectedEventTrigger = null;
         selectedEventTriggerId = null;

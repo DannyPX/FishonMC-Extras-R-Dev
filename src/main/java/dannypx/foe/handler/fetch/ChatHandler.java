@@ -7,6 +7,7 @@ import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
+import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.type.placeholder.PlaceholderValue;
@@ -103,25 +104,34 @@ public class ChatHandler extends Handler {
 
     private void checkChatTrigger(Component component) {
         CustomChatTriggerDataHandler.instance().getCustomChatTriggerData().chatTriggerList.forEach((name, trigger) -> {
-            if(!trigger.regex.isBlank()
-                    && trigger.pattern.matcher(component.getString()).matches()
+            if(!trigger.getRegex().isBlank()
+                    && trigger.getPattern().matcher(component.getString()).matches()
             ) {
                 storedChatTriggerComponent.put(name, component);
-                if(trigger.notificationToTrigger != null
-                        && !trigger.notificationToTrigger.isBlank()
-                        && trigger.useChatTrigger
+                if(trigger.getNotificationToTrigger() != null
+                        && !trigger.getNotificationToTrigger().isBlank()
+                        && trigger.isUseChatTrigger()
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        NotifierHandler.instance().notifyOnTrigger(trigger.notificationToTrigger);
+                        NotifierHandler.instance().notifyOnTrigger(trigger.getNotificationToTrigger());
                     });
                 }
 
-                if(trigger.chatNotificationToTrigger != null
-                        && !trigger.chatNotificationToTrigger.isBlank()
-                        && trigger.useChatTrigger
+                if(trigger.getChatNotificationToTrigger() != null
+                        && !trigger.getChatNotificationToTrigger().isBlank()
+                        && trigger.isUseChatTrigger()
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        ChatNotifierHandler.instance().notifyChatOnTrigger(trigger.chatNotificationToTrigger);
+                        ChatNotifierHandler.instance().notifyChatOnTrigger(trigger.getChatNotificationToTrigger());
+                    });
+                }
+
+                if(trigger.getTrackerToTrigger() != null
+                        && !trigger.getTrackerToTrigger().isBlank()
+                        && trigger.isUseChatTrigger()
+                ) {
+                    CodeExecuterHandler.runLater(1, () -> {
+                        CustomTrackerDataHandler.instance().updateTracker(trigger.getTrackerToTrigger());
                     });
                 }
             }
