@@ -326,7 +326,7 @@ public class CommandRegistry {
 
             public static int toggleNamePlates(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Toggled Name Plates"), () -> {
-                    Configs.rendererConfig.showNamePlate.accept(!Configs.rendererConfig.showNamePlate.get());
+                    Configs.rendererConfig.showPlayerNamePlate.accept(!Configs.rendererConfig.showPlayerNamePlate.get());
                     Configs.rendererConfig.save();
                 });
             }

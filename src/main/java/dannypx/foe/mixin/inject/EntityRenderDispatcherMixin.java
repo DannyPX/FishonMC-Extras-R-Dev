@@ -26,7 +26,7 @@ public abstract class EntityRenderDispatcherMixin {
                     && textDisplay.getBillboardConstraints() != Display.BillboardConstraints.FIXED
             ) {
                 cir.setReturnValue(false);
-            } else if (!Configs.rendererConfig.showNamePlate.get()
+            } else if (!Configs.rendererConfig.showPlayerNamePlate.get()
                     && entity instanceof Display.TextDisplay textDisplay
                     && textDisplay.getText().getString().contains("\uF064")
             ) {
