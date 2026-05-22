@@ -9,19 +9,16 @@ import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
-import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Triplet;
-import dannypx.foe.type.tuple.Unit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.Nullable;
 
 public class StatsDataHandler extends Handler {
     private static StatsDataHandler INSTANCE = new StatsDataHandler();
@@ -215,14 +212,73 @@ public class StatsDataHandler extends Handler {
         return Pair.of(item, statsData.fishTotal - itemStat.caughtOn());
     }
 
+    public void updateData(String set, int value) {
+        switch (set) {
+            case "fish" -> {
+                this.statsData.fishTotal = value;
+                this.needsUpdate = true;
+            }
+            case "pet" -> {
+                this.statsData.petTotal = value;
+                this.needsUpdate = true;
+            }
+        }
+    }
+
+    public void updateData(String set, String category, String field, String type, int value) {
+        switch (set) {
+            case "fish" -> {
+                Map<String, Stat<Integer, Integer>> statsData = this.statsData.fishData.get(category);
+                Stat<Integer, Integer> stat = statsData.get(field);
+
+                switch (type) {
+                    case "amount" -> stat = new Stat<>(value, stat.caughtOn);
+                    case "caught_on" -> stat = new Stat<>(stat.amount, value);
+                }
+
+                statsData.put(field, stat);
+                this.statsData.fishData.put(category, statsData);
+                this.needsUpdate = true;
+            }
+            case "pet" -> {
+                if(Objects.equals(category, "rating")) field = ComponentHelper.smallCaps(field);
+                Map<String, Stat<Integer, Integer>> statsData = this.statsData.petData.get(category);
+                Stat<Integer, Integer> stat = statsData.get(field);
+
+                switch (type) {
+                    case "amount" -> stat = new Stat<>(value, stat.caughtOn);
+                    case "caught_on" -> stat = new Stat<>(stat.amount, value);
+                }
+
+                statsData.put(field, stat);
+                this.statsData.petData.put(category, statsData);
+                this.needsUpdate = true;
+            }
+        }
+    }
+
+    public void updateData(String set, String field, String type, int value) {
+        switch (set) {
+            case "item" -> {
+                Stat<Integer, Integer> stat = this.statsData.itemData.get(field);
+
+                switch (type) {
+                    case "amount" -> stat = new Stat<>(value, stat.caughtOn);
+                    case "caught_on" -> stat = new Stat<>(stat.amount, value);
+                }
+
+                this.statsData.itemData.put(field, stat);
+                this.needsUpdate = true;
+            }
+        }
+    }
+
     public void updateImportStats(boolean updatedStats, @NotNull Map<String, Map<String, Stat<Integer, Integer>>> newData) {
         if(updatedStats) {
             this.statsData.fishData = newData;
             this.needsUpdate = true;
         }
     }
-
-
 
     public void resetStats() {
         this.reset();
