@@ -15,7 +15,6 @@
   },
   "client": [
     "accessor.AbstractSelectionListAccessor",
-    "accessor.AbstractSelectionListEntryAccessor",
     "accessor.BossHealthOverlayAccessor",
     "accessor.ChatScreenAccessor",
     "accessor.LevelRendererAccessor",
@@ -28,6 +27,7 @@
     "inject.ClientPacketListenerMixin",
     "inject.GuiGraphicsExtractorMixin",
     "inject.ContextualBarRendererMixin",
+    "inject.EntityRenderDispatcherMixin",
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",
     "inject.FishingHookRenderStateMixin",

@@ -47,9 +47,9 @@ public class CustomHudElement extends Element implements ScreenConstants {
     public CustomHudElement(CustomHudDataHandler.CustomHud customHud, Component message) {
         super(75,
                 50,
-                customHud.xPos / 100f,
-                customHud.yPos / 100f,
-                customHud.alignment,
+                customHud.getxPos() / 100f,
+                customHud.getyPos() / 100f,
+                customHud.getAlignment(),
                 message,
                 false);
         this.customHud = customHud;
@@ -58,13 +58,13 @@ public class CustomHudElement extends Element implements ScreenConstants {
     //region Methods
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
-        if(!customHud.showElement) { return; }
+        if(!customHud.isShowElement()) { return; }
 
-        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHud.scale));
-        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / customHud.scale));
+        int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHud.getScale()));
+        int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / customHud.getScale()));
 
         guiGraphicsExtractor.pose().pushMatrix();
-        guiGraphicsExtractor.pose().scale(customHud.scale, customHud.scale);
+        guiGraphicsExtractor.pose().scale(customHud.getScale(), customHud.getScale());
         if(LoadingHandler.instance().isLoadingDone()
                 && TabOverlayHandler.instance().isInInstance()
         ) {
@@ -72,7 +72,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
             boxWidth = contentDimensions.value1() + BOX_PADDING * 2 + PADDING * 2;
             boxHeight = contentDimensions.value2() + BOX_PADDING * 2 + PADDING_QUART * 2;
 
-            int x = switch (customHud.alignment) {
+            int x = switch (customHud.getAlignment()) {
                 case TOP_LEFT, BOTTOM_LEFT, LEFT -> Math.round(scaledWidth * xPos);
                 case TOP, BOTTOM -> Math.round(scaledWidth * xPos) - boxWidth / 2;
                 case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> scaledWidth
@@ -80,7 +80,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
                 default -> 0;
             };
 
-            int y = switch (customHud.alignment) {
+            int y = switch (customHud.getAlignment()) {
                 case TOP_LEFT, TOP_RIGHT, TOP -> Math.round(scaledHeight * yPos);
                 case LEFT, RIGHT -> Math.round(scaledHeight * yPos) - boxHeight / 2;
                 case BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM -> scaledHeight
@@ -89,21 +89,21 @@ public class CustomHudElement extends Element implements ScreenConstants {
             };
 
             if(!componentLines.isEmpty()) {
-                x = switch (customHud.alignment) {
+                x = switch (customHud.getAlignment()) {
                     case TOP_LEFT, BOTTOM_LEFT, LEFT -> x;
                     case TOP, BOTTOM -> x - boxWidth / 2;
                     case TOP_RIGHT, BOTTOM_RIGHT, RIGHT -> x - boxWidth;
                     default -> 0;
                 };
 
-                y = switch (customHud.alignment) {
+                y = switch (customHud.getAlignment()) {
                     case TOP_LEFT, TOP_RIGHT, TOP -> y;
                     case BOTTOM_LEFT, BOTTOM_RIGHT, BOTTOM -> y - boxHeight;
                     case LEFT, RIGHT -> y - boxHeight / 2;
                     default -> 0;
                 };
 
-                if(customHud.showBackground) this.extractRenderBox(guiGraphicsExtractor, deltaTracker, x, y);
+                if(customHud.isShowBackground()) this.extractRenderBox(guiGraphicsExtractor, deltaTracker, x, y);
                 this.extractRenderText(guiGraphicsExtractor, deltaTracker, x, y);
             }
         }
@@ -114,13 +114,13 @@ public class CustomHudElement extends Element implements ScreenConstants {
         int componentX;
         int componentY;
 
-        if(customHud.alignment == Alignment.TOP || customHud.alignment == Alignment.BOTTOM) {
+        if(customHud.getAlignment() == Alignment.TOP || customHud.getAlignment() == Alignment.BOTTOM) {
             componentX = x + PADDING + BOX_PADDING + boxWidth / 2;
         } else {
             componentX = x + PADDING + BOX_PADDING;
         }
 
-        if(customHud.alignment == Alignment.LEFT || customHud.alignment == Alignment.RIGHT) {
+        if(customHud.getAlignment() == Alignment.LEFT || customHud.getAlignment() == Alignment.RIGHT) {
             componentY = y + PADDING_QUART + BOX_PADDING + boxHeight / 2;
         } else {
             componentY = y + PADDING_QUART + BOX_PADDING;
@@ -148,11 +148,11 @@ public class CustomHudElement extends Element implements ScreenConstants {
         int boxX = x;
         int boxY = y;
 
-        if(customHud.alignment == Alignment.TOP || customHud.alignment == Alignment.BOTTOM) {
+        if(customHud.getAlignment() == Alignment.TOP || customHud.getAlignment() == Alignment.BOTTOM) {
             boxX = boxX + boxWidth / 2;
         }
 
-        if(customHud.alignment == Alignment.LEFT || customHud.alignment == Alignment.RIGHT) {
+        if(customHud.getAlignment() == Alignment.LEFT || customHud.getAlignment() == Alignment.RIGHT) {
             boxY = boxY + boxHeight / 2;
         }
 
@@ -234,7 +234,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
         AtomicBoolean hasData = new AtomicBoolean(false);
 
-        customHud.stringLines.forEach(componentParts -> {
+        customHud.getStringLines().forEach(componentParts -> {
             String componentString = componentParts.value1().replace("&", "§");
             Pair<Boolean, MutableComponent> componentLine = PlaceholderHandler.parsePlaceholderFromString(componentString);
             if(componentLine.value1()) {

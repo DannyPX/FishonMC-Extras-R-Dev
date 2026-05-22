@@ -11,6 +11,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -99,18 +100,26 @@ public class ItemRendererHandler extends Handler {
     }
 
     public void drawStackCount(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
+        this.drawStackCount(guiGraphicsExtractor, font, stack, x, y, true);
+    }
+
+    public void drawStackCount(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y, boolean isSmall) {
         Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
 
-        int count = validatedItem.value2().getCount();
-        Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
+        int count = Configs.rendererConfig.showStackCountOnBait.get()
+                ? validatedItem.value2().getCount()
+                : stack.getCount();
+        Component countComponent = isSmall
+                ? ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)))
+                : ComponentHelper.literal(ComponentHelper.shortenNumber(count, 0));
         int countWidth = font.width(countComponent);
 
         if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
-                x + 19 - 2 - countWidth, y + 6 + 4,
+                x + 19 - 2 - countWidth, isSmall ? y + 6 + 4 : y + 6 + 3,
                 true,
-                true,
+                isSmall,
                 false,
-                true
+                isSmall
         );
     }
 
@@ -183,7 +192,7 @@ public class ItemRendererHandler extends Handler {
             Component qualityComponent = Component.literal(ComponentHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityComponent.getString().isEmpty()) {
-                guiGraphicsExtractor.text(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
+                guiGraphicsExtractor.text(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 17 - font.lineHeight, CommonColors.WHITE, true);
             }
         }
     }

@@ -37,7 +37,8 @@ public abstract class FishingHookRendererMixin {
 
     @Inject(method = "vertex", at = @At("HEAD"), cancellable = true)
     private static void injectVertex(CallbackInfo ci) {
-        if(Configs.rendererConfig.showNewFishingHook.get()
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.rendererConfig.showNewFishingHook.get()
                 && Configs.mixinConfig.fishingHookRendererMixinVertex.get()
         ) {
             ci.cancel();
@@ -46,7 +47,8 @@ public abstract class FishingHookRendererMixin {
 
     @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/FishingHookRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At("RETURN"))
     private void injectRender(FishingHookRenderState fishingHookRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
-        if(Configs.rendererConfig.showNewFishingHook.get()
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.rendererConfig.showNewFishingHook.get()
                 && Configs.mixinConfig.fishingHookRendererMixinRender.get()
         ) {
             poseStack.pushPose();

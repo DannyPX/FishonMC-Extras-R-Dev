@@ -128,7 +128,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
                 } else {
                     fieldComponent = firstColumnField;
                 }
-                int fieldComponentX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getY() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
+                int fieldComponentX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getX() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
 
                 int field3X = getX() + (width/4) * 3;
                 int field3Width = font.width(ComponentHelper.smallCaps(thirdColumnField.getString()));
@@ -144,7 +144,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
                 if(!itemStacks.isEmpty()) {
                     long seconds = System.currentTimeMillis() / 1000;
                     int itemIndex = (int) (seconds % itemStacks.size());
-                    guiGraphicsExtractor.item(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2);
+                    guiGraphicsExtractor.item(itemStacks.get(itemIndex), getX() + 17 + PADDING_QUART, getY() - 16 / 2 + 4);
                 }
             }
         }
