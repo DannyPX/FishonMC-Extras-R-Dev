@@ -188,7 +188,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         }
 
         if(trackerToTriggerEndEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.literal("Only for 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
@@ -271,7 +271,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 true
         );
 
-        guiGraphicsExtractor.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Trigger C.Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 6,

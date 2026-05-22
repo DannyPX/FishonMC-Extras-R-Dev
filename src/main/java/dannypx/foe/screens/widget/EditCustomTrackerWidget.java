@@ -8,7 +8,7 @@ import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
@@ -284,13 +284,13 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         int entryStartY = getY() + headerHeight + PADDING + (editBoxHeight + PADDING) * 2;
 
-        guiGraphics.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
-        guiGraphics.hLine(getX(), getRight(), getBottom(), CommonColors.GRAY);
-        guiGraphics.vLine(getX(), 0, getBottom(), CommonColors.GRAY);
-        guiGraphics.drawCenteredString(
+        guiGraphicsExtractor.fill(getX(), getY(), getRight(), getBottom(), 0x55000000);
+        guiGraphicsExtractor.horizontalLine(getX(), getRight(), getBottom(), CommonColors.GRAY);
+        guiGraphicsExtractor.verticalLine(getX(), 0, getBottom(), CommonColors.GRAY);
+        guiGraphicsExtractor.centeredText(
                 minecraft.font,
                 header,
                 getX() + width / 2,
@@ -298,14 +298,14 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 CommonColors.WHITE
         );
 
-        idEditBox.render(guiGraphics, mouseX, mouseY, delta);
-        useTrackerCheckbox.render(guiGraphics, mouseX, mouseY, delta);
-        isPersistentCheckbox.render(guiGraphics, mouseX, mouseY, delta);
-        trackerTypeButton.render(guiGraphics, mouseX, mouseY, delta);
-        defaultValueEditBox.render(guiGraphics, mouseX, mouseY, delta);
+        idEditBox.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        useTrackerCheckbox.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        isPersistentCheckbox.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        trackerTypeButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        defaultValueEditBox.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
         if(defaultValueEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(minecraft.font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(minecraft.font, List.of(
                     Component.literal("Default Value"),
                     Component.empty(),
                     Component.literal("This is the default value once the tracker is made").withStyle(ChatFormatting.GRAY),
@@ -316,12 +316,12 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
         }
 
         if(isPersistentCheckbox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(minecraft.font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(minecraft.font, List.of(
                     Component.literal("To keep the value across sessions").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
-        guiGraphics.enableScissor(
+        guiGraphicsExtractor.enableScissor(
                 getX() + PADDING,
                 entryStartY,
                 getRight() - PADDING,
@@ -337,7 +337,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
 
             LineEntry entry = entries.get(i);
             entry.setPosition(getX() + PADDING, entryY, width - PADDING - PADDING - scrollbarWidth - PADDING);
-            entry.render(guiGraphics, mouseX, mouseY, delta);
+            entry.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
         }
 
         int totalContentHeight = entries.size() * LineEntry.HEIGHT;
@@ -350,7 +350,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
 
             int scrollbarX = getX() + width - PADDING - scrollbarWidth;
 
-            guiGraphics.fill(
+            guiGraphicsExtractor.fill(
                     scrollbarX,
                     scrollbarY,
                     scrollbarX + scrollbarWidth,
@@ -359,7 +359,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
             );
         }
 
-        guiGraphics.disableScissor();
+        guiGraphicsExtractor.disableScissor();
     }
 
     @Override
@@ -665,24 +665,24 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
             );
         }
 
-        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-            actionIdEditBoxWidget.render(guiGraphics, mouseX, mouseY, delta);
-            trackerActionEditBoxWidget.render(guiGraphics, mouseX, mouseY, delta);
-            conditionEditBoxWidget.render(guiGraphics, mouseX, mouseY, delta);
-            valueToUseEditBoxWidget.render(guiGraphics, mouseX, mouseY, delta);
-            addButton.render(guiGraphics, mouseX, mouseY, delta);
-            deleteButton.render(guiGraphics, mouseX, mouseY, delta);
+        public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+            actionIdEditBoxWidget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            trackerActionEditBoxWidget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            conditionEditBoxWidget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            valueToUseEditBoxWidget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            addButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+            deleteButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-            this.renderTooltips(guiGraphics, mouseX, mouseY, delta);
+            this.renderTooltips(guiGraphicsExtractor, mouseX, mouseY, delta);
         }
 
-        private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        private void renderTooltips(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
             if(actionIdEditBoxWidget.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.setTooltipForNextFrame(minecraftClient.font, Component.literal("Action ID"), mouseX, mouseY);
+                guiGraphicsExtractor.setTooltipForNextFrame(minecraftClient.font, Component.literal("Action ID"), mouseX, mouseY);
             }
 
             if(trackerActionEditBoxWidget.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.setComponentTooltipForNextFrame(minecraftClient.font, new ArrayList<>(Arrays.asList(
+                guiGraphicsExtractor.setComponentTooltipForNextFrame(minecraftClient.font, new ArrayList<>(Arrays.asList(
                         Component.literal("Tracker Action"),
                         Component.empty(),
                         Component.literal("BOOLEAN").withStyle(ChatFormatting.GRAY),
@@ -697,7 +697,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
             }
 
             if(conditionEditBoxWidget.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.setComponentTooltipForNextFrame(minecraftClient.font, new ArrayList<>(Arrays.asList(
+                guiGraphicsExtractor.setComponentTooltipForNextFrame(minecraftClient.font, new ArrayList<>(Arrays.asList(
                         Component.literal("Condition"),
                         Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY),
                         Component.empty(),
@@ -706,7 +706,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
             }
 
             if(valueToUseEditBoxWidget.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.setComponentTooltipForNextFrame(minecraftClient.font, new ArrayList<>(Arrays.asList(
+                guiGraphicsExtractor.setComponentTooltipForNextFrame(minecraftClient.font, new ArrayList<>(Arrays.asList(
                         Component.literal("Value to use"),
                         Component.literal("Optional if TOGGLE action").withStyle(ChatFormatting.DARK_GRAY),
                         Component.empty(),

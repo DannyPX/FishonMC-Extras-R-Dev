@@ -13,7 +13,7 @@ import dannypx.foe.type.event.EventTrigger;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.Screen;
@@ -58,22 +58,21 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
     @Override
     protected void init() {
         super.init();
-        this.renderWidgets();
+        this.extractRenderWidgets();
         this.resetFields();
     }
 
-    @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderBox(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        this.extractRenderBox(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
-        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
-        this.buttonList.render(guiGraphics, mouseX, mouseY, delta);
+        this.extractRenderText(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.extractRenderTooltip(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.buttonList.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    private void extractRenderTooltip(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         if(eventEditBox.isMouseOver(mouseX, mouseY)) {
             List<Component> suggestions = new ArrayList<>(List.of(
                     Component.literal("Event Types").withStyle(ChatFormatting.GRAY),
@@ -85,11 +84,11 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 suggestions.add(Component.literal("- " + value.name()).withStyle(ChatFormatting.YELLOW));
             }
 
-            guiGraphics.setComponentTooltipForNextFrame(font, suggestions, mouseX, mouseY);
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, suggestions, mouseX, mouseY);
         }
 
         if(notificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("Notification Name").withStyle(ChatFormatting.GRAY)
@@ -97,7 +96,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         }
 
         if(chatNotificationToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("Chat Notification Name").withStyle(ChatFormatting.GRAY)
@@ -105,7 +104,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         }
 
         if(trackerToTriggerEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.GRAY),
@@ -114,15 +113,15 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         }
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawCenteredString(font,
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        guiGraphicsExtractor.centeredText(font,
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2,
                 CommonColors.WHITE
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Name"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
@@ -130,7 +129,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Event Type"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 2,
@@ -138,7 +137,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Trigger Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
@@ -146,7 +145,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Trigger Chat Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 4,
@@ -154,7 +153,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Trigger Tracker"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 5,
@@ -163,18 +162,18 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         );
     }
 
-    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta)
     {
-        guiGraphics.fill(
+        guiGraphicsExtractor.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
                 this.minecraft.getWindow().getGuiScaledWidth(),
                 this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
-        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.horizontalLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.verticalLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
-    private void renderWidgets() {
+    private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());

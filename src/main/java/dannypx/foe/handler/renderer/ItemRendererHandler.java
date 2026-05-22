@@ -11,7 +11,6 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;

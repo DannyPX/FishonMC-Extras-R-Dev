@@ -306,11 +306,10 @@ public class HotbarElement extends Element {
                             isSmall);
                 }
 
-                    if(Configs.hudConfig.showBaitLock.get()
-                            && fishingRodTagObject.getDisableBait()
-                    ) {
-                        guiGraphicsExtractor.text(font, Component.literal("\uD83D\uDD12"), x + 2, y + baitY, CommonColors.WHITE, true);
-                    }
+                if(Configs.hudConfig.showBaitLock.get()
+                        && fishingRodTagObject.getDisableBait()
+                ) {
+                    guiGraphicsExtractor.text(font, Component.literal("\uD83D\uDD12"), x + 2, y + baitY, CommonColors.WHITE, true);
                 }
                 //endregion
             }
