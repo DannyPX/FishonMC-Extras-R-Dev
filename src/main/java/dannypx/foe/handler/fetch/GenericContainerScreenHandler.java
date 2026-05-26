@@ -71,6 +71,7 @@ public class GenericContainerScreenHandler extends Handler {
         else if (Objects.equals(genericContainerScreen.getTitle().getString(), AUCTION_HOUSE_SCREEN_CONTAINER)) {
             AuctionHouseScreenRenderHandler.instance().init(genericContainerScreen);
             ScreenMouseEvents.afterMouseScroll(genericContainerScreen).register(AuctionHouseScreenRenderHandler.instance()::checkMouseScroll);
+            ScreenMouseEvents.afterMouseClick(genericContainerScreen).register(AuctionHouseScreenRenderHandler.instance()::checkMouseClick);
             ScreenEvents.remove(genericContainerScreen).register(AuctionHouseScreenRenderHandler.instance()::onClose);
         }
 
@@ -78,6 +79,7 @@ public class GenericContainerScreenHandler extends Handler {
         else if (genericContainerScreen.getTitle().getString().startsWith(PERSONAL_VAULT_SCREEN_CONTAINER)) {
             PersonalVaultScreenRenderHandler.instance().init(genericContainerScreen);
             ScreenMouseEvents.afterMouseScroll(genericContainerScreen).register(PersonalVaultScreenRenderHandler.instance()::checkMouseScroll);
+            ScreenMouseEvents.afterMouseClick(genericContainerScreen).register(PersonalVaultScreenRenderHandler.instance()::checkMouseClick);
             ScreenEvents.remove(genericContainerScreen).register(PersonalVaultScreenRenderHandler.instance()::onClose);
         }
 
@@ -85,6 +87,7 @@ public class GenericContainerScreenHandler extends Handler {
         else if (Objects.equals(genericContainerScreen.getTitle().getString(), STORAGE_SCREEN_CONTAINER)) {
             ChestScreenRenderHandler.instance().init(genericContainerScreen);
             ScreenEvents.remove(genericContainerScreen).register(ChestScreenRenderHandler.instance()::onClose);
+            ScreenMouseEvents.afterMouseClick(genericContainerScreen).register(ChestScreenRenderHandler.instance()::checkMouseClick);
         }
 
         // Armor Menu Screen

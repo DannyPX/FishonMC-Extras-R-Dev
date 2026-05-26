@@ -300,22 +300,20 @@ public class CatchingHandler extends Handler {
         return null;
     }
 
-    public void scanFishListener() {
-        Component title = TitleHandler.instance().getTitle();
+    public void scanFishListener(Component title) {
+        if(scanDone) {
+            if(title.getString().length() != 1 || title.equals(Component.empty())) {
+                return;
+            }
 
-        if(title.getString().length() != 1 || title.equals(Component.empty())) {
-            return;
-        }
-
-        if(title.getString().charAt(0) > 0xE000 && title.getString().charAt(0) < 0xE999) {
-            this.startScan();
-            LoggerHandler._debug("Start finding fish");
+            if(title.getString().charAt(0) > 0xE000 && title.getString().charAt(0) < 0xE999) {
+                this.startScan();
+                LoggerHandler._debug("Start finding fish [Title]");
+            }
         }
     }
 
-    public void scanFishNameListener() {
-        Component subTitle = TitleHandler.instance().getSubTitle();
-
+    public void scanFishNameListener(Component subTitle) {
         if(subTitle.equals(Component.empty()) || subTitle.getString().isBlank()) {
             return;
         }
@@ -323,6 +321,17 @@ public class CatchingHandler extends Handler {
         if(subTitle.getString().charAt(0) > 0xF000 && subTitle.getString().charAt(0) < 0xF999) {
             fishNameToFind = subTitle.getString();
         }
+    }
+
+    public void scanFishListener() {
+        if(scanDone) {
+            this.startScan();
+            LoggerHandler._debug("Start finding fish [Fish Summary]");
+        }
+    }
+
+    public void scanFishNameListener(String fishNameToFind) {
+        this.fishNameToFind = fishNameToFind;
     }
 
     private void startScan() {

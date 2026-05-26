@@ -31,6 +31,7 @@ public class TimerHandler extends Handler {
     private Map<CustomTimerDataHandler.CustomTimer, Runnable> endOfOffCallbacks = new HashMap<>();
     private Map<CustomTimerDataHandler.CustomTimer, Long> lastTrigger = new HashMap<>();
     private Map<CustomTimerDataHandler.CustomTimer, Long> lastPos = new HashMap<>();
+    private Map<String, Long> lastTriggerCycle = new HashMap<>();
 
     public Pair<Boolean, PlaceholderValue> getTimer(String[] params) {
         if(params.length > 1) {
@@ -150,17 +151,23 @@ public class TimerHandler extends Handler {
                 long cycle = timerPeriod.getTimer() * 1000L + timerPeriod.getOffTimer() * 1000L;
                 if(cycle > 0) {
                     long pos = adjustedWithOffset % cycle;
+                    long cycleIndex = adjustedWithOffset / cycle;
                     long prevPos = lastPos.getOrDefault(timerPeriod, pos);
 
-                    if (crossed(prevPos, pos, 0)) {
+                    long lastOffCycle  = lastTriggerCycle.getOrDefault("off_"  + timerPeriod.hashCode(), -1L);
+                    long lastOnCycle   = lastTriggerCycle.getOrDefault("on_"   + timerPeriod.hashCode(), -1L);
+
+                    if (crossed(prevPos, pos, 0) && cycleIndex != lastOffCycle) {
+                        lastTriggerCycle.put("off_" + timerPeriod.hashCode(), cycleIndex);
                         this.triggerTimer(timerPeriod, timeMillis, endOfOffCallbacks.get(timerPeriod));
                     }
 
-                    if (crossed(prevPos, pos, timerPeriod.getTimer() * 1000L)) {
+                    if (crossed(prevPos, pos, timerPeriod.getTimer() * 1000L) && cycleIndex != lastOnCycle) {
+                        lastTriggerCycle.put("on_" + timerPeriod.hashCode(), cycleIndex);
                         this.triggerTimer(timerPeriod, timeMillis, endOfOnCallbacks.get(timerPeriod));
 
                         // Clean Chat Trigger
-                        String[] chatTriggers = timer.getCleanUpChatTrigger().replaceAll("\\s", "").split("\\s*,\\s*");
+                        String[] chatTriggers = timer.getCleanUpChatTrigger().split("\\s*,\\s*");
                         ChatHandler.instance().cleanChatTriggerStore(chatTriggers);
                     }
 
@@ -170,13 +177,17 @@ public class TimerHandler extends Handler {
                 if(timer.getTimer() > 0) {
                     long interval = timer.getTimer() * 1000L;
                     long pos = adjustedWithOffset % interval;
+                    long cycleIndex = adjustedWithOffset / interval;
                     long prevPos = lastPos.getOrDefault(timer, pos);
 
-                    if (crossed(prevPos, pos, 0)) {
+                    long lastCycle = lastTriggerCycle.getOrDefault("singular_" + timer.hashCode(), -1L);
+
+                    if (crossed(prevPos, pos, 0) && cycleIndex != lastCycle) {
+                        lastTriggerCycle.put("singular_" + timer.hashCode(), cycleIndex);
                         this.triggerTimer(timer, timeMillis, callbacks.get(timer));
 
                         // Clean Chat Trigger
-                        String[] chatTriggers = timer.getCleanUpChatTrigger().replaceAll("\\s", "").split("\\s*,\\s*");
+                        String[] chatTriggers = timer.getCleanUpChatTrigger().split(",");
                         ChatHandler.instance().cleanChatTriggerStore(chatTriggers);
                     }
 
@@ -197,6 +208,7 @@ public class TimerHandler extends Handler {
         endOfOffCallbacks.clear();
         lastTrigger.clear();
         lastPos.clear();
+        lastTriggerCycle.clear();
 
         List<CustomTimerDataHandler.CustomTimer> tempTimers = new ArrayList<>();
         CustomTimerDataHandler.instance().getCustomTimerData().timerList.forEach((name, timer) -> {
