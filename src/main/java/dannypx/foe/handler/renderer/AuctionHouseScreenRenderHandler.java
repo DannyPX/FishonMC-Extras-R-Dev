@@ -86,6 +86,7 @@ public class AuctionHouseScreenRenderHandler extends ScreenHandler {
     }
 
     public void onClose(Screen screen) {
+        searchBarWidget.setFocused(false);
         SearchHandler.instance().setOnScreen(false);
     }
 

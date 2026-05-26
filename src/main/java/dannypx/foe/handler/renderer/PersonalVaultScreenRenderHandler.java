@@ -93,6 +93,7 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     }
 
     public void onClose(Screen screen) {
+        searchBarWidget.setFocused(false);
         SearchHandler.instance().setOnScreen(false);
     }
     //endregion
