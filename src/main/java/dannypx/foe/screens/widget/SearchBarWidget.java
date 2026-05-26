@@ -24,9 +24,7 @@ public class SearchBarWidget extends EditBox {
     @Override
     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.renderWidget(guiGraphics, mouseX, mouseY, delta);
-        SearchHandler.instance().setFocused(this.isFocused());
     }
-
 
     public void render(GuiGraphics guiGraphics, float tickDelta) {
         if(this.isHovered() && this.isFocused()) {
@@ -55,5 +53,11 @@ public class SearchBarWidget extends EditBox {
                 guiGraphics.pose().popMatrix();
             }
         }
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
+        SearchHandler.instance().setFocused(focused);
     }
 }

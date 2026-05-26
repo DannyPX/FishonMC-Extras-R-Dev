@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.ClickType;
@@ -85,16 +86,27 @@ public class AuctionHouseScreenRenderHandler extends ScreenHandler {
         return false;
     }
 
+    public boolean checkMouseClick(Screen screen, MouseButtonEvent context, boolean consumed) {
+        searchBarWidget.setFocused(searchBarWidget.isMouseOver(context.x(), context.y()));
+        SearchHandler.instance().setFocused(searchBarWidget.isMouseOver(context.x(), context.y()));
+
+
+        return consumed;
+    }
+
     public void onClose(Screen screen) {
-        searchBarWidget.setFocused(false);
+        screen.setFocused(null);
+        Screens.getButtons(screen).remove(searchBarWidget);
+        SearchHandler.instance().setFocused(false);
         SearchHandler.instance().setOnScreen(false);
+        searchBarWidget = null;
     }
 
     @Override
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(screen, guiGraphics, mouseX, mouseY, tickDelta);
 
-        searchBarWidget.render(guiGraphics, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.render(guiGraphics, tickDelta);
     }
 
     //endregion

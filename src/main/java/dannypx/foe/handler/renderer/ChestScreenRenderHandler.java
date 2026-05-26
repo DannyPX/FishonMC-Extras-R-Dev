@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
@@ -60,12 +61,22 @@ public class ChestScreenRenderHandler extends ScreenHandler {
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(screen, guiGraphics, mouseX, mouseY, tickDelta);
 
-        searchBarWidget.render(guiGraphics, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.render(guiGraphics, tickDelta);
+    }
+
+    public boolean checkMouseClick(Screen screen, MouseButtonEvent context, boolean consumed) {
+        searchBarWidget.setFocused(searchBarWidget.isMouseOver(context.x(), context.y()));
+        SearchHandler.instance().setFocused(searchBarWidget.isMouseOver(context.x(), context.y()));
+
+        return consumed;
     }
 
     public void onClose(Screen screen) {
-        searchBarWidget.setFocused(false);
+        screen.setFocused(null);
+        Screens.getButtons(screen).remove(searchBarWidget);
+        SearchHandler.instance().setFocused(false);
         SearchHandler.instance().setOnScreen(false);
+        searchBarWidget = null;
     }
     //endregion
 

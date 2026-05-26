@@ -5,6 +5,7 @@ import dannypx.foe.handler.logic.SearchHandler;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import dannypx.foe.config.Configs;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +18,8 @@ public abstract class AbstractContainerScreenMixin {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.abstractContainerScreenMixinKeyPressed.get()
-                && SearchHandler.instance().isFocused()) {
+                && SearchHandler.instance().isFocused()
+        ) {
             cir.setReturnValue(true);
         }
     }
