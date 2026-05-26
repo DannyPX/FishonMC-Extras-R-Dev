@@ -155,9 +155,9 @@ public class ChatHandler extends Handler {
 
     public void cleanChatTriggerStore(String[] chatTriggers) {
         for (String chatTrigger : chatTriggers) {
-            if(storedChatTriggerComponent.containsKey(chatTrigger)) {
+            if(storedChatTriggerComponent.containsKey(chatTrigger.trim())) {
                 CodeExecuterHandler.runLater(2, () -> {
-                    storedChatTriggerComponent.put(chatTrigger, Component.empty());
+                    storedChatTriggerComponent.put(chatTrigger.trim(), Component.empty());
                 });
             }
         }

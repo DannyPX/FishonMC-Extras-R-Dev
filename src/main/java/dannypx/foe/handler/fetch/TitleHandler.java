@@ -63,11 +63,11 @@ public class TitleHandler extends Handler {
     }
 
     private void forwardTitleEvent(Component title) {
-        CatchingHandler.instance().scanFishListener();
+        CatchingHandler.instance().scanFishListener(title);
     }
 
     private void forwardSubTitleEvent(Component subTitle) {
-        CatchingHandler.instance().scanFishNameListener();
+        CatchingHandler.instance().scanFishNameListener(subTitle);
     }
     //endregion
 
