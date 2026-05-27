@@ -117,6 +117,9 @@ public class HandlerConfig extends Config {
     @Desc("§7The item check window before caught fish.\nMake sure this is minimum 50 + (50 * catchingItemsDelayCheck)")
     public ValidatedLong catchingItemsCheckWindow = new ValidatedLong(100L, 1000L, 0L, ValidatedNumber.WidgetType.SLIDER);
 
+    @Desc("§7The fish check window to make sure it does not try to scan more than once")
+    public ValidatedLong catchingFishCheckWindow = new ValidatedLong(100L, 1000L, 0L, ValidatedNumber.WidgetType.SLIDER);
+
     @ConfigGroup.Pop
     @ConfigGroup.Pop
     @Desc("§7The delay in ticks before checking items")
