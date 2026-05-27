@@ -301,7 +301,9 @@ public class CatchingHandler extends Handler {
     }
 
     public void scanFishListener(Component title) {
-        if(scanDone) {
+        if(scanDone
+                && System.currentTimeMillis() - startScanTime > Configs.handlerConfig.catchingFishCheckWindow.get()
+        ) {
             if(title.getString().length() != 1 || title.equals(Component.empty())) {
                 return;
             }
@@ -323,15 +325,20 @@ public class CatchingHandler extends Handler {
         }
     }
 
-    public void scanFishListener() {
-        if(scanDone) {
+    public void scanFishListener(String fishNameToFind) {
+        if(scanDone
+                && System.currentTimeMillis() - startScanTime > Configs.handlerConfig.catchingFishCheckWindow.get()
+        ) {
+            this.scanFishNameListener(fishNameToFind);
             this.startScan();
             LoggerHandler._debug("Start finding fish [Fish Summary]");
         }
     }
 
     public void scanFishNameListener(String fishNameToFind) {
-        this.fishNameToFind = fishNameToFind;
+        if(!fishNameToFind.isBlank()) {
+            this.fishNameToFind = fishNameToFind;
+        }
     }
 
     private void startScan() {

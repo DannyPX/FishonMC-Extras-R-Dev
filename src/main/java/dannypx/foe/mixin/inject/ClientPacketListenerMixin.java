@@ -5,15 +5,20 @@ import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.handler.store.ConstantDataHandler;
+import dannypx.foe.item.FishTagObject;
+import dannypx.foe.item.TagObject;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -57,9 +62,18 @@ public abstract class ClientPacketListenerMixin {
                 && !uuids.contains(textDisplay.getUUID())
         ) {
             String[] lines = textDisplay.getText().getString().split("\n");
-            if(lines.length > 6) {
-                CatchingHandler.instance().scanFishNameListener(lines[lines.length - 6]);
-                CatchingHandler.instance().scanFishListener();
+            if(lines.length > 5) {
+                int index = -1;
+                for (int i = 0; i < lines.length; i++) {
+                    int lineIndex = i;
+                    if(ConstantDataHandler.instance().getConstantData().fishData.get(TagObject.RARITY).values().stream().anyMatch(icon -> lines[lineIndex].contains(icon.getString()))) {
+                        index = i - 1;
+                    }
+                }
+
+                if(index != -1) {
+                    CatchingHandler.instance().scanFishListener(lines[index]);
+                }
 
                 uuids.add(textDisplay.getUUID());
             }
