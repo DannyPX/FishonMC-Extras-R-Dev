@@ -5,15 +5,18 @@ import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.LoggerHandler;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -22,6 +25,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin {
+    @Unique
     private List<UUID> uuids = new ArrayList<>();
 
     @Inject(method = "handlePlayerInfoUpdate", at = @At("TAIL"))
@@ -57,9 +61,21 @@ public abstract class ClientPacketListenerMixin {
                 && !uuids.contains(textDisplay.getUUID())
         ) {
             String[] lines = textDisplay.getText().getString().split("\n");
+
             if(lines.length > 6) {
-                CatchingHandler.instance().scanFishNameListener(lines[lines.length - 6]);
-                CatchingHandler.instance().scanFishListener();
+                String found = Arrays.stream(lines)
+                        .filter(line -> {
+                            if (line.isEmpty()) return false;
+                            char c = line.charAt(line.length() - 1);
+                            return c >= 0xE000 && c <= 0xE999;
+                        })
+                        .findFirst()
+                        .orElse(null);
+
+                if(found != null) {
+                    CatchingHandler.instance().scanFishNameListener(found);
+                    CatchingHandler.instance().scanFishListener();
+                }
 
                 uuids.add(textDisplay.getUUID());
             }
