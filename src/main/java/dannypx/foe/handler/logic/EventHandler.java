@@ -45,6 +45,14 @@ public class EventHandler extends Handler {
         this.sendEventTrigger(EventTrigger.ON_CREW_LEAVE);
     }
 
+    public void onFullInventory() {
+        this.sendEventTrigger(EventTrigger.ON_FULL_INVENTORY);
+    }
+
+    public void onNearFullInventory() {
+        this.sendEventTrigger(EventTrigger.ON_NEAR_FULL_INVENTORY);
+    }
+
     private void sendEventTrigger(EventTrigger eventTrigger) {
         CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.forEach((name, event) -> {
             if(event.isUseEventTrigger() && event.getEvent() == eventTrigger) {
