@@ -19,10 +19,13 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 public class PlaceholderHandler extends Handler {
@@ -146,7 +149,10 @@ public class PlaceholderHandler extends Handler {
 
                 switch (functionResult.value2()) {
                     case StringValue stringValue -> parsed = ComponentHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
-                    case ComponentValue componentValue -> parsed = Pair.of(componentValue.value().copy(), componentValue.value().getStyle());
+                    case ComponentValue componentValue -> {
+                        MutableComponent merged = applyStyleRecursive(componentValue.value(), activeStyle);
+                        parsed = Pair.of(merged, merged.getStyle());
+                    }
                 }
 
                 result.append(parsed.value1());
@@ -645,6 +651,26 @@ public class PlaceholderHandler extends Handler {
             } catch (Exception ignored) {}
         }
         return 0;
+    }
+
+    private static MutableComponent applyStyleRecursive(Component component, Style activeStyle) {
+        Style ownStyle = component.getStyle();
+        TextColor color = ownStyle.getColor();
+
+        boolean isWhiteOrNone = color == null
+                || color.getValue() == TextColor.fromLegacyFormat(ChatFormatting.WHITE).getValue();
+
+        Style finalStyle = isWhiteOrNone ? activeStyle : ownStyle;
+
+        MutableComponent result = MutableComponent.create(component.getContents()).setStyle(finalStyle);
+
+        if (!component.getSiblings().isEmpty()) {
+            for (Component sibling : component.getSiblings()) {
+                result.append(applyStyleRecursive(sibling, activeStyle));
+            }
+        }
+
+        return result;
     }
     //endregion
 
