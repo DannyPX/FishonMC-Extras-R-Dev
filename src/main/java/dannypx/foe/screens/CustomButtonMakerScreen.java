@@ -308,7 +308,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         return Button.builder(
                         Component.literal("Import"),
                         (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
                                 String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 

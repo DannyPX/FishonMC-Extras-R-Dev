@@ -371,7 +371,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         return Button.builder(
                         Component.literal("Import"),
                         (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
                                 String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
 
