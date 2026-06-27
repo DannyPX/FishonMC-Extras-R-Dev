@@ -86,7 +86,7 @@ public class CustomTrackerDataHandler extends Handler {
             this.updateCustomTrackerData();
         } else if(!CustomTrackerDataModel.CUSTOM_TRACKER_DATA_MODEL_VERSION.equals(customTrackerData.version)) {
             customTrackerData.version = CustomTrackerDataModel.CUSTOM_TRACKER_DATA_MODEL_VERSION;
-            this.updateDefault();
+            this.fixDefault();
             needsUpdate = true;
         }
     }
@@ -139,7 +139,6 @@ public class CustomTrackerDataHandler extends Handler {
 
         customTrackerData.trackerList.put(currentSelectedTracker, newTracker);
         needsUpdate = true;
-
     }
 
     public void updateTracker(String trackerAndActionCode) {
@@ -158,7 +157,9 @@ public class CustomTrackerDataHandler extends Handler {
                             case BOOLEAN -> {
                                 BooleanValue valueToUse = action.value3() instanceof EmptyValue
                                         ? (BooleanValue) BooleanValue.getFalse()
-                                        : (BooleanValue) action.value3();
+                                        : action.value3() instanceof PlaceholderStringValue(String value)
+                                          ? (BooleanValue) BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value)))
+                                          : (BooleanValue) action.value3();
                                 BooleanValue value = (BooleanValue) tracker.value;
 
                                 switch (action.value1()) {
@@ -167,7 +168,9 @@ public class CustomTrackerDataHandler extends Handler {
                                 }
                             }
                             case INTEGER -> {
-                                NumberValue valueToUse = (NumberValue) action.value3();
+                                NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
+                                        ? (NumberValue) NumberValue.of(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value)))
+                                        : (NumberValue) action.value3();
                                 NumberValue value = (NumberValue) tracker.value;
 
                                 switch (action.value1()) {
@@ -189,13 +192,17 @@ public class CustomTrackerDataHandler extends Handler {
         }
     }
 
-    public void updateTracker(String tracker, TrackerAction trackerAction, TrackerValue value) {
+    public void updateTracker(String tracker, TrackerAction trackerAction, TrackerValue valueToUse) {
         if(customTrackerData.trackerList.containsKey(tracker)) {
             switch (trackerAction) {
                 case SET -> {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
-                    newTracker.value = value;
+                    if(valueToUse instanceof BooleanValue || valueToUse instanceof NumberValue) {
+                        newTracker.value = valueToUse;
+                    } else if(valueToUse instanceof PlaceholderStringValue(String value1)) {
+                        newTracker.value = BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value1)));
+                    }
 
                     customTrackerData.trackerList.put(tracker, newTracker);
                     needsUpdate = true;
@@ -214,9 +221,13 @@ public class CustomTrackerDataHandler extends Handler {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
                     if(newTracker.value instanceof NumberValue currentValue
-                            && value instanceof NumberValue(int value1)
+                            && valueToUse instanceof NumberValue(float value1)
                     ) {
                         newTracker.value = currentValue.addValue(value1);
+                    } else if(newTracker.value instanceof NumberValue currentValue
+                            && valueToUse instanceof PlaceholderStringValue(String value1)
+                    ) {
+                        newTracker.value = currentValue.addValue(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value1)));
                     }
 
                     customTrackerData.trackerList.put(tracker, newTracker);
@@ -226,9 +237,13 @@ public class CustomTrackerDataHandler extends Handler {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
                     if(newTracker.value instanceof NumberValue currentValue
-                            && value instanceof NumberValue(int value1)
+                            && valueToUse instanceof NumberValue(float value1)
                     ) {
                         newTracker.value = currentValue.subtractValue(value1);
+                    } else if(newTracker.value instanceof NumberValue currentValue
+                            && valueToUse instanceof PlaceholderStringValue(String value1)
+                    ) {
+                        newTracker.value = currentValue.subtractValue(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value1)));
                     }
 
                     customTrackerData.trackerList.put(tracker, newTracker);
@@ -236,12 +251,6 @@ public class CustomTrackerDataHandler extends Handler {
                 }
             }
         }
-    }
-
-    public void updateDefault() {
-        CustomTrackerDataModel.defaultTrackers.forEach((key, timer) -> {
-            customTrackerData.trackerList.putIfAbsent(key, timer);
-        });
     }
 
     public void fixDefault() {
@@ -258,7 +267,7 @@ public class CustomTrackerDataHandler extends Handler {
 
     //region Model
     public static class CustomTrackerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_TRACKER_DATA_MODEL_VERSION = "0.1";
+        private static final String CUSTOM_TRACKER_DATA_MODEL_VERSION = "0.2";
 
         private static final Map<String, CustomTracker> defaultTrackers = Map.of(
                 "FabledEvent", new CustomTracker(
@@ -266,7 +275,7 @@ public class CustomTrackerDataHandler extends Handler {
                         TrackerType.BOOLEAN,
                         BooleanValue.getFalse(),
                         BooleanValue.getFalse(),
-                        true,
+                        false,
                         true,
                         new HashMap<>(Map.of(
                                 "SetFalse", Triplet.of(TrackerAction.SET, "", BooleanValue.getFalse()),

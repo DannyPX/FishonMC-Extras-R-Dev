@@ -171,6 +171,10 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 defaultValueEditBox.setValue(String.valueOf(numberValue.value()));
                 defaultValueEditBox.setHint(Component.literal(String.valueOf(numberValue.value())));
             }
+            case PlaceholderStringValue placeholderStringValue -> {
+                defaultValueEditBox.setValue(placeholderStringValue.value());
+                defaultValueEditBox.setHint(Component.literal(placeholderStringValue.value()));
+            }
             case ErrorValue ignored -> {
                 defaultValueEditBox.setValue("");
                 defaultValueEditBox.setHint(Component.empty());
@@ -526,6 +530,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
             this.valueToUse = String.valueOf(switch (valueToUse) {
                 case BooleanValue booleanValue -> booleanValue.value();
                 case NumberValue numberValue -> numberValue.value();
+                case PlaceholderStringValue placeholderStringValue -> placeholderStringValue.value();
                 default -> "";
             });
             this.width = width;
