@@ -627,6 +627,25 @@ public class PlaceholderHandler extends Handler {
         Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack);
         return getNbtValue(item.value2(), field);
     }
+
+    public static boolean getBoolean(Pair<Boolean, MutableComponent> value) {
+        if(value.value1()) {
+            if("true".equals(value.value2().getString()) || "false".equals(value.value2().getString())) {
+                return Boolean.parseBoolean(value.value2().getString());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static float getNumber(Pair<Boolean, MutableComponent> value) {
+        if(value.value1()) {
+            try {
+                return Float.parseFloat(value.value2().getString());
+            } catch (Exception ignored) {}
+        }
+        return 0;
+    }
     //endregion
 
     //region Dev

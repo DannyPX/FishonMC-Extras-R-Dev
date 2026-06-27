@@ -167,7 +167,7 @@ public class TimerHandler extends Handler {
                         this.triggerTimer(timerPeriod, timeMillis, endOfOnCallbacks.get(timerPeriod));
 
                         // Clean Chat Trigger
-                        String[] chatTriggers = timer.getCleanUpChatTrigger().split("\\s*,\\s*");
+                        String[] chatTriggers = timer.getCleanUpChatTrigger().split(",");
                         ChatHandler.instance().cleanChatTriggerStore(chatTriggers);
                     }
 

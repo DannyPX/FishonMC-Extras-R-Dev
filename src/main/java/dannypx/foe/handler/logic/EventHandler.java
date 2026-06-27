@@ -27,7 +27,12 @@ public class EventHandler extends Handler {
     //region Methods
     public void onJoin() {
         if(minecraft.player != null) {
+            InventoryHandler.instance().snapshotInventory();
             if(Configs.handlerConfig.openEventsOnJoin.get()) minecraft.player.connection.sendCommand("events");
+
+            //Update UI for missing HUD elements
+            minecraft.options.hideGui = true;
+            minecraft.options.hideGui = false;
 
             this.sendEventTrigger(EventTrigger.ON_JOIN);
         }
@@ -43,6 +48,14 @@ public class EventHandler extends Handler {
 
     public void onCrewLeave() {
         this.sendEventTrigger(EventTrigger.ON_CREW_LEAVE);
+    }
+
+    public void onFullInventory() {
+        this.sendEventTrigger(EventTrigger.ON_FULL_INVENTORY);
+    }
+
+    public void onNearFullInventory() {
+        this.sendEventTrigger(EventTrigger.ON_NEAR_FULL_INVENTORY);
     }
 
     private void sendEventTrigger(EventTrigger eventTrigger) {

@@ -17,6 +17,7 @@ public class TrackerValueAdapter extends TypeAdapter<TrackerValue> {
         switch (value) {
             case BooleanValue booleanValue -> writer.value(booleanValue.value());
             case NumberValue numberValue -> writer.value(numberValue.value());
+            case PlaceholderStringValue placeholderStringValue -> writer.value(placeholderStringValue.value());
             case EmptyValue ignored -> writer.value("");
             default -> throw new IllegalStateException("Unexpected value: " + value);
         }
@@ -40,8 +41,14 @@ public class TrackerValueAdapter extends TypeAdapter<TrackerValue> {
         } catch (Exception ignored) {}
 
         try {
+            double parsed = reader.nextDouble();
+            return NumberValue.of((float) parsed);
+        } catch (Exception ignored) {}
+
+        try {
             String parsed = reader.nextString();
             if(parsed.isEmpty()) return EmptyValue.getDefault();
+            if(parsed.startsWith("%") && parsed.endsWith("%")) return PlaceholderStringValue.of(parsed);
         } catch (Exception ignored) {}
 
         return new ErrorValue();

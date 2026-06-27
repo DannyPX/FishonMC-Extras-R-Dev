@@ -364,7 +364,7 @@ public class CommandRegistry {
 
                     try {
                         if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.INTEGER) {
-                            int parsed = Integer.parseInt(value);
+                            float parsed = Float.parseFloat(value);
                             TrackerValue trackerValue = NumberValue.of(parsed);
                             return updateValue(context, TrackerAction.SET, tracker, trackerValue);
                         } else {
