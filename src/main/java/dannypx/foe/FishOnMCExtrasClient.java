@@ -54,7 +54,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
     }
 
-
     private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines) {
         TooltipHandler.instance().fetchTooltip(itemStack, tooltipContext, tooltipType, lines);
     }

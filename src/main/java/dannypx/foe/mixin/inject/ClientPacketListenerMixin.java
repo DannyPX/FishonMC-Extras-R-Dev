@@ -5,15 +5,12 @@ import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.handler.store.ConstantDataHandler;
-import dannypx.foe.item.FishTagObject;
-import dannypx.foe.item.TagObject;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -27,6 +24,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
 @Mixin(ClientPacketListener.class)
 public abstract class ClientPacketListenerMixin {
+    @Unique
     private List<UUID> uuids = new ArrayList<>();
 
     @Inject(method = "handlePlayerInfoUpdate", at = @At("TAIL"))
@@ -62,18 +60,15 @@ public abstract class ClientPacketListenerMixin {
                 && !uuids.contains(textDisplay.getUUID())
         ) {
             String[] lines = textDisplay.getText().getString().split("\n");
-            if(lines.length > 5) {
-                int index = -1;
-                for (int i = 0; i < lines.length; i++) {
-                    int lineIndex = i;
-                    if(ConstantDataHandler.instance().getConstantData().fishData.get(TagObject.RARITY).values().stream().anyMatch(icon -> lines[lineIndex].contains(icon.getString()))) {
-                        index = i - 1;
-                    }
-                }
 
-                if(index != -1) {
-                    CatchingHandler.instance().scanFishListener(lines[index]);
-                }
+            if(lines.length > 6) {
+                Arrays.stream(lines)
+                        .filter(line -> {
+                            if (line.isEmpty()) return false;
+                            char c = line.charAt(line.length() - 1);
+                            return c >= 0xE000 && c <= 0xE999;
+                        })
+                        .findFirst().ifPresent(found -> CatchingHandler.instance().scanFishListener(found));
 
                 uuids.add(textDisplay.getUUID());
             }

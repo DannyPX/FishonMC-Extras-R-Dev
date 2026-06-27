@@ -1,5 +1,6 @@
 package dannypx.foe.handler.logic;
 
+import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.NetworkHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
@@ -335,6 +336,15 @@ public class InventoryHandler extends Handler {
         if(currentEmptySlots != empty) {
             currentEmptySlots = empty;
             NotifierHandler.instance().notifyEmptySlots(currentEmptySlots);
+
+            //Event Trigger
+            if(currentEmptySlots <= Configs.hudConfig.showNotificationAtEmptySlots.get()) {
+                if(currentEmptySlots == 0) {
+                    EventHandler.instance().onFullInventory();
+                } else {
+                    EventHandler.instance().onNearFullInventory();
+                }
+            }
         }
     }
 
