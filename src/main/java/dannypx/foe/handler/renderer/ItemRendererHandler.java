@@ -10,6 +10,8 @@ import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -192,6 +194,35 @@ public class ItemRendererHandler extends Handler {
 
             if(!qualityComponent.getString().isEmpty()) {
                 guiGraphics.drawString(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 17 - font.lineHeight, CommonColors.WHITE, true);
+            }
+        }
+    }
+
+    public void drawBaitStackerMarker(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+        if(minecraft.player != null) {
+            ItemStack cursorItem = minecraft.player.containerMenu.getCarried();
+
+            if(!cursorItem.isEmpty()
+                    && cursorItem != stack
+            ) {
+                Pair<Boolean, TagObject> validatedCursor = ValidateItem.isType(cursorItem);
+
+                if(validatedCursor.value1()
+                        && (
+                                validatedCursor.value2().getType().equals("bait")
+                )) {
+                    Pair<Boolean,TagObject> validatedItem = ValidateItem.isType(stack);
+
+                    if(validatedItem.value1()
+                            && (
+                                    validatedItem.value2().getType().equals("bait")
+                            )
+                            && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))
+                    ) {
+                        Component baitStackIcon = Component.literal("+").withStyle(ChatFormatting.GREEN);
+                        guiGraphics.drawString(font, baitStackIcon, x + 17 - font.width(baitStackIcon), y - 1, CommonColors.GREEN, true);
+                    }
+                }
             }
         }
     }
