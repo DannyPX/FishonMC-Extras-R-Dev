@@ -10,10 +10,7 @@ import dannypx.foe.helper.ComponentHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomTrackerWidget;
-import dannypx.foe.type.custom_value.BooleanValue;
-import dannypx.foe.type.custom_value.EmptyValue;
-import dannypx.foe.type.custom_value.NumberValue;
-import dannypx.foe.type.custom_value.TrackerValue;
+import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
@@ -297,7 +294,7 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                         }
 
                         try {
-                            int parsed = Integer.parseInt(editCustomTrackerWidget.defaultValue);
+                            float parsed = Float.parseFloat(editCustomTrackerWidget.defaultValue);
                             defaultValue = new NumberValue(parsed);
                             couldParse.set(true);
                         } catch (Exception ignored) {}
@@ -325,9 +322,13 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                             }
 
                             try {
-                                Integer.parseInt(lineEntry.valueToUse);
+                                Float.parseFloat(lineEntry.valueToUse);
                                 couldParseValueToUse.set(true);
                             } catch (Exception ignored) {}
+
+                            if(lineEntry.valueToUse.startsWith("%") || lineEntry.valueToUse.endsWith("%")) {
+                                couldParseValueToUse.set(true);
+                            }
 
                             if(lineEntry.valueToUse.isEmpty()) {
                                 couldParseValueToUse.set(true);
@@ -414,8 +415,12 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                                         TrackerAction.valueOf(lineEntry.trackerAction),
                                         lineEntry.condition,
                                         !lineEntry.valueToUse.isEmpty() ? switch (editCustomTrackerWidget.trackerType) {
-                                            case BOOLEAN -> BooleanValue.of(Boolean.parseBoolean(lineEntry.valueToUse));
-                                            case INTEGER -> NumberValue.of(Integer.parseInt(lineEntry.valueToUse));
+                                            case BOOLEAN -> (lineEntry.valueToUse.startsWith("%") && lineEntry.valueToUse.endsWith("%"))
+                                                            ? PlaceholderStringValue.of(lineEntry.valueToUse)
+                                                            : BooleanValue.of(Boolean.parseBoolean(lineEntry.valueToUse));
+                                            case INTEGER -> (lineEntry.valueToUse.startsWith("%") && lineEntry.valueToUse.endsWith("%"))
+                                                            ? PlaceholderStringValue.of(lineEntry.valueToUse)
+                                                            : NumberValue.of(Float.parseFloat(lineEntry.valueToUse));
                                         } : EmptyValue.getDefault()
                                 ))).collect(Collectors.toMap(Pair::value1, Pair::value2))
                         );

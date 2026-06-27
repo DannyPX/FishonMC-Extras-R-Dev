@@ -27,6 +27,7 @@ public class EventHandler extends Handler {
     //region Methods
     public void onJoin() {
         if(minecraft.player != null) {
+            InventoryHandler.instance().snapshotInventory();
             if(Configs.handlerConfig.openEventsOnJoin.get()) minecraft.player.connection.sendCommand("events");
 
             this.sendEventTrigger(EventTrigger.ON_JOIN);
