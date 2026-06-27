@@ -30,6 +30,10 @@ public class EventHandler extends Handler {
             InventoryHandler.instance().snapshotInventory();
             if(Configs.handlerConfig.openEventsOnJoin.get()) minecraft.player.connection.sendCommand("events");
 
+            //Update UI for missing HUD elements
+            minecraft.options.hideGui = true;
+            minecraft.options.hideGui = false;
+
             this.sendEventTrigger(EventTrigger.ON_JOIN);
         }
     }
