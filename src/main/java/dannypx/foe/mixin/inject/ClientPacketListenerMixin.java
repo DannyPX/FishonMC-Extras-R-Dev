@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -61,19 +62,13 @@ public abstract class ClientPacketListenerMixin {
             String[] lines = textDisplay.getText().getString().split("\n");
 
             if(lines.length > 6) {
-                String found = Arrays.stream(lines)
+                Arrays.stream(lines)
                         .filter(line -> {
                             if (line.isEmpty()) return false;
                             char c = line.charAt(line.length() - 1);
                             return c >= 0xE000 && c <= 0xE999;
                         })
-                        .findFirst()
-                        .orElse(null);
-
-                if(found != null) {
-                    CatchingHandler.instance().scanFishNameListener(found);
-                    CatchingHandler.instance().scanFishListener();
-                }
+                        .findFirst().ifPresent(found -> CatchingHandler.instance().scanFishListener(found));
 
                 uuids.add(textDisplay.getUUID());
             }
