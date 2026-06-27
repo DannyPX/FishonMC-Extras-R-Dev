@@ -5,7 +5,6 @@ import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.handler.logic.LoggerHandler;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.client.multiplayer.ClientPacketListener;
