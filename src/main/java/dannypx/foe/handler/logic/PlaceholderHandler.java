@@ -55,6 +55,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("chat", ChatHandler.instance()::getChat),
             Map.entry("timer", TimerHandler.instance()::getTimer),
             Map.entry("catch", CatchingHandler.instance()::getCatch),
+            Map.entry("quest", QuestHandler.instance()::getQuest),
             Map.entry("tracker_data", CustomTrackerDataHandler.instance()::getCustomTrackerData),
             Map.entry("constant_data", ConstantDataHandler.instance()::getConstantData),
             Map.entry("profile_data", ProfileDataHandler.instance()::getProfileData),

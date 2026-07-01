@@ -1,10 +1,7 @@
 package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.logic.ChatNotifierHandler;
-import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.handler.logic.NotifierHandler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
+import dannypx.foe.handler.logic.*;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
@@ -75,6 +72,7 @@ public class ChatHandler extends Handler {
         if(this.inBlackList(component)) return;
         
         this.checkPet(component);
+        this.checkQuest(component);
         this.checkChatTrigger(component);
     }
 
@@ -95,6 +93,12 @@ public class ChatHandler extends Handler {
             ProfileDataHandler.instance().updateTournamentContribution(true);
         } else if(component.getString().startsWith("TOURNAMENT You have DISABLED tournament contributions")) {
             ProfileDataHandler.instance().updateTournamentContribution(false);
+        }
+    }
+
+    private void checkQuest(Component component) {
+        if(component.getString().startsWith("QUEST Complete")) {
+            QuestHandler.instance().initScan();
         }
     }
 

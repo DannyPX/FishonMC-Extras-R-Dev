@@ -7,5 +7,6 @@ public enum EventTrigger {
     ON_CATCH,
     ON_NEAR_FULL_INVENTORY,
     ON_FULL_INVENTORY,
+    ON_QUEST_COMPLETE,
     DEFAULT
 }

@@ -96,6 +96,9 @@ public class HandlerConfig extends Config {
     @Desc("§7Handles the timers")
     public ValidatedBoolean timerHandler = new ValidatedBoolean(true);
 
+    @Desc("§7Handles the quests")
+    public ValidatedBoolean questHandler = new ValidatedBoolean(true);
+
     @Name("Event Handler")
     @Desc("§7Handles logic of client events")
     public ConfigGroup eventLogicGroup = new ConfigGroup("event_logic_group");
@@ -121,10 +124,23 @@ public class HandlerConfig extends Config {
     public ValidatedLong catchingFishCheckWindow = new ValidatedLong(100L, 1000L, 0L, ValidatedNumber.WidgetType.SLIDER);
 
     @ConfigGroup.Pop
-    @ConfigGroup.Pop
     @Desc("§7The delay in ticks before checking items")
     public ValidatedInt catchingItemsDelayCheck = new ValidatedInt(1, 20, 0, ValidatedNumber.WidgetType.SLIDER);
 
+    @Name("Quest Handler")
+    @Desc("§7Handles logic of quests")
+    public ConfigGroup questLogicGroup = new ConfigGroup("quest_logic_group");
+
+    @Desc("§7The cooldown in seconds before quest reward scanning stops")
+    public ValidatedInt rewardStatusCooldown = new ValidatedInt(1, 60, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @Desc("§7The delay in ticks before checking items")
+    public ValidatedInt rewardsItemsDelayCheck = new ValidatedInt(1, 20, 0, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @ConfigGroup.Pop
+    @Desc("§7The item check window after initial quest check.\nMake sure this is minimum 50 + (50 * rewardsItemsDelayCheck)")
+    public ValidatedLong rewardsItemsCheckWindow = new ValidatedLong(100L, 1000L, 0L, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Debug message dismissal time")
     @Desc("§7How long in seconds, before the notification dismisses")

@@ -58,6 +58,10 @@ public class EventHandler extends Handler {
         this.sendEventTrigger(EventTrigger.ON_NEAR_FULL_INVENTORY);
     }
 
+    public void onQuestComplete() {
+        this.sendEventTrigger(EventTrigger.ON_QUEST_COMPLETE);
+    }
+
     private void sendEventTrigger(EventTrigger eventTrigger) {
         CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.forEach((name, event) -> {
             if(event.isUseEventTrigger() && event.getEvent() == eventTrigger) {
