@@ -1,7 +1,6 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.fetch.TitleHandler;
 import dannypx.foe.handler.store.QuestDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.item.FishTagObject;
@@ -52,7 +51,7 @@ public class CatchingHandler extends Handler {
     private Pair<Pair<String, Integer>, Pair<String, Integer>> lastDataPet = null;
 
     // Item RawItemName
-    private List<Pair<TagObject, Pair<String, Integer>>> lastCaughtItems = new ArrayList<>();
+    private List<Triplet<TagObject, Integer, Pair<String, Integer>>> lastCaughtItems = new ArrayList<>();
 
     public boolean isScanDone() {
         return scanDone;
@@ -148,13 +147,14 @@ public class CatchingHandler extends Handler {
                                 try {
                                     int index = Integer.parseInt(params[2]);
                                     if(index < lastCaughtItems.size()) {
-                                        Pair<TagObject, Pair<String, Integer>> lastCaughtItem = lastCaughtItems.get(index);
+                                        Triplet<TagObject, Integer, Pair<String, Integer>> lastCaughtItem = lastCaughtItems.get(index);
 
                                         yield switch (params[3]) {
                                             case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastCaughtItem.value1().getName()));
+                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(lastCaughtItem.value2())));
                                             case "dry_streak" -> switch (params[4]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(lastCaughtItem.value2().value1()));
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(lastCaughtItem.value2().value2())));
+                                                case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(lastCaughtItem.value3().value1()));
+                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(lastCaughtItem.value3().value2())));
                                                 default -> PlaceholderHandler.noResult();
                                             };
                                             default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
@@ -232,7 +232,7 @@ public class CatchingHandler extends Handler {
                 lastDataPet = prevStats;
             } else {
                 Pair<String, Integer> prevStats = StatsDataHandler.instance().setOtherItem(validatedItem.value2(), count);
-                lastCaughtItems.add(Pair.of(validatedItem.value2(), prevStats));
+                lastCaughtItems.add(Triplet.of(validatedItem.value2(), count, prevStats));
             }
             LoggerHandler._debug("Found Item: " + itemStack.getHoverName().getString(), itemStack);
         }
