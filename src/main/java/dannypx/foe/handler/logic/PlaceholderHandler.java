@@ -69,6 +69,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("condition", PlaceholderHandler::parseConditionFromString),
             Map.entry("is_blank", param -> parseIsBlankFromString(param, true)),
             Map.entry("is_not_blank", param -> parseIsBlankFromString(param, false)),
+            Map.entry("contains", PlaceholderHandler::parseContainsFromString),
             Map.entry("or", PlaceholderHandler::parseOrFromString),
             Map.entry("and", PlaceholderHandler::parseAndFromString),
             Map.entry("not", PlaceholderHandler::parseNotFromString),
@@ -237,6 +238,32 @@ public class PlaceholderHandler extends Handler {
             }
 
             return Pair.of(leftField.isBlank() == isBlank, StringValue.empty());
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> parseContainsFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableComponent> leftField;
+            Pair<Boolean, MutableComponent> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
+            }
+
+            if(leftField.value1() && rightField.value1()) {
+                boolean hasContainingValue = leftField.value2().getString().contains(rightField.value2().getString());
+
+                return Pair.of(hasContainingValue, StringValue.empty());
+            }
         }
         return noResult();
     }
