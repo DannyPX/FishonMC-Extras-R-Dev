@@ -5,7 +5,7 @@ import dannypx.foe.handler.fetch.*;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.helper.FunctionParser;
 import dannypx.foe.helper.MathHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.search.Operator;
@@ -19,10 +19,13 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 public class PlaceholderHandler extends Handler {
@@ -52,6 +55,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("chat", ChatHandler.instance()::getChat),
             Map.entry("timer", TimerHandler.instance()::getTimer),
             Map.entry("catch", CatchingHandler.instance()::getCatch),
+            Map.entry("quest", QuestHandler.instance()::getQuest),
             Map.entry("tracker_data", CustomTrackerDataHandler.instance()::getCustomTrackerData),
             Map.entry("constant_data", ConstantDataHandler.instance()::getConstantData),
             Map.entry("profile_data", ProfileDataHandler.instance()::getProfileData),
@@ -65,6 +69,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("condition", PlaceholderHandler::parseConditionFromString),
             Map.entry("is_blank", param -> parseIsBlankFromString(param, true)),
             Map.entry("is_not_blank", param -> parseIsBlankFromString(param, false)),
+            Map.entry("contains", PlaceholderHandler::parseContainsFromString),
             Map.entry("or", PlaceholderHandler::parseOrFromString),
             Map.entry("and", PlaceholderHandler::parseAndFromString),
             Map.entry("not", PlaceholderHandler::parseNotFromString),
@@ -115,7 +120,7 @@ public class PlaceholderHandler extends Handler {
             if (startPlaceholderPos > lastEnd) {
                 String before = input.substring(lastEnd, startPlaceholderPos);
                 Pair<MutableComponent, Style> parsed =
-                        ComponentHelper.parseLegacyWithStyle(before, activeStyle);
+                        TextHelper.parseLegacyWithStyle(before, activeStyle);
 
                 result.append(parsed.value1());
                 activeStyle = parsed.value2();
@@ -145,8 +150,11 @@ public class PlaceholderHandler extends Handler {
                 Pair<MutableComponent, Style> parsed;
 
                 switch (functionResult.value2()) {
-                    case StringValue stringValue -> parsed = ComponentHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
-                    case ComponentValue componentValue -> parsed = Pair.of(componentValue.value().copy(), componentValue.value().getStyle());
+                    case StringValue stringValue -> parsed = TextHelper.parseLegacyWithStyle(stringValue.value(), activeStyle);
+                    case ComponentValue componentValue -> {
+                        MutableComponent merged = applyStyleRecursive(componentValue.value(), activeStyle);
+                        parsed = Pair.of(merged, merged.getStyle());
+                    }
                 }
 
                 result.append(parsed.value1());
@@ -161,7 +169,7 @@ public class PlaceholderHandler extends Handler {
 
         if (lastEnd < input.length()) {
             String remaining = input.substring(lastEnd);
-            Pair<MutableComponent, Style> parsed = ComponentHelper.parseLegacyWithStyle(remaining, activeStyle);
+            Pair<MutableComponent, Style> parsed = TextHelper.parseLegacyWithStyle(remaining, activeStyle);
             result.append(parsed.value1());
         }
 
@@ -201,12 +209,12 @@ public class PlaceholderHandler extends Handler {
                 float leftFloat = Float.parseFloat(leftField);
                 float rightFloat = Float.parseFloat(rightField);
 
-                return Pair.of(MathHelper.checkOperation(placeholder.operator, leftFloat, rightFloat), new StringValue(""));
+                return Pair.of(MathHelper.checkOperation(placeholder.operator, leftFloat, rightFloat), StringValue.empty());
             } catch (NumberFormatException e) {
                 return switch (placeholder.operator) {
-                    case SHORT_EQUAL -> Pair.of(leftField.contains(rightField), new StringValue(""));
-                    case EQUAL -> Pair.of(leftField.equals(rightField), new StringValue(""));
-                    case NOT_EQUAL -> Pair.of(!leftField.equals(rightField), new StringValue(""));
+                    case SHORT_EQUAL -> Pair.of(leftField.contains(rightField), StringValue.empty());
+                    case EQUAL -> Pair.of(leftField.equals(rightField), StringValue.empty());
+                    case NOT_EQUAL -> Pair.of(!leftField.equals(rightField), StringValue.empty());
                     default -> noResult();
                 };
             }
@@ -229,7 +237,33 @@ public class PlaceholderHandler extends Handler {
                 leftField = placeholder.left;
             }
 
-            return Pair.of(leftField.isBlank() == isBlank, new StringValue(""));
+            return Pair.of(leftField.isBlank() == isBlank, StringValue.empty());
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> parseContainsFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableComponent> leftField;
+            Pair<Boolean, MutableComponent> rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
+            }
+
+            if(placeholder.rightBracketed) {
+                rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
+            } else {
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
+            }
+
+            if(leftField.value1() && rightField.value1()) {
+                boolean hasContainingValue = leftField.value2().getString().contains(rightField.value2().getString());
+
+                return Pair.of(hasContainingValue, StringValue.empty());
+            }
         }
         return noResult();
     }
@@ -242,7 +276,7 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             try {
@@ -254,9 +288,9 @@ public class PlaceholderHandler extends Handler {
                     }
 
                     if(isFront) {
-                        return Pair.of(true, new ComponentValue(ComponentHelper.substring(leftField.value2(), 0, rightField)));
+                        return Pair.ofTrue(ComponentValue.of(TextHelper.substring(leftField.value2(), 0, rightField)));
                     } else {
-                        return Pair.of(true, new ComponentValue(ComponentHelper.substring(leftField.value2(), rightField, leftField.value2().getString().length())));
+                        return Pair.ofTrue(ComponentValue.of(TextHelper.substring(leftField.value2(), rightField, leftField.value2().getString().length())));
                     }
                 } else {
                     return noResult();
@@ -276,13 +310,13 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             if(placeholder.rightBracketed) {
                 rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
             } else {
-                rightField = Pair.of(true, Component.literal(placeholder.right));
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
             }
 
             if(leftField.value1() && rightField.value1()) {
@@ -291,7 +325,7 @@ public class PlaceholderHandler extends Handler {
                 if(index == -1) {
                     return noResult();
                 } else {
-                    return Pair.of(true, new StringValue(String.valueOf(index)));
+                    return Pair.ofTrue(StringValue.valueOf(index));
                 }
             }
         }
@@ -316,7 +350,7 @@ public class PlaceholderHandler extends Handler {
             }
 
             if(leftField.value1() || rightField.value1()) {
-                return Pair.of(true, new StringValue(""));
+                return Pair.ofTrue(StringValue.empty());
             }
         }
         return noResult();
@@ -340,7 +374,7 @@ public class PlaceholderHandler extends Handler {
             }
 
             if((leftField.value1() || rightField.value1()) && (leftField.value1() != rightField.value1())) {
-                return Pair.of(true, new StringValue(""));
+                return Pair.ofTrue(StringValue.empty());
             }
         }
         return noResult();
@@ -364,7 +398,7 @@ public class PlaceholderHandler extends Handler {
             }
 
             if(leftField.value1() && rightField.value1()) {
-                return Pair.of(true, new StringValue(""));
+                return Pair.ofTrue(StringValue.empty());
             }
         }
         return noResult();
@@ -381,9 +415,9 @@ public class PlaceholderHandler extends Handler {
             }
 
             if(leftField.value1()) {
-                return Pair.of(false, new StringValue(""));
+                return Pair.ofFalse(StringValue.empty());
             } else {
-                return Pair.of(true, new StringValue(""));
+                return Pair.ofTrue(StringValue.empty());
             }
         }
         return noResult();
@@ -397,13 +431,13 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             if(placeholder.rightBracketed) {
                 rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
             } else {
-                rightField = Pair.of(true, Component.literal(placeholder.right));
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
             }
 
             try {
@@ -413,7 +447,7 @@ public class PlaceholderHandler extends Handler {
                 float result = MathHelper.checkExpression(placeholder.operator, leftNumber, rightNumber);
 
                 if(result != Float.MIN_VALUE) {
-                    return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                    return Pair.ofTrue(StringValue.of(String.format(Locale.US, "%f", result)));
                 }
             } catch (NumberFormatException e) {
                 return noResult();
@@ -430,13 +464,13 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             if(placeholder.rightBracketed) {
                 rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
             } else {
-                rightField = Pair.of(true, Component.literal(placeholder.right));
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
             }
 
             try {
@@ -445,7 +479,7 @@ public class PlaceholderHandler extends Handler {
 
                 float result = Math.max(leftNumber, rightNumber);
 
-                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                return Pair.ofTrue(StringValue.of(String.format(Locale.US, "%f", result)));
             } catch (NumberFormatException e) {
                 return noResult();
             }
@@ -461,13 +495,13 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             if(placeholder.rightBracketed) {
                 rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
             } else {
-                rightField = Pair.of(true, Component.literal(placeholder.right));
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
             }
 
             try {
@@ -476,7 +510,7 @@ public class PlaceholderHandler extends Handler {
 
                 float result = Math.min(leftNumber, rightNumber);
 
-                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                return Pair.ofTrue(StringValue.of(String.format(Locale.US, "%f", result)));
             } catch (NumberFormatException e) {
                 return noResult();
             }
@@ -491,7 +525,7 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             try {
@@ -499,7 +533,7 @@ public class PlaceholderHandler extends Handler {
 
                 float result = Math.abs(leftNumber);
 
-                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                return Pair.ofTrue(StringValue.of(String.format(Locale.US, "%f", result)));
             } catch (NumberFormatException e) {
                 return noResult();
             }
@@ -514,7 +548,7 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             try {
@@ -522,7 +556,7 @@ public class PlaceholderHandler extends Handler {
 
                 float result = (float) Math.ceil(leftNumber);
 
-                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                return Pair.ofTrue(StringValue.of(String.format(Locale.US, "%f", result)));
             } catch (NumberFormatException e) {
                 return noResult();
             }
@@ -538,13 +572,13 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             if(placeholder.rightBracketed) {
                 rightField = parsePlaceholderFromString("%" + placeholder.right + "%");
             } else {
-                rightField = Pair.of(true, Component.literal(placeholder.right));
+                rightField = Pair.ofTrue(Component.literal(placeholder.right));
             }
 
             try {
@@ -557,7 +591,7 @@ public class PlaceholderHandler extends Handler {
                 bd = bd.setScale(rightNumber, RoundingMode.HALF_UP);
                 float result = (float) bd.doubleValue();
 
-                return Pair.of(true, new StringValue(ComponentHelper.floatToString(result, rightNumber)));
+                return Pair.ofTrue(StringValue.of(TextHelper.floatToString(result, rightNumber)));
             } catch (NumberFormatException e) {
                 return noResult();
             }
@@ -572,7 +606,7 @@ public class PlaceholderHandler extends Handler {
             if(placeholder.leftBracketed) {
                 leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
             } else {
-                leftField = Pair.of(true, Component.literal(placeholder.left));
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
             }
 
             try {
@@ -580,7 +614,7 @@ public class PlaceholderHandler extends Handler {
 
                 float result = (float) Math.floor(leftNumber);
 
-                return Pair.of(true, new StringValue(String.format(Locale.US, "%f", result)));
+                return Pair.ofTrue(StringValue.of(String.format(Locale.US, "%f", result)));
             } catch (NumberFormatException e) {
                 return noResult();
             }
@@ -595,28 +629,28 @@ public class PlaceholderHandler extends Handler {
     public static Pair<Boolean, PlaceholderValue> getPlaceholderValue(PlaceholderValue placeholderValue, Boolean noHide) {
         switch (placeholderValue) {
             case StringValue stringValue -> {
-                if(!stringValue.value().isBlank()) return Pair.of(stringValue);
-                return noHide ? Pair.of(stringValue) : Pair.ofFalse(stringValue);
+                if(!stringValue.value().isBlank()) return Pair.ofTrue(stringValue);
+                return noHide ? Pair.ofTrue(stringValue) : Pair.ofFalse(stringValue);
             }
             case ComponentValue componentValue -> {
-                if(!componentValue.value().getString().isBlank()) return Pair.of(componentValue);
-                return noHide ? Pair.of(componentValue) : Pair.ofFalse(componentValue);
+                if(!componentValue.value().getString().isBlank()) return Pair.ofTrue(componentValue);
+                return noHide ? Pair.ofTrue(componentValue) : Pair.ofFalse(componentValue);
             }
         }
     }
 
     public static Pair<Boolean, PlaceholderValue> noResult() {
-        return Pair.ofFalse(new StringValue(""));
+        return Pair.ofFalse(StringValue.empty());
     }
 
     public static Pair<Boolean, PlaceholderValue> getNbtValue(TagObject object, String field) {
         if(object.contains(field)) {
             Tag data = object.get(field);
             return switch (data.getId()) {
-                case 1 -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(object.getBoolean(field))));
-                case 3 -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(object.getInt(field))));
-                case 5 -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(object.getFloat(field), 2)));
-                case 8 -> PlaceholderHandler.getPlaceholderValue(new StringValue(object.getString(field)));
+                case 1 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getBoolean(field)));
+                case 3 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getInt(field)));
+                case 5 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(object.getFloat(field), 2)));
+                case 8 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(object.getString(field)));
                 default -> PlaceholderHandler.noResult();
             };
         }
@@ -645,6 +679,26 @@ public class PlaceholderHandler extends Handler {
             } catch (Exception ignored) {}
         }
         return 0;
+    }
+
+    private static MutableComponent applyStyleRecursive(Component component, Style activeStyle) {
+        Style ownStyle = component.getStyle();
+        TextColor color = ownStyle.getColor();
+
+        boolean isWhiteOrNone = color == null
+                || color.getValue() == TextColor.fromLegacyFormat(ChatFormatting.WHITE).getValue();
+
+        Style finalStyle = isWhiteOrNone ? activeStyle : ownStyle;
+
+        MutableComponent result = MutableComponent.create(component.getContents()).setStyle(finalStyle);
+
+        if (!component.getSiblings().isEmpty()) {
+            for (Component sibling : component.getSiblings()) {
+                result.append(applyStyleRecursive(sibling, activeStyle));
+            }
+        }
+
+        return result;
     }
     //endregion
 

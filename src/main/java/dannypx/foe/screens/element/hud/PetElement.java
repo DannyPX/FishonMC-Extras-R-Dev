@@ -5,7 +5,7 @@ import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.InventoryHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.ChatFormatting;
@@ -105,11 +105,11 @@ public class PetElement extends Element {
         int component1y = 9;
 
         if(InventoryHandler.instance().hasPet()) {
-            Component pet = ComponentHelper.concat(
+            Component pet = TextHelper.concat(
                     InventoryHandler.instance().getCurrentPet().getRarityComponent(),
                     Component.literal(" "),
                     InventoryHandler.instance().getCurrentPet().getName());
-            int petWidth = font.width(ComponentHelper.smallCaps(pet.getString()));
+            int petWidth = font.width(TextHelper.smallCaps(pet.getString()));
 
             int component2x = 40;
             int component2y = 21;
@@ -125,7 +125,7 @@ public class PetElement extends Element {
             Component progressLeftComponent = Component.literal(" ".repeat(Math.min(bars, progressLeft)))
                     .withStyle(ChatFormatting.STRIKETHROUGH, ChatFormatting.DARK_GRAY);
 
-            Component levelComponent = ComponentHelper.concat(
+            Component levelComponent = TextHelper.concat(
                     Component.literal("LV. ").withStyle(ChatFormatting.GRAY),
                     level,
                     Component.literal(" [").withStyle(ChatFormatting.DARK_GRAY),
@@ -133,7 +133,7 @@ public class PetElement extends Element {
                     progressLeftComponent,
                     Component.literal("]").withStyle(ChatFormatting.DARK_GRAY)
             );
-            int levelWidth = font.width(ComponentHelper.smallCaps(levelComponent.getString()));
+            int levelWidth = font.width(TextHelper.smallCaps(levelComponent.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
                 case TOP_LEFT -> {
@@ -174,7 +174,7 @@ public class PetElement extends Element {
             }
         } else {
             Component pet = Component.literal("No pet equipped").withStyle(ChatFormatting.GRAY);
-            int petWidth = font.width(ComponentHelper.smallCaps(pet.getString()));
+            int petWidth = font.width(TextHelper.smallCaps(pet.getString()));
 
             switch (Configs.hudConfig.petElementAlignment.get()) {
                 case TOP_LEFT -> GuiGraphicsHelper.text(guiGraphicsExtractor, font,

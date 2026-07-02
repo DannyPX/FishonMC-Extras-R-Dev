@@ -6,7 +6,7 @@ import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
@@ -130,7 +130,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         componentLines.forEach(componentParts -> {
             if(componentParts.value1()) {
                 GuiGraphicsHelper.text(guiGraphicsExtractor, Minecraft.getInstance().font, componentParts.value3(),
-                        componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - ComponentHelper.getWidth(Minecraft.getInstance().font, componentParts.value3(), componentParts.value2()) / 2,
+                        componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - TextHelper.getWidth(Minecraft.getInstance().font, componentParts.value3(), componentParts.value2()) / 2,
                         componentY + line.getAndIncrement() * LINE_HEIGHT,
                         true, componentParts.value2(), true, componentParts.value2()
                         );
@@ -252,7 +252,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         return Pair.of(
                 Math.max(MIN_WIDTH, componentLines.stream()
                         .mapToInt(
-                                line -> ComponentHelper.getWidth(Minecraft.getInstance().font, line.value3(), line.value2())
+                                line -> TextHelper.getWidth(Minecraft.getInstance().font, line.value3(), line.value2())
                         ).max().orElse(0)),
                 LINE_HEIGHT * componentLines.size()
         );

@@ -2,7 +2,7 @@ package dannypx.foe.handler.renderer;
 
 import dannypx.foe.handler.ScreenHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.mixin.accessor.ChatScreenAccessor;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class ChatScreenRenderHandler extends ScreenHandler {
             EditBox chatBox = ((ChatScreenAccessor) chatScreen).getInput();
             if(chatBox.getValue().isBlank() && ProfileDataHandler.instance().getProfileData().isInCrewChat) {
                 guiGraphicsExtractor.text(font,
-                        Component.literal(ComponentHelper.smallCaps("You are in crew chat")).withStyle(ChatFormatting.GREEN),
+                        Component.literal(TextHelper.smallCaps("You are in crew chat")).withStyle(ChatFormatting.GREEN),
                         4,
                         minecraft.getWindow().getGuiScaledHeight() - font.lineHeight - 4,
                         CommonColors.WHITE,

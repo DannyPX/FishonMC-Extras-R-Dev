@@ -11,7 +11,7 @@ public record Pair<Type1, Type2>(@NotNull Type1 value1, @NotNull Type2 value2) {
         return new Pair<>(value1, value2);
     }
 
-    public static <Type2> Pair<Boolean, Type2> of(@NotNull Type2 value2) {
+    public static <Type2> Pair<Boolean, Type2> ofTrue(@NotNull Type2 value2) {
         return new Pair<>(Boolean.TRUE, value2);
     }
 

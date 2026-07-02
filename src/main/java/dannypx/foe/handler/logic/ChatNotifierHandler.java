@@ -2,7 +2,7 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.store.CustomChatNotificationDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class ChatNotifierHandler extends Handler {
 
     public void sendChatMessage(Component message) {
         minecraft.gui.getChat().addClientSystemMessage(
-                ComponentHelper.concat(
+                TextHelper.concat(
                         Component.literal("FoER ").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD),
                         Component.literal("» ").withStyle(ChatFormatting.DARK_GRAY),
                         message

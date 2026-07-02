@@ -6,7 +6,7 @@ import dannypx.foe.type.search.SearchFilter;
 
 public class MathHelper {
     public static String percentToString(float percent, int decimals) {
-        return ComponentHelper.floatToString(percent * 100f, decimals);
+        return TextHelper.floatToString(percent * 100f, decimals);
     }
 
     public static boolean checkOperation(SearchFilter searchFilter, FloatValue floatValue, float fetchedValue) {

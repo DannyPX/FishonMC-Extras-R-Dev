@@ -4,7 +4,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.KeyBindHandler;
 import dannypx.foe.helper.KeyBindHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.ArmorTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
@@ -81,13 +81,13 @@ public class TooltipHandler extends Handler {
                     int tier = i + 1;
                     int money = ArmorTagObject.calculateMoneyRolls(rolls, tier);
 
-                    Component moneyRoll = ComponentHelper.concat(
+                    Component moneyRoll = TextHelper.concat(
                             borderComponent,
-                            Component.literal(ComponentHelper.smallCaps("rolls: ")).withStyle(ChatFormatting.GRAY),
+                            Component.literal(TextHelper.smallCaps("rolls: ")).withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(rolls - 1)).withStyle(ChatFormatting.YELLOW),
                             Component.literal("x ").withStyle(ChatFormatting.WHITE),
-                            Component.literal(ComponentHelper.smallCaps("| spent: ")).withStyle(ChatFormatting.GRAY),
-                            Component.literal("$" + ComponentHelper.shortenNumber(money, 2)).withStyle(ChatFormatting.GREEN)
+                            Component.literal(TextHelper.smallCaps("| spent: ")).withStyle(ChatFormatting.GRAY),
+                            Component.literal("$" + TextHelper.shortenNumber(money, 2)).withStyle(ChatFormatting.GREEN)
                     );
 
                     components.add(sizeOfLine + 2, moneyRoll);
@@ -121,12 +121,12 @@ public class TooltipHandler extends Handler {
         if(rightClickLine != -1
                 && armorNbtObject.isIdentified()
         ) {
-            Component inspectComponent = ComponentHelper.concat(
-                    Component.literal(ComponentHelper.smallCaps("Hold ")),
-                    Component.literal(ComponentHelper.smallCaps(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind))),
-                    Component.literal(ComponentHelper.smallCaps(" to see more info"))
+            Component inspectComponent = TextHelper.concat(
+                    Component.literal(TextHelper.smallCaps("Hold ")),
+                    Component.literal(TextHelper.smallCaps(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind))),
+                    Component.literal(TextHelper.smallCaps(" to see more info"))
             ).withStyle(ChatFormatting.DARK_GRAY);
-            Component rollHintComponent = ComponentHelper.concat(
+            Component rollHintComponent = TextHelper.concat(
                     border,
                     inspectComponent
             );
@@ -144,13 +144,13 @@ public class TooltipHandler extends Handler {
                         int tier = i + 1;
                         int money = ArmorTagObject.calculateMoneyRolls(rolls, tier);
 
-                        Component moneyRoll = ComponentHelper.concat(
+                        Component moneyRoll = TextHelper.concat(
                                 border,
-                                Component.literal(ComponentHelper.smallCaps("  └ rolls: ")).withStyle(ChatFormatting.GRAY),
+                                Component.literal(TextHelper.smallCaps("  └ rolls: ")).withStyle(ChatFormatting.GRAY),
                                 Component.literal(String.valueOf(rolls - 1)).withStyle(ChatFormatting.YELLOW),
                                 Component.literal("x ").withStyle(ChatFormatting.WHITE),
-                                Component.literal(ComponentHelper.smallCaps("| spent: ")).withStyle(ChatFormatting.GRAY),
-                                Component.literal("$" + ComponentHelper.shortenNumber(money, 2)).withStyle(ChatFormatting.GREEN)
+                                Component.literal(TextHelper.smallCaps("| spent: ")).withStyle(ChatFormatting.GRAY),
+                                Component.literal("$" + TextHelper.shortenNumber(money, 2)).withStyle(ChatFormatting.GREEN)
                         );
 
                         components.add(tierLine + tier + 1, moneyRoll);
@@ -167,14 +167,14 @@ public class TooltipHandler extends Handler {
                     username = ProfileHandler.instance().getUsernameFromId(armorNbtObject.getPlayerUUID());
                 }
 
-                Component identifierComponent = ComponentHelper.concat(
+                Component identifierComponent = TextHelper.concat(
                         border,
                         Component.literal("Identifier:").withStyle(ChatFormatting.GRAY)
                 );
 
-                Component usernameComponent = ComponentHelper.concat(
+                Component usernameComponent = TextHelper.concat(
                         border,
-                        Component.literal(ComponentHelper.smallCaps("  Player: ")).withStyle(ChatFormatting.GRAY),
+                        Component.literal(TextHelper.smallCaps("  Player: ")).withStyle(ChatFormatting.GRAY),
                         username != null ? Component.literal(username).withStyle(ChatFormatting.YELLOW)
                                 : Component.literal("Loading").withStyle(ChatFormatting.DARK_GRAY)
                 );
@@ -217,7 +217,7 @@ public class TooltipHandler extends Handler {
         int priceLine = Minecraft.getInstance().options.advancedItemTooltips ? TagObject.SHOP_PRICE_LINE + 2 : TagObject.SHOP_PRICE_LINE;
 
         Component priceComponent = componentList.get(componentList.size() - priceLine).copy();
-        float price = ComponentHelper.toIntFromString(priceComponent.getString().substring(priceComponent.getString().indexOf("$") + 1));
+        float price = TextHelper.toIntFromString(priceComponent.getString().substring(priceComponent.getString().indexOf("$") + 1));
 
         this.setPrice(tagObject, componentList, price);
     }
@@ -227,18 +227,18 @@ public class TooltipHandler extends Handler {
 
         if(price != 0f) {
             float pricePerItem = price / tagObject.getCount();
-            String pricePerItemString = ComponentHelper.shortenNumber(pricePerItem, 2);
+            String pricePerItemString = TextHelper.shortenNumber(pricePerItem, 2);
 
-            Component pricePerItemComponent = ComponentHelper.concat(
+            Component pricePerItemComponent = TextHelper.concat(
                     Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY),
                     Component.literal("$").withStyle(ChatFormatting.DARK_GREEN),
                     Component.literal(pricePerItemString).withStyle(ChatFormatting.DARK_GREEN),
-                    Component.literal(ComponentHelper.smallCaps(" per item")).withStyle(ChatFormatting.GRAY),
+                    Component.literal(TextHelper.smallCaps(" per item")).withStyle(ChatFormatting.GRAY),
                     Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)
             );
 
 
-            componentList.set(componentList.size() - priceLine, ComponentHelper.concat(
+            componentList.set(componentList.size() - priceLine, TextHelper.concat(
                     componentList.get(componentList.size() - priceLine),
                     pricePerItemComponent
             ));
@@ -246,7 +246,7 @@ public class TooltipHandler extends Handler {
     }
 
     private Component getPercentComponent(String percent) {
-        return ComponentHelper.concat(
+        return TextHelper.concat(
                 Component.literal(" ("),
                 Component.literal(percent),
                 Component.literal("%)")

@@ -3,7 +3,7 @@ package dannypx.foe.handler.logic;
 import com.mojang.brigadier.StringReader;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.store.*;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
@@ -92,34 +92,34 @@ public class NotifierHandler extends Handler {
         }
 
         Component tagComponent = !Objects.equals(fish.getVariant(), "normal")
-                ? ComponentHelper.concat(fish.getVariantComponent(), Component.literal(" "), fish.getRarityComponent())
-                : ComponentHelper.concat(fish.getRarityComponent());
+                ? TextHelper.concat(fish.getVariantComponent(), Component.literal(" "), fish.getRarityComponent())
+                : TextHelper.concat(fish.getRarityComponent());
         Component rarityComponent = fish.getRarityComponent();
         Component variantComponent = fish.getVariantComponent();
         Component sizeComponent = fish.getFishSizeComponent();
 
-        Component lengthComponent = ComponentHelper.concat(
-                Component.literal(ComponentHelper.floatToString(fish.getLength(), 2)).withStyle(ChatFormatting.GRAY),
+        Component lengthComponent = TextHelper.concat(
+                Component.literal(TextHelper.floatToString(fish.getLength(), 2)).withStyle(ChatFormatting.GRAY),
                 Component.literal("in ").withStyle(ChatFormatting.GRAY)
         );
 
-        Component weightComponent = ComponentHelper.concat(
-                Component.literal(ComponentHelper.floatToString(fish.getWeight(), 2)).withStyle(ChatFormatting.GRAY),
+        Component weightComponent = TextHelper.concat(
+                Component.literal(TextHelper.floatToString(fish.getWeight(), 2)).withStyle(ChatFormatting.GRAY),
                 Component.literal("lb ").withStyle(ChatFormatting.GRAY)
         );
 
         List<Component> notificationComponentList = new ArrayList<>(Arrays.asList(
                 tagComponent,
                 fish.getName(),
-                ComponentHelper.concat(fish.getFishSizeComponent(), Component.literal(" "), lengthComponent, weightComponent),
+                TextHelper.concat(fish.getFishSizeComponent(), Component.literal(" "), lengthComponent, weightComponent),
                 Component.empty(),
                 Component.literal(" - Drystreaks before catch").withStyle(ChatFormatting.GRAY),
-                ComponentHelper.concat(rarityComponent, Component.literal(" "), ComponentHelper.literal(rarityDrystreak.value2())),
-                ComponentHelper.concat(sizeComponent, Component.literal(" "), ComponentHelper.literal(sizeDryStreak.value2()))
+                TextHelper.concat(rarityComponent, Component.literal(" "), TextHelper.literal(rarityDrystreak.value2())),
+                TextHelper.concat(sizeComponent, Component.literal(" "), TextHelper.literal(sizeDryStreak.value2()))
         ));
 
         if(!Objects.equals(fish.getVariant(), "normal")) {
-            notificationComponentList.add(ComponentHelper.concat(variantComponent, Component.literal(" "), ComponentHelper.literal(variantDrystreak.value2())));
+            notificationComponentList.add(TextHelper.concat(variantComponent, Component.literal(" "), TextHelper.literal(variantDrystreak.value2())));
         }
 
         int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : notificationComponentList.size();
@@ -138,15 +138,15 @@ public class NotifierHandler extends Handler {
             return;
         }
 
-        Component petComponent = ComponentHelper.concat(pet.getRarityComponent(), Component.literal(" ") , pet.getName());
+        Component petComponent = TextHelper.concat(pet.getRarityComponent(), Component.literal(" ") , pet.getName());
 
         List<Component> notificationComponentList =  new ArrayList<>(Arrays.asList(
                 petComponent,
                 pet.getRatingComponent(),
                 Component.empty(),
                 Component.literal(" - Drystreaks before catch").withStyle(ChatFormatting.GRAY),
-                ComponentHelper.concat(pet.getRarityComponent(), Component.literal(" "), ComponentHelper.literal(rarityDrystreak.value2())),
-                ComponentHelper.concat(pet.getRatingComponent(), Component.literal(" "), ComponentHelper.literal(ratingDrystreak.value2()))
+                TextHelper.concat(pet.getRarityComponent(), Component.literal(" "), TextHelper.literal(rarityDrystreak.value2())),
+                TextHelper.concat(pet.getRatingComponent(), Component.literal(" "), TextHelper.literal(ratingDrystreak.value2()))
         ));
 
         int rows = !Configs.hudConfig.showPetsDrystreakNotification.get() ? 2 : notificationComponentList.size();
@@ -165,15 +165,15 @@ public class NotifierHandler extends Handler {
             return;
         }
 
-        Component itemComponent = ComponentHelper.concat(item.getName(), Component.literal(" "), ComponentHelper.literal(count), Component.literal("x").withStyle(ChatFormatting.GRAY));
-        Component typeComponent = Component.literal(ComponentHelper.convertField(itemDrystreak.value1()));
+        Component itemComponent = TextHelper.concat(item.getName(), Component.literal(" "), TextHelper.literal(count), Component.literal("x").withStyle(ChatFormatting.GRAY));
+        Component typeComponent = Component.literal(TextHelper.convertField(itemDrystreak.value1()));
 
 
         List<Component> notificationComponentList =  new ArrayList<>(Arrays.asList(
                 itemComponent,
                 Component.empty(),
                 Component.literal(" - Drystreak before catch").withStyle(ChatFormatting.GRAY),
-                ComponentHelper.concat(typeComponent, Component.literal(" ") , ComponentHelper.literal(itemDrystreak.value2()))
+                TextHelper.concat(typeComponent, Component.literal(" ") , TextHelper.literal(itemDrystreak.value2()))
         ));
 
         int rows = !Configs.hudConfig.showOtherItemDrystreakNotification.get() ? 1 : notificationComponentList.size();
@@ -193,12 +193,12 @@ public class NotifierHandler extends Handler {
         }
 
         Component completionComponent = Component.literal("Completed quest").withStyle(ChatFormatting.GREEN);
-        Component goalComponent = ComponentHelper.concat(
+        Component goalComponent = TextHelper.concat(
                 ConstantDataHandler.instance().getConstantFishComponent(quest.goal),
                 Component.literal(" "),
-                ComponentHelper.literal(quest.current).withStyle(ChatFormatting.YELLOW),
+                TextHelper.literal(quest.current).withStyle(ChatFormatting.YELLOW),
                 Component.literal("/").withStyle(ChatFormatting.GRAY),
-                ComponentHelper.literal(quest.max).withStyle(ChatFormatting.WHITE)
+                TextHelper.literal(quest.max).withStyle(ChatFormatting.WHITE)
         );
 
         this.addNotification(
@@ -216,7 +216,7 @@ public class NotifierHandler extends Handler {
                         new ArrayList<>(Arrays.asList(
                                 Component.literal("You have yet to import your stats").withStyle(ChatFormatting.GOLD),
                                 Component.empty(),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("Do "),
                                         Component.literal("/foe stats import ").withStyle(ChatFormatting.GREEN),
                                         Component.literal("to import")
@@ -225,17 +225,17 @@ public class NotifierHandler extends Handler {
                                 Component.literal("This will open the stats screen").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                                 Component.literal("and import your stats").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                                 Component.empty(),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("Do "),
                                         Component.literal("/foe stats cancel ").withStyle(ChatFormatting.GREEN),
                                         Component.literal("to cancel")
                                 ),
                                 Component.literal("this notification"),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("You can still do ").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                                         Component.literal("/foe stats ").withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
                                 ),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("import ").withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC),
                                         Component.literal("to import at a later time").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
                                 )
@@ -253,7 +253,7 @@ public class NotifierHandler extends Handler {
                                 Component.literal("You have yet to import ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("your crew info").withStyle(ChatFormatting.GOLD),
                                 Component.empty(),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("Do "),
                                         Component.literal("/foe crew import ").withStyle(ChatFormatting.GREEN),
                                         Component.literal("to import")
@@ -262,17 +262,17 @@ public class NotifierHandler extends Handler {
                                 Component.literal("This will open the crew screen").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                                 Component.literal("and import your crew info").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                                 Component.empty(),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("Do "),
                                         Component.literal("/foe crew cancel ").withStyle(ChatFormatting.GREEN),
                                         Component.literal("to cancel")
                                 ),
                                 Component.literal("this notification"),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("You can still do ").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                                         Component.literal("/foe crew ").withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
                                 ),
-                                ComponentHelper.concat(
+                                TextHelper.concat(
                                         Component.literal("import ").withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC),
                                         Component.literal("to import at a later time").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
                                 )
@@ -321,9 +321,9 @@ public class NotifierHandler extends Handler {
                 2, 1,
                     new ArrayList<>(Arrays.asList(
                             notificationComponent,
-                            ComponentHelper.concat(
+                            TextHelper.concat(
                                     Component.literal("Slots left: ").withStyle(ChatFormatting.GRAY),
-                                    ComponentHelper.literal(currentEmptySlots)
+                                    TextHelper.literal(currentEmptySlots)
                             )
                     ))
             ));
@@ -348,7 +348,7 @@ public class NotifierHandler extends Handler {
         this.addNotification(
                 new Notification(
                         player.value2(), 1, 1, Configs.hudConfig.crewDismissalTime.get(),
-                        List.of(ComponentHelper.concat(
+                        List.of(TextHelper.concat(
                                 icon,
                                 Component.literal(player.value1()).withStyle(ChatFormatting.YELLOW),
                                 status
@@ -381,7 +381,7 @@ public class NotifierHandler extends Handler {
             List<MutableComponent> lines = notification.getStringLines().stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
             List<Component> newLines = new ArrayList<>();
 
-            lines.forEach(line -> newLines.addAll(ComponentHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
+            lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
 
             if(itemStack == ItemStack.EMPTY) {
                 this.addNotification(
@@ -481,7 +481,7 @@ public class NotifierHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "notifications", Pair.of(Component.literal("[notifications]]"), ComponentHelper.literal(getNotifications()))
+                "notifications", Pair.of(Component.literal("[notifications]]"), TextHelper.literal(getNotifications()))
         );
     }
     //endregion

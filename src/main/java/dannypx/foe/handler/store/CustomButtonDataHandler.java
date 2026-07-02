@@ -3,7 +3,7 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import java.util.*;
 import net.minecraft.network.chat.Component;
@@ -267,7 +267,7 @@ public class CustomButtonDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customButtonData", Pair.of(Component.literal("[customButtonData]"), ComponentHelper.literal(getCustomButtonData()))
+                "customButtonData", Pair.of(Component.literal("[customButtonData]"), TextHelper.literal(getCustomButtonData()))
         );
     }
     //endregion

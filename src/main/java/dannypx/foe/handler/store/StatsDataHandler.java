@@ -5,7 +5,7 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
@@ -60,7 +60,7 @@ public class StatsDataHandler extends Handler {
             ) {
                 return switch (params[1]) {
                     case "fish" -> {
-                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getStatsData().fishTotal)));
+                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getStatsData().fishTotal));
                         if(params.length >= 5) {
                             Map<String, Map<String, Stat<Integer, Integer>>> fishData = getStatsData().fishData;
                             yield getStatsData(fishData, params[2], params[3], params[4], getStatsData().fishTotal);
@@ -68,10 +68,10 @@ public class StatsDataHandler extends Handler {
                         yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
-                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getStatsData().petTotal)));
-                        if(Objects.equals(params[2], "dry_streak")) yield PlaceholderHandler.getPlaceholderValue(new StringValue(
-                                String.valueOf(getStatsData().fishTotal - getStatsData().petData.getOrDefault(PetTagObject.RARITY, new HashMap<>()).values().stream().mapToInt(stat -> stat.caughtOn).max().orElse(0))
-                        ));
+                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getStatsData().petTotal));
+                        if(Objects.equals(params[2], "dry_streak")) yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(
+                                getStatsData().fishTotal - getStatsData().petData.getOrDefault(PetTagObject.RARITY, new HashMap<>()).values().stream().mapToInt(stat -> stat.caughtOn).max().orElse(0))
+                        );
                         if(params.length >= 5) {
                             Map<String, Map<String, Stat<Integer, Integer>>> petData = getStatsData().petData;
                             yield getStatsData(petData, params[2], params[3], params[4], getStatsData().fishTotal);
@@ -93,7 +93,7 @@ public class StatsDataHandler extends Handler {
     }
 
     private Pair<Boolean, PlaceholderValue> getStatsData(Map<String, Map<String, Stat<Integer, Integer>>> category, String subCategory, String field, String type, int total) {
-        if(Objects.equals(subCategory, "rating")) field = ComponentHelper.smallCaps(field);
+        if(Objects.equals(subCategory, "rating")) field = TextHelper.smallCaps(field);
         Map<String, Stat<Integer, Integer>> subCatMap = category.getOrDefault(subCategory, null);
         if(subCatMap != null) {
             return getStatsData(subCatMap, field, type, total);
@@ -105,8 +105,8 @@ public class StatsDataHandler extends Handler {
         Stat<Integer, Integer> stat = subCategory.getOrDefault(field, null);
         if(stat != null) {
             return switch (type) {
-                case "count" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(stat.amount())));
-                case "dry_streak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(total - stat.caughtOn())));
+                case "count" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(stat.amount()));
+                case "dry_streak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(total - stat.caughtOn()));
                 default -> PlaceholderHandler.noResult();
             };
         }
@@ -122,6 +122,7 @@ public class StatsDataHandler extends Handler {
             this.updateStatsData();
         } else if(!StatsDataModel.STATS_DATA_MODEL_VERSION.equals(statsData.version)) {
             statsData.version = StatsDataModel.STATS_DATA_MODEL_VERSION;
+            this.fixDefault();
             needsUpdate = true;
         }
     }
@@ -132,6 +133,15 @@ public class StatsDataHandler extends Handler {
 
     private void setUUID(UUID uuid) {
         this.statsData.uuid = uuid;
+    }
+
+    private void fixDefault() {
+        if(statsData.fishData == null) statsData.fishData = new HashMap<>();
+        if(statsData.petData == null) statsData.petData = new HashMap<>();
+        if(statsData.itemData == null) statsData.itemData = new HashMap<>();
+
+        if(statsData.questItemData == null) statsData.questItemData = new HashMap<>();
+        if(statsData.questPetData == null) statsData.questItemData = new HashMap<>();
     }
 
     public Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> setFish(FishTagObject fish) {
@@ -192,6 +202,29 @@ public class StatsDataHandler extends Handler {
         return Pair.of(field, statsData.fishTotal - fieldStat.caughtOn());
     }
 
+    public void setQuestPet(PetTagObject pet) {
+        statsData.questPetTotal++;
+
+        this.updateQuestPetData(statsData, PetTagObject.RARITY, pet.getRarity());
+        ConstantDataHandler.instance().updatePetData(PetTagObject.RARITY, pet.getRarity(), pet.getRarityComponent());
+
+        this.updateQuestPetData(statsData, PetTagObject.RATING, pet.getRatingComponent().getString());
+        ConstantDataHandler.instance().updatePetData(PetTagObject.RATING, pet.getRatingComponent().getString(), pet.getRatingComponent());
+
+        // Notify Pet
+        // NotifierHandler.instance().notifyPet(pet, rarityDrystreak, ratingDrystreak);
+    }
+
+    // Field, Old Drystreak
+    private void updateQuestPetData(StatsDataModel statsData, String category, String field) {
+        Map<String, Integer> categoryMapData = statsData.questPetData.getOrDefault(category, new HashMap<>());
+        Integer fieldStat = categoryMapData.getOrDefault(field, 0);
+
+        categoryMapData.put(field, fieldStat + 1);
+        statsData.questPetData.put(category, categoryMapData);
+        this.needsUpdate = true;
+    }
+
     public Pair<String, Integer> setOtherItem(TagObject item, int count) {
         Pair<String, Integer> itemDrystreak = this.updateOtherItemData(statsData, item.getType(), count);
         ConstantDataHandler.instance().updateItemData(item.getType(), item.getItemStack());
@@ -210,6 +243,21 @@ public class StatsDataHandler extends Handler {
         this.needsUpdate = true;
 
         return Pair.of(item, statsData.fishTotal - itemStat.caughtOn());
+    }
+
+    public void setQuestItem(TagObject item, int count) {
+        this.updateQuestItemData(statsData, item.getType(), count);
+        ConstantDataHandler.instance().updateItemData(item.getType(), item.getItemStack());
+
+        // Notify Item
+        // NotifierHandler.instance().notifyItem(item, count, itemDrystreak);
+    }
+
+    private void updateQuestItemData(StatsDataModel statsData, String item, int valueToAdd) {
+        Integer itemStat = statsData.questItemData.getOrDefault(item, 0);
+
+        statsData.questItemData.put(item, itemStat + valueToAdd);
+        this.needsUpdate = true;
     }
 
     public void updateData(String set, int value) {
@@ -241,7 +289,7 @@ public class StatsDataHandler extends Handler {
                 this.needsUpdate = true;
             }
             case "pet" -> {
-                if(Objects.equals(category, "rating")) field = ComponentHelper.smallCaps(field);
+                if(Objects.equals(category, "rating")) field = TextHelper.smallCaps(field);
                 Map<String, Stat<Integer, Integer>> statsData = this.statsData.petData.get(category);
                 Stat<Integer, Integer> stat = statsData.get(field);
 
@@ -291,13 +339,20 @@ public class StatsDataHandler extends Handler {
         statsData.itemData = new HashMap<>();
         statsData.fishTotal = 0;
         statsData.petTotal = 0;
+
+        statsData.questPetData = new HashMap<>();
+        statsData.questPetTotal = 0;
+        statsData.questItemData = new HashMap<>();
+
         this.needsUpdate = true;
     }
     //endregion
 
     //region Model
     public static class StatsDataModel extends DataModels.DataModel {
-        public static final String STATS_DATA_MODEL_VERSION = "0.2";
+        public static final String STATS_DATA_MODEL_VERSION = "0.3";
+
+        /// FISHING
 
         /**
          * Fish
@@ -323,6 +378,21 @@ public class StatsDataHandler extends Handler {
          */
         public Map<String, Stat<Integer, Integer>> itemData = new HashMap<>();
 
+        /// QUESTS
+
+        /**
+         * Pet
+         * - Rarities
+         * - Rating
+         */
+        public Map<String, Map<String, Integer>> questPetData = new HashMap<>();
+        public int questPetTotal = 0;
+
+        /**
+         * Other items
+         */
+        public Map<String, Integer> questItemData = new HashMap<>();
+
         public StatsDataModel() {
             super(STATS_DATA_MODEL_VERSION, null);
         }
@@ -339,7 +409,7 @@ public class StatsDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "statsData", Pair.of(Component.literal("[statsData]"), ComponentHelper.literal(getStatsData()))
+                "statsData", Pair.of(Component.literal("[statsData]"), TextHelper.literal(getStatsData()))
         );
     }
     //endregion

@@ -3,7 +3,7 @@ package dannypx.foe.screens.widget;
 import com.mojang.brigadier.StringReader;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
@@ -106,7 +106,7 @@ public class SmallButtonWidget extends AbstractWidget {
                     }
                 }
             } else {
-                int stringWidth = minecraft.font.width(ComponentHelper.smallCaps(icon));
+                int stringWidth = minecraft.font.width(TextHelper.smallCaps(icon));
                 guiGraphicsExtractor.pose().pushMatrix();
                 guiGraphicsExtractor.pose().translate(0.0f, 0.0f);
 

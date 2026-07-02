@@ -3,7 +3,7 @@ package dannypx.foe.handler.logic;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.store.CrewDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.placeholder.ComponentValue;
@@ -69,7 +69,7 @@ public class CrewHandler extends Handler {
                     case "online" -> list = getOnlineMembers();
                     case "offline" -> list = getOfflineMembers();
                     case "is_crew_nearby" -> {
-                        return PlaceholderHandler.getPlaceholderValue(new ComponentValue(ComponentHelper.literal(isCrewNearby(), true)));
+                        return PlaceholderHandler.getPlaceholderValue(ComponentValue.of(TextHelper.literal(isCrewNearby(), true)));
                     }
                     default -> list = new ArrayList<>();
                 }
@@ -82,8 +82,8 @@ public class CrewHandler extends Handler {
                     if(list.size() > index) {
                         Pair<UUID, String> crew = list.get(index);
                         return switch (params[2]) {
-                            case "id" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(crew.value1())));
-                            case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(crew.value2()));
+                            case "id" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(crew.value1()));
+                            case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(crew.value2()));
                             default -> PlaceholderHandler.noResult();
                         };
                     }

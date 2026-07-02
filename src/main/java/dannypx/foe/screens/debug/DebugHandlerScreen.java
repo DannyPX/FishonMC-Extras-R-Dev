@@ -1,7 +1,7 @@
 package dannypx.foe.screens.debug;
 
 import dannypx.foe.handler.debug._DebugHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.DefaultModScreen;
 import dannypx.foe.screens.widget.ButtonListWidget;
@@ -97,7 +97,7 @@ public class DebugHandlerScreen extends DefaultModScreen {
         if(selectedHandler != null) {
             AtomicInteger atomicInteger = new AtomicInteger(0);
             handlerFields.get(selectedHandler).forEach((name, value) -> {
-                Component component = ComponentHelper.concat(
+                Component component = TextHelper.concat(
                         Component.literal(name).withStyle(ChatFormatting.BOLD),
                         Component.literal(": "),
                         value.value1()
@@ -139,7 +139,7 @@ public class DebugHandlerScreen extends DefaultModScreen {
         if(ctrl && input.key() == GLFW.GLFW_KEY_C) {
             String json;
             if(Objects.equals(hoveredValue.value2(), Component.empty())) {
-                json = ComponentHelper.componentToJsonPretty(hoveredValue.value1());
+                json = TextHelper.componentToJsonPretty(hoveredValue.value1());
             } else {
                 json = hoveredValue.value2().getString();
             }

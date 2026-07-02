@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomNotificationDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
@@ -128,9 +128,9 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
         return Button.builder(
                         Component.literal("Import"),
                         (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
-                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
                                 Triplet<String, CustomNotificationDataHandler.CustomNotification, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomNotificationDataHandler.CustomNotification.class, Integer.class).getType());
@@ -189,7 +189,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                                             FishOnMCExtras.NOTIFICATION_VERSION
                                     );
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            ComponentHelper.compress(new GsonBuilder().create().toJson(dataNotification))
+                                            TextHelper.compress(new GsonBuilder().create().toJson(dataNotification))
                                     );
 
                                     String dataToCopy = "**Custom Notification: **" + selectedNotification + "\n" +
