@@ -4,7 +4,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
@@ -67,8 +67,8 @@ public class CustomTrackerDataHandler extends Handler {
 
             return switch (params[2]) {
                 case "value" -> switch (tracker.value) {
-                    case BooleanValue booleanValue -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(booleanValue.value())));
-                    case NumberValue numberValue -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(numberValue.value())));
+                    case BooleanValue booleanValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(booleanValue.value()));
+                    case NumberValue numberValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(numberValue.value()));
                     default -> PlaceholderHandler.noResult();
                 };
                 default -> PlaceholderHandler.noResult();
@@ -381,7 +381,7 @@ public class CustomTrackerDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customTrackerData", Pair.of(Component.literal("[customTrackerData]"), ComponentHelper.literal(getCustomTrackerData()))
+                "customTrackerData", Pair.of(Component.literal("[customTrackerData]"), TextHelper.literal(getCustomTrackerData()))
         );
     }
     //endregion

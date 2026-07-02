@@ -4,7 +4,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.ComponentValue;
@@ -60,7 +60,7 @@ public class ConstantDataHandler extends Handler {
                         Map<String, Component> subCat = getConstantData().fishData.getOrDefault(params[2], null);
                         if(subCat != null) {
                             Component field = subCat.getOrDefault(params[3], Component.empty());
-                            if(!Objects.equals(field, Component.empty())) yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(field));
+                            if(!Objects.equals(field, Component.empty())) yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(field));
                         }
                         yield PlaceholderHandler.noResult();
                     }
@@ -70,11 +70,11 @@ public class ConstantDataHandler extends Handler {
                             String param = params[3];
 
                             if(Objects.equals(params[2], "rating")) {
-                                param = ComponentHelper.smallCaps(params[3]);
+                                param = TextHelper.smallCaps(params[3]);
                             }
 
                             Component field = subCat.getOrDefault(param, Component.empty());
-                            if(!Objects.equals(field, Component.empty())) yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(field));
+                            if(!Objects.equals(field, Component.empty())) yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(field));
                         }
                         yield PlaceholderHandler.noResult();
                     }
@@ -211,7 +211,7 @@ public class ConstantDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "constantData", Pair.of(Component.literal("[constantData]"), ComponentHelper.literal(getConstantData()))
+                "constantData", Pair.of(Component.literal("[constantData]"), TextHelper.literal(getConstantData()))
         );
     }
     //endregion

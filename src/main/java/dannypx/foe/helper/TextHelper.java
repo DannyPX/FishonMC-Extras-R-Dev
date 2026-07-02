@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class ComponentHelper {
+public class TextHelper {
     private static final GsonBuilder gson = new GsonBuilder();
 
     public static MutableComponent concat(Component... components) {
@@ -108,7 +108,7 @@ public class ComponentHelper {
     }
 
     public static MutableComponent literal(TagObject currentHeldItem) {
-        return ComponentHelper.concat(
+        return TextHelper.concat(
                 Component.literal("name: "), currentHeldItem.getName(), Component.literal("\n"),
                 Component.literal("rarity: "), Component.literal(currentHeldItem.getRarity()), Component.literal("\n"),
                 Component.literal("type: "), Component.literal(currentHeldItem.getType())
@@ -325,7 +325,7 @@ public class ComponentHelper {
         if(component.getSiblings().isEmpty()) {
             int calculatedWidth = font.width(component);
             if(isSmall) {
-                calculatedWidth = font.width(Component.literal(ComponentHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
+                calculatedWidth = font.width(Component.literal(TextHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
             }
             width.set(width.get() + calculatedWidth);
         } else {
@@ -407,7 +407,7 @@ public class ComponentHelper {
                     Component space = Component.literal(" ").setStyle(style);
                     currentLine.get().append(space);
 
-                    currentLineWidth.addAndGet(currentWordWidth.get() + ComponentHelper.getWidth(font, Component.literal(" "), smallCaps));
+                    currentLineWidth.addAndGet(currentWordWidth.get() + TextHelper.getWidth(font, Component.literal(" "), smallCaps));
 
                     currentWord.clear();
                     currentWordWidth.set(0);
@@ -430,7 +430,7 @@ public class ComponentHelper {
                 Component charComponent = Component.literal(String.valueOf(c)).setStyle(style);
                 currentWord.add(charComponent);
 
-                currentWordWidth.addAndGet(ComponentHelper.getWidth(font, Component.literal(String.valueOf(c)), smallCaps));
+                currentWordWidth.addAndGet(TextHelper.getWidth(font, Component.literal(String.valueOf(c)), smallCaps));
             }
             return Optional.empty();
         }, Style.EMPTY);
@@ -438,7 +438,7 @@ public class ComponentHelper {
         if (!currentWord.isEmpty()) {
             if (currentWordWidth.get() > maxWidth) {
                 for (Component part : currentWord) {
-                    int charWidth = ComponentHelper.getWidth(font, part, smallCaps);
+                    int charWidth = TextHelper.getWidth(font, part, smallCaps);
                     if (currentLineWidth.get() + charWidth > maxWidth && currentLineWidth.get() > 0) {
                         lines.add(currentLine.get());
                         currentLine.set(Component.empty());

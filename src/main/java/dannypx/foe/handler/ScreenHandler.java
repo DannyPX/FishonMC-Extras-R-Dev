@@ -2,7 +2,7 @@ package dannypx.foe.handler;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.helper.KeyBindHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.type.tuple.Pair;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public abstract class ScreenHandler implements ScreenConstants {
         Font font = minecraft.font;
         List<Component> listHelp = new ArrayList<>();
 
-        if(showInspect) listHelp.add(ComponentHelper.concat(
+        if(showInspect) listHelp.add(TextHelper.concat(
                 Component.literal("Show more info "),
                 Component.literal(KeyBindHelper.getKeyUnicode(Configs.keyBindConfig.inspectKeybind))
         ));

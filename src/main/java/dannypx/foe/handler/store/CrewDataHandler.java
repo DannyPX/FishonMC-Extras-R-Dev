@@ -5,7 +5,7 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Pair;
@@ -48,8 +48,8 @@ public class CrewDataHandler extends Handler {
                 if(crewList.size() > index) {
                     Pair<UUID, String> crew = crewList.get(index);
                     return switch (params[2]) {
-                        case "id" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(crew.value1())));
-                        case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(crew.value2()));
+                        case "id" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(crew.value1()));
+                        case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(crew.value2()));
                         default -> PlaceholderHandler.noResult();
                     };
                 }
@@ -113,7 +113,7 @@ public class CrewDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "crewData", Pair.of(Component.literal("[crewData]"), ComponentHelper.literal(getCrewData()))
+                "crewData", Pair.of(Component.literal("[crewData]"), TextHelper.literal(getCrewData()))
         );
     }
     //endregion

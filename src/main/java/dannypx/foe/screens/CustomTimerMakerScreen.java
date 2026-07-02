@@ -8,7 +8,7 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.TimerHandler;
 import dannypx.foe.handler.store.CustomTimerDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.type.tuple.Quartet;
@@ -330,7 +330,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                     boolean isOnTimer = remainingOn < timer;
 
-                    Component onTimerComponent = ComponentHelper.concat(
+                    Component onTimerComponent = TextHelper.concat(
                             Component.literal("Timer till ").withStyle(ChatFormatting.GRAY),
                             Component.literal("ON").withStyle(ChatFormatting.GREEN),
                             Component.literal(" period ends: ").withStyle(ChatFormatting.GRAY),
@@ -341,7 +341,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             Component.literal(String.format("%02d", remainingTime.value1())).withStyle(ChatFormatting.YELLOW)
                     );
 
-                    Component offTimerComponent = ComponentHelper.concat(
+                    Component offTimerComponent = TextHelper.concat(
                             Component.literal("Timer till ").withStyle(ChatFormatting.GRAY),
                             Component.literal("OFF").withStyle(ChatFormatting.RED),
                             Component.literal(" period ends: ").withStyle(ChatFormatting.GRAY),
@@ -368,7 +368,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                             true
                     );
 
-                    Component isOnTimerComponent = ComponentHelper.concat(
+                    Component isOnTimerComponent = TextHelper.concat(
                             Component.literal("Currently in ").withStyle(ChatFormatting.GRAY),
                             isOnTimer ? Component.literal("ON").withStyle(ChatFormatting.GREEN) : Component.literal("OFF").withStyle(ChatFormatting.RED),
                             Component.literal(" period").withStyle(ChatFormatting.GRAY)
@@ -388,7 +388,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                     Triplet<Long, Long, Long> remainingTime = getTime(remainingOn);
 
-                    Component onTimerComponent = ComponentHelper.concat(
+                    Component onTimerComponent = TextHelper.concat(
                             Component.literal("Timer: ").withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(remainingTime.value3())).withStyle(ChatFormatting.YELLOW),
                             Component.literal(":").withStyle(ChatFormatting.YELLOW),
@@ -778,7 +778,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                         (button) -> {
                             String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
-                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
                                 Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> data = gson.fromJson(json, TypeToken.getParameterized(
@@ -857,7 +857,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            ComponentHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Timer: **" + selectedTimerId + "\n" +

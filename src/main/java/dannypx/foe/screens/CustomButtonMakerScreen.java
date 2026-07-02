@@ -7,14 +7,13 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomButtonDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import java.util.*;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -310,7 +309,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                         (button) -> {
                             String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
-                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
                                 Pair<CustomButtonDataHandler.CustomButton, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Pair.class, CustomButtonDataHandler.CustomButton.class, Integer.class).getType());
@@ -368,7 +367,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            ComponentHelper.compress(new GsonBuilder().create().toJson(dataButton))
+                                            TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Button: **" + selectedButtonId + "\n" +
@@ -487,7 +486,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     private ButtonListWidget.ButtonEntry createButtonEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
                 Button.builder(
-                        Component.literal(ComponentHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()),
+                        Component.literal(TextHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()),
                         button -> {
                             selectedButton = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().filter(buttonObject -> Objects.equals(buttonObject.name, id)).findAny().orElse(null);
 
@@ -546,7 +545,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     }
 
     private void setFields() {
-        this.header = ComponentHelper.parseLegacyWithStyle(selectedButtonId.replace("&", "§")).value1();
+        this.header = TextHelper.parseLegacyWithStyle(selectedButtonId.replace("&", "§")).value1();
         nameEditBox.setValue(selectedButtonId);
         nameEditBox.setHint(Component.literal(selectedButtonId));
 

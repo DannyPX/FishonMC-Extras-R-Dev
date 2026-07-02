@@ -5,14 +5,14 @@ import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
@@ -47,7 +47,7 @@ public class TabRendererHandler extends Handler {
                 crewBox.render(guiGraphics, minecraft.getDeltaTracker());
 
                 Component crewComponent = Component.literal(ScoreboardHandler.instance().getCrew().getString());
-                GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, crewComponent, x1 + width / 2 - ComponentHelper.getWidth(minecraft.font, crewComponent, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraft.font.lineHeight / 2 + 1, true, true, false, true);
+                GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, crewComponent, x1 + width / 2 - TextHelper.getWidth(minecraft.font, crewComponent, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraft.font.lineHeight / 2 + 1, true, true, false, true);
 
                 // Left Bar
                 Element leftBar = new BoxElement(x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);

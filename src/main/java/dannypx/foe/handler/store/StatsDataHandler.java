@@ -5,7 +5,7 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
@@ -60,7 +60,7 @@ public class StatsDataHandler extends Handler {
             ) {
                 return switch (params[1]) {
                     case "fish" -> {
-                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getStatsData().fishTotal)));
+                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getStatsData().fishTotal));
                         if(params.length >= 5) {
                             Map<String, Map<String, Stat<Integer, Integer>>> fishData = getStatsData().fishData;
                             yield getStatsData(fishData, params[2], params[3], params[4], getStatsData().fishTotal);
@@ -68,10 +68,10 @@ public class StatsDataHandler extends Handler {
                         yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
-                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getStatsData().petTotal)));
-                        if(Objects.equals(params[2], "dry_streak")) yield PlaceholderHandler.getPlaceholderValue(new StringValue(
-                                String.valueOf(getStatsData().fishTotal - getStatsData().petData.getOrDefault(PetTagObject.RARITY, new HashMap<>()).values().stream().mapToInt(stat -> stat.caughtOn).max().orElse(0))
-                        ));
+                        if(Objects.equals(params[2], "total")) yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getStatsData().petTotal));
+                        if(Objects.equals(params[2], "dry_streak")) yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(
+                                getStatsData().fishTotal - getStatsData().petData.getOrDefault(PetTagObject.RARITY, new HashMap<>()).values().stream().mapToInt(stat -> stat.caughtOn).max().orElse(0))
+                        );
                         if(params.length >= 5) {
                             Map<String, Map<String, Stat<Integer, Integer>>> petData = getStatsData().petData;
                             yield getStatsData(petData, params[2], params[3], params[4], getStatsData().fishTotal);
@@ -93,7 +93,7 @@ public class StatsDataHandler extends Handler {
     }
 
     private Pair<Boolean, PlaceholderValue> getStatsData(Map<String, Map<String, Stat<Integer, Integer>>> category, String subCategory, String field, String type, int total) {
-        if(Objects.equals(subCategory, "rating")) field = ComponentHelper.smallCaps(field);
+        if(Objects.equals(subCategory, "rating")) field = TextHelper.smallCaps(field);
         Map<String, Stat<Integer, Integer>> subCatMap = category.getOrDefault(subCategory, null);
         if(subCatMap != null) {
             return getStatsData(subCatMap, field, type, total);
@@ -105,8 +105,8 @@ public class StatsDataHandler extends Handler {
         Stat<Integer, Integer> stat = subCategory.getOrDefault(field, null);
         if(stat != null) {
             return switch (type) {
-                case "count" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(stat.amount())));
-                case "dry_streak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(total - stat.caughtOn())));
+                case "count" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(stat.amount()));
+                case "dry_streak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(total - stat.caughtOn()));
                 default -> PlaceholderHandler.noResult();
             };
         }
@@ -289,7 +289,7 @@ public class StatsDataHandler extends Handler {
                 this.needsUpdate = true;
             }
             case "pet" -> {
-                if(Objects.equals(category, "rating")) field = ComponentHelper.smallCaps(field);
+                if(Objects.equals(category, "rating")) field = TextHelper.smallCaps(field);
                 Map<String, Stat<Integer, Integer>> statsData = this.statsData.petData.get(category);
                 Stat<Integer, Integer> stat = statsData.get(field);
 
@@ -409,7 +409,7 @@ public class StatsDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "statsData", Pair.of(Component.literal("[statsData]"), ComponentHelper.literal(getStatsData()))
+                "statsData", Pair.of(Component.literal("[statsData]"), TextHelper.literal(getStatsData()))
         );
     }
     //endregion

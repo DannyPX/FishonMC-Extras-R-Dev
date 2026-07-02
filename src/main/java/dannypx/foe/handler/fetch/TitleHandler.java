@@ -41,8 +41,8 @@ public class TitleHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "title" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getTitle()));
-                    case "sub_title" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getSubTitle()));
+                    case "title" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTitle()));
+                    case "sub_title" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.valueOf(getSubTitle()));
                     default -> PlaceholderHandler.noResult();
                 };
             }

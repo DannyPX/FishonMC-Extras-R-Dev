@@ -47,9 +47,9 @@ public class QuestHandler extends Handler {
                         case "pet" -> {
                             if(lastRewardedPet.getItemStack() != ItemStack.EMPTY) {
                                 yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastRewardedPet.getName()));
-                                    case "rarity" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastRewardedPet.getRarityComponent()), true);
-                                    case "rating" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastRewardedPet.getRatingComponent()), true);
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getName()));
+                                    case "rarity" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getRarityComponent()), true);
+                                    case "rating" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getRatingComponent()), true);
                                     default -> PlaceholderHandler.getNbtValue(lastRewardedPet, params[2]);
                                 };
                             }
@@ -63,8 +63,8 @@ public class QuestHandler extends Handler {
                                         Pair<TagObject, Integer> lastRewardedItem = lastRewardedItems.get(index);
 
                                         yield switch (params[3]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastRewardedItem.value1().getName()));
-                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(lastRewardedItem.value2())));
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedItem.value1().getName()));
+                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastRewardedItem.value2()));
                                             default -> PlaceholderHandler.getNbtValue(lastRewardedItem.value1(), params[2]);
                                         };
                                     }

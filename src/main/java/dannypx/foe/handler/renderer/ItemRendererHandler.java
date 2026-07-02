@@ -5,7 +5,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
@@ -111,8 +111,8 @@ public class ItemRendererHandler extends Handler {
                 ? validatedItem.value2().getCount()
                 : stack.getCount();
         Component countComponent = isSmall
-                ? ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)))
-                : ComponentHelper.literal(ComponentHelper.shortenNumber(count, 0));
+                ? TextHelper.literal(TextHelper.smallCaps(TextHelper.shortenNumber(count, 0)))
+                : TextHelper.literal(TextHelper.shortenNumber(count, 0));
         int countWidth = font.width(countComponent);
 
         if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
@@ -159,7 +159,7 @@ public class ItemRendererHandler extends Handler {
             if(sizeComponent.getString().isBlank()) sizeComponent = validatedFish.value2().getFishSizeComponent();
 
             if(!sizeComponent.getString().isEmpty()) {
-                sizeComponent = ComponentHelper.substring(sizeComponent, 0, 1);
+                sizeComponent = TextHelper.substring(sizeComponent, 0, 1);
 
                 guiGraphics.drawString(font, sizeComponent, x + 17 - font.width(sizeComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
@@ -175,7 +175,7 @@ public class ItemRendererHandler extends Handler {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
             if(!ratingComponent.getString().isEmpty()) {
-                ratingComponent = ComponentHelper.substring(ratingComponent, 0, 1);
+                ratingComponent = TextHelper.substring(ratingComponent, 0, 1);
 
                 guiGraphics.drawString(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
@@ -189,8 +189,8 @@ public class ItemRendererHandler extends Handler {
                 && !validatedArmor.value2().getQualityComponent().getString().isBlank()
         ) {
             Component qualityArmor = validatedArmor.value2().getQualityComponent();
-            Component qualityRaw = ComponentHelper.substring(qualityArmor, 0, qualityArmor.getString().length() - 1);
-            Component qualityComponent = Component.literal(ComponentHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
+            Component qualityRaw = TextHelper.substring(qualityArmor, 0, qualityArmor.getString().length() - 1);
+            Component qualityComponent = Component.literal(TextHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityComponent.getString().isEmpty()) {
                 guiGraphics.drawString(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 17 - font.lineHeight, CommonColors.WHITE, true);

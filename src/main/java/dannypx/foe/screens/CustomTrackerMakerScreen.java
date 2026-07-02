@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomTrackerWidget;
@@ -135,7 +135,7 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                         (button) -> {
                             String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
-                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().registerTypeAdapter(TrackerValue.class, new TrackerValueAdapter()).create();
                                 Triplet<String, CustomTrackerDataHandler.CustomTracker, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTrackerDataHandler.CustomTracker.class, Integer.class).getType());
@@ -193,7 +193,7 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                                             FishOnMCExtras.TRACKER_VERSION
                                     );
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            ComponentHelper.compress(new GsonBuilder()
+                                            TextHelper.compress(new GsonBuilder()
                                                     .registerTypeAdapter(TrackerValue.class, new TrackerValueAdapter())
                                                     .create().toJson(dataTracker)
                                             )

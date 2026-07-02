@@ -67,7 +67,7 @@ public class CatchingHandler extends Handler {
                         case "fish" -> {
                             if(lastCaughtFish.getItemStack() != ItemStack.EMPTY && lastDataFish != null) {
                                 yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastCaughtFish.getName()));
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastCaughtFish.getName()));
                                     case "rarity", "variant", "size" -> {
                                         Pair<String, Integer> drystreakData = null;
                                         Component icon = null;
@@ -91,9 +91,9 @@ public class CatchingHandler extends Handler {
                                                 && params.length == 4
                                         ) {
                                             yield switch (params[3]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(drystreakData.value1()));
-                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(icon), true);
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(drystreakData.value2())));
+                                                case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(drystreakData.value1()));
+                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(icon), true);
+                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(drystreakData.value2()));
                                                 default -> PlaceholderHandler.noResult();
                                             };
                                         }
@@ -107,7 +107,7 @@ public class CatchingHandler extends Handler {
                         case "pet" -> {
                             if(lastCaughtPet.getItemStack() != ItemStack.EMPTY && lastDataPet != null) {
                                 yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastCaughtPet.getName()));
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastCaughtPet.getName()));
                                     case "rarity", "rating" -> {
                                         Pair<String, Integer> drystreakData = null;
                                         Component icon = null;
@@ -127,9 +127,9 @@ public class CatchingHandler extends Handler {
                                                 && params.length == 4
                                         ) {
                                             yield switch (params[3]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(drystreakData.value1()));
-                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(icon), true);
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(drystreakData.value2())));
+                                                case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(drystreakData.value1()));
+                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(icon), true);
+                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(drystreakData.value2()));
                                                 default -> PlaceholderHandler.noResult();
                                             };
                                         }
@@ -150,11 +150,11 @@ public class CatchingHandler extends Handler {
                                         Triplet<TagObject, Integer, Pair<String, Integer>> lastCaughtItem = lastCaughtItems.get(index);
 
                                         yield switch (params[3]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(lastCaughtItem.value1().getName()));
-                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(lastCaughtItem.value2())));
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastCaughtItem.value1().getName()));
+                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value2()));
                                             case "dry_streak" -> switch (params[4]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(new StringValue(lastCaughtItem.value3().value1()));
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(lastCaughtItem.value3().value2())));
+                                                case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(lastCaughtItem.value3().value1()));
+                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value3().value2()));
                                                 default -> PlaceholderHandler.noResult();
                                             };
                                             default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
@@ -240,10 +240,10 @@ public class CatchingHandler extends Handler {
 
     private Pair<Boolean, FishTagObject> findFish() {
         FishTagObject inventoryFish = this.findFishInInventory();
-        if(inventoryFish != null) return Pair.of(inventoryFish);
+        if(inventoryFish != null) return Pair.ofTrue(inventoryFish);
 
         FishTagObject worldFish = this.findFishInWorld();
-        if(worldFish != null) return Pair.of(worldFish);
+        if(worldFish != null) return Pair.ofTrue(worldFish);
 
         return Pair.ofFalse(FishTagObject.empty());
     }

@@ -2,12 +2,11 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
@@ -22,7 +21,6 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -150,10 +148,10 @@ public class StatsScreenHandler extends Handler {
                 newData.getOrDefault(FishTagObject.VARIANT, new HashMap<>())
                         .put("normal", new StatsDataHandler.Stat<>(normalCount.get(), totalFish));
 
-                return Pair.of(true, newData);
+                return Pair.ofTrue(newData);
             }
         }
-        return Pair.of(false, new HashMap<>());
+        return Pair.ofFalse(new HashMap<>());
     }
 
     private Triplet<Boolean, String, Integer> extractStat(Map<String, Component> constants, Component line) {
@@ -161,16 +159,16 @@ public class StatsScreenHandler extends Handler {
             String field = line.getSiblings().get(1).getString().trim();
             String key = ConstantDataHandler.keysFromField(constants, field).findFirst().orElse(null);
             if(key != null) {
-                int amount = ComponentHelper.toIntFromString(line.getSiblings().get(2).getString());
+                int amount = TextHelper.toIntFromString(line.getSiblings().get(2).getString());
 
-                return Triplet.of(key, amount);
+                return Triplet.ofTrue(key, amount);
             }
         }
         return Triplet.ofFalse("", 0);
     }
 
     private int extractTotal(Component component) {
-        return ComponentHelper.toIntFromString(component.getSiblings().get(2).getString());
+        return TextHelper.toIntFromString(component.getSiblings().get(2).getString());
     }
     //endregion
 
@@ -178,7 +176,7 @@ public class StatsScreenHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "statsLore", Pair.of(Component.literal("[statsLore]"), ComponentHelper.literal(getStatsLore()))
+                "statsLore", Pair.of(Component.literal("[statsLore]"), TextHelper.literal(getStatsLore()))
         );
     }
     //endregion

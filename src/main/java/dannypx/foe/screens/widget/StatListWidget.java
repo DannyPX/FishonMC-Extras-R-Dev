@@ -3,7 +3,7 @@ package dannypx.foe.screens.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import java.util.List;
 import java.util.Objects;
@@ -117,7 +117,7 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
             if(isHeader) {
                 int headerX = getX() + width / 2;
                 int headerWidth = font.width(
-                        Component.literal(ComponentHelper.smallCaps(category.getString())).setStyle(category.getStyle())
+                        Component.literal(TextHelper.smallCaps(category.getString())).setStyle(category.getStyle())
                 );
 
                 GuiGraphicsHelper.drawString(guiGraphics, font, category,
@@ -128,14 +128,14 @@ public class StatListWidget extends AbstractSelectionList<StatListWidget.@NotNul
                 if(!itemStacks.isEmpty()) {
                     fieldComponent = field2;
                 } else if(!Objects.equals(field2, Component.empty())) {
-                    fieldComponent = ComponentHelper.concat(field1, Component.literal(" "), field2);
+                    fieldComponent = TextHelper.concat(field1, Component.literal(" "), field2);
                 } else {
                     fieldComponent = field1;
                 }
                 int fieldComponentX = itemStacks.isEmpty() ? getX() + 17 + PADDING_QUART : getX() + 17 + PADDING_QUART + 16 + PADDING_QUART ;
 
                 int field3X = getX() + (width/4) * 3;
-                int field3Width = font.width(ComponentHelper.smallCaps(field3.getString()));
+                int field3Width = font.width(TextHelper.smallCaps(field3.getString()));
 
                 GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent,
                         fieldComponentX, posY,

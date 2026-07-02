@@ -6,7 +6,7 @@ import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
@@ -45,7 +45,7 @@ public class ChatHandler extends Handler {
             if(fieldPattern.matcher(params[0]).matches()
             ) {
                 return switch(params[0]) {
-                    case "trigger" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(storedChatTriggerComponent.getOrDefault(params[1], Component.empty())));
+                    case "trigger" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(storedChatTriggerComponent.getOrDefault(params[1], Component.empty())));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -143,7 +143,7 @@ public class ChatHandler extends Handler {
         ConstantDataHandler.instance().getConstantData().fishData.forEach((category, fieldMap) -> {
             fieldMap.forEach((stringField, textField) -> {
                 if(modified.get().contains(textField.getString().trim())) {
-                    modified.set(modified.get().replace(textField.getString().trim(), ComponentHelper.capitalize(stringField)));
+                    modified.set(modified.get().replace(textField.getString().trim(), TextHelper.capitalize(stringField)));
                 }
             });
         });

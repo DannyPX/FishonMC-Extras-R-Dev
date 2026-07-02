@@ -3,7 +3,7 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
@@ -266,7 +266,7 @@ public class CustomHudDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "customHudData", Pair.of(Component.literal("[customHudData]"), ComponentHelper.literal(getCustomHudData()))
+                "customHudData", Pair.of(Component.literal("[customHudData]"), TextHelper.literal(getCustomHudData()))
         );
     }
     //endregion
