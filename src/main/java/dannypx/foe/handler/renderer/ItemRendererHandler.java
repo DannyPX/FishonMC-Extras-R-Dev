@@ -198,7 +198,7 @@ public class ItemRendererHandler extends Handler {
         }
     }
 
-    public void drawBaitStackerMarker(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public void drawBaitStackerMarker(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         if(minecraft.player != null) {
             ItemStack cursorItem = minecraft.player.containerMenu.getCarried();
 
@@ -220,7 +220,7 @@ public class ItemRendererHandler extends Handler {
                             && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))
                     ) {
                         Component baitStackIcon = Component.literal("+").withStyle(ChatFormatting.GREEN);
-                        guiGraphics.drawString(font, baitStackIcon, x + 17 - font.width(baitStackIcon), y - 1, CommonColors.GREEN, true);
+                        guiGraphicsExtractor.text(font, baitStackIcon, x + 17 - font.width(baitStackIcon), y - 1, CommonColors.GREEN, true);
                     }
                 }
             }
