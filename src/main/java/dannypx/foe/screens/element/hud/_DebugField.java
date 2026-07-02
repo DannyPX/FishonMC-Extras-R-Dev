@@ -4,7 +4,7 @@ import dannypx.foe.handler.debug._DebugHandler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Quartet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
@@ -89,10 +89,10 @@ public class _DebugField extends Element {
         );
 
         if(fieldParts == null) {
-            fieldComponent = Component.empty().append(Component.literal(ComponentHelper.smallCaps("Field and Handler combination does not exist")).withStyle(ChatFormatting.RED));
+            fieldComponent = Component.empty().append(Component.literal(TextHelper.smallCaps("Field and Handler combination does not exist")).withStyle(ChatFormatting.RED));
         } else {
-            fieldComponent = ComponentHelper.concat(
-                    Component.literal(ComponentHelper.smallCaps("DEBUG ")).withStyle(ChatFormatting.RED),
+            fieldComponent = TextHelper.concat(
+                    Component.literal(TextHelper.smallCaps("DEBUG ")).withStyle(ChatFormatting.RED),
                     Component.literal(fieldParts.value2()).withStyle(ChatFormatting.GRAY),
                     Component.literal(": ").withStyle(ChatFormatting.DARK_GRAY),
                     fieldParts.value3()

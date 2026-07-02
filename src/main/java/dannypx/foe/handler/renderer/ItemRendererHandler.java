@@ -5,11 +5,13 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -109,8 +111,8 @@ public class ItemRendererHandler extends Handler {
                 ? validatedItem.value2().getCount()
                 : stack.getCount();
         Component countComponent = isSmall
-                ? ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)))
-                : ComponentHelper.literal(ComponentHelper.shortenNumber(count, 0));
+                ? TextHelper.literal(TextHelper.smallCaps(TextHelper.shortenNumber(count, 0)))
+                : TextHelper.literal(TextHelper.shortenNumber(count, 0));
         int countWidth = font.width(countComponent);
 
         if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
@@ -157,7 +159,7 @@ public class ItemRendererHandler extends Handler {
             if(sizeComponent.getString().isBlank()) sizeComponent = validatedFish.value2().getFishSizeComponent();
 
             if(!sizeComponent.getString().isEmpty()) {
-                sizeComponent = ComponentHelper.substring(sizeComponent, 0, 1);
+                sizeComponent = TextHelper.substring(sizeComponent, 0, 1);
 
                 guiGraphicsExtractor.text(font, sizeComponent, x + 17 - font.width(sizeComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
@@ -173,7 +175,7 @@ public class ItemRendererHandler extends Handler {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
             if(!ratingComponent.getString().isEmpty()) {
-                ratingComponent = ComponentHelper.substring(ratingComponent, 0, 1);
+                ratingComponent = TextHelper.substring(ratingComponent, 0, 1);
 
                 guiGraphicsExtractor.text(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }
@@ -187,11 +189,40 @@ public class ItemRendererHandler extends Handler {
                 && !validatedArmor.value2().getQualityComponent().getString().isBlank()
         ) {
             Component qualityArmor = validatedArmor.value2().getQualityComponent();
-            Component qualityRaw = ComponentHelper.substring(qualityArmor, 0, qualityArmor.getString().length() - 1);
-            Component qualityComponent = Component.literal(ComponentHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
+            Component qualityRaw = TextHelper.substring(qualityArmor, 0, qualityArmor.getString().length() - 1);
+            Component qualityComponent = Component.literal(TextHelper.smallCaps(qualityRaw.getString())).setStyle(qualityArmor.getStyle());
 
             if(!qualityComponent.getString().isEmpty()) {
                 guiGraphicsExtractor.text(font, qualityComponent, x + 17 - font.width(qualityComponent), y + 17 - font.lineHeight, CommonColors.WHITE, true);
+            }
+        }
+    }
+
+    public void drawBaitStackerMarker(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
+        if(minecraft.player != null) {
+            ItemStack cursorItem = minecraft.player.containerMenu.getCarried();
+
+            if(!cursorItem.isEmpty()
+                    && cursorItem != stack
+            ) {
+                Pair<Boolean, TagObject> validatedCursor = ValidateItem.isType(cursorItem);
+
+                if(validatedCursor.value1()
+                        && (
+                                validatedCursor.value2().getType().equals("bait")
+                )) {
+                    Pair<Boolean,TagObject> validatedItem = ValidateItem.isType(stack);
+
+                    if(validatedItem.value1()
+                            && (
+                                    validatedItem.value2().getType().equals("bait")
+                            )
+                            && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))
+                    ) {
+                        Component baitStackIcon = Component.literal("+").withStyle(ChatFormatting.GREEN);
+                        guiGraphicsExtractor.text(font, baitStackIcon, x + 17 - font.width(baitStackIcon), y - 1, CommonColors.GREEN, true);
+                    }
+                }
             }
         }
     }

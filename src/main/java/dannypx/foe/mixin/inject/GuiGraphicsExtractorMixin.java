@@ -43,6 +43,7 @@ public abstract class GuiGraphicsExtractorMixin {
             ItemRendererHandler.instance().drawRarityMarker((GuiGraphicsExtractor) (Object) this, font, itemStack, x, y);
             ItemRendererHandler.instance().drawSearchItem((GuiGraphicsExtractor) (Object) this, itemStack, x, y);
             ItemRendererHandler.instance().drawPetItemEquipped((GuiGraphicsExtractor) (Object) this, itemStack, x, y);
+            ItemRendererHandler.instance().drawBaitStackerMarker((GuiGraphicsExtractor) (Object) this, font, itemStack, x, y);
             if(KeyBindHandler.instance().isPressingInspect()) {
                 ItemRendererHandler.instance().drawFishSize((GuiGraphicsExtractor) (Object) this, font, itemStack, x, y);
                 ItemRendererHandler.instance().drawPetRating((GuiGraphicsExtractor) (Object) this, font, itemStack, x, y);

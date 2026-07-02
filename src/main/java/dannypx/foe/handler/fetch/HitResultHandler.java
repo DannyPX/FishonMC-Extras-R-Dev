@@ -58,19 +58,19 @@ public class HitResultHandler extends Handler {
                 return switch(params[0]) {
                     case "block_hit_result" -> {
                         if(getBlockHitResult() != null && !getBlockFromHitResult().getString().contains("Air")) {
-                            yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(getBlockFromHitResult()));
+                            yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getBlockFromHitResult()));
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "entity_hit_result" -> {
                         if(getEntityHitResult() != null && !getEntityHitResult().getEntity().getName().getString().isBlank()) {
-                            yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(getEntityHitResult().getEntity().getName()));
+                            yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getEntityHitResult().getEntity().getName()));
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "item_frame_item" -> {
                         if(getItemFrameItem() != ItemStack.EMPTY) {
-                            yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(getItemFrameItem().getHoverName()));
+                            yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getItemFrameItem().getHoverName()));
                         }
                         yield PlaceholderHandler.noResult();
                     }

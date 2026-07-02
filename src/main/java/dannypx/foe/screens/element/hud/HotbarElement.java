@@ -5,7 +5,7 @@ import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.InventoryHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishingRodTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
@@ -138,7 +138,7 @@ public class HotbarElement extends Element {
                     int count = Configs.rendererConfig.showStackCountOnBait.get()
                             ? validatedItem.value2().getCount()
                             : item.getCount();
-                    Component countComponent = ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)));
+                    Component countComponent = TextHelper.literal(TextHelper.smallCaps(TextHelper.shortenNumber(count, 0)));
                     int countWidth = font.width(countComponent);
 
                     if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
@@ -151,7 +151,7 @@ public class HotbarElement extends Element {
                     int count = Configs.rendererConfig.showStackCountOnBait.get()
                             ? validatedItem.value2().getCount()
                             : item.getCount();
-                    Component countComponent = ComponentHelper.literal(ComponentHelper.shortenNumber(count, 0));
+                    Component countComponent = TextHelper.literal(TextHelper.shortenNumber(count, 0));
                     int countWidth = font.width(countComponent);
 
                     if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
@@ -294,8 +294,8 @@ public class HotbarElement extends Element {
                     boolean isSmall = Configs.rendererConfig.useSmallStackCountNumber.get();
                     int count = bait.getCount();
                     Component countComponent = isSmall
-                            ? ComponentHelper.literal(ComponentHelper.smallCaps(ComponentHelper.shortenNumber(count, 0)))
-                            : ComponentHelper.literal(ComponentHelper.shortenNumber(count, 0));
+                            ? TextHelper.literal(TextHelper.smallCaps(TextHelper.shortenNumber(count, 0)))
+                            : TextHelper.literal(TextHelper.shortenNumber(count, 0));
                     int countWidth = font.width(countComponent);
 
                     if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,

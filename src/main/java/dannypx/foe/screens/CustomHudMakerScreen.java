@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
@@ -128,9 +128,9 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
         return Button.builder(
                         Component.literal("Import"),
                         (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
-                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
                                 Triplet<String, CustomHudDataHandler.CustomHud, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomHudDataHandler.CustomHud.class, Integer.class).getType());
@@ -190,7 +190,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            ComponentHelper.compress(new GsonBuilder().create().toJson(dataHud))
+                                            TextHelper.compress(new GsonBuilder().create().toJson(dataHud))
                                     );
 
                                     String dataToCopy = "**Custom HUD: **" + selectedHud + "\n" +

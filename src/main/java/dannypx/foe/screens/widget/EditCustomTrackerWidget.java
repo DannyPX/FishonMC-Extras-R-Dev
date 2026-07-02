@@ -720,7 +720,9 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                         Component.literal("or Subtract, to its current value").withStyle(ChatFormatting.GRAY),
                         Component.empty(),
                         Component.literal("BOOLEAN - false, true").withStyle(ChatFormatting.GRAY),
-                        Component.literal("INTEGER - whole numbers").withStyle(ChatFormatting.GRAY)
+                        Component.literal("INTEGER - whole numbers").withStyle(ChatFormatting.GRAY),
+                        Component.empty(),
+                        Component.literal("Placeholder values are also supported. See wiki").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
                 )), mouseX, mouseY);
             }
         }

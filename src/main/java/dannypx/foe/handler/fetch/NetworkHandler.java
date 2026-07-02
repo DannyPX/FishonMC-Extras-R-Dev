@@ -36,7 +36,7 @@ public class NetworkHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "ping" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getPing())));
+                    case "ping" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getPing()));
                     default -> PlaceholderHandler.noResult();
                 };
             }

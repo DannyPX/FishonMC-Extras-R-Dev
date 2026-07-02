@@ -38,8 +38,8 @@ public class KeyBindHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "open_main_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyString(Configs.keyBindConfig.openMainKeybind)));
-                    case "inspect_keybind" -> PlaceholderHandler.getPlaceholderValue(new StringValue(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind)));
+                    case "open_main_keybind" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(KeyBindHelper.getKeyString(Configs.keyBindConfig.openMainKeybind)));
+                    case "inspect_keybind" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(KeyBindHelper.getKeyString(Configs.keyBindConfig.inspectKeybind)));
                     default -> PlaceholderHandler.noResult();
                 };
             }
