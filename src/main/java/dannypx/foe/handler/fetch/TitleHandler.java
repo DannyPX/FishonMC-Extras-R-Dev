@@ -42,7 +42,7 @@ public class TitleHandler extends Handler {
             ) {
                 return switch(params[0]) {
                     case "title" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTitle()));
-                    case "sub_title" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.valueOf(getSubTitle()));
+                    case "sub_title" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getSubTitle()));
                     default -> PlaceholderHandler.noResult();
                 };
             }
