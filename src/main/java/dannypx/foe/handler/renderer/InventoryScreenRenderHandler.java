@@ -6,7 +6,7 @@ import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomButtonDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.CustomButtonMakerScreen;
@@ -100,7 +100,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
     private void renderStatBoxHeaderString(GuiGraphics guiGraphics) {
         Component headerText = Component.literal("Fishing Statistics").withStyle(ChatFormatting.BOLD);
         int headerWidth = font.width(
-                Component.literal(ComponentHelper.smallCaps(headerText.getString())).setStyle(headerText.getStyle())
+                Component.literal(TextHelper.smallCaps(headerText.getString())).setStyle(headerText.getStyle())
         );
 
         GuiGraphicsHelper.drawString(guiGraphics, font, headerText,
@@ -147,10 +147,10 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     int row = i / buttonsPerRow;
                     int column = i % buttonsPerRow;
 
-                    MutableComponent buttonDrawerTooltip = ComponentHelper.parseLegacyWithStyle(button.name.replace("&", "§")).value1();
+                    MutableComponent buttonDrawerTooltip = TextHelper.parseLegacyWithStyle(button.name.replace("&", "§")).value1();
 
                     if(!button.description.isBlank()) {
-                        buttonDrawerTooltip.append(Component.literal("\n\n")).append(ComponentHelper.parseLegacyWithStyle(button.description.replace("&", "§")).value1());
+                        buttonDrawerTooltip.append(Component.literal("\n\n")).append(TextHelper.parseLegacyWithStyle(button.description.replace("&", "§")).value1());
                     }
 
                     buttons.add(new SmallButtonWidget(
@@ -251,7 +251,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         statList.addEntry(new StatListWidget.StatEntry(
                 Component.literal(""),
                 Component.literal("Total"),
-                ComponentHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal),
+                TextHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal),
                 Component.literal(""),
                 List.of(),
                 false));
@@ -261,8 +261,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                 if(Objects.equals(field, "normal")) return;
                 statList.addEntry(new StatListWidget.StatEntry(Component.literal(category),
                         ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(category, new HashMap<>()).getOrDefault(field, Component.literal(field)),
-                        ComponentHelper.literal(stat.amount()),
-                        ComponentHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal - stat.caughtOn()),
+                        TextHelper.literal(stat.amount()),
+                        TextHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal - stat.caughtOn()),
                         List.of(),
                         false
                 ));
@@ -276,7 +276,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         statList.addEntry(new StatListWidget.StatEntry(
                 Component.literal(""),
                 Component.literal("Total"),
-                ComponentHelper.literal(StatsDataHandler.instance().getStatsData().petTotal),
+                TextHelper.literal(StatsDataHandler.instance().getStatsData().petTotal),
                 Component.literal(""),
                 List.of(),
                 false));
@@ -284,8 +284,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         StatsDataHandler.instance().getStatsData().petData.forEach((category, fieldStats) -> {
             fieldStats.forEach((field, stat) -> statList.addEntry(new StatListWidget.StatEntry(Component.literal(category),
                     ConstantDataHandler.instance().getConstantData().petData.getOrDefault(category, new HashMap<>()).getOrDefault(field, Component.literal(field)),
-                    ComponentHelper.literal(stat.amount()),
-                    ComponentHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal - stat.caughtOn()),
+                    TextHelper.literal(stat.amount()),
+                    TextHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal - stat.caughtOn()),
                     List.of(),
                     false
             )));
@@ -297,8 +297,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         statList.addEntry(new StatListWidget.StatEntry(Component.literal(""), Component.literal("Caught").withStyle(ChatFormatting.GRAY), Component.empty(), Component.literal("Dryst.").withStyle(ChatFormatting.GRAY), List.of(), false));
         StatsDataHandler.instance().getStatsData().itemData.forEach((category, stat) -> statList.addEntry(new StatListWidget.StatEntry(Component.literal(category),
                 Component.literal(category),
-                ComponentHelper.literal(stat.amount()),
-                ComponentHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal - stat.caughtOn()),
+                TextHelper.literal(stat.amount()),
+                TextHelper.literal(StatsDataHandler.instance().getStatsData().fishTotal - stat.caughtOn()),
                 ConstantDataHandler.instance().getConstantData().itemData.getOrDefault(category, List.of()),
                 false
         )));

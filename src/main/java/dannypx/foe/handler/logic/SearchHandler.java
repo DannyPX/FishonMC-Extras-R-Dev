@@ -2,7 +2,7 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.helper.MathHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
 import dannypx.foe.item.ValidateItem;
@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -128,23 +127,23 @@ public class SearchHandler extends Handler {
                         Component.empty(),
                         Component.literal("- Examples").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD),
                         Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("Pet").withStyle(ChatFormatting.GREEN)
                         ),
                         Component.empty(),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("Search any item that has the word ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("Pet ").withStyle(ChatFormatting.GREEN),
                                 Component.literal("in it").withStyle(ChatFormatting.GRAY)
                         ).withStyle(ChatFormatting.ITALIC),
                         Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("tooltip").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal("=").withStyle(ChatFormatting.GOLD),
                                 Component.literal("\"tunas\"").withStyle(ChatFormatting.GREEN)
                         ),
                         Component.empty(),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("Search item ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("tooltip ").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal("that has the word ").withStyle(ChatFormatting.GRAY),
@@ -152,7 +151,7 @@ public class SearchHandler extends Handler {
                                 Component.literal("in it").withStyle(ChatFormatting.GRAY)
                         ).withStyle(ChatFormatting.ITALIC),
                         Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("rating").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal(">").withStyle(ChatFormatting.GOLD),
                                 Component.literal("90  ").withStyle(ChatFormatting.GREEN),
@@ -161,14 +160,14 @@ public class SearchHandler extends Handler {
                                 Component.literal("80").withStyle(ChatFormatting.GREEN)
                         ),
                         Component.empty(),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("Search items that is of ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("pet rating ").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal("higher than ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("90").withStyle(ChatFormatting.GREEN),
                                 Component.literal("%").withStyle(ChatFormatting.GRAY)
                         ).withStyle(ChatFormatting.ITALIC),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("AND ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("is of ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("location scale ").withStyle(ChatFormatting.DARK_AQUA),
@@ -177,7 +176,7 @@ public class SearchHandler extends Handler {
                                 Component.literal("%").withStyle(ChatFormatting.GRAY)
                         ).withStyle(ChatFormatting.ITALIC),
                         Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("type").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal("=").withStyle(ChatFormatting.GOLD),
                                 Component.literal("\"armor\"  ").withStyle(ChatFormatting.GREEN),
@@ -190,20 +189,20 @@ public class SearchHandler extends Handler {
                                 Component.literal("Subtropical").withStyle(ChatFormatting.GREEN)
                         ),
                         Component.empty(),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("Search items that is of ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("type ").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal("equal to ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("armor").withStyle(ChatFormatting.GREEN)
                         ).withStyle(ChatFormatting.ITALIC),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("AND ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("is of ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("rarity ").withStyle(ChatFormatting.DARK_AQUA),
                                 Component.literal("equal to ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("mythical").withStyle(ChatFormatting.GREEN)
                         ).withStyle(ChatFormatting.ITALIC),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("AND ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("is of ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("quality ").withStyle(ChatFormatting.DARK_AQUA),
@@ -211,7 +210,7 @@ public class SearchHandler extends Handler {
                                 Component.literal("94").withStyle(ChatFormatting.GREEN),
                                 Component.literal("%").withStyle(ChatFormatting.GRAY)
                         ).withStyle(ChatFormatting.ITALIC),
-                        ComponentHelper.concat(
+                        TextHelper.concat(
                                 Component.literal("AND ").withStyle(ChatFormatting.GOLD),
                                 Component.literal("search any item that has the word ").withStyle(ChatFormatting.GRAY),
                                 Component.literal("Subtropical ").withStyle(ChatFormatting.GREEN),
@@ -280,7 +279,7 @@ public class SearchHandler extends Handler {
                             List<Component> loreLines = itemStack.get(DataComponents.LORE).lines();
                             AtomicBoolean doesContain = new AtomicBoolean(false);
                             loreLines.forEach(line -> {
-                                String convertedString = ComponentHelper.normalLetter(line.getString());
+                                String convertedString = TextHelper.normalLetter(line.getString());
                                 if(convertedString.toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US))) doesContain.set(true);
                             });
                             yield doesContain.get();
@@ -335,7 +334,7 @@ public class SearchHandler extends Handler {
                 case StringValue stringValue -> {
                     if(searchFilter.key.equalsIgnoreCase("rating") || searchFilter.key.equalsIgnoreCase("pet_rating")) {
                         if(searchFilter.operator == Operator.EQUAL || searchFilter.operator == Operator.SHORT_EQUAL) {
-                            yield ComponentHelper.normalLetter(validatedPet.value2().getRatingComponent().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
+                            yield TextHelper.normalLetter(validatedPet.value2().getRatingComponent().getString()).toLowerCase(Locale.US).contains(stringValue.value().toLowerCase(Locale.US)) ? "true_pet" : "false";
                         }
                         yield "false";
                     }
@@ -446,8 +445,8 @@ public class SearchHandler extends Handler {
         return Map.of(
                 "searchRemainder", Pair.of(Component.literal(getSearchRemainder()), Component.empty()),
                 "lastInput", Pair.of(Component.literal(getLastInput()), Component.empty()),
-                "isFocused", Pair.of(ComponentHelper.literal(isFocused()), Component.empty()),
-                "filters", Pair.of(Component.literal("[filters]"), ComponentHelper.literal(getFilters()))
+                "isFocused", Pair.of(TextHelper.literal(isFocused()), Component.empty()),
+                "filters", Pair.of(Component.literal("[filters]"), TextHelper.literal(getFilters()))
         );
     }
     //endregion

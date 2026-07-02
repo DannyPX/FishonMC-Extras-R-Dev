@@ -42,21 +42,21 @@ public class TimerHandler extends Handler {
             if(timer != null) {
                 if(fieldPattern.matcher(params[1]).matches()) {
                     return switch (params[1]) {
-                        case "timer" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(timer.getTimer())));
-                        case "offset" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(timer.getOffset())));
-                        case "notification_to_trigger" -> PlaceholderHandler.getPlaceholderValue(new StringValue(timer.getNotificationToTrigger()));
-                        case "clean_up_chat_trigger" -> PlaceholderHandler.getPlaceholderValue(new StringValue(timer.getCleanUpChatTrigger()));
-                        case "use_timer" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(timer.isUseTimer())));
-                        case "is_period" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(timer.isPeriod())));
+                        case "timer" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(timer.getTimer()));
+                        case "offset" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(timer.getOffset()));
+                        case "notification_to_trigger" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(timer.getNotificationToTrigger()));
+                        case "clean_up_chat_trigger" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(timer.getCleanUpChatTrigger()));
+                        case "use_timer" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(timer.isUseTimer()));
+                        case "is_period" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(timer.isPeriod()));
                         case "off_timer" -> {
                             if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
-                                yield PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(timerPeriod.getOffTimer())));
+                                yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(timerPeriod.getOffTimer()));
                             }
                             yield PlaceholderHandler.noResult();
                         }
                         case "notification_to_trigger_end" -> {
                             if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
-                                yield PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(timerPeriod.getNotificationToTriggerEnd())));
+                                yield PlaceholderHandler.getPlaceholderValue(StringValue.of(timerPeriod.getNotificationToTriggerEnd()));
                             }
                             yield PlaceholderHandler.noResult();
                         }
@@ -90,19 +90,19 @@ public class TimerHandler extends Handler {
 
                                 yield switch (params[2]) {
                                     case "on" -> switch (params[3]) {
-                                        case "second" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOn.value1())));
-                                        case "minute" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOn.value2())));
-                                        case "hour" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(remainingTimeOn.value3())));
+                                        case "second" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(String.format(Locale.US, "%02d", remainingTimeOn.value1())));
+                                        case "minute" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(String.format(Locale.US, "%02d", remainingTimeOn.value2())));
+                                        case "hour" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(remainingTimeOn.value3()));
                                         default -> PlaceholderHandler.noResult();
                                     };
                                     case "off" -> switch (params[3]) {
-                                        case "second" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOff.value1())));
-                                        case "minute" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.format(Locale.US, "%02d", remainingTimeOff.value2())));
-                                        case "hour" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(remainingTimeOff.value3())));
+                                        case "second" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(String.format(Locale.US, "%02d", remainingTimeOff.value1())));
+                                        case "minute" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(String.format(Locale.US, "%02d", remainingTimeOff.value2())));
+                                        case "hour" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(remainingTimeOff.value3()));
                                         default -> PlaceholderHandler.noResult();
                                     };
-                                    case "is_on" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isOn)));
-                                    case "is_off" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(!isOn)));
+                                    case "is_on" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(isOn));
+                                    case "is_off" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(!isOn));
                                     default -> PlaceholderHandler.noResult();
                                 };
                             } else if (params.length == 3) {
@@ -114,9 +114,9 @@ public class TimerHandler extends Handler {
                                 Triplet<Long, Long, Long> remainingTime = getTime(remaining);
 
                                 yield switch (params[2]) {
-                                    case "second" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.format(Locale.US, "%02d", remainingTime.value1())));
-                                    case "minute" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.format(Locale.US, "%02d", remainingTime.value2())));
-                                    case "hour" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(remainingTime.value3())));
+                                    case "second" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(String.format(Locale.US, "%02d", remainingTime.value1())));
+                                    case "minute" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(String.format(Locale.US, "%02d", remainingTime.value2())));
+                                    case "hour" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(remainingTime.value3()));
                                     default -> PlaceholderHandler.noResult();
                                 };
                             } else {

@@ -4,7 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import java.io.IOException;
 import net.minecraft.network.chat.Component;
 
@@ -14,7 +14,7 @@ public class ComponentAdapter extends TypeAdapter<Component> {
         if(value == null || value.equals(Component.empty())) {
             return;
         }
-        writer.value(ComponentHelper.componentToJsonPretty(value));
+        writer.value(TextHelper.componentToJsonPretty(value));
     }
 
     @Override
@@ -24,6 +24,6 @@ public class ComponentAdapter extends TypeAdapter<Component> {
             return null;
         }
         String json = reader.nextString();
-        return ComponentHelper.jsonToComponent(json);
+        return TextHelper.jsonToComponent(json);
     }
 }

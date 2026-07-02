@@ -11,7 +11,7 @@ import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
 import dannypx.foe.handler.logic.TimerHandler;
 import dannypx.foe.handler.store.*;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.MainScreen;
 import dannypx.foe.type.custom_value.BooleanValue;
 import dannypx.foe.type.custom_value.EmptyValue;
@@ -508,7 +508,7 @@ public class CommandRegistry {
     }
 
     private static int executeCommand(CommandContext<FabricClientCommandSource> context, List<Component> feedback, ExecuteCallback executeCallback) {
-        return executeCommand(context, ComponentHelper.concat(feedback.toArray(new Component[]{})), executeCallback);
+        return executeCommand(context, TextHelper.concat(feedback.toArray(new Component[]{})), executeCallback);
     }
 
     private static int executeCommand(CommandContext<FabricClientCommandSource> context, String feedback, ExecuteCallback executeCallback) {
@@ -527,7 +527,7 @@ public class CommandRegistry {
 
     private static int sendFeedback(CommandContext<FabricClientCommandSource> context, Component feedback) {
         context.getSource().sendFeedback(
-                ComponentHelper.concat(
+                TextHelper.concat(
                         Component.literal("FoER ").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD),
                         Component.literal("» ").withStyle(ChatFormatting.DARK_GRAY),
                         feedback

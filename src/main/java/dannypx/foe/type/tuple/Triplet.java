@@ -11,7 +11,7 @@ public record Triplet<Type1, Type2, Type3>(@NotNull Type1 value1, @NotNull Type2
         return new Triplet<>(value1, value2, value3);
     }
 
-    public static <Type2, Type3> Triplet<Boolean, Type2, Type3> of(@NotNull Type2 value2, @NotNull Type3 value3) {
+    public static <Type2, Type3> Triplet<Boolean, Type2, Type3> ofTrue(@NotNull Type2 value2, @NotNull Type3 value3) {
         return new Triplet<>(Boolean.TRUE, value2, value3);
     }
 

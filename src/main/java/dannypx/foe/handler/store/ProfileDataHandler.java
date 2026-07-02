@@ -5,7 +5,7 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
@@ -53,11 +53,11 @@ public class ProfileDataHandler extends Handler {
                     && fieldPattern.matcher(params[1]).matches()
             ) {
                 return switch(params[1]) {
-                    case "active_pet_slot" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().activePetSlot)));
-                    case "has_imported_stats" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().hasImportedStats)));
-                    case "is_in_crew_chat" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().isInCrewChat)));
-                    case "has_imported_crew" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().hasImportedCrew)));
-                    case "tournament_contribution" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getProfileData().tournamentContribution)));
+                    case "active_pet_slot" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getProfileData().activePetSlot));
+                    case "has_imported_stats" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getProfileData().hasImportedStats));
+                    case "is_in_crew_chat" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getProfileData().isInCrewChat));
+                    case "has_imported_crew" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getProfileData().hasImportedCrew));
+                    case "tournament_contribution" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getProfileData().tournamentContribution));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -155,7 +155,7 @@ public class ProfileDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "profileData", Pair.of(Component.literal("[profileData]"), ComponentHelper.literal(getProfileData()))
+                "profileData", Pair.of(Component.literal("[profileData]"), TextHelper.literal(getProfileData()))
         );
     }
     //endregion

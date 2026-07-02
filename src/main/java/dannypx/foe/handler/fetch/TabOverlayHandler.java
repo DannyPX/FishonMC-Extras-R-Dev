@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
@@ -55,9 +55,9 @@ public class TabOverlayHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "player_name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getPlayerName()));
-                    case "instance" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getInstance()));
-                    case "is_in_instance" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isInInstance())));
+                    case "player_name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getPlayerName()));
+                    case "instance" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(getInstance()));
+                    case "is_in_instance" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(isInInstance()));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -120,7 +120,7 @@ public class TabOverlayHandler extends Handler {
         return Map.of(
                 "playerName", Pair.of(getPlayerName().copy(), Component.empty()),
                 "instance", Pair.of(Component.literal(getInstance()), Component.empty()),
-                "isInInstance", Pair.of(ComponentHelper.literal(isInInstance()), Component.empty())
+                "isInInstance", Pair.of(TextHelper.literal(isInInstance()), Component.empty())
         );
     }
     //endregion

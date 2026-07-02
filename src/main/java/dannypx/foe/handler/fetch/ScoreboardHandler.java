@@ -4,7 +4,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
@@ -104,17 +104,17 @@ public class ScoreboardHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "level" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getLevel()));
-                    case "wallet" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getWallet().getString()));
-                    case "credits" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCredits().getString()));
-                    case "catches" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCatches().getString()));
-                    case "location_min" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getLocationMin().getString()));
-                    case "location_max" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getLocationMax().getString()));
-                    case "catch_rate" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCatchRate().getString()));
-                    case "crew" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getCrew().getString()));
-                    case "crew_nearby" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(isCrewNearby()));
-                    case "version" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getVersion().getString()));
-                    case "date" -> PlaceholderHandler.getPlaceholderValue(new StringValue(getDate().getString()));
+                    case "level" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getLevel()));
+                    case "wallet" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getWallet()));
+                    case "credits" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getCredits()));
+                    case "catches" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getCatches()));
+                    case "location_min" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getLocationMin()));
+                    case "location_max" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getLocationMax()));
+                    case "catch_rate" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getCatchRate()));
+                    case "crew" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getCrew()));
+                    case "crew_nearby" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(isCrewNearby()));
+                    case "version" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getVersion()));
+                    case "date" -> PlaceholderHandler.getPlaceholderValue(StringValue.toString(getDate()));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -215,7 +215,7 @@ public class ScoreboardHandler extends Handler {
                 .toList();
         if(!Objects.equals(prevResult, componentList)) {
             prevResult = new ArrayList<>(componentList);
-            return Pair.of(prevResult);
+            return Pair.ofTrue(prevResult);
         }
         return Pair.ofFalse(prevResult);
     }
@@ -246,7 +246,7 @@ public class ScoreboardHandler extends Handler {
                 Map.entry("catchRate", Pair.of(getCatchRate(), Component.empty())),
                 Map.entry("crew", Pair.of(getCrew(), Component.empty())),
                 Map.entry("crewNearby", Pair.of(isCrewNearby(), Component.empty())),
-                Map.entry("noScoreboard", Pair.of(ComponentHelper.literal(isNoScoreboard()), Component.empty()))
+                Map.entry("noScoreboard", Pair.of(TextHelper.literal(isNoScoreboard()), Component.empty()))
         );
     }
     //endregion

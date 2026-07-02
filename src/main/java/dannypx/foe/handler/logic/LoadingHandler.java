@@ -48,8 +48,8 @@ public class LoadingHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "is_loading_done" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isLoadingDone())));
-                    case "is_error" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isError())));
+                    case "is_loading_done" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(isLoadingDone()));
+                    case "is_error" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(isError()));
                     default -> PlaceholderHandler.noResult();
                 };
             }

@@ -3,7 +3,7 @@ package dannypx.foe.handler.fetch;
 import com.google.gson.*;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.ComponentValue;
@@ -61,11 +61,11 @@ public class BossEventHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "location" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getLocation()));
-                    case "weather" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getWeather()));
-                    case "time" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getTime()));
-                    case "temperature" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getTemperature()));
-                    case "sub_location" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getSubLocation()), true);
+                    case "location" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getLocation()));
+                    case "weather" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getWeather()));
+                    case "time" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTime()));
+                    case "temperature" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTemperature()));
+                    case "sub_location" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getSubLocation()), true);
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -85,7 +85,7 @@ public class BossEventHandler extends Handler {
             bossEventMap.forEach(((uuid, lerpingBossEvent) -> {
                 if(lerpingBossEvent.getName().getString().contains("\uF039") && !Objects.equals(prevBossEvent, lerpingBossEvent.getName().getString())) {
                     prevBossEvent = lerpingBossEvent.getName().getString();
-                    String json = ComponentHelper.componentToJson(lerpingBossEvent.getName());
+                    String json = TextHelper.componentToJson(lerpingBossEvent.getName());
                     JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 
                     if(jsonObject.get("extra") != null) {
@@ -132,7 +132,7 @@ public class BossEventHandler extends Handler {
                         }
                     }
                 } else if(lerpingBossEvent.getName().getString().contains("\uA201\uEEE1\uA208")) {
-                    JsonObject jsonObject = JsonParser.parseString(ComponentHelper.componentToJson(lerpingBossEvent.getName())).getAsJsonObject();
+                    JsonObject jsonObject = JsonParser.parseString(TextHelper.componentToJson(lerpingBossEvent.getName())).getAsJsonObject();
 
                     if(jsonObject.get("extra") != null) {
                         JsonObject locationObject = jsonObject.get("extra").getAsJsonArray().get(0).getAsJsonObject();

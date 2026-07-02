@@ -73,9 +73,7 @@ public class QuestScreenHandler extends Handler {
                 }
             });
 
-            if(!questList.isEmpty()) {
-                QuestDataHandler.instance().setQuest(questList);
-            }
+            QuestDataHandler.instance().setQuest(questList);
         });
     }
 

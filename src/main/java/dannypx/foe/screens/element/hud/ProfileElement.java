@@ -5,7 +5,7 @@ import dannypx.foe.handler.fetch.LocalPlayerHandler;
 import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
@@ -150,7 +150,7 @@ public class ProfileElement extends Element {
         Component progressLeftComponent = Component.literal(" ".repeat(progressLeft))
                 .withStyle(ChatFormatting.STRIKETHROUGH, ChatFormatting.DARK_GRAY);
 
-        Component levelComponent = ComponentHelper.concat(
+        Component levelComponent = TextHelper.concat(
                 Component.literal("LV. ").withStyle(ChatFormatting.GRAY),
                 level,
                 Component.literal(" [").withStyle(ChatFormatting.DARK_GRAY),
@@ -158,28 +158,28 @@ public class ProfileElement extends Element {
                 progressLeftComponent,
                 Component.literal("]").withStyle(ChatFormatting.DARK_GRAY)
         );
-        int levelWidth = font.width(ComponentHelper.smallCaps(levelComponent.getString()));
+        int levelWidth = font.width(TextHelper.smallCaps(levelComponent.getString()));
 
         int component3x = 48;
         int component3y = 34;
 
         Component wallet = ScoreboardHandler.instance().getWallet();
         Component walletComponent = !wallet.getString().isEmpty()
-                ? ComponentHelper.concat(
+                ? TextHelper.concat(
                         Component.literal("\uF012 "),
                         wallet
                 )
                 : Component.empty().append("\uF012 ");
-        int walletWidth = font.width(ComponentHelper.smallCaps(walletComponent.getString()));
+        int walletWidth = font.width(TextHelper.smallCaps(walletComponent.getString()));
 
         int component4x = 110;
         int component4y = 34;
 
-        Component creditsComponent = ComponentHelper.concat(
+        Component creditsComponent = TextHelper.concat(
                 Component.literal("\uF00C "),
                 ScoreboardHandler.instance().getCredits()
         );
-        int creditsWidth = font.width(ComponentHelper.smallCaps(creditsComponent.getString()));
+        int creditsWidth = font.width(TextHelper.smallCaps(creditsComponent.getString()));
 
         switch (Configs.hudConfig.profileElementAlignment.get()) {
             case TOP_LEFT -> {

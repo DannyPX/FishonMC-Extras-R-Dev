@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomEventTriggerDataHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.type.event.EventTrigger;
@@ -371,9 +371,9 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         return Button.builder(
                         Component.literal("Import"),
                         (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard();
+                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
                             try {
-                                String json = ComponentHelper.decompress(Base64.getDecoder().decode(rawData));
+                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
                                 Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomEventTriggerDataHandler.CustomEventTrigger.class, Integer.class).getType());
@@ -434,7 +434,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            ComponentHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Event Trigger: **" + selectedEventTriggerId + "\n" +

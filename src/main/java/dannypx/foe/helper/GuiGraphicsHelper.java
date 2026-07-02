@@ -24,7 +24,7 @@ public class GuiGraphicsHelper {
 
             int width = font.width(component);
             if(smallCaps) {
-                width = font.width(Component.literal(ComponentHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
+                width = font.width(Component.literal(TextHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
             }
 
             translationX.set(translationX.get() + width);
@@ -42,7 +42,7 @@ public class GuiGraphicsHelper {
             String glyph = popNextGlyph(characterList);
 
             if (smallCaps) {
-                glyph = ComponentHelper.smallCaps(glyph);
+                glyph = TextHelper.smallCaps(glyph);
             }
 
             int cWidth = font.width(Component.literal(glyph).setStyle(style));
@@ -51,9 +51,9 @@ public class GuiGraphicsHelper {
 
             int offsetY = 0;
             if(glyph.length() == 1) {
-                if (ComponentHelper.isSmallNumber(glyph.charAt(0))) {
+                if (TextHelper.isSmallNumber(glyph.charAt(0))) {
                     offsetY = 1;
-                } else if (ComponentHelper.isSmallLetter(glyph.charAt(0)) || (hasCustomFont && ComponentHelper.isCustomFont(glyph.charAt(0)))) {
+                } else if (TextHelper.isSmallLetter(glyph.charAt(0)) || (hasCustomFont && TextHelper.isCustomFont(glyph.charAt(0)))) {
 
                 } else {
                     translateY = 0;

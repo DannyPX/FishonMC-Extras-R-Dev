@@ -7,7 +7,7 @@ import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.fetch.QuestScreenHandler;
 import dannypx.foe.handler.logic.PlaceholderHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
@@ -51,9 +51,9 @@ public class QuestDataHandler extends Handler {
                 int index = Integer.parseInt(params[1]);
                 if(questData.size() > index) {
                     return switch (params[2]) {
-                        case "goal" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(ConstantDataHandler.instance().getConstantFishComponent(questData.get(index).goal)));
-                        case "max" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(questData.get(index).max)));
-                        case "current" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(questData.get(index).current)));
+                        case "goal" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(ConstantDataHandler.instance().getConstantFishComponent(questData.get(index).goal)));
+                        case "max" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(questData.get(index).max));
+                        case "current" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(questData.get(index).current));
                         default -> PlaceholderHandler.noResult();
                     };
                 }
@@ -156,7 +156,7 @@ public class QuestDataHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "questData", Pair.of(Component.literal("[questData]"), ComponentHelper.literal(getQuestData()))
+                "questData", Pair.of(Component.literal("[questData]"), TextHelper.literal(getQuestData()))
         );
     }
     //endregion

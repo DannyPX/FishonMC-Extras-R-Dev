@@ -4,7 +4,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.fetch.BossEventHandler;
 import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.config.Configs;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.screens.element.Element;
@@ -83,12 +83,12 @@ public class LocationElement extends Element {
         int component1y = 7;
 
         Component temperature = BossEventHandler.instance().getTemperature();
-        Component weather = ComponentHelper.concat(
+        Component weather = TextHelper.concat(
                 BossEventHandler.instance().getWeather(),
                 Component.literal(" "),
                 temperature
         );
-        int weatherWidth = font.width(ComponentHelper.smallCaps(weather.getString()));
+        int weatherWidth = font.width(TextHelper.smallCaps(weather.getString()));
 
         int component2x = 52;
         int component2y = 7;
@@ -97,25 +97,25 @@ public class LocationElement extends Element {
         Component subLocation = BossEventHandler.instance().getSubLocation();
 
         Component locationTotal = switch (Configs.hudConfig.locationElementAlignment.get()) {
-            case TOP_LEFT -> subLocation.getString().isBlank() ? ComponentHelper.concat(location) : ComponentHelper.concat(
+            case TOP_LEFT -> subLocation.getString().isBlank() ? TextHelper.concat(location) : TextHelper.concat(
                     location,
                     Component.literal(" | ").withStyle(ChatFormatting.DARK_GRAY),
                     subLocation
             );
-            case TOP_RIGHT -> subLocation.getString().isBlank() ? ComponentHelper.concat(location) : ComponentHelper.concat(
+            case TOP_RIGHT -> subLocation.getString().isBlank() ? TextHelper.concat(location) : TextHelper.concat(
                     subLocation,
                     Component.literal(" | ").withStyle(ChatFormatting.DARK_GRAY),
                     location
             );
             default -> Component.empty();
         };
-        int locationWidth = font.width(ComponentHelper.smallCaps(locationTotal.getString()));
+        int locationWidth = font.width(TextHelper.smallCaps(locationTotal.getString()));
 
         int component3x = 16;
         int component3y = 26;
 
         Component time = BossEventHandler.instance().getTime();
-        int timeWidth = font.width(ComponentHelper.smallCaps(time.getString()));
+        int timeWidth = font.width(TextHelper.smallCaps(time.getString()));
 
         switch (Configs.hudConfig.locationElementAlignment.get()) {
             case TOP_LEFT -> {

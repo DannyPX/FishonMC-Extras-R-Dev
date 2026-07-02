@@ -1,7 +1,6 @@
 package dannypx.foe.screens.widget;
 
-import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.helper.GuiGraphicsHelper;
@@ -16,7 +15,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 public class MovableBoxWidget extends AbstractWidget implements ScreenConstants {
     private final Minecraft minecraft;
@@ -223,11 +221,11 @@ public class MovableBoxWidget extends AbstractWidget implements ScreenConstants 
         if(this.isHovered()) {
             List<Component> componentList = List.of(
                     Component.literal(element.message.getString()).withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD),
-                    ComponentHelper.concat(Component.literal("X Position: ").withStyle(ChatFormatting.GRAY),
+                    TextHelper.concat(Component.literal("X Position: ").withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(Math.round(element.xPos * 100f)))),
-                    ComponentHelper.concat(Component.literal("Y Position: ").withStyle(ChatFormatting.GRAY),
+                    TextHelper.concat(Component.literal("Y Position: ").withStyle(ChatFormatting.GRAY),
                             Component.literal(String.valueOf(Math.round(element.yPos * 100f)))),
-                    ComponentHelper.concat(Component.literal("Alignment: ").withStyle(ChatFormatting.GRAY),
+                    TextHelper.concat(Component.literal("Alignment: ").withStyle(ChatFormatting.GRAY),
                             Component.literal(element.alignment.toString())),
                     Component.empty(),
                     Component.literal("Hold Left Click and Drag to change position").withStyle(ChatFormatting.ITALIC),

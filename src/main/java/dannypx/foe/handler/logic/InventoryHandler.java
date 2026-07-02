@@ -5,7 +5,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.NetworkHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.ItemStackHelper;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
@@ -94,12 +94,12 @@ public class InventoryHandler extends Handler {
                     case "fishing_rod" -> {
                         if(params.length >= 2) {
                             yield switch(params[1]) {
-                                case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentFishingRod().getName()));
+                                case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCurrentFishingRod().getName()));
                                 case "line" -> {
                                     List<TagObject> list = getCurrentFishingRod().getLineItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(list.getFirst().getName()));
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(list.getFirst().getName()));
                                             default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
                                         };
                                     }
@@ -109,7 +109,7 @@ public class InventoryHandler extends Handler {
                                     List<TagObject> list = getCurrentFishingRod().getReelItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(list.getFirst().getName()));
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(list.getFirst().getName()));
                                             default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
                                         };
                                     }
@@ -119,7 +119,7 @@ public class InventoryHandler extends Handler {
                                     List<TagObject> list = getCurrentFishingRod().getPoleItem();
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(list.getFirst().getName()));
+                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(list.getFirst().getName()));
                                             default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
                                         };
                                     }
@@ -135,20 +135,20 @@ public class InventoryHandler extends Handler {
                                 && hasPet()
                         ) {
                             yield switch(params[1]) {
-                                case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentPet().getName()));
-                                case "level" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getCurrentPet().getLevel())));
-                                case "level_progress" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getProgress() * 100, 2)));
-                                case "rating" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentPet().getRatingComponent()));
-                                case "rating_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getTotalPercent() * 100, 2)));
-                                case "rarity" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(getCurrentPet().getRarityComponent()));
-                                case "location_luck_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationPercentMaxLuck() * 100, 2)));
-                                case "location_scale_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationPercentMaxScale() * 100, 2)));
-                                case "climate_luck_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimatePercentMaxLuck() * 100, 2)));
-                                case "climate_scale_percent" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimatePercentMaxScale() * 100, 2)));
-                                case "location_luck" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationMaxLuck(), 0)));
-                                case "location_scale" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
-                                case "climate_luck" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
-                                case "climate_scale" -> PlaceholderHandler.getPlaceholderValue(new StringValue(ComponentHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
+                                case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCurrentPet().getName()));
+                                case "level" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getCurrentPet().getLevel()));
+                                case "level_progress" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getProgress() * 100, 2)));
+                                case "rating" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCurrentPet().getRatingComponent()));
+                                case "rating_percent" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getTotalPercent() * 100, 2)));
+                                case "rarity" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCurrentPet().getRarityComponent()));
+                                case "location_luck_percent" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxLuck() * 100, 2)));
+                                case "location_scale_percent" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getLocationPercentMaxScale() * 100, 2)));
+                                case "climate_luck_percent" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxLuck() * 100, 2)));
+                                case "climate_scale_percent" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getClimatePercentMaxScale() * 100, 2)));
+                                case "location_luck" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getLocationMaxLuck(), 0)));
+                                case "location_scale" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
+                                case "climate_luck" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
+                                case "climate_scale" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
                                 default -> PlaceholderHandler.getNbtValue(getCurrentPet(), params[1]);
                             };
                         }
@@ -170,14 +170,14 @@ public class InventoryHandler extends Handler {
 
                             if(validatedItem.value1()) {
                                 yield switch(params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(validatedItem.value2().getName()));
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(validatedItem.value2().getName()));
                                     default -> PlaceholderHandler.getNbtValue(validatedItem.value2(), params[2]);
                                 };
                             }
                         }
                         yield PlaceholderHandler.noResult();
                     }
-                    case "empty_slots" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(getCurrentEmptySlots())));
+                    case "empty_slots" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(getCurrentEmptySlots()));
                     case "held_item" -> {
                         if(params.length >= 2
                                 && minecraft.player != null
@@ -185,7 +185,7 @@ public class InventoryHandler extends Handler {
                             ItemStack heldItem = minecraft.player.getInventory().getSelectedItem();
                             if(!heldItem.isEmpty()) {
                                 yield switch (params[1]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(heldItem.getHoverName()));
+                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(heldItem.getHoverName()));
                                     case "tooltip" -> {
                                         if(params.length >= 3) {
                                             if(heldItem.get(DataComponents.LORE) != null) {
@@ -194,7 +194,7 @@ public class InventoryHandler extends Handler {
                                                     int index = Integer.parseInt(params[2]);
 
                                                     if(index < lines.size()) {
-                                                        yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(lines.get(index)));
+                                                        yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lines.get(index)));
                                                     }
                                                 } catch (Exception ignored) {}
                                             }
@@ -217,7 +217,7 @@ public class InventoryHandler extends Handler {
 
                                 if(!stack.isEmpty()) {
                                     yield switch (params[2]) {
-                                        case "name" -> PlaceholderHandler.getPlaceholderValue(new ComponentValue(stack.getHoverName()));
+                                        case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(stack.getHoverName()));
                                         case "tooltip" -> {
                                             if(params.length >= 4) {
                                                 if(stack.get(DataComponents.LORE) != null) {
@@ -226,7 +226,7 @@ public class InventoryHandler extends Handler {
                                                         int index = Integer.parseInt(params[3]);
 
                                                         if(index < lines.size()) {
-                                                            yield PlaceholderHandler.getPlaceholderValue(new ComponentValue(lines.get(index)));
+                                                            yield PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lines.get(index)));
                                                         }
                                                     } catch (Exception ignored) {}
                                                 }
@@ -429,14 +429,14 @@ public class InventoryHandler extends Handler {
     /// Field, Pair<Value, Tooltip>
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "trackedFish", Pair.of(Component.literal("[trackedFish]"), ComponentHelper.literal(getTrackedFish())),
-                "snapshotInventory", Pair.of(Component.literal("[snapshotInventory]"), ComponentHelper.literal(
+                "trackedFish", Pair.of(Component.literal("[trackedFish]"), TextHelper.literal(getTrackedFish())),
+                "snapshotInventory", Pair.of(Component.literal("[snapshotInventory]"), TextHelper.literal(
                         ItemStackHelper.itemStackListToJson(getSnapshotInventory())
                 )),
-                "currentFishingRod", Pair.of(Component.literal("[currentFishingRod]"), ComponentHelper.literal(getCurrentFishingRod().getItemStack())),
-                "currentPet", Pair.of(Component.literal("[currentPet]"), ComponentHelper.literal(getCurrentPet().getItemStack())),
-                "currentHeldItem", Pair.of(Component.literal("[currentHeldItem]"), ComponentHelper.literal(getCurrentHeldItem())),
-                "snapshottedItems", Pair.of(Component.literal("[snapshottedItems]"), ComponentHelper.literal(getSnapshottedItemstacks()))
+                "currentFishingRod", Pair.of(Component.literal("[currentFishingRod]"), TextHelper.literal(getCurrentFishingRod().getItemStack())),
+                "currentPet", Pair.of(Component.literal("[currentPet]"), TextHelper.literal(getCurrentPet().getItemStack())),
+                "currentHeldItem", Pair.of(Component.literal("[currentHeldItem]"), TextHelper.literal(getCurrentHeldItem())),
+                "snapshottedItems", Pair.of(Component.literal("[snapshottedItems]"), TextHelper.literal(getSnapshottedItemstacks()))
         );
     }
     //endregion

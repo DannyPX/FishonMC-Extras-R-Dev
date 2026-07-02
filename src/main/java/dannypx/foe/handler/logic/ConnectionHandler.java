@@ -1,7 +1,7 @@
 package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.helper.ComponentHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
@@ -41,8 +41,8 @@ public class ConnectionHandler extends Handler {
                     && params.length == 1
             ) {
                 return switch(params[0]) {
-                    case "is_on_server" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(isOnServer())));
-                    case "was_on_server" -> PlaceholderHandler.getPlaceholderValue(new StringValue(String.valueOf(wasOnServer())));
+                    case "is_on_server" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(isOnServer()));
+                    case "was_on_server" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(wasOnServer()));
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -83,8 +83,8 @@ public class ConnectionHandler extends Handler {
     //region Dev
     protected Map<String, Pair<MutableComponent, MutableComponent>> _getFields() {
         return Map.of(
-                "isOnServer", Pair.of(ComponentHelper.literal(isOnServer()), Component.empty()),
-                "wasOnServer", Pair.of(ComponentHelper.literal(wasOnServer()), Component.empty())
+                "isOnServer", Pair.of(TextHelper.literal(isOnServer()), Component.empty()),
+                "wasOnServer", Pair.of(TextHelper.literal(wasOnServer()), Component.empty())
         );
     }
     //endregion
