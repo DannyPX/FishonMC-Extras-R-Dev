@@ -1,6 +1,8 @@
 package dannypx.foe.handler.renderer;
 
 import dannypx.foe.handler.ScreenHandler;
+import dannypx.foe.handler.logic.CodeExecuterHandler;
+import dannypx.foe.handler.logic.EventHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomButtonDataHandler;

@@ -62,6 +62,14 @@ public class EventHandler extends Handler {
         this.sendEventTrigger(EventTrigger.ON_QUEST_COMPLETE);
     }
 
+    public void onScreenOpen() {
+        this.sendEventTrigger(EventTrigger.ON_SCREEN_OPEN);
+    }
+
+    public void onScreenClose() {
+        this.sendEventTrigger(EventTrigger.ON_SCREEN_CLOSE);
+    }
+
     private void sendEventTrigger(EventTrigger eventTrigger) {
         CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.forEach((name, event) -> {
             if(event.isUseEventTrigger() && event.getEvent() == eventTrigger) {

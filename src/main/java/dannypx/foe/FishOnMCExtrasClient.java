@@ -93,11 +93,13 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             ScreenEvents.afterRender(screen).register(ChatScreenRenderHandler.instance()::render);
         }
 
+        CodeExecuterHandler.runLater(3, EventHandler.instance()::onScreenOpen);
         ScreenEvents.remove(screen).register(this::onRemoveScreen);
     }
 
     private void onRemoveScreen(Screen screen) {
         InventoryHandler.instance().trackFishOffSide();
+        EventHandler.instance().onScreenClose();
     }
 
     private void initHudRenderer() {
