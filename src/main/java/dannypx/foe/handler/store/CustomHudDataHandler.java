@@ -85,7 +85,7 @@ public class CustomHudDataHandler extends Handler {
         return customHudData.customHudRawDataList.remove(id);
     }
 
-    public void updateHud(String currentSelectedHud, String newName, float scale, boolean showBackground, boolean showElement, List<Triplet<String, Boolean, Boolean>> list) {
+    public void updateHud(String currentSelectedHud, String newName, float scale, boolean showBackground, boolean showBars, boolean showElement, List<Triplet<String, Boolean, Boolean>> list) {
         CustomHud newHud = customHudData.customHudRawDataList.get(currentSelectedHud);
 
         if(!Objects.equals(currentSelectedHud, newName)) {
@@ -96,6 +96,7 @@ public class CustomHudDataHandler extends Handler {
         newHud.stringLines = list;
         newHud.scale = scale;
         newHud.showBackground = showBackground;
+        newHud.showBars = showBars;
         newHud.showElement = showElement;
 
         customHudData.customHudRawDataList.put(currentSelectedHud, newHud);
@@ -133,7 +134,7 @@ public class CustomHudDataHandler extends Handler {
 
     //region Model
     public static class CustomHudDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_HUD_DATA_MODEL_VERSION = "0.3";
+        private static final String CUSTOM_HUD_DATA_MODEL_VERSION = "0.4";
 
         private static final Map<String, CustomHud> defaultHuds = Map.of(
                 "Quest Hud",
@@ -153,6 +154,7 @@ public class CustomHudDataHandler extends Handler {
                         1,
                         15,
                         1.0f,
+                        true,
                         true,
                         true
                 ),
@@ -178,6 +180,7 @@ public class CustomHudDataHandler extends Handler {
                         50,
                         1.0f,
                         true,
+                        true,
                         true
                 )
         );
@@ -200,6 +203,7 @@ public class CustomHudDataHandler extends Handler {
         private int yPos;
         private float scale;
         private boolean showBackground;
+        private boolean showBars;
         private boolean showElement;
 
         public List<Triplet<String, Boolean, Boolean>> getStringLines() {
@@ -226,6 +230,10 @@ public class CustomHudDataHandler extends Handler {
             return showBackground;
         }
 
+        public boolean isShowBars() {
+            return showBars;
+        }
+
         public boolean isShowElement() {
             return showElement;
         }
@@ -237,6 +245,7 @@ public class CustomHudDataHandler extends Handler {
                 int yPos,
                 float scale,
                 boolean showBackground,
+                boolean showBars,
                 boolean showElement
         ) {
             this.stringLines = stringLines;
@@ -245,6 +254,7 @@ public class CustomHudDataHandler extends Handler {
             this.yPos = yPos;
             this.scale = scale;
             this.showBackground = showBackground;
+            this.showBars = showBars;
             this.showElement = showElement;
         }
 
@@ -257,6 +267,7 @@ public class CustomHudDataHandler extends Handler {
             this.yPos = 30;
             this.scale = 1.0f;
             this.showBackground = true;
+            this.showBars = true;
             this.showElement = true;
         }
     }

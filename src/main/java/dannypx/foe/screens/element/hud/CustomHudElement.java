@@ -102,7 +102,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
                     default -> 0;
                 };
 
-                if(customHud.isShowBackground()) this.renderBox(guiGraphics, deltaTracker, x, y);
+                this.renderBox(guiGraphics, deltaTracker, x, y);
                 this.renderComponent(guiGraphics, deltaTracker, x, y);
             }
         }
@@ -161,14 +161,14 @@ public class CustomHudElement extends Element implements ScreenConstants {
         int NIB_HEIGHT = 3;
 
         // Alpha Box
-        guiGraphics.fill(
-                boxX + BOX_PADDING, boxY + BOX_PADDING,
-                boxX + this.boxWidth - BOX_PADDING, boxY + this.boxHeight - BOX_PADDING,
+        if(customHud.isShowBackground()) guiGraphics.fill(
+                boxX + BOX_PADDING, boxY + 1,
+                boxX + this.boxWidth - BOX_PADDING, boxY + this.boxHeight - 3,
                 0x7f000000
         );
 
         // Top Left
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        if(customHud.isShowBars()) guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX, boxY,
                 0, NIB_HEIGHT,
@@ -178,7 +178,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        if(customHud.isShowBars())guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + ATLAS_CORNER, boxY,
                 ATLAS_CORNER, NIB_HEIGHT,
@@ -188,7 +188,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Top Right
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        if(customHud.isShowBars())guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + this.boxWidth - ATLAS_CORNER, boxY,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, NIB_HEIGHT,
@@ -198,7 +198,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom Left
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        if(customHud.isShowBars())guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX, boxY + this.boxHeight - ATLAS_CORNER,
                 0, 0,
@@ -208,7 +208,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        if(customHud.isShowBars())guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER + NIB_HEIGHT,
                 ATLAS_CORNER, NIB_HEIGHT,
@@ -218,7 +218,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         );
 
         // Bottom Right
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
+        if(customHud.isShowBars())guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 BOX_TEXTURE,
                 boxX + this.boxWidth - ATLAS_CORNER, boxY + this.boxHeight - ATLAS_CORNER,
                 ATLAS_CORNER + ATLAS_BAR_WIDTH, 0,

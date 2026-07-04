@@ -287,6 +287,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                                 editCustomHUDWidget.newName,
                                 editCustomHUDWidget.scale,
                                 editCustomHUDWidget.showBackground,
+                                editCustomHUDWidget.showBars,
                                 editCustomHUDWidget.showElement,
                                 editCustomHUDWidget.getEntries()
                                         .stream()
