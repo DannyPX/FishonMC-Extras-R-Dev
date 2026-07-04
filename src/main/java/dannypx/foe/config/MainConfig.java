@@ -25,6 +25,8 @@ public class MainConfig extends Config {
     @Desc("§4WARNING\nThis will turn off the mod when false. NOTHING will work when false.\nTo turn it back on, do /foe config")
     public ValidatedBoolean enableMod = new ValidatedBoolean(true);
 
+    @Name("Wiki URL")
+    @Desc("§7The URL used for the wiki button")
     public ValidatedString wikiPage = new ValidatedString.Builder("https://github.com/FishOnExtras/FishonMC-Extras-R/wiki/Placeholders").withCorrector().build();
 
     @Override
