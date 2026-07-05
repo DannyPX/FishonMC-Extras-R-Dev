@@ -1,12 +1,12 @@
 package dannypx.foe.type.custom_value;
 
-public record PlaceholderStringValue(String value) implements TrackerValue {
+public record PlaceholderStringValue(String value) implements TrackerValue<String> {
     @Override
-    public TrackerValue setValue(String value) {
+    public TrackerValue<String> setValue(String value) {
         return new PlaceholderStringValue(value);
     }
 
-    public static TrackerValue of(String value) {
+    public static TrackerValue<String> of(String value) {
         return new PlaceholderStringValue(value);
     }
 }
