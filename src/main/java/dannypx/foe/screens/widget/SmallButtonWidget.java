@@ -1,8 +1,7 @@
 package dannypx.foe.screens.widget;
 
-import com.mojang.brigadier.StringReader;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
@@ -20,8 +19,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.commands.arguments.item.ItemParser;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -83,26 +80,15 @@ public class SmallButtonWidget extends AbstractWidget {
         if (m.matches()) {
             if(m.group(1) != null) {
                 if(minecraft.player != null) {
-                    HolderLookup.Provider lookup = minecraft.player.registryAccess();
+                    ItemStack itemStack = ItemStackHelper.valueOf(icon);
 
-                    ItemParser itemParser = new ItemParser(lookup);
-                    StringReader stringReader = new StringReader(icon);
-                    try {
-                        ItemParser.ItemResult result = itemParser.parse(stringReader);
+                    guiGraphics.pose().pushMatrix();
+                    guiGraphics.pose().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
+                    guiGraphics.pose().scale(12f / 16f, 12f / 16f);
 
-                        ItemStack itemStack = new ItemStack(result.item(), 1);
-                        itemStack.applyComponents(result.components());
+                    guiGraphics.renderItem(itemStack, 0, 0);
 
-                        guiGraphics.pose().pushMatrix();
-                        guiGraphics.pose().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
-                        guiGraphics.pose().scale(12f / 16f, 12f / 16f);
-
-                        guiGraphics.renderItem(itemStack, 0, 0);
-
-                        guiGraphics.pose().popMatrix();
-                    } catch (Exception e) {
-                        LoggerHandler._debug(e.getMessage());
-                    }
+                    guiGraphics.pose().popMatrix();
                 }
             } else {
                 int stringWidth = minecraft.font.width(TextHelper.smallCaps(icon));

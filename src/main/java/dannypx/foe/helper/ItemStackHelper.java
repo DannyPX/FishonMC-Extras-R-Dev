@@ -2,10 +2,16 @@ package dannypx.foe.helper;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.mojang.brigadier.StringReader;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import java.util.List;
 import java.util.function.UnaryOperator;
+
+import dannypx.foe.handler.logic.LoggerHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.arguments.item.ItemParser;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -51,5 +57,24 @@ public class ItemStackHelper {
             copy.set(i, copier.apply(original.get(i)));
         }
         return copy;
+    }
+
+    public static ItemStack valueOf(String value) {
+        if(Minecraft.getInstance().player != null) {
+            HolderLookup.Provider lookup = Minecraft.getInstance().player.registryAccess();
+            try {
+                ItemParser itemParser = new ItemParser(lookup);
+                StringReader stringReader = new StringReader(value);
+                ItemParser.ItemResult result = itemParser.parse(stringReader);
+
+                ItemStack itemStack = new ItemStack(result.item(), 1);
+                itemStack.applyComponents(result.components());
+
+                return itemStack;
+            } catch (Exception e) {
+                LoggerHandler._debug(e.getMessage());
+            }
+        }
+        return ItemStack.EMPTY;
     }
 }
