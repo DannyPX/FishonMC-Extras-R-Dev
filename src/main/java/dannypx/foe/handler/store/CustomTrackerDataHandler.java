@@ -117,11 +117,11 @@ public class CustomTrackerDataHandler extends Handler {
     public void updateTracker(String currentSelectedTracker,
                               String newName,
                               TrackerType trackerType,
-                              TrackerValue defaultValue,
-                              TrackerValue value,
+                              TrackerValue<?> defaultValue,
+                              TrackerValue<?> value,
                               boolean isPersistent,
                               boolean useTracker,
-                              Map<String, Triplet<TrackerAction, String, TrackerValue>> actions) {
+                              Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> actions) {
         CustomTracker newTracker = customTrackerData.trackerList.get(currentSelectedTracker);
 
         if(!Objects.equals(currentSelectedTracker, newName)) {
@@ -149,7 +149,7 @@ public class CustomTrackerDataHandler extends Handler {
                 CustomTracker tracker = customTrackerData.trackerList.get(trackerAndActionSplitString[0]);
 
                 if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
-                    Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
+                    Triplet<TrackerAction, String, TrackerValue<?>> action = tracker.actions.get(trackerAndActionSplitString[1]);
 
                     Pair<Boolean, MutableComponent> condition = PlaceholderHandler.parsePlaceholderFromString(action.value2());
                     if(condition.value1()) {
@@ -192,7 +192,7 @@ public class CustomTrackerDataHandler extends Handler {
         }
     }
 
-    public void updateTracker(String tracker, TrackerAction trackerAction, TrackerValue valueToUse) {
+    public void updateTracker(String tracker, TrackerAction trackerAction, TrackerValue<?> valueToUse) {
         if(customTrackerData.trackerList.containsKey(tracker)) {
             switch (trackerAction) {
                 case SET -> {
@@ -221,7 +221,7 @@ public class CustomTrackerDataHandler extends Handler {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
                     if(newTracker.value instanceof NumberValue currentValue
-                            && valueToUse instanceof NumberValue(float value1)
+                            && valueToUse instanceof NumberValue(Float value1)
                     ) {
                         newTracker.value = currentValue.addValue(value1);
                     } else if(newTracker.value instanceof NumberValue currentValue
@@ -237,7 +237,7 @@ public class CustomTrackerDataHandler extends Handler {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
                     if(newTracker.value instanceof NumberValue currentValue
-                            && valueToUse instanceof NumberValue(float value1)
+                            && valueToUse instanceof NumberValue(Float value1)
                     ) {
                         newTracker.value = currentValue.subtractValue(value1);
                     } else if(newTracker.value instanceof NumberValue currentValue
@@ -267,7 +267,7 @@ public class CustomTrackerDataHandler extends Handler {
 
     //region Model
     public static class CustomTrackerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_TRACKER_DATA_MODEL_VERSION = "0.2";
+        private static final String CUSTOM_TRACKER_DATA_MODEL_VERSION = "0.3";
 
         private static final Map<String, CustomTracker> defaultTrackers = Map.of(
                 "FabledEvent", new CustomTracker(
@@ -285,13 +285,13 @@ public class CustomTrackerDataHandler extends Handler {
                 "FabledDrystreak", new CustomTracker(
                         "FabledDrystreak",
                         TrackerType.INTEGER,
-                        NumberValue.of(0),
-                        NumberValue.of(0),
+                        NumberValue.of(0f),
+                        NumberValue.of(0f),
                         true,
                         true,
                         new HashMap<>(Map.of(
-                                "Add", Triplet.of(TrackerAction.ADD, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>!=fabled)%", NumberValue.of(1)),
-                                "Set", Triplet.of(TrackerAction.SET, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>==fabled)%", NumberValue.of(0))
+                                "Add", Triplet.of(TrackerAction.ADD, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>!=fabled)%", NumberValue.of(1f)),
+                                "Set", Triplet.of(TrackerAction.SET, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>==fabled)%", NumberValue.of(0f))
                         ))
                 )
         );
@@ -309,8 +309,8 @@ public class CustomTrackerDataHandler extends Handler {
     public static class CustomTracker {
         private String name;
         private TrackerType trackerType;
-        private TrackerValue defaultValue;
-        private TrackerValue value;
+        private TrackerValue<?> defaultValue;
+        private TrackerValue<?> value;
         private boolean isPersistent;
         private boolean useTracker;
 
@@ -322,11 +322,11 @@ public class CustomTrackerDataHandler extends Handler {
             return trackerType != null ? trackerType : TrackerType.BOOLEAN;
         }
 
-        public TrackerValue getDefaultValue() {
+        public TrackerValue<?> getDefaultValue() {
             return defaultValue != null ? defaultValue : BooleanValue.getFalse();
         }
 
-        public TrackerValue getValue() {
+        public TrackerValue<?> getValue() {
             return value != null ? value : BooleanValue.getFalse();
         }
 
@@ -338,21 +338,21 @@ public class CustomTrackerDataHandler extends Handler {
             return useTracker;
         }
 
-        public Map<String, Triplet<TrackerAction, String, TrackerValue>> getActions() {
+        public Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> getActions() {
             return actions != null ? actions : new HashMap<>();
         }
 
         // ActionID, ActionType, Placeholder Condition, Placeholder Value
-        public Map<String, Triplet<TrackerAction, String, TrackerValue>> actions;
+        public Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> actions;
 
         public CustomTracker(
                 String name,
                 TrackerType trackerType,
-                TrackerValue defaultValue,
-                TrackerValue value,
+                TrackerValue<?> defaultValue,
+                TrackerValue<?> value,
                 boolean isPersistent,
                 boolean useTracker,
-                Map<String, Triplet<TrackerAction, String, TrackerValue>> actions
+                Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> actions
         ) {
             this.name = name;
             this.trackerType = trackerType;

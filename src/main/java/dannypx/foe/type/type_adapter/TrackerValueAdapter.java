@@ -8,7 +8,7 @@ import dannypx.foe.type.custom_value.*;
 
 import java.io.IOException;
 
-public class TrackerValueAdapter extends TypeAdapter<TrackerValue> {
+public class TrackerValueAdapter extends TypeAdapter<TrackerValue<?>> {
     @Override
     public void write(JsonWriter writer, TrackerValue value) throws IOException {
         if(value == null) {
@@ -24,7 +24,7 @@ public class TrackerValueAdapter extends TypeAdapter<TrackerValue> {
     }
 
     @Override
-    public TrackerValue read(JsonReader reader) throws IOException {
+    public TrackerValue<?> read(JsonReader reader) throws IOException {
         if (reader.peek() == JsonToken.NULL) {
             reader.nextNull();
             return null;
@@ -37,7 +37,7 @@ public class TrackerValueAdapter extends TypeAdapter<TrackerValue> {
 
         try {
             int parsed = reader.nextInt();
-            return NumberValue.of(parsed);
+            return NumberValue.of((float) parsed);
         } catch (Exception ignored) {}
 
         try {

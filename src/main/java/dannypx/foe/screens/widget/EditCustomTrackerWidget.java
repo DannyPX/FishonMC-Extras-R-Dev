@@ -175,11 +175,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 defaultValueEditBox.setValue(placeholderStringValue.value());
                 defaultValueEditBox.setHint(Component.literal(placeholderStringValue.value()));
             }
-            case ErrorValue ignored -> {
-                defaultValueEditBox.setValue("");
-                defaultValueEditBox.setHint(Component.empty());
-            }
-            case EmptyValue ignored -> {
+            default -> {
                 defaultValueEditBox.setValue("");
                 defaultValueEditBox.setHint(Component.empty());
             }
@@ -523,7 +519,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
         private static final int SPACING = 6;
         private static final int BUTTON_SIZE = 25;
 
-        public LineEntry(String actionId, TrackerAction trackerAction, String condition, TrackerValue valueToUse, int width, Callback callback) {
+        public LineEntry(String actionId, TrackerAction trackerAction, String condition, TrackerValue<?> valueToUse, int width, Callback callback) {
             this.actionId = actionId;
             this.trackerAction = trackerAction.name();
             this.condition = condition;

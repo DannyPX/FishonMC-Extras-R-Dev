@@ -355,7 +355,7 @@ public class CommandRegistry {
                     if("true".equals(value) || "false".equals(value)) {
                         if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.BOOLEAN) {
                             boolean parsed = Boolean.parseBoolean(value);
-                            TrackerValue trackerValue = BooleanValue.of(parsed);
+                            TrackerValue<Boolean> trackerValue = BooleanValue.of(parsed);
                             return updateValue(context, TrackerAction.SET, tracker, trackerValue);
                         } else {
                             return sendFeedback(context, Component.literal("Value must be a number").withStyle(ChatFormatting.RED));
@@ -365,7 +365,7 @@ public class CommandRegistry {
                     try {
                         if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.INTEGER) {
                             float parsed = Float.parseFloat(value);
-                            TrackerValue trackerValue = NumberValue.of(parsed);
+                            TrackerValue<Float> trackerValue = NumberValue.of(parsed);
                             return updateValue(context, TrackerAction.SET, tracker, trackerValue);
                         } else {
                             return sendFeedback(context, Component.literal("Value must be a boolean").withStyle(ChatFormatting.RED));
@@ -399,7 +399,7 @@ public class CommandRegistry {
 
                 if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(tracker)) {
                     if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.INTEGER) {
-                        TrackerValue trackerValue = NumberValue.of(value);
+                        TrackerValue<Float> trackerValue = NumberValue.of((float) value);
                         return updateValue(context, TrackerAction.ADD, tracker, trackerValue);
                     } else {
                         return sendFeedback(context, Component.literal("Tracker must be a integer").withStyle(ChatFormatting.RED));
@@ -415,7 +415,7 @@ public class CommandRegistry {
 
                 if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(tracker)) {
                     if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.INTEGER) {
-                        TrackerValue trackerValue = NumberValue.of(value);
+                        TrackerValue<Float> trackerValue = NumberValue.of((float) value);
                         return updateValue(context, TrackerAction.SUBTRACT, tracker, trackerValue);
                     } else {
                         return sendFeedback(context, Component.literal("Tracker must be a integer").withStyle(ChatFormatting.RED));
@@ -425,7 +425,7 @@ public class CommandRegistry {
                 }
             }
 
-            private static int updateValue(CommandContext<FabricClientCommandSource> context, TrackerAction action, String tracker, TrackerValue value) {
+            private static int updateValue(CommandContext<FabricClientCommandSource> context, TrackerAction action, String tracker, TrackerValue<?> value) {
                 return switch (value) {
                     case BooleanValue booleanValue -> switch (action) {
                         case SET -> executeCommand(context, Component.literal("Set " + tracker + " to " + booleanValue.value()), () -> {
