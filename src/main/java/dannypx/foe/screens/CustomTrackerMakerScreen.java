@@ -7,12 +7,14 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
+import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomTrackerWidget;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
+import dannypx.foe.type.tracker.TrackerType;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.TrackerValueAdapter;
@@ -25,6 +27,7 @@ import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -300,6 +303,13 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                             couldParse.set(true);
                         } catch (Exception ignored) {}
 
+                        if(editCustomTrackerWidget.trackerType == TrackerType.ITEMSTACK
+                                && editCustomTrackerWidget.defaultValue.isBlank()
+                        ) {
+                            defaultValue = EmptyValue.getDefault();
+                            couldParse.set(true);
+                        }
+
                         if(!couldParse.get()) {
                             SystemToast.add(this.minecraft.getToastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -332,6 +342,11 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                             }
 
                             if(lineEntry.valueToUse.isEmpty()) {
+                                couldParseValueToUse.set(true);
+                            }
+
+                            ItemStack itemStack = ItemStackHelper.valueOf(lineEntry.valueToUse);
+                            if(!itemStack.isEmpty()) {
                                 couldParseValueToUse.set(true);
                             }
 
@@ -422,6 +437,9 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                                             case INTEGER -> (lineEntry.valueToUse.startsWith("%") && lineEntry.valueToUse.endsWith("%"))
                                                             ? PlaceholderStringValue.of(lineEntry.valueToUse)
                                                             : NumberValue.of(Float.parseFloat(lineEntry.valueToUse));
+                                            case ITEMSTACK -> (lineEntry.valueToUse.startsWith("%") && lineEntry.valueToUse.endsWith("%"))
+                                                              ? PlaceholderStringValue.of(lineEntry.valueToUse)
+                                                              : ItemStackValue.of(lineEntry.valueToUse);
                                         } : EmptyValue.getDefault()
                                 ))).collect(Collectors.toMap(Pair::value1, Pair::value2))
                         );

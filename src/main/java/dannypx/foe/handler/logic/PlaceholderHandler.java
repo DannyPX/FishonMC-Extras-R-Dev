@@ -723,13 +723,13 @@ public class PlaceholderHandler extends Handler {
         return false;
     }
 
-    public static float getNumber(Pair<Boolean, MutableComponent> value) {
+    public static Float getNumber(Pair<Boolean, MutableComponent> value) {
         if(value.value1()) {
             try {
                 return Float.parseFloat(value.value2().getString());
             } catch (Exception ignored) {}
         }
-        return 0;
+        return null;
     }
 
     private static MutableComponent applyStyleRecursive(Component component, Style activeStyle) {

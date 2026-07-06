@@ -1,8 +1,8 @@
 package dannypx.foe.handler.logic;
 
-import com.mojang.brigadier.StringReader;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.store.*;
+import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
@@ -11,8 +11,6 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.arguments.item.ItemParser;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -363,18 +361,7 @@ public class NotifierHandler extends Handler {
             ItemStack itemStack = ItemStack.EMPTY;
 
             if(!notification.getIcon().isBlank()) {
-                HolderLookup.Provider lookup = minecraft.player.registryAccess();
-
-                ItemParser itemParser = new ItemParser(lookup);
-                StringReader stringReader = new StringReader(notification.getIcon());
-                try {
-                    ItemParser.ItemResult result = itemParser.parse(stringReader);
-
-                    itemStack = new ItemStack(result.item(), 1);
-                    itemStack.applyComponents(result.components());
-                } catch (Exception e) {
-                    LoggerHandler.error(e);
-                }
+                itemStack = ItemStackHelper.valueOf(notification.getIcon());
             }
 
             List<MutableComponent> lines = notification.getStringLines().stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
