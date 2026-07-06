@@ -76,7 +76,7 @@ public class CustomTrackerDataHandler extends Handler {
                     default -> PlaceholderHandler.noResult();
                 };
                 case "itemstack" -> switch (tracker.value) {
-                    case ItemStackValue itemStackValue -> PlaceholderHandler.getNbtValue(itemStackValue.value().value1(), params[3]);
+                    case ItemStackValue itemStackValue -> PlaceholderHandler.getNbtValue(itemStackValue.value().value1(), Arrays.copyOfRange(params, 3, params.length));
                     default -> PlaceholderHandler.noResult();
                 };
                 default -> PlaceholderHandler.noResult();
