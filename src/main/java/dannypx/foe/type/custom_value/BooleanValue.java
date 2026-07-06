@@ -1,25 +1,20 @@
 package dannypx.foe.type.custom_value;
 
-public record BooleanValue(Boolean value) implements TrackerValue<Boolean> {
+public record BooleanValue(Boolean value) implements TrackerValue {
     @Override
-    public TrackerValue<Boolean> setValue(Boolean value) {
-        return new BooleanValue(value);
+    public TrackerValue toggleValue() {
+        return new BooleanValue(this.value);
     }
 
-    @Override
-    public TrackerValue<Boolean> toggleValue() {
-        return new BooleanValue(!(boolean) this.value);
-    }
-
-    public static TrackerValue<Boolean> getFalse() {
+    public static TrackerValue getFalse() {
         return new BooleanValue(false);
     }
 
-    public static TrackerValue<Boolean> getTrue() {
+    public static TrackerValue getTrue() {
         return new BooleanValue(true);
     }
 
-    public static TrackerValue<Boolean> of(boolean value) {
+    public static TrackerValue of(boolean value) {
         return new BooleanValue(value);
     }
 }

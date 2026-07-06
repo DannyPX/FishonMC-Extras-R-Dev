@@ -16,7 +16,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 
 public class ItemStackHelper {
@@ -30,7 +29,7 @@ public class ItemStackHelper {
     public static ItemStack jsonToItemStack(String json) {
         return ItemStack.CODEC
                 .decode(JsonOps.INSTANCE, gson.create().fromJson(json, JsonElement.class))
-                .mapOrElse((Pair::getFirst), (pairError -> Items.STICK.getDefaultInstance()));
+                .mapOrElse((Pair::getFirst), (pairError -> ItemStack.EMPTY));
     }
 
     public static String itemStackToJson(ItemStack itemStack) {

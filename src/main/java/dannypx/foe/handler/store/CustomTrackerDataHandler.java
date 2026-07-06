@@ -6,14 +6,17 @@ import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.custom_value.*;
+import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
@@ -59,7 +62,7 @@ public class CustomTrackerDataHandler extends Handler {
     }
 
     public Pair<Boolean, PlaceholderValue> getCustomTrackerData(String[] params) {
-        if(params.length == 3
+        if(params.length >= 3
                 && Objects.equals(params[0], "data")
                 && customTrackerData.trackerList.containsKey(params[1])
         ) {
@@ -69,6 +72,11 @@ public class CustomTrackerDataHandler extends Handler {
                 case "value" -> switch (tracker.value) {
                     case BooleanValue booleanValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(booleanValue.value()));
                     case NumberValue numberValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(numberValue.value()));
+                    case ItemStackValue itemStackValue -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(itemStackValue.value().value1().getHoverName()));
+                    default -> PlaceholderHandler.noResult();
+                };
+                case "itemstack" -> switch (tracker.value) {
+                    case ItemStackValue itemStackValue -> PlaceholderHandler.getNbtValue(itemStackValue.value().value1(), params[3]);
                     default -> PlaceholderHandler.noResult();
                 };
                 default -> PlaceholderHandler.noResult();
@@ -117,11 +125,11 @@ public class CustomTrackerDataHandler extends Handler {
     public void updateTracker(String currentSelectedTracker,
                               String newName,
                               TrackerType trackerType,
-                              TrackerValue<?> defaultValue,
-                              TrackerValue<?> value,
+                              TrackerValue defaultValue,
+                              TrackerValue value,
                               boolean isPersistent,
                               boolean useTracker,
-                              Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> actions) {
+                              Map<String, Triplet<TrackerAction, String, TrackerValue>> actions) {
         CustomTracker newTracker = customTrackerData.trackerList.get(currentSelectedTracker);
 
         if(!Objects.equals(currentSelectedTracker, newName)) {
@@ -149,7 +157,7 @@ public class CustomTrackerDataHandler extends Handler {
                 CustomTracker tracker = customTrackerData.trackerList.get(trackerAndActionSplitString[0]);
 
                 if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
-                    Triplet<TrackerAction, String, TrackerValue<?>> action = tracker.actions.get(trackerAndActionSplitString[1]);
+                    Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
 
                     Pair<Boolean, MutableComponent> condition = PlaceholderHandler.parsePlaceholderFromString(action.value2());
                     if(condition.value1()) {
@@ -163,7 +171,7 @@ public class CustomTrackerDataHandler extends Handler {
                                 BooleanValue value = (BooleanValue) tracker.value;
 
                                 switch (action.value1()) {
-                                    case SET -> tracker.value = value.setValue(valueToUse.value());
+                                    case SET -> tracker.value = valueToUse;
                                     case TOGGLE -> tracker.value =  value.toggleValue();
                                 }
                             }
@@ -174,9 +182,29 @@ public class CustomTrackerDataHandler extends Handler {
                                 NumberValue value = (NumberValue) tracker.value;
 
                                 switch (action.value1()) {
-                                    case SET -> tracker.value = value.setValue(valueToUse.value());
+                                    case SET -> tracker.value = valueToUse;
                                     case ADD -> tracker.value = value.addValue(valueToUse.value());
                                     case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
+                                }
+                            }
+                            case ITEMSTACK -> {
+                                TrackerValue valueToUse;
+
+                                if(action.value3() instanceof PlaceholderStringValue(String value)) {
+                                    Float index = PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value));
+                                    if(index != null) {
+                                        if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                            valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
+                                        } else {
+                                            valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
+                                        }
+                                    } else {
+                                        valueToUse = ItemStackValue.of(ItemStack.EMPTY);
+                                    }
+                                } else valueToUse = action.value3();
+
+                                switch (action.value1()) {
+                                    case SET -> tracker.value = valueToUse;
                                 }
                             }
                         }
@@ -192,13 +220,13 @@ public class CustomTrackerDataHandler extends Handler {
         }
     }
 
-    public void updateTracker(String tracker, TrackerAction trackerAction, TrackerValue<?> valueToUse) {
+    public void updateTracker(String tracker, TrackerAction trackerAction, TrackerValue valueToUse) {
         if(customTrackerData.trackerList.containsKey(tracker)) {
             switch (trackerAction) {
                 case SET -> {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
-                    if(valueToUse instanceof BooleanValue || valueToUse instanceof NumberValue) {
+                    if(valueToUse instanceof BooleanValue || valueToUse instanceof NumberValue || valueToUse instanceof ItemStackValue) {
                         newTracker.value = valueToUse;
                     } else if(valueToUse instanceof PlaceholderStringValue(String value1)) {
                         newTracker.value = BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value1)));
@@ -309,8 +337,8 @@ public class CustomTrackerDataHandler extends Handler {
     public static class CustomTracker {
         private String name;
         private TrackerType trackerType;
-        private TrackerValue<?> defaultValue;
-        private TrackerValue<?> value;
+        private TrackerValue defaultValue;
+        private TrackerValue value;
         private boolean isPersistent;
         private boolean useTracker;
 
@@ -322,11 +350,11 @@ public class CustomTrackerDataHandler extends Handler {
             return trackerType != null ? trackerType : TrackerType.BOOLEAN;
         }
 
-        public TrackerValue<?> getDefaultValue() {
+        public TrackerValue getDefaultValue() {
             return defaultValue != null ? defaultValue : BooleanValue.getFalse();
         }
 
-        public TrackerValue<?> getValue() {
+        public TrackerValue getValue() {
             return value != null ? value : BooleanValue.getFalse();
         }
 
@@ -338,21 +366,21 @@ public class CustomTrackerDataHandler extends Handler {
             return useTracker;
         }
 
-        public Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> getActions() {
+        public Map<String, Triplet<TrackerAction, String, TrackerValue>> getActions() {
             return actions != null ? actions : new HashMap<>();
         }
 
         // ActionID, ActionType, Placeholder Condition, Placeholder Value
-        public Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> actions;
+        public Map<String, Triplet<TrackerAction, String, TrackerValue>> actions;
 
         public CustomTracker(
                 String name,
                 TrackerType trackerType,
-                TrackerValue<?> defaultValue,
-                TrackerValue<?> value,
+                TrackerValue defaultValue,
+                TrackerValue value,
                 boolean isPersistent,
                 boolean useTracker,
-                Map<String, Triplet<TrackerAction, String, TrackerValue<?>>> actions
+                Map<String, Triplet<TrackerAction, String, TrackerValue>> actions
         ) {
             this.name = name;
             this.trackerType = trackerType;
