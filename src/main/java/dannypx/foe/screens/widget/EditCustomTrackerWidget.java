@@ -175,6 +175,10 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 defaultValueEditBox.setValue(placeholderStringValue.value());
                 defaultValueEditBox.setHint(Component.literal(placeholderStringValue.value()));
             }
+            case ItemStackValue itemStackValue -> {
+                defaultValueEditBox.setValue(itemStackValue.value().value2());
+                defaultValueEditBox.setHint(Component.literal(itemStackValue.value().value2()));
+            }
             default -> {
                 defaultValueEditBox.setValue("");
                 defaultValueEditBox.setHint(Component.empty());
@@ -271,16 +275,8 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
     }
 
     public void changeTrackerType() {
-        switch (trackerType) {
-            case BOOLEAN -> {
-                this.trackerTypeButton.setMessage(Component.literal(TrackerType.INTEGER.name()));
-                this.trackerType = TrackerType.INTEGER;
-            }
-            case INTEGER -> {
-                this.trackerTypeButton.setMessage(Component.literal(TrackerType.BOOLEAN.name()));
-                this.trackerType = TrackerType.BOOLEAN;
-            }
-        }
+        this.trackerTypeButton.setMessage(Component.literal(trackerType.next().name()));
+        this.trackerType = trackerType.next();
     }
 
     @Override
@@ -311,7 +307,8 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                     Component.literal("This is the default value once the tracker is made").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
                     Component.literal("BOOLEAN - false, true").withStyle(ChatFormatting.GRAY),
-                    Component.literal("INTEGER - whole numbers").withStyle(ChatFormatting.GRAY)
+                    Component.literal("INTEGER - whole numbers").withStyle(ChatFormatting.GRAY),
+                    Component.literal("ITEMSTACK - slot index, placeholder index, minecraft item name").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -519,7 +516,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
         private static final int SPACING = 6;
         private static final int BUTTON_SIZE = 25;
 
-        public LineEntry(String actionId, TrackerAction trackerAction, String condition, TrackerValue<?> valueToUse, int width, Callback callback) {
+        public LineEntry(String actionId, TrackerAction trackerAction, String condition, TrackerValue valueToUse, int width, Callback callback) {
             this.actionId = actionId;
             this.trackerAction = trackerAction.name();
             this.condition = condition;
@@ -527,6 +524,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 case BooleanValue booleanValue -> booleanValue.value();
                 case NumberValue numberValue -> numberValue.value();
                 case PlaceholderStringValue placeholderStringValue -> placeholderStringValue.value();
+                case ItemStackValue itemStackValue -> itemStackValue.value().value2();
                 default -> "";
             });
             this.width = width;
@@ -693,7 +691,10 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                         Component.literal("INTEGER").withStyle(ChatFormatting.GRAY),
                         Component.literal(" - SET").withStyle(ChatFormatting.GRAY),
                         Component.literal(" - ADD").withStyle(ChatFormatting.GRAY),
-                        Component.literal(" - SUBTRACT").withStyle(ChatFormatting.GRAY)
+                        Component.literal(" - SUBTRACT").withStyle(ChatFormatting.GRAY),
+                        Component.empty(),
+                        Component.literal("ITEMSTACK").withStyle(ChatFormatting.GRAY),
+                        Component.literal(" - SET").withStyle(ChatFormatting.GRAY)
                 )), mouseX, mouseY);
             }
 
@@ -717,6 +718,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                         Component.empty(),
                         Component.literal("BOOLEAN - false, true").withStyle(ChatFormatting.GRAY),
                         Component.literal("INTEGER - whole numbers").withStyle(ChatFormatting.GRAY),
+                        Component.literal("ITEMSTACK - slot index, placeholder index, minecraft item name").withStyle(ChatFormatting.GRAY),
                         Component.empty(),
                         Component.literal("Placeholder values are also supported. See wiki").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
                 )), mouseX, mouseY);
