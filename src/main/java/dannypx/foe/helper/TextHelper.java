@@ -300,6 +300,10 @@ public class TextHelper {
         return String.format(Locale.US, "%." + decimals + "f", f);
     }
 
+    public static String doubleToString(double d, int decimals) {
+        return floatToString(Double.valueOf(d).floatValue(), decimals);
+    }
+
     public static float lbToKg(float f) {
         return f * 0.4535924f;
     }

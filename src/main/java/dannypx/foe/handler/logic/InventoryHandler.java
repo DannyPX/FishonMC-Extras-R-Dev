@@ -100,7 +100,7 @@ public class InventoryHandler extends Handler {
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
                                             case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(list.getFirst().getName()));
-                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
+                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), Arrays.copyOfRange(params, 2, params.length));
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
@@ -110,7 +110,7 @@ public class InventoryHandler extends Handler {
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
                                             case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(list.getFirst().getName()));
-                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
+                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), Arrays.copyOfRange(params, 2, params.length));
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
@@ -120,18 +120,18 @@ public class InventoryHandler extends Handler {
                                     if(!list.isEmpty()) {
                                         yield switch(params[2]) {
                                             case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(list.getFirst().getName()));
-                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), params[2]);
+                                            default -> PlaceholderHandler.getNbtValue(list.getFirst(), Arrays.copyOfRange(params, 2, params.length));
                                         };
                                     }
                                     yield PlaceholderHandler.noResult();
                                 }
-                                default -> PlaceholderHandler.getNbtValue(getCurrentFishingRod(), params[1]);
+                                default -> PlaceholderHandler.getNbtValue(getCurrentFishingRod(), Arrays.copyOfRange(params, 1, params.length));
                             };
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "pet" -> {
-                        if(params.length == 2
+                        if(params.length >= 2
                                 && hasPet()
                         ) {
                             yield switch(params[1]) {
@@ -149,13 +149,13 @@ public class InventoryHandler extends Handler {
                                 case "location_scale" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getLocationMaxScale(), 0)));
                                 case "climate_luck" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getClimateMaxLuck(), 0)));
                                 case "climate_scale" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(getCurrentPet().getClimateMaxScale(), 0)));
-                                default -> PlaceholderHandler.getNbtValue(getCurrentPet(), params[1]);
+                                default -> PlaceholderHandler.getNbtValue(getCurrentPet(), Arrays.copyOfRange(params, 1, params.length));
                             };
                         }
                         yield PlaceholderHandler.noResult();
                     }
                     case "armor" -> {
-                        if(params.length == 3
+                        if(params.length >= 3
                                 && minecraft.player != null
                         ) {
                             ItemStack stack = ItemStack.EMPTY;
@@ -171,7 +171,7 @@ public class InventoryHandler extends Handler {
                             if(validatedItem.value1()) {
                                 yield switch(params[2]) {
                                     case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(validatedItem.value2().getName()));
-                                    default -> PlaceholderHandler.getNbtValue(validatedItem.value2(), params[2]);
+                                    default -> PlaceholderHandler.getNbtValue(validatedItem.value2(), Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
                         }
@@ -201,7 +201,7 @@ public class InventoryHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtValue(heldItem, params[1]);
+                                    default -> PlaceholderHandler.getNbtValue(heldItem, Arrays.copyOfRange(params, 1, params.length));
                                 };
                             }
                         }
@@ -233,7 +233,7 @@ public class InventoryHandler extends Handler {
                                             }
                                             yield PlaceholderHandler.noResult();
                                         }
-                                        default -> PlaceholderHandler.getNbtValue(stack, params[2]);
+                                        default -> PlaceholderHandler.getNbtValue(stack, Arrays.copyOfRange(params, 2, params.length));
                                     };
                                 }
                             } catch (Exception ignored) {}
