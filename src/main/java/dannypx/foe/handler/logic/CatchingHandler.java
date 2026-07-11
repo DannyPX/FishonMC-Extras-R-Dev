@@ -15,6 +15,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.type.tuple.Triplet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -99,7 +100,7 @@ public class CatchingHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
+                                    default -> PlaceholderHandler.getNbtValue(lastCaughtFish, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
                             yield PlaceholderHandler.noResult();
@@ -135,7 +136,7 @@ public class CatchingHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtValue(lastCaughtPet, params[2]);
+                                    default -> PlaceholderHandler.getNbtValue(lastCaughtPet, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
                             yield PlaceholderHandler.noResult();
@@ -157,7 +158,7 @@ public class CatchingHandler extends Handler {
                                                 case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value3().value2()));
                                                 default -> PlaceholderHandler.noResult();
                                             };
-                                            default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
+                                            default -> PlaceholderHandler.getNbtValue(lastCaughtFish, Arrays.copyOfRange(params, 2, params.length));
                                         };
                                     }
                                 } catch (NumberFormatException e) {
