@@ -70,6 +70,14 @@ public class EventHandler extends Handler {
         this.sendEventTrigger(EventTrigger.ON_SCREEN_CLOSE);
     }
 
+    public void onPetEquip() {
+        this.sendEventTrigger(EventTrigger.ON_PET_EQUIP);
+    }
+
+    public void onPetUnequip() {
+        this.sendEventTrigger(EventTrigger.ON_PET_UNEQUIP);
+    }
+
     private void sendEventTrigger(EventTrigger eventTrigger) {
         CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.forEach((name, event) -> {
             if(event.isUseEventTrigger() && event.getEvent() == eventTrigger) {
