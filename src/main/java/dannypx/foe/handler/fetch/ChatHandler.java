@@ -83,8 +83,10 @@ public class ChatHandler extends Handler {
     private void checkPet(Component component) {
         if(component.getString().startsWith("PETS » Equipped your")) {
             ProfileDataHandler.instance().updatePet(true);
+            EventHandler.instance().onPetEquip();
         } else if (component.getString().startsWith("PETS » Pet unequipped!")) {
             ProfileDataHandler.instance().updatePet(false);
+            EventHandler.instance().onPetUnequip();
         } else if(component.getString().startsWith("CREWS » Crew Chat has been enabled")) {
             ProfileDataHandler.instance().updateCrewChat(true);
         } else if(component.getString().startsWith("CREWS » Crew Chat has been disabled")) {
