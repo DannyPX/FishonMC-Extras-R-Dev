@@ -7,6 +7,7 @@ import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
@@ -115,13 +116,17 @@ public class ItemRendererHandler extends Handler {
                 : TextHelper.literal(TextHelper.shortenNumber(count, 0));
         int countWidth = font.width(countComponent);
 
-        if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
-                x + 19 - 2 - countWidth, isSmall ? y + 6 + 4 : y + 6 + 3,
-                true,
-                isSmall,
-                false,
-                isSmall
-        );
+        if(count > 1) {
+            if(isSmall) {
+                GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
+                        x + 19 - 2 - countWidth, y + 6 + 4,
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
+            } else {
+                GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
+                        x + 19 - 2 - countWidth, y + 6 + 3,
+                        StringStyle.SHADOW);
+            }
+        }
     }
 
     public void drawSearchItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {

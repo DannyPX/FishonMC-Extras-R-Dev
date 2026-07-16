@@ -265,6 +265,10 @@ public class TextHelper {
         return (c >= '\uF000' && c <= '\uF999');
     }
 
+    public static boolean isRank(char c) {
+        return (c >= '\uF028' && c <= '\uF032');
+    }
+
     public static String shortenNumber(float d, int decimals) {
         if(d >= 1000 && d < 1000000) {
             String s = String.format(Locale.US, "%." + decimals + "f", d / 1000);

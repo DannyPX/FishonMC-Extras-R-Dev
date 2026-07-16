@@ -1,77 +1,22 @@
 package dannypx.foe.helper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import dannypx.foe.type.StringStyle;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.state.GuiTextRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+import org.joml.Matrix3x2f;
 
 public class GuiGraphicsHelper {
     private static final AtomicInteger translationX = new AtomicInteger(0);
-    public static void drawString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
-        translationX.set(x);
-        drawString(guiGraphics, font, component, y, shadow, middle, hasCustomFont, smallCaps);
-    }
-
-    private static void drawString(GuiGraphics guiGraphics, Font font, Component component, int y, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
-        List<Component> siblings = component.getSiblings();
-
-        if(siblings.isEmpty()) {
-            drawString(guiGraphics, font, component.getString(), translationX.get(), y, component.getStyle(), shadow, middle, hasCustomFont, smallCaps);
-
-            int width = font.width(component);
-            if(smallCaps) {
-                width = font.width(Component.literal(TextHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
-            }
-
-            translationX.set(translationX.get() + width);
-        } else {
-            siblings.forEach(text1 -> drawString(guiGraphics, font, text1, y, shadow, middle, hasCustomFont, smallCaps));
-        }
-    }
-
-    private static void drawString(GuiGraphics guiGraphics, Font font, String text, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
-        drawString(guiGraphics, font, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, shadow, middle, hasCustomFont, smallCaps);
-    }
-
-    private static void drawString(GuiGraphics guiGraphics, Font font, List<Character> characterList, int x, int y, Style style, boolean shadow, boolean middle, boolean hasCustomFont, boolean smallCaps) {
-        if (!characterList.isEmpty()) {
-            String glyph = popNextGlyph(characterList);
-
-            if (smallCaps) {
-                glyph = TextHelper.smallCaps(glyph);
-            }
-
-            int cWidth = font.width(Component.literal(glyph).setStyle(style));
-
-            int translateY = middle ? -1 : 0;
-
-            int offsetY = 0;
-            if(glyph.length() == 1) {
-                if (TextHelper.isSmallNumber(glyph.charAt(0))) {
-                    offsetY = 1;
-                } else if (TextHelper.isSmallLetter(glyph.charAt(0)) || (hasCustomFont && TextHelper.isCustomFont(glyph.charAt(0)))) {
-
-                } else {
-                    translateY = 0;
-                }
-            }
-
-            guiGraphics.drawString(
-                    font,
-                    Component.literal(glyph).setStyle(style),
-                    x,
-                    y - offsetY + translateY,
-                    CommonColors.WHITE,
-                    shadow
-            );
-
-            drawString(guiGraphics, font, characterList, x + cWidth, y, style, shadow, middle, hasCustomFont, smallCaps);
-        }
-    }
 
     private static String popNextGlyph(List<Character> characterList) {
         if (characterList.isEmpty()) return "";
@@ -109,6 +54,94 @@ public class GuiGraphicsHelper {
             }
         }
         return sb.toString();
+    }
+
+    public static void drawString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, StringStyle ...stringStyles) {
+        translationX.set(x);
+        drawString(guiGraphics, font, component, y, stringStyles);
+    }
+
+    private static void drawString(GuiGraphics guiGraphics, Font font, Component component, int y, StringStyle ...stringStyles) {
+        List<Component> siblings = component.getSiblings();
+
+        boolean smallCaps = false;
+        for (StringStyle style : stringStyles) {
+            if (style == StringStyle.SMALL_CAPS) {
+                smallCaps = true;
+                break;
+            }
+        }
+
+        if(siblings.isEmpty()) {
+            drawString(guiGraphics, font, component.getString(), translationX.get(), y, component.getStyle(), stringStyles);
+
+            int width;
+            if(smallCaps) {
+                width = font.width(Component.literal(TextHelper.smallCaps(component.getString())).setStyle(component.getStyle()));
+            } else {
+                width = font.width(component);
+            }
+
+            translationX.set(translationX.get() + width);
+        } else {
+            siblings.forEach(text1 -> drawString(guiGraphics, font, text1, y, stringStyles));
+        }
+    }
+
+    private static void drawString(GuiGraphics guiGraphics, Font font, String text, int x, int y, Style style, StringStyle ...stringStyles) {
+        drawString(guiGraphics, font, text.chars().mapToObj(c -> (char) c).collect(Collectors.toList()), x, y, style, stringStyles);
+    }
+
+    private static void drawString(GuiGraphics guiGraphics, Font font, List<Character> characterList, int x, int y, Style style, StringStyle ...stringStyles) {
+        boolean shadow = false;
+        boolean middle = false;
+        boolean hasCustomFont = false;
+        boolean smallCaps = false;
+
+        for (StringStyle stringStyle : stringStyles) {
+            switch (stringStyle) {
+                case SHADOW -> shadow = true;
+                case MIDDLE -> middle = true;
+                case HAS_CUSTOM_FONT -> hasCustomFont = true;
+                case SMALL_CAPS -> smallCaps = true;
+            }
+        }
+
+        if (!characterList.isEmpty()) {
+            String glyph = popNextGlyph(characterList);
+
+            if (smallCaps) {
+                glyph = TextHelper.smallCaps(glyph);
+            }
+
+            int cWidth = font.width(Component.literal(glyph).setStyle(style));
+
+            int translateY = middle ? -1 : 0;
+
+            int offsetY = 0;
+            if(glyph.length() == 1) {
+                if (TextHelper.isSmallNumber(glyph.charAt(0))) {
+                    offsetY = 1;
+                } else if (hasCustomFont && smallCaps && TextHelper.isRank(glyph.charAt(0))) {
+                    offsetY = -1;
+                } else if (TextHelper.isSmallLetter(glyph.charAt(0)) || (hasCustomFont && TextHelper.isCustomFont(glyph.charAt(0)))) {
+                } else {
+                    translateY = 0;
+                }
+            }
+
+            guiGraphics.guiRenderState.submitText(
+                    new GuiTextRenderState(
+                            font,
+                            Component.literal(glyph).setStyle(style).getVisualOrderText(),
+                            new Matrix3x2f(guiGraphics.pose()),
+                            x, y - offsetY + translateY, CommonColors.WHITE,
+                            0, shadow, false, guiGraphics.scissorStack.peek()
+                    )
+            );
+
+            drawString(guiGraphics, font, characterList, x + cWidth, y, style, stringStyles);
+        }
     }
 
     public static void drawHorizontalGradient(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int leftColor, int rightColor) {
