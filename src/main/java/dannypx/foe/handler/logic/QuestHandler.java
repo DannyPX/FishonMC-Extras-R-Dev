@@ -51,6 +51,7 @@ public class QuestHandler extends Handler {
                                     case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getName()));
                                     case "rarity" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getRarityComponent()), true);
                                     case "rating" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getRatingComponent()), true);
+                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastRewardedPet, params[3]) : PlaceholderHandler.noResult();
                                     default -> PlaceholderHandler.getNbtValue(lastRewardedPet, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
@@ -66,7 +67,8 @@ public class QuestHandler extends Handler {
                                         yield switch (params[3]) {
                                             case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedItem.value1().getName()));
                                             case "amount" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastRewardedItem.value2()));
-                                            default -> PlaceholderHandler.getNbtValue(lastRewardedItem.value1(), Arrays.copyOfRange(params, 2, params.length));
+                                            case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(lastRewardedItem.value1(), params[4]) : PlaceholderHandler.noResult();
+                                            default -> PlaceholderHandler.getNbtValue(lastRewardedItem.value1(), Arrays.copyOfRange(params, 3, params.length));
                                         };
                                     }
                                 } catch (NumberFormatException e) {

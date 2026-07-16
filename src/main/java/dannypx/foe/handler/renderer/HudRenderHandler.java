@@ -120,7 +120,7 @@ public class HudRenderHandler extends Handler {
         if (Configs.mainConfig.enableMod.get()
                 && LoadingHandler.instance().isLoadingDone()
                 && HitResultHandler.instance().getItemFrameItem() != ItemStack.EMPTY) {
-            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(HitResultHandler.instance().getItemFrameItem());
+            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(HitResultHandler.instance().getItemFrameItem(), true);
             if (validatedItem.value1()) {
                 int itemX = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2;
                 int itemY = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2;
