@@ -18,44 +18,6 @@ import org.joml.Matrix3x2f;
 public class GuiGraphicsHelper {
     private static final AtomicInteger translationX = new AtomicInteger(0);
 
-    private static String popNextGlyph(List<Character> characterList) {
-        if (characterList.isEmpty()) return "";
-
-        StringBuilder sb = new StringBuilder();
-        char first = characterList.removeFirst();
-        sb.append(first);
-
-        if (Character.isHighSurrogate(first) && !characterList.isEmpty() && Character.isLowSurrogate(characterList.get(0))) {
-            sb.append(characterList.removeFirst());
-        }
-
-        while (!characterList.isEmpty()) {
-            char next = characterList.getFirst();
-
-            int codePoint;
-
-            if (Character.isHighSurrogate(next) && characterList.size() > 1 && Character.isLowSurrogate(characterList.get(1))) {
-                codePoint = Character.toCodePoint(next, characterList.get(1));
-            } else {
-                codePoint = next;
-            }
-
-            if (next == '\uFE0F' || next == '\uFE0E' || next == '\u200D'
-                    || (codePoint >= 0x1_F3FB && codePoint <= 0x1F3FF)) {
-
-                sb.append(characterList.removeFirst());
-
-                if (Character.isSupplementaryCodePoint(codePoint)) {
-                    sb.append(characterList.removeFirst());
-                }
-
-            } else {
-                break;
-            }
-        }
-        return sb.toString();
-    }
-
     public static void drawString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, StringStyle ...stringStyles) {
         translationX.set(x);
         drawString(guiGraphics, font, component, y, stringStyles);
@@ -142,6 +104,44 @@ public class GuiGraphicsHelper {
 
             drawString(guiGraphics, font, characterList, x + cWidth, y, style, stringStyles);
         }
+    }
+
+    private static String popNextGlyph(List<Character> characterList) {
+        if (characterList.isEmpty()) return "";
+
+        StringBuilder sb = new StringBuilder();
+        char first = characterList.removeFirst();
+        sb.append(first);
+
+        if (Character.isHighSurrogate(first) && !characterList.isEmpty() && Character.isLowSurrogate(characterList.get(0))) {
+            sb.append(characterList.removeFirst());
+        }
+
+        while (!characterList.isEmpty()) {
+            char next = characterList.getFirst();
+
+            int codePoint;
+
+            if (Character.isHighSurrogate(next) && characterList.size() > 1 && Character.isLowSurrogate(characterList.get(1))) {
+                codePoint = Character.toCodePoint(next, characterList.get(1));
+            } else {
+                codePoint = next;
+            }
+
+            if (next == '\uFE0F' || next == '\uFE0E' || next == '\u200D'
+                    || (codePoint >= 0x1_F3FB && codePoint <= 0x1F3FF)) {
+
+                sb.append(characterList.removeFirst());
+
+                if (Character.isSupplementaryCodePoint(codePoint)) {
+                    sb.append(characterList.removeFirst());
+                }
+
+            } else {
+                break;
+            }
+        }
+        return sb.toString();
     }
 
     public static void drawHorizontalGradient(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int leftColor, int rightColor) {
