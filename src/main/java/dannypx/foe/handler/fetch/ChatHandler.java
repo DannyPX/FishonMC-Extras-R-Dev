@@ -115,7 +115,8 @@ public class ChatHandler extends Handler {
                         && trigger.isUseChatTrigger()
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        NotifierHandler.instance().notifyOnTrigger(trigger.getNotificationToTrigger());
+                        String[] notificationIds = trigger.getNotificationToTrigger().split(",");
+                        NotifierHandler.instance().notifyOnTrigger(notificationIds);
                     });
                 }
 
@@ -124,7 +125,8 @@ public class ChatHandler extends Handler {
                         && trigger.isUseChatTrigger()
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        ChatNotifierHandler.instance().notifyChatOnTrigger(trigger.getChatNotificationToTrigger());
+                        String [] chatNotificationIds = trigger.getChatNotificationToTrigger().split(",");
+                        ChatNotifierHandler.instance().notifyChatOnTrigger(chatNotificationIds);
                     });
                 }
 
@@ -133,7 +135,8 @@ public class ChatHandler extends Handler {
                         && trigger.isUseChatTrigger()
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        CustomTrackerDataHandler.instance().updateTracker(trigger.getTrackerToTrigger());
+                        String[] trackerIds = trigger.getTrackerToTrigger().split(",");
+                        CustomTrackerDataHandler.instance().updateTracker(trackerIds);
                     });
                 }
             }

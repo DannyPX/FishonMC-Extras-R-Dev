@@ -354,39 +354,41 @@ public class NotifierHandler extends Handler {
         );
     }
 
-    public void notifyOnTrigger(String notificationId) {
-        CustomNotificationDataHandler.CustomNotification notification = CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.getOrDefault(notificationId, null);
+    public void notifyOnTrigger(String[] notificationIds) {
+        for (String notificationId : notificationIds) {
+            CustomNotificationDataHandler.CustomNotification notification = CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.getOrDefault(notificationId.trim(), null);
 
-        if(notification != null && minecraft.player != null) {
-            ItemStack itemStack = ItemStack.EMPTY;
+            if(notification != null && minecraft.player != null) {
+                ItemStack itemStack = ItemStack.EMPTY;
 
-            if(!notification.getIcon().isBlank()) {
-                itemStack = ItemStackHelper.valueOf(notification.getIcon());
+                if(!notification.getIcon().isBlank()) {
+                    itemStack = ItemStackHelper.valueOf(notification.getIcon());
+                }
+
+                List<MutableComponent> lines = notification.getStringLines().stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
+                List<Component> newLines = new ArrayList<>();
+
+                lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
+
+                if(itemStack == ItemStack.EMPTY) {
+                    this.addNotification(
+                            new Notification(
+                                    newLines.size(), 1, 10,
+                                    newLines
+                            )
+                    );
+                } else {
+                    this.addNotification(
+                            new Notification(
+                                    itemStack,
+                                    newLines.size(), 1, 10,
+                                    newLines
+                            )
+                    );
+                }
+
+
             }
-
-            List<MutableComponent> lines = notification.getStringLines().stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
-            List<Component> newLines = new ArrayList<>();
-
-            lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
-
-            if(itemStack == ItemStack.EMPTY) {
-                this.addNotification(
-                        new Notification(
-                            newLines.size(), 1, 10,
-                            newLines
-                        )
-                );
-            } else {
-                this.addNotification(
-                        new Notification(
-                                itemStack,
-                                newLines.size(), 1, 10,
-                                newLines
-                        )
-                );
-            }
-
-
         }
     }
     //endregion

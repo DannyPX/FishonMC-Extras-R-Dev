@@ -81,9 +81,14 @@ public class EventHandler extends Handler {
     private void sendEventTrigger(EventTrigger eventTrigger) {
         CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.forEach((name, event) -> {
             if(event.isUseEventTrigger() && event.getEvent() == eventTrigger) {
-                NotifierHandler.instance().notifyOnTrigger(event.getNotificationToTrigger());
-                ChatNotifierHandler.instance().notifyChatOnTrigger(event.getChatNotificationToTrigger());
-                CustomTrackerDataHandler.instance().updateTracker(event.getTrackerToTrigger());
+                String[] notificationIds = event.getNotificationToTrigger().split(",");
+                NotifierHandler.instance().notifyOnTrigger(notificationIds);
+
+                String[] chatNotificationIds = event.getChatNotificationToTrigger().split(",");
+                ChatNotifierHandler.instance().notifyChatOnTrigger(chatNotificationIds);
+
+                String[] trackerIds = event.getTrackerToTrigger().split(",");
+                CustomTrackerDataHandler.instance().updateTracker(trackerIds);
             }
         });
     }
