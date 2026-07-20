@@ -14,6 +14,7 @@ import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.*;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -117,7 +118,7 @@ public class HudRenderHandler extends Handler {
         GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, loadingComponent,
                 minecraft.getWindow().getGuiScaledWidth() - minecraft.font.width(loadingComponent) - 8,
                 minecraft.getWindow().getGuiScaledHeight() - minecraft.font.lineHeight - 8,
-                true, true, false, true
+                StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
         );
     }
 
