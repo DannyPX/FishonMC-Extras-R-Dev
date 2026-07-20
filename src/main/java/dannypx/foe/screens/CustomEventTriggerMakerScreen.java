@@ -92,7 +92,9 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
-                    Component.literal("Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("Split multiple notifications with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -100,7 +102,9 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
-                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.GRAY)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("Split multiple chat notifications with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -109,7 +113,9 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                     Component.literal("Optional").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC),
                     Component.empty(),
                     Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.GRAY),
-                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.GRAY)
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.literal("Split multiple trackers with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
     }

@@ -152,72 +152,74 @@ public class CustomTrackerDataHandler extends Handler {
         needsUpdate = true;
     }
 
-    public void updateTracker(String trackerAndActionCode) {
-        if(trackerAndActionCode != null && !trackerAndActionCode.isEmpty()) {
-            String[] trackerAndActionSplitString = trackerAndActionCode.split("\\.");
+    public void updateTracker(String[] trackerAndActionCodes) {
+        for (String trackerAndActionCode : trackerAndActionCodes) {
+            if(trackerAndActionCode != null && !trackerAndActionCode.isEmpty()) {
+                String[] trackerAndActionSplitString = trackerAndActionCode.trim().split("\\.");
 
-            if(trackerAndActionSplitString.length == 2 && customTrackerData.trackerList.containsKey(trackerAndActionSplitString[0])) {
-                CustomTracker tracker = customTrackerData.trackerList.get(trackerAndActionSplitString[0]);
+                if(trackerAndActionSplitString.length == 2 && customTrackerData.trackerList.containsKey(trackerAndActionSplitString[0])) {
+                    CustomTracker tracker = customTrackerData.trackerList.get(trackerAndActionSplitString[0]);
 
-                if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
-                    Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
+                    if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
+                        Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
 
-                    Pair<Boolean, MutableComponent> condition = PlaceholderHandler.parsePlaceholderFromString(action.value2());
-                    if(condition.value1()) {
-                        switch (tracker.trackerType) {
-                            case BOOLEAN -> {
-                                BooleanValue valueToUse = action.value3() instanceof EmptyValue
-                                        ? (BooleanValue) BooleanValue.getFalse()
-                                        : action.value3() instanceof PlaceholderStringValue(String value)
-                                          ? (BooleanValue) BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value)))
-                                          : (BooleanValue) action.value3();
-                                BooleanValue value = (BooleanValue) tracker.value;
+                        Pair<Boolean, MutableComponent> condition = PlaceholderHandler.parsePlaceholderFromString(action.value2());
+                        if(condition.value1()) {
+                            switch (tracker.trackerType) {
+                                case BOOLEAN -> {
+                                    BooleanValue valueToUse = action.value3() instanceof EmptyValue
+                                            ? (BooleanValue) BooleanValue.getFalse()
+                                            : action.value3() instanceof PlaceholderStringValue(String value)
+                                              ? (BooleanValue) BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value)))
+                                              : (BooleanValue) action.value3();
+                                    BooleanValue value = (BooleanValue) tracker.value;
 
-                                switch (action.value1()) {
-                                    case SET -> tracker.value = valueToUse;
-                                    case TOGGLE -> tracker.value =  value.toggleValue();
-                                }
-                            }
-                            case INTEGER -> {
-                                NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
-                                        ? (NumberValue) NumberValue.of(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value)))
-                                        : (NumberValue) action.value3();
-                                NumberValue value = (NumberValue) tracker.value;
-
-                                switch (action.value1()) {
-                                    case SET -> tracker.value = valueToUse;
-                                    case ADD -> tracker.value = value.addValue(valueToUse.value());
-                                    case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
-                                }
-                            }
-                            case ITEMSTACK -> {
-                                TrackerValue valueToUse;
-
-                                if(action.value3() instanceof PlaceholderStringValue(String value)) {
-                                    Float index = PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value));
-                                    if(index != null) {
-                                        if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
-                                            valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
-                                        } else {
-                                            valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
-                                        }
-                                    } else {
-                                        valueToUse = ItemStackValue.of(ItemStack.EMPTY);
+                                    switch (action.value1()) {
+                                        case SET -> tracker.value = valueToUse;
+                                        case TOGGLE -> tracker.value =  value.toggleValue();
                                     }
-                                } else valueToUse = action.value3();
+                                }
+                                case INTEGER -> {
+                                    NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
+                                            ? (NumberValue) NumberValue.of(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value)))
+                                            : (NumberValue) action.value3();
+                                    NumberValue value = (NumberValue) tracker.value;
 
-                                switch (action.value1()) {
-                                    case SET -> tracker.value = valueToUse;
+                                    switch (action.value1()) {
+                                        case SET -> tracker.value = valueToUse;
+                                        case ADD -> tracker.value = value.addValue(valueToUse.value());
+                                        case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
+                                    }
+                                }
+                                case ITEMSTACK -> {
+                                    TrackerValue valueToUse;
+
+                                    if(action.value3() instanceof PlaceholderStringValue(String value)) {
+                                        Float index = PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value));
+                                        if(index != null) {
+                                            if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                                valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
+                                            } else {
+                                                valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
+                                            }
+                                        } else {
+                                            valueToUse = ItemStackValue.of(ItemStack.EMPTY);
+                                        }
+                                    } else valueToUse = action.value3();
+
+                                    switch (action.value1()) {
+                                        case SET -> tracker.value = valueToUse;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                customTrackerData.trackerList.put(trackerAndActionSplitString[0], tracker);
+                    customTrackerData.trackerList.put(trackerAndActionSplitString[0], tracker);
 
-                if(tracker.isPersistent) {
-                    needsUpdate = true;
+                    if(tracker.isPersistent) {
+                        needsUpdate = true;
+                    }
                 }
             }
         }

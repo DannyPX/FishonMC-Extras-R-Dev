@@ -21,15 +21,17 @@ public class ChatNotifierHandler extends Handler {
     }
 
     //region Fields
-    public void notifyChatOnTrigger(String notificationId) {
-        if(notificationId != null) {
-            String notification = CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.getOrDefault(notificationId, "");
+    public void notifyChatOnTrigger(String[] notificationIds) {
+        for (String notificationId : notificationIds) {
+            if(notificationId != null) {
+                String notification = CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.getOrDefault(notificationId.trim(), "");
 
-            if(!notification.isBlank()) {
-                Pair<Boolean, MutableComponent> message = PlaceholderHandler.parsePlaceholderFromString(notification.replace("&", "§"));
+                if(!notification.isBlank()) {
+                    Pair<Boolean, MutableComponent> message = PlaceholderHandler.parsePlaceholderFromString(notification.replace("&", "§"));
 
-                if(message.value1()) {
-                    this.sendChatMessage(message.value2());
+                    if(message.value1()) {
+                        this.sendChatMessage(message.value2());
+                    }
                 }
             }
         }
