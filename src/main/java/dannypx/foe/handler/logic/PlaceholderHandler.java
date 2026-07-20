@@ -45,6 +45,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("player", LocalPlayerHandler.instance()::getClientPlayer),
             Map.entry("network", NetworkHandler.instance()::getNetwork),
             Map.entry("scoreboard", ScoreboardHandler.instance()::getScoreboard),
+            Map.entry("screen", ScreenHander.instance()::getScreen),
             Map.entry("tab", TabOverlayHandler.instance()::getTab),
             Map.entry("title", TitleHandler.instance()::getTitle),
             Map.entry("connection", ConnectionHandler.instance()::getConnection),

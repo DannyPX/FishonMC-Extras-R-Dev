@@ -83,23 +83,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
-        if(screen instanceof InventoryScreen inventoryScreen) {
-            InventoryScreenRenderHandler.instance().init(inventoryScreen);
-            ScreenMouseEvents.afterMouseScroll(inventoryScreen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
-        } else if(screen instanceof ContainerScreen genericContainerScreen) {
-            GenericContainerScreenHandler.instance().init(genericContainerScreen);
-            ScreenEvents.afterRender(screen).register(GenericContainerScreenHandler.instance()::render);
-        } else if(screen instanceof ChatScreen) {
-            ScreenEvents.afterRender(screen).register(ChatScreenRenderHandler.instance()::render);
-        }
-
-        CodeExecuterHandler.runLater(3, EventHandler.instance()::onScreenOpen);
-        ScreenEvents.remove(screen).register(this::onRemoveScreen);
-    }
-
-    private void onRemoveScreen(Screen screen) {
-        InventoryHandler.instance().trackFishOffSide();
-        EventHandler.instance().onScreenClose();
+        ScreenHander.instance().onAfterInitScreen(minecraft, screen, scaledWidth, scaledHeight);
     }
 
     private void initHudRenderer() {
