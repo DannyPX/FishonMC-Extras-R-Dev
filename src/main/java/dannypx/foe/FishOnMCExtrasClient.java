@@ -52,6 +52,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
+
+        this.initHudRenderer();
     }
 
     private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines) {
@@ -110,8 +112,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.registerEntityModels();
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
-
-        this.initHudRenderer();
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
