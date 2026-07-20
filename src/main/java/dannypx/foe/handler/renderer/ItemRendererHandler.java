@@ -41,7 +41,7 @@ public class ItemRendererHandler extends Handler {
             return;
         }
 
-        Pair<Boolean, TagObject> validateItem = ValidateItem.isServerItem(stack);
+        Pair<Boolean, TagObject> validateItem = ValidateItem.isServerItem(stack, true);
 
         if(!this.checkIfBlacklisted(validateItem.value2())
                 && !validateItem.value2().getRarity().isBlank()
@@ -105,7 +105,7 @@ public class ItemRendererHandler extends Handler {
     }
 
     public void drawStackCount(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y, boolean isSmall) {
-        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
+        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack, true);
 
         int count = Configs.rendererConfig.showStackCountOnBait.get()
                 ? validatedItem.value2().getCount()

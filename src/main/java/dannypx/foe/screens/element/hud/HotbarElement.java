@@ -130,7 +130,7 @@ public class HotbarElement extends Element {
 
             for(int i = 0; i < 9; i++) {
                 ItemStack item = Minecraft.getInstance().player.getInventory().getNonEquipmentItems().get(i);
-                Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(item);
+                Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(item, true);
 
                 guiGraphics.renderItem(item, x + itemX + (18 * i), y + itemY);
 
