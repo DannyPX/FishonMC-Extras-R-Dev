@@ -100,6 +100,7 @@ public class CatchingHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
+                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastCaughtFish, params[3]) : PlaceholderHandler.noResult();
                                     default -> PlaceholderHandler.getNbtValue(lastCaughtFish, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
@@ -136,6 +137,7 @@ public class CatchingHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
+                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastCaughtPet, params[3]) : PlaceholderHandler.noResult();
                                     default -> PlaceholderHandler.getNbtValue(lastCaughtPet, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
@@ -143,7 +145,7 @@ public class CatchingHandler extends Handler {
                         }
                         case "item" -> {
                             if(!lastCaughtItems.isEmpty()
-                                    && params.length > 4
+                                    && params.length >= 4
                             ) {
                                 try {
                                     int index = Integer.parseInt(params[2]);
@@ -158,7 +160,8 @@ public class CatchingHandler extends Handler {
                                                 case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value3().value2()));
                                                 default -> PlaceholderHandler.noResult();
                                             };
-                                            default -> PlaceholderHandler.getNbtValue(lastCaughtFish, Arrays.copyOfRange(params, 2, params.length));
+                                            case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(lastCaughtItem.value1(), params[4]) : PlaceholderHandler.noResult();
+                                            default -> PlaceholderHandler.getNbtValue(lastCaughtItem.value1(), Arrays.copyOfRange(params, 3, params.length));
                                         };
                                     }
                                 } catch (NumberFormatException e) {

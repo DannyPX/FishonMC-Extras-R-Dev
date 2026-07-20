@@ -16,6 +16,7 @@ import dannypx.foe.type.placeholder.ComponentValue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
@@ -709,8 +710,26 @@ public class PlaceholderHandler extends Handler {
     }
 
     public static Pair<Boolean, PlaceholderValue> getNbtValue(ItemStack itemStack, String[] field) {
-        Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack);
-        return getNbtValue(item.value2(), field);
+        Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack, true);
+        return item.value1() ? getNbtValue(item.value2(), field) : PlaceholderHandler.noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> getLoreValue(TagObject object, String indexString) {
+        List<Component> loreList = object.getLore();
+
+        try {
+            int index = Integer.parseInt(indexString);
+            if(index < loreList.size() && index >= 0) {
+                return PlaceholderHandler.getPlaceholderValue(ComponentValue.of(loreList.get(index)));
+            }
+        } catch (NumberFormatException ignored) {}
+
+        return PlaceholderHandler.noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> getLoreValue(ItemStack itemStack, String index) {
+        Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack, false);
+        return item.value1() ? getLoreValue(item.value2(), index) : PlaceholderHandler.noResult();
     }
 
     public static boolean getBoolean(Pair<Boolean, MutableComponent> value) {
