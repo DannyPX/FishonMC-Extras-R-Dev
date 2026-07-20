@@ -6,6 +6,8 @@ import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import java.util.List;
 import java.util.Objects;
+
+import dannypx.foe.type.StringStyle;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -99,7 +101,8 @@ public class NotificationElement extends Element implements ScreenConstants {
                 if(!Objects.equals(component, Component.empty())) {
                     GuiGraphicsHelper.drawString(guiGraphics, font, component,
                             componentX, componentY,
-                            true, true, true, true);
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.HAS_CUSTOM_FONT, StringStyle.SMALL_CAPS
+                    );
                 }
             }
         }

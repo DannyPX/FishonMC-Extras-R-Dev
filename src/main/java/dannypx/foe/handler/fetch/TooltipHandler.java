@@ -37,7 +37,7 @@ public class TooltipHandler extends Handler {
 
     //region Methods
     public void fetchTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
-        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack);
+        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack, true);
         if(validatedItem.value1()) {
             Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(validatedItem.value2());
             if(validatedArmor.value1()) this.setArmorRolls(validatedArmor.value2(), components);

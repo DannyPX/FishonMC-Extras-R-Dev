@@ -9,6 +9,7 @@ import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishingRodTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -130,7 +131,7 @@ public class HotbarElement extends Element {
 
             for(int i = 0; i < 9; i++) {
                 ItemStack item = Minecraft.getInstance().player.getInventory().getNonEquipmentItems().get(i);
-                Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(item);
+                Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(item, true);
 
                 guiGraphics.renderItem(item, x + itemX + (18 * i), y + itemY);
 
@@ -143,10 +144,7 @@ public class HotbarElement extends Element {
 
                     if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
                             x + countX + (18 * i) - countWidth, y + countY,
-                            true,
-                            true,
-                            false,
-                            false);
+                            StringStyle.SHADOW, StringStyle.MIDDLE);
                 } else {
                     int count = Configs.rendererConfig.showStackCountOnBait.get()
                             ? validatedItem.value2().getCount()
@@ -156,10 +154,7 @@ public class HotbarElement extends Element {
 
                     if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
                             x + countX + (18 * i) - countWidth, y + countY - 2,
-                            true,
-                            false,
-                            false,
-                            false);
+                            StringStyle.SHADOW);
                 }
             }
         }
@@ -298,12 +293,19 @@ public class HotbarElement extends Element {
                             : TextHelper.literal(TextHelper.shortenNumber(count, 0));
                     int countWidth = font.width(countComponent);
 
-                    if(count > 1) GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
-                            x + countX - countWidth, isSmall ? y + countY : y + countY - 2,
-                            true,
-                            isSmall,
-                            false,
-                            isSmall);
+                    if(count > 1) {
+                        if(isSmall) {
+                            GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
+                                    x + countX - countWidth, y + countY,
+                                    StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
+                            );
+                        } else {
+                            GuiGraphicsHelper.drawString(guiGraphics, font, countComponent,
+                                    x + countX - countWidth, y + countY - 2,
+                                    StringStyle.SHADOW
+                            );
+                        }
+                    }
                 }
 
                 if(Configs.hudConfig.showBaitLock.get()

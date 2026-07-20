@@ -8,6 +8,7 @@ import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.Alignment;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.screens.element.Element;
@@ -128,17 +129,33 @@ public class CustomHudElement extends Element implements ScreenConstants {
         AtomicInteger line = new AtomicInteger(0);
         componentLines.forEach(componentParts -> {
             if(componentParts.value1()) {
-                GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
-                        componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - TextHelper.getWidth(Minecraft.getInstance().font, componentParts.value3(), componentParts.value2()) / 2,
-                        componentY + line.getAndIncrement() * LINE_HEIGHT,
-                        true, componentParts.value2(), true, componentParts.value2()
-                        );
+                if(componentParts.value2()) {
+                    GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
+                            componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - TextHelper.getWidth(Minecraft.getInstance().font, componentParts.value3(), componentParts.value2()) / 2,
+                            componentY + line.getAndIncrement() * LINE_HEIGHT,
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.HAS_CUSTOM_FONT, StringStyle.SMALL_CAPS
+                    );
+                } else {
+                    GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
+                            componentX - (PADDING + BOX_PADDING) + boxWidth / 2 - TextHelper.getWidth(Minecraft.getInstance().font, componentParts.value3(), componentParts.value2()) / 2,
+                            componentY + line.getAndIncrement() * LINE_HEIGHT,
+                            StringStyle.SHADOW, StringStyle.HAS_CUSTOM_FONT
+                    );
+                }
             } else {
-                GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
-                        componentX,
-                        componentY + line.getAndIncrement() * LINE_HEIGHT,
-                        true, componentParts.value2(), true, componentParts.value2()
-                );
+                if(componentParts.value2()) {
+                    GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
+                            componentX,
+                            componentY + line.getAndIncrement() * LINE_HEIGHT,
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.HAS_CUSTOM_FONT, StringStyle.SMALL_CAPS
+                    );
+                } else {
+                    GuiGraphicsHelper.drawString(guiGraphics, Minecraft.getInstance().font, componentParts.value3(),
+                            componentX,
+                            componentY + line.getAndIncrement() * LINE_HEIGHT,
+                            StringStyle.SHADOW, StringStyle.HAS_CUSTOM_FONT
+                    );
+                }
             }
         });
     }

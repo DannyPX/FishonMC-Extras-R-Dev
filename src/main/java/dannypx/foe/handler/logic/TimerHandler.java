@@ -218,15 +218,25 @@ public class TimerHandler extends Handler {
 
                     this.register(timerPeriod, () -> {
                         CodeExecuterHandler.runLater(1, () -> {
-                            NotifierHandler.instance().notifyOnTrigger(timerPeriod.getNotificationToTrigger());
-                            ChatNotifierHandler.instance().notifyChatOnTrigger(timerPeriod.getChatNotificationToTrigger());
-                            CustomTrackerDataHandler.instance().updateTracker(timerPeriod.getTrackerToTrigger());
+                            String[] notificationIds = timerPeriod.getNotificationToTrigger().split(",");
+                            NotifierHandler.instance().notifyOnTrigger(notificationIds);
+
+                            String[] chatNotificationIds = timerPeriod.getChatNotificationToTrigger().split(",");
+                            ChatNotifierHandler.instance().notifyChatOnTrigger(chatNotificationIds);
+
+                            String[] trackerIds = timerPeriod.getTrackerToTrigger().split(",");
+                            CustomTrackerDataHandler.instance().updateTracker(trackerIds);
                         });
                     }, () -> {
                         CodeExecuterHandler.runLater(1, () -> {
-                            NotifierHandler.instance().notifyOnTrigger(timerPeriod.getNotificationToTriggerEnd());
-                            ChatNotifierHandler.instance().notifyChatOnTrigger(timerPeriod.getChatNotificationToTriggerEnd());
-                            CustomTrackerDataHandler.instance().updateTracker(timerPeriod.getTrackerToTriggerEnd());
+                            String[] notificationIds = timerPeriod.getNotificationToTriggerEnd().split(",");
+                            NotifierHandler.instance().notifyOnTrigger(notificationIds);
+
+                            String[] chatNotificationIds = timerPeriod.getChatNotificationToTriggerEnd().split(",");
+                            ChatNotifierHandler.instance().notifyChatOnTrigger(chatNotificationIds);
+
+                            String[] trackerIds = timerPeriod.getTrackerToTriggerEnd().split(",");
+                            CustomTrackerDataHandler.instance().updateTracker(trackerIds);
                         });
                     });
                 } else {
@@ -234,9 +244,14 @@ public class TimerHandler extends Handler {
 
                     this.register(timer, () -> {
                         CodeExecuterHandler.runLater(1, () -> {
-                            NotifierHandler.instance().notifyOnTrigger(timer.getNotificationToTrigger());
-                            ChatNotifierHandler.instance().notifyChatOnTrigger(timer.getChatNotificationToTrigger());
-                            CustomTrackerDataHandler.instance().updateTracker(timer.getTrackerToTrigger());
+                            String[] notificationIds = timer.getNotificationToTrigger().split(",");
+                            NotifierHandler.instance().notifyOnTrigger(notificationIds);
+
+                            String[] chatNotificationIds = timer.getChatNotificationToTrigger().split(",");
+                            ChatNotifierHandler.instance().notifyChatOnTrigger(chatNotificationIds);
+
+                            String[] trackerIds = timer.getTrackerToTrigger().split(",");
+                            CustomTrackerDataHandler.instance().updateTracker(trackerIds);
                         });
                     });
                 }
