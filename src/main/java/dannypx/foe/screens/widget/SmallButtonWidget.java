@@ -3,6 +3,7 @@ package dannypx.foe.screens.widget;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
@@ -99,10 +100,7 @@ public class SmallButtonWidget extends AbstractWidget {
                         minecraft.font,
                         Component.literal(icon),
                         getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,
-                        true,
-                        true,
-                        false,
-                        true
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
                 );
 
                 guiGraphics.pose().popMatrix();

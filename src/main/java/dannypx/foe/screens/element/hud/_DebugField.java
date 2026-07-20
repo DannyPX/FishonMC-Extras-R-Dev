@@ -5,6 +5,7 @@ import dannypx.foe.handler.fetch.ScoreboardHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Quartet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
@@ -103,10 +104,10 @@ public class _DebugField extends Element {
         int height = font.lineHeight;
 
         switch (Configs.debugConfig.debugFieldAlignment.get()) {
-            case TOP_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x, y, true, true, false, false);
-            case TOP_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x - width, y, true, true, false, false);
-            case BOTTOM_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x, y - height, true, true, false, false);
-            case BOTTOM_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x - width, y - height, true, true, false, false);
+            case TOP_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x, y, StringStyle.SHADOW, StringStyle.MIDDLE);
+            case TOP_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x - width, y, StringStyle.SHADOW, StringStyle.MIDDLE);
+            case BOTTOM_LEFT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x, y - height, StringStyle.SHADOW, StringStyle.MIDDLE);
+            case BOTTOM_RIGHT -> GuiGraphicsHelper.drawString(guiGraphics, font, fieldComponent, x - width, y - height, StringStyle.SHADOW, StringStyle.MIDDLE);
         }
     }
     //endregion
