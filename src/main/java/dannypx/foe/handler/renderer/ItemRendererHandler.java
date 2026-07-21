@@ -147,7 +147,11 @@ public class ItemRendererHandler extends Handler {
 
         Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(stack);
 
-        if(validatedPet.value1() && (validatedPet.value2().contains(PetTagObject.ITEM) || validatedPet.value2().contains(PetTagObject.SKIN))) {
+        if(validatedPet.value1() && (
+                validatedPet.value2().contains(PetTagObject.ITEM)
+                || validatedPet.value2().contains(PetTagObject.SKIN)
+                || validatedPet.value2().contains(PetTagObject.TRAIL)
+        )) {
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, petItemMarker, x, y, 16, 16, CommonColors.WHITE);
         }
     }
