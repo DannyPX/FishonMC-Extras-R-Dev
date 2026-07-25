@@ -53,7 +53,7 @@ public class MainScreen extends DefaultModScreen {
         guiGraphics.drawString(font, hudComponent, width / 2 - font.width(hudComponent) / 2, height / 2 - PADDING_QUART - font.lineHeight, CommonColors.WHITE, true);
 
         Component configComponent = Component.literal("Configuration");
-        guiGraphics.drawString(font, configComponent, width / 2 - font.width(configComponent) / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3 + BUTTON_HEIGHT + PADDING, CommonColors.WHITE, true);
+        guiGraphics.drawString(font, configComponent, width / 2 - font.width(configComponent) / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 4 + BUTTON_HEIGHT + PADDING, CommonColors.WHITE, true);
 
         //Versions
         guiGraphics.drawString(font, Component.literal("Mod Version: v" + FishOnMCExtras.VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - font.lineHeight - PADDING_QUART, CommonColors.WHITE, true);
@@ -65,6 +65,7 @@ public class MainScreen extends DefaultModScreen {
         guiGraphics.drawString(font, Component.literal("Chat Notification Version: v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 7, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("Event Trigger Version: v" + FishOnMCExtras.EVENT_TRIGGER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 8, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("Tracker Version: v" + FishOnMCExtras.TRACKER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 9, CommonColors.WHITE, true);
+        guiGraphics.drawString(font, Component.literal("HUD Icon Version: v" + FishOnMCExtras.HUD_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 10, CommonColors.WHITE, true);
     }
 
     private void renderWidgets() {
@@ -78,6 +79,8 @@ public class MainScreen extends DefaultModScreen {
         widgets.add(customChatNotificationButton());
         widgets.add(customEventTriggerButton());
         widgets.add(customTrackerButton());
+        widgets.add(customHudIconButton());
+
         widgets.add(configButton());
         widgets.add(controlsButton());
 
@@ -156,10 +159,19 @@ public class MainScreen extends DefaultModScreen {
                 .build();
     }
 
+    private Button customHudIconButton() {
+        return Button.builder(Component.literal("Create Custom Hud Icons"), button ->
+                        this.minecraft.setScreen(new CustomHudIconMakerScreen(this.minecraft.screen)))
+                .pos(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 4)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.create(Component.literal("Open HUD Icon Creator Screen")))
+                .build();
+    }
+
     private Button configButton() {
         return Button.builder(Component.literal("Config Screen"), button ->
                         ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
-                .pos(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3 + BUTTON_HEIGHT + PADDING + font.lineHeight + PADDING_QUART)
+                .pos(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 4 + BUTTON_HEIGHT + PADDING + font.lineHeight + PADDING_QUART)
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.create(Component.literal("Open Config Screen")))
                 .build();
@@ -168,7 +180,7 @@ public class MainScreen extends DefaultModScreen {
     private Button controlsButton() {
         return Button.builder(Component.literal("Controls"), button ->
                         ConfigApiJava.INSTANCE.openScreen(Configs.keyBindConfig.translationKey()))
-                .pos(width / 2 + PADDING_HALF, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3 + BUTTON_HEIGHT + PADDING + font.lineHeight + PADDING_QUART)
+                .pos(width / 2 + PADDING_HALF, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 4 + BUTTON_HEIGHT + PADDING + font.lineHeight + PADDING_QUART)
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.create(Component.literal("Open Controls Config")))
                 .build();

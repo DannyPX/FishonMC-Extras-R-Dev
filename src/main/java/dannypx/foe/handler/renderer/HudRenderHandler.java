@@ -9,6 +9,7 @@ import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.fetch.HitResultHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
+import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
@@ -56,14 +57,20 @@ public class HudRenderHandler extends Handler {
     }
 
     public void tick() {
-        if(CustomHudDataHandler.instance().needsRenderUpdate) {
+        if(CustomHudDataHandler.instance().needsRenderUpdate || CustomHudIconDataHandler.instance().needsRenderUpdate) {
             customHudElements.clear();
             CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> {
                 LoggerHandler.info("Register Custom Element: " + key);
                 customHudElements.add(Pair.of(key, new CustomHudElement(hud, Component.literal(key))));
             });
 
+            CustomHudIconDataHandler.instance().getCustomHudIconData().customHudIconDataList.forEach((key, icon) -> {
+                LoggerHandler.info("Register Custom Icon Element: " + key);
+                customHudElements.add(Pair.of(key, new CustomHudIconElement(icon, Component.literal(key))));
+            });
+
             CustomHudDataHandler.instance().needsRenderUpdate = false;
+            CustomHudIconDataHandler.instance().needsRenderUpdate = false;
         }
     }
 
