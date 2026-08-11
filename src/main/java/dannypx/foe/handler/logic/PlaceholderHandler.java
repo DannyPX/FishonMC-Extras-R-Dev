@@ -81,6 +81,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("substring_front", param -> parseSubStringFromString(param, true)),
             Map.entry("substring_back", param -> parseSubStringFromString(param, false)),
             Map.entry("index_of", PlaceholderHandler::parseIndexOfFromString),
+            Map.entry("repeat", PlaceholderHandler::parseRepeatFromString),
             // Math
             Map.entry("expression", PlaceholderHandler::parseExpressionFromString),
             Map.entry("max", PlaceholderHandler::parseMaxFromString),
@@ -330,6 +331,44 @@ public class PlaceholderHandler extends Handler {
                 } else {
                     return Pair.ofTrue(StringValue.valueOf(index));
                 }
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> parseRepeatFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableComponent> leftField;
+            int rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
+            }
+
+            try {
+                if(leftField.value1()) {
+                    if(placeholder.rightBracketed) {
+                        rightField = (int) Float.parseFloat(parsePlaceholderFromString("%" + placeholder.right + "%").value2().getString());
+                    } else {
+                        rightField = (int) Float.parseFloat(placeholder.right);
+                    }
+
+                    if(rightField > 0) {
+                        MutableComponent repeatedComponent = Component.empty();
+
+                        for (int i = 0; i < rightField; i++) {
+                            repeatedComponent.append(leftField.value2());
+                        }
+
+                        return Pair.ofTrue(ComponentValue.of(repeatedComponent));
+                    }
+                } else {
+                    return noResult();
+                }
+            } catch (NumberFormatException e) {
+                return noResult();
             }
         }
         return noResult();
