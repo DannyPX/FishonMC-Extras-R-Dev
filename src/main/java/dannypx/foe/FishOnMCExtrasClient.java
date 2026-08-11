@@ -52,6 +52,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
+
+        this.initHudRenderer();
     }
 
     private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines) {
@@ -83,21 +85,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
-        if(screen instanceof InventoryScreen inventoryScreen) {
-            InventoryScreenRenderHandler.instance().init(inventoryScreen);
-            ScreenMouseEvents.afterMouseScroll(inventoryScreen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
-        } else if(screen instanceof ContainerScreen genericContainerScreen) {
-            GenericContainerScreenHandler.instance().init(genericContainerScreen);
-            ScreenEvents.afterExtract(screen).register(GenericContainerScreenHandler.instance()::render);
-        } else if(screen instanceof ChatScreen) {
-            ScreenEvents.afterExtract(screen).register(ChatScreenRenderHandler.instance()::render);
-        }
-
-        ScreenEvents.remove(screen).register(this::onRemoveScreen);
-    }
-
-    private void onRemoveScreen(Screen screen) {
-        InventoryHandler.instance().trackFishOffSide();
+        ScreenHander.instance().onAfterInitScreen(minecraft, screen, scaledWidth, scaledHeight);
     }
 
     private void initHudRenderer() {
@@ -108,8 +96,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.registerEntityModels();
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
-
-        this.initHudRenderer();
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
@@ -129,6 +115,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             QuestDataHandler.instance().init();
             CrewDataHandler.instance().init();
             CustomHudDataHandler.instance().init();
+            CustomHudIconDataHandler.instance().init();
             CustomButtonDataHandler.instance().init();
             CustomNotificationDataHandler.instance().init();
             CustomChatTriggerDataHandler.instance().init();

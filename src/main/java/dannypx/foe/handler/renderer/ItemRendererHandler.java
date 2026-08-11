@@ -7,6 +7,7 @@ import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
@@ -41,7 +42,7 @@ public class ItemRendererHandler extends Handler {
             return;
         }
 
-        Pair<Boolean, TagObject> validateItem = ValidateItem.isServerItem(stack);
+        Pair<Boolean, TagObject> validateItem = ValidateItem.isServerItem(stack, true);
 
         if(!this.checkIfBlacklisted(validateItem.value2())
                 && !validateItem.value2().getRarity().isBlank()
@@ -105,7 +106,7 @@ public class ItemRendererHandler extends Handler {
     }
 
     public void drawStackCount(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y, boolean isSmall) {
-        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack);
+        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(stack, true);
 
         int count = Configs.rendererConfig.showStackCountOnBait.get()
                 ? validatedItem.value2().getCount()
@@ -115,13 +116,17 @@ public class ItemRendererHandler extends Handler {
                 : TextHelper.literal(TextHelper.shortenNumber(count, 0));
         int countWidth = font.width(countComponent);
 
-        if(count > 1) GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
-                x + 19 - 2 - countWidth, isSmall ? y + 6 + 4 : y + 6 + 3,
-                true,
-                isSmall,
-                false,
-                isSmall
-        );
+        if(count > 1) {
+            if(isSmall) {
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
+                        x + 19 - 2 - countWidth, y + 6 + 4,
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
+            } else {
+                GuiGraphicsHelper.text(guiGraphicsExtractor, font, countComponent,
+                        x + 19 - 2 - countWidth, y + 6 + 3,
+                        StringStyle.SHADOW);
+            }
+        }
     }
 
     public void drawSearchItem(GuiGraphicsExtractor guiGraphicsExtractor, ItemStack stack, int x, int y) {
@@ -142,7 +147,11 @@ public class ItemRendererHandler extends Handler {
 
         Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(stack);
 
-        if(validatedPet.value1() && (validatedPet.value2().contains(PetTagObject.ITEM) || validatedPet.value2().contains(PetTagObject.SKIN))) {
+        if(validatedPet.value1() && (
+                validatedPet.value2().contains(PetTagObject.ITEM)
+                || validatedPet.value2().contains(PetTagObject.SKIN)
+                || validatedPet.value2().contains(PetTagObject.TRAIL)
+        )) {
             guiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, petItemMarker, x, y, 16, 16, CommonColors.WHITE);
         }
     }
@@ -210,12 +219,14 @@ public class ItemRendererHandler extends Handler {
                 if(validatedCursor.value1()
                         && (
                                 validatedCursor.value2().getType().equals("bait")
+                                || validatedCursor.value2().getType().equals("lure")
                 )) {
                     Pair<Boolean,TagObject> validatedItem = ValidateItem.isType(stack);
 
                     if(validatedItem.value1()
                             && (
                                     validatedItem.value2().getType().equals("bait")
+                                    || validatedCursor.value2().getType().equals("lure")
                             )
                             && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))
                     ) {

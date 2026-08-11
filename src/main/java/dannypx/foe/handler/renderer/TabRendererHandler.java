@@ -6,6 +6,7 @@ import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.BoxElement;
@@ -47,7 +48,13 @@ public class TabRendererHandler extends Handler {
                 crewBox.extractRenderState(guiGraphicsExtractor, minecraft.getDeltaTracker());
 
                 Component crewComponent = Component.literal(ScoreboardHandler.instance().getCrew().getString());
-                GuiGraphicsHelper.text(guiGraphicsExtractor, minecraft.font, crewComponent, x1 + width / 2 - TextHelper.getWidth(minecraft.font, crewComponent, true) / 2, y1 - (height - 5) + (height - 5) / 2 - minecraft.font.lineHeight / 2 + 1, true, true, false, true);
+
+                GuiGraphicsHelper.text(
+                        guiGraphicsExtractor, minecraft.font, crewComponent,
+                        x1 + width / 2 - TextHelper.getWidth(minecraft.font, crewComponent, true) / 2,
+                        y1 - (height - 5) + (height - 5) / 2 - minecraft.font.lineHeight / 2 + 1,
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
+                );
 
                 // Left Bar
                 Element leftBar = new BoxElement(x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);

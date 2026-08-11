@@ -11,23 +11,26 @@ import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
 import dannypx.foe.handler.logic.TimerHandler;
 import dannypx.foe.handler.store.*;
+import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.MainScreen;
-import dannypx.foe.type.custom_value.BooleanValue;
-import dannypx.foe.type.custom_value.EmptyValue;
-import dannypx.foe.type.custom_value.NumberValue;
-import dannypx.foe.type.custom_value.TrackerValue;
+import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
+import dannypx.foe.type.tuple.Pair;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class CommandRegistry {
     public static void init() {
@@ -352,14 +355,12 @@ public class CommandRegistry {
                 String value = StringArgumentType.getString(context, "value");
 
                 if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(tracker)) {
-                    if("true".equals(value) || "false".equals(value)) {
-                        if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.BOOLEAN) {
-                            boolean parsed = Boolean.parseBoolean(value);
-                            TrackerValue trackerValue = BooleanValue.of(parsed);
-                            return updateValue(context, TrackerAction.SET, tracker, trackerValue);
-                        } else {
-                            return sendFeedback(context, Component.literal("Value must be a number").withStyle(ChatFormatting.RED));
-                        }
+                    if (("true".equals(value) || "false".equals(value))
+                            && CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.BOOLEAN
+                    ) {
+                        boolean parsed = Boolean.parseBoolean(value);
+                        TrackerValue trackerValue = BooleanValue.of(parsed);
+                        return updateValue(context, TrackerAction.SET, tracker, trackerValue);
                     }
 
                     try {
@@ -367,11 +368,35 @@ public class CommandRegistry {
                             float parsed = Float.parseFloat(value);
                             TrackerValue trackerValue = NumberValue.of(parsed);
                             return updateValue(context, TrackerAction.SET, tracker, trackerValue);
-                        } else {
-                            return sendFeedback(context, Component.literal("Value must be a boolean").withStyle(ChatFormatting.RED));
                         }
 
                     } catch (Exception ignored) {}
+
+                    if(!value.isBlank()
+                            && CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.ITEMSTACK
+                    ) {
+                        ItemStack itemStack = ItemStackHelper.valueOf(value);
+
+                        if(!itemStack.isEmpty()) {
+                            TrackerValue trackerValue = ItemStackValue.of(itemStack);
+                            return updateValue(context, TrackerAction.SET, tracker, trackerValue);
+                        } else {
+                            try {
+                                Float index = Float.valueOf(value);
+                                Minecraft minecraft = Minecraft.getInstance();
+
+                                if(index >= 0) {
+                                    if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                        TrackerValue trackerValue = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
+                                        return updateValue(context, TrackerAction.SET, tracker, trackerValue);
+                                    } else {
+                                        TrackerValue trackerValue = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
+                                        return updateValue(context, TrackerAction.SET, tracker, trackerValue);
+                                    }
+                                }
+                            } catch (Exception ignored) {}
+                        }
+                    }
 
                     return sendFeedback(context, Component.literal("Could not parse value").withStyle(ChatFormatting.RED));
                 } else {
@@ -399,7 +424,7 @@ public class CommandRegistry {
 
                 if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(tracker)) {
                     if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.INTEGER) {
-                        TrackerValue trackerValue = NumberValue.of(value);
+                        TrackerValue trackerValue = NumberValue.of((float) value);
                         return updateValue(context, TrackerAction.ADD, tracker, trackerValue);
                     } else {
                         return sendFeedback(context, Component.literal("Tracker must be a integer").withStyle(ChatFormatting.RED));
@@ -415,7 +440,7 @@ public class CommandRegistry {
 
                 if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(tracker)) {
                     if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(tracker).getTrackerType() == TrackerType.INTEGER) {
-                        TrackerValue trackerValue = NumberValue.of(value);
+                        TrackerValue trackerValue = NumberValue.of((float) value);
                         return updateValue(context, TrackerAction.SUBTRACT, tracker, trackerValue);
                     } else {
                         return sendFeedback(context, Component.literal("Tracker must be a integer").withStyle(ChatFormatting.RED));
@@ -442,6 +467,12 @@ public class CommandRegistry {
                         });
                         case SUBTRACT -> executeCommand(context, Component.literal("Subtract " + numberValue.value() + " to " + tracker), () -> {
                             CustomTrackerDataHandler.instance().updateTracker(tracker, action, numberValue);
+                        });
+                        default -> sendFeedback(context, Component.literal("Error").withStyle(ChatFormatting.RED));
+                    };
+                    case ItemStackValue itemStackValue -> switch (action) {
+                        case SET -> executeCommand(context, Component.literal("Set " + tracker + " to ").append(Objects.requireNonNull(itemStackValue.value().value1().getHoverName())), () -> {
+                            CustomTrackerDataHandler.instance().updateTracker(tracker, action, itemStackValue);
                         });
                         default -> sendFeedback(context, Component.literal("Error").withStyle(ChatFormatting.RED));
                     };

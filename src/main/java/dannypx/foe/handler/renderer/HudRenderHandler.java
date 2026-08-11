@@ -9,11 +9,13 @@ import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.fetch.HitResultHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
+import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.*;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -55,11 +57,20 @@ public class HudRenderHandler extends Handler {
     }
 
     public void tick() {
-        if(CustomHudDataHandler.instance().needsRenderUpdate) {
+        if(CustomHudDataHandler.instance().needsRenderUpdate || CustomHudIconDataHandler.instance().needsRenderUpdate) {
             customHudElements.clear();
-            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> customHudElements.add(Pair.of(key, new CustomHudElement(hud, Component.literal(key)))));
+            CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.forEach((key, hud) -> {
+                LoggerHandler.info("Register Custom Element: " + key);
+                customHudElements.add(Pair.of(key, new CustomHudElement(hud, Component.literal(key))));
+            });
+
+            CustomHudIconDataHandler.instance().getCustomHudIconData().customHudIconDataList.forEach((key, icon) -> {
+                LoggerHandler.info("Register Custom Icon Element: " + key);
+                customHudElements.add(Pair.of(key, new CustomHudIconElement(icon, Component.literal(key))));
+            });
 
             CustomHudDataHandler.instance().needsRenderUpdate = false;
+            CustomHudIconDataHandler.instance().needsRenderUpdate = false;
         }
     }
 
@@ -73,23 +84,25 @@ public class HudRenderHandler extends Handler {
             elements.add(Pair.of("debug_field_hud", new _DebugField()));
         }
 
-        LoggerHandler._debug("Register Default Elements");
-        elements.forEach(element -> HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphicsExtractor, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker);
-        }));
-
-        LoggerHandler._debug("Register Custom Elements");
-        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (guiGraphicsExtractor, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) this.render(guiGraphicsExtractor, deltaTracker);
+        elements.forEach(element -> {
+            LoggerHandler.info("Register Element: " + element.value1());
+            HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphics, deltaTracker) -> {
+                if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker);
+            });
         });
 
-        LoggerHandler._debug("Register Misc Elements");
+        LoggerHandler.info("Register Misc Elements");
+        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (guiGraphicsExtractor, deltaTracker) -> {
+            if (Configs.mainConfig.enableMod.get()) this.extractRenderState(guiGraphicsExtractor, deltaTracker);
+        });
+
+
         HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (guiGraphicsExtractor, deltaTracker) -> {
             if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphicsExtractor, deltaTracker);
         });
     }
 
-    private void render(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+    private void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
         customHudElements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker));
     }
 
@@ -112,7 +125,7 @@ public class HudRenderHandler extends Handler {
         GuiGraphicsHelper.text(guiGraphicsExtractor, minecraft.font, loadingComponent,
                 minecraft.getWindow().getGuiScaledWidth() - minecraft.font.width(loadingComponent) - 8,
                 minecraft.getWindow().getGuiScaledHeight() - minecraft.font.lineHeight - 8,
-                true, true, false, true
+                StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
         );
     }
 
@@ -120,7 +133,7 @@ public class HudRenderHandler extends Handler {
         if (Configs.mainConfig.enableMod.get()
                 && LoadingHandler.instance().isLoadingDone()
                 && HitResultHandler.instance().getItemFrameItem() != ItemStack.EMPTY) {
-            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(HitResultHandler.instance().getItemFrameItem());
+            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(HitResultHandler.instance().getItemFrameItem(), true);
             if (validatedItem.value1()) {
                 int itemX = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2;
                 int itemY = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2;

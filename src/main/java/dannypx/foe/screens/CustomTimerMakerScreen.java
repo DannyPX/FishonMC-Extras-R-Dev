@@ -130,7 +130,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("Notification Name").withStyle(ChatFormatting.YELLOW)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.YELLOW),
+                    Component.empty(),
+                    Component.literal("Split multiple notifications with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -142,7 +144,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("Notification Name").withStyle(ChatFormatting.YELLOW)
+                    Component.literal("Notification Name").withStyle(ChatFormatting.YELLOW),
+                    Component.empty(),
+                    Component.literal("Split multiple notifications with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -156,7 +160,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.YELLOW)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.YELLOW),
+                    Component.empty(),
+                    Component.literal("Split multiple chat notifications with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -168,7 +174,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("When in 'period' mode").withStyle(ChatFormatting.GRAY),
                     Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
-                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.YELLOW)
+                    Component.literal("Chat Notification Name").withStyle(ChatFormatting.YELLOW),
+                    Component.empty(),
+                    Component.literal("Split multiple chat notifications with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -183,7 +191,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("Trigger when OFF timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
                     Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.YELLOW),
-                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.YELLOW)
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.YELLOW),
+                    Component.empty(),
+                    Component.literal("Split multiple trackers with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 
@@ -196,7 +206,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Component.literal("Trigger when ON timer hits 0").withStyle(ChatFormatting.GRAY),
                     Component.empty(),
                     Component.literal("Tracker and Action Name split using a dot").withStyle(ChatFormatting.YELLOW),
-                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.YELLOW)
+                    Component.literal("e.g. \"tracker.action\"").withStyle(ChatFormatting.YELLOW),
+                    Component.empty(),
+                    Component.literal("Split multiple trackers with a comma").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
 

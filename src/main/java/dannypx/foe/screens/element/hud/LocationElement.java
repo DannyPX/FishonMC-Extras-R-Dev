@@ -8,6 +8,7 @@ import dannypx.foe.helper.TextHelper;
 import dannypx.foe.config.Configs;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.screens.element.Element;
+import dannypx.foe.type.StringStyle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -122,51 +123,33 @@ public class LocationElement extends Element {
                 GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         weather,
                         x + component1x - (weatherWidth / 2), y + component1y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
 
                 GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         locationTotal,
                         x + component2x, y + component2y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
 
                 GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         time,
                         x + component3x, y + component3y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
             }
             case TOP_RIGHT -> {
                 GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         weather,
                         x - component1x - (weatherWidth / 2), y + component1y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
 
                 GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         locationTotal,
                         x - component2x - locationWidth, y + component2y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
 
                 GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         time,
                         x - component3x - timeWidth, y + component3y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
             }
         }
     }

@@ -15,6 +15,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.type.tuple.Triplet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -99,7 +100,8 @@ public class CatchingHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
+                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastCaughtFish, params[3]) : PlaceholderHandler.noResult();
+                                    default -> PlaceholderHandler.getNbtValue(lastCaughtFish, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
                             yield PlaceholderHandler.noResult();
@@ -135,14 +137,15 @@ public class CatchingHandler extends Handler {
                                         }
                                         yield PlaceholderHandler.noResult();
                                     }
-                                    default -> PlaceholderHandler.getNbtValue(lastCaughtPet, params[2]);
+                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastCaughtPet, params[3]) : PlaceholderHandler.noResult();
+                                    default -> PlaceholderHandler.getNbtValue(lastCaughtPet, Arrays.copyOfRange(params, 2, params.length));
                                 };
                             }
                             yield PlaceholderHandler.noResult();
                         }
                         case "item" -> {
                             if(!lastCaughtItems.isEmpty()
-                                    && params.length > 4
+                                    && params.length >= 4
                             ) {
                                 try {
                                     int index = Integer.parseInt(params[2]);
@@ -157,7 +160,8 @@ public class CatchingHandler extends Handler {
                                                 case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value3().value2()));
                                                 default -> PlaceholderHandler.noResult();
                                             };
-                                            default -> PlaceholderHandler.getNbtValue(lastCaughtFish, params[2]);
+                                            case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(lastCaughtItem.value1(), params[4]) : PlaceholderHandler.noResult();
+                                            default -> PlaceholderHandler.getNbtValue(lastCaughtItem.value1(), Arrays.copyOfRange(params, 3, params.length));
                                         };
                                     }
                                 } catch (NumberFormatException e) {
