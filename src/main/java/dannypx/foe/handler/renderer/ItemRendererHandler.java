@@ -219,12 +219,14 @@ public class ItemRendererHandler extends Handler {
                 if(validatedCursor.value1()
                         && (
                                 validatedCursor.value2().getType().equals("bait")
+                                || validatedCursor.value2().getType().equals("lure")
                 )) {
                     Pair<Boolean,TagObject> validatedItem = ValidateItem.isType(stack);
 
                     if(validatedItem.value1()
                             && (
                                     validatedItem.value2().getType().equals("bait")
+                                    || validatedCursor.value2().getType().equals("lure")
                             )
                             && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))
                     ) {
