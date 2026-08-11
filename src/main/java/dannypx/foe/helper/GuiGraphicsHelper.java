@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import dannypx.foe.type.StringStyle;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.render.state.GuiTextRenderState;
+import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
@@ -18,10 +18,10 @@ public class GuiGraphicsHelper {
         EnumSet<StringStyle> styles = stringStyles.length == 0
                 ? EnumSet.noneOf(StringStyle.class)
                 : EnumSet.copyOf(Arrays.asList(stringStyles));
-        text((guiGraphicsExtractor, font, component, x, y, styles);
+        text(guiGraphicsExtractor, font, component, x, y, styles);
     }
 
-    private static int text((GuiGraphicsExtractor guiGraphicsExtractor, Font font, Component component, int x, int y, EnumSet<StringStyle> styles) {
+    private static int text(GuiGraphicsExtractor guiGraphicsExtractor, Font font, Component component, int x, int y, EnumSet<StringStyle> styles) {
         List<Component> siblings = component.getSiblings();
 
         if (siblings.isEmpty()) {
@@ -29,7 +29,7 @@ public class GuiGraphicsHelper {
         }
 
         for (Component sibling : siblings) {
-            x = text((guiGraphicsExtractor, font, sibling, x, y, styles);
+            x = text(guiGraphicsExtractor, font, sibling, x, y, styles);
         }
         return x;
     }
@@ -53,7 +53,7 @@ public class GuiGraphicsHelper {
             int cWidth = font.width(Component.literal(glyph).setStyle(style));
             int yAdjust = computeYAdjustment(glyph, middle, hasCustomFont, smallCaps);
 
-            guiGraphicsExtractor.guiRenderState.submitText(
+            guiGraphicsExtractor.guiRenderState.addText(
                     new GuiTextRenderState(
                             font,
                             Component.literal(glyph).setStyle(style).getVisualOrderText(),

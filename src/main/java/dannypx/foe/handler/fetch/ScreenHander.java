@@ -9,7 +9,6 @@ import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.placeholder.PlaceholderValue;
-import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tuple.Pair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
@@ -20,7 +19,6 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -62,9 +60,9 @@ public class ScreenHander extends Handler {
             ScreenMouseEvents.afterMouseScroll(inventoryScreen).register(InventoryScreenRenderHandler.instance()::onMouseScrolled);
         } else if(screen instanceof ContainerScreen genericContainerScreen) {
             GenericContainerScreenHandler.instance().init(genericContainerScreen);
-            ScreenEvents.afterRender(screen).register(GenericContainerScreenHandler.instance()::render);
+            ScreenEvents.afterExtract(screen).register(GenericContainerScreenHandler.instance()::extractRenderState);
         } else if(screen instanceof ChatScreen) {
-            ScreenEvents.afterRender(screen).register(ChatScreenRenderHandler.instance()::render);
+            ScreenEvents.afterExtract(screen).register(ChatScreenRenderHandler.instance()::extractRenderState);
         }
 
         this.dispatchLastScreen(screen.getTitle());

@@ -1,8 +1,6 @@
 package dannypx.foe.handler.renderer;
 
 import dannypx.foe.handler.ScreenHandler;
-import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.handler.logic.EventHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomButtonDataHandler;
@@ -71,11 +69,11 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         this.initElements();
     }
 
-    public void render(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
+    public void extractRenderState(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.mainConfig.enableMod.get()
         ) {
-            this.renderButtonHelp(guiGraphicsExtractor, true, false);
+            this.extractRenderButtonHelp(guiGraphicsExtractor, true, false);
 
             elements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor, Minecraft.getInstance().getDeltaTracker()));
             if(this.statList != null

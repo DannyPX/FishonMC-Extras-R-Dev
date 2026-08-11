@@ -86,7 +86,7 @@ public class HudRenderHandler extends Handler {
 
         elements.forEach(element -> {
             LoggerHandler.info("Register Element: " + element.value1());
-            HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphics, deltaTracker) -> {
+            HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphicsExtractor, deltaTracker) -> {
                 if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker);
             });
         });

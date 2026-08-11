@@ -6,21 +6,18 @@ import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
@@ -61,24 +58,24 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
     @Override
     protected void init() {
         super.init();
-        this.renderWidgets();
+        this.extractRenderWidgets();
         this.resetFields();
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderBox(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        this.extractRenderBox(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        this.renderComponent(guiGraphics, mouseX, mouseY, delta);
-        this.renderTooltip(guiGraphics, mouseX, mouseY, delta);
-        this.hudIconList.render(guiGraphics, mouseX, mouseY, delta);
+        this.extractRenderText(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.extractRenderTooltip(guiGraphicsExtractor, mouseX, mouseY, delta);
+        this.hudIconList.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    private void extractRenderTooltip(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         if(iconEditBox.isMouseOver(mouseX, mouseY)) {
-            guiGraphics.setComponentTooltipForNextFrame(font, List.of(
+            guiGraphicsExtractor.setComponentTooltipForNextFrame(font, List.of(
                     Component.literal("Must be of type").withStyle(ChatFormatting.GRAY),
                     Component.literal("- Number, slot index of your inventory").withStyle(ChatFormatting.GRAY),
                     Component.literal("- String, of format \"minecraft:<id>[<componentData>]\"").withStyle(ChatFormatting.GRAY),
@@ -88,15 +85,15 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
         }
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawCenteredString(font,
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        guiGraphicsExtractor.centeredText(font,
                 this.header,
                 (BUTTON_WIDTH + PADDING * 2) + (this.minecraft.getWindow().getGuiScaledWidth() - (BUTTON_WIDTH + PADDING * 2)) / 2,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2,
                 CommonColors.WHITE
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Scale"),
                 this.minecraft.getWindow().getGuiScaledWidth() - PADDING - sideWidth - 40 - PADDING_HALF - minecraft.font.width("Scale") - PADDING_HALF,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING),
@@ -104,7 +101,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
                 true
         );
 
-        guiGraphics.drawString(font,
+        guiGraphicsExtractor.text(font,
                 Component.literal("Icon"),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - font.lineHeight / 2 + (widgetHeight + PADDING) * 3,
@@ -113,18 +110,18 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
         );
     }
 
-    private void renderBox(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta)
     {
-        guiGraphics.fill(
+        guiGraphicsExtractor.fill(
                 (BUTTON_WIDTH + PADDING * 2), 0,
                 this.minecraft.getWindow().getGuiScaledWidth(),
                 this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3,
                 0x99000000);
-        guiGraphics.hLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
-        guiGraphics.vLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.horizontalLine((BUTTON_WIDTH + PADDING * 2), this.minecraft.getWindow().getGuiScaledWidth(), this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
+        guiGraphicsExtractor.verticalLine((BUTTON_WIDTH + PADDING * 2), 0, this.minecraft.getWindow().getGuiScaledHeight() - (BUTTON_HEIGHT + PADDING_HALF) - 3, CommonColors.DARK_GRAY);
     }
 
-    private void renderWidgets() {
+    private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
