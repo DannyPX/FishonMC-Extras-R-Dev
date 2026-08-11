@@ -53,7 +53,7 @@ public class HudRenderHandler extends Handler {
 
     //region Methods
     public void initializeHudRenderer() {
-        renderElements();
+        registerElements();
     }
 
     public void tick() {
@@ -74,7 +74,7 @@ public class HudRenderHandler extends Handler {
         }
     }
 
-    private void renderElements() {
+    private void registerElements() {
         if(elements.isEmpty()) {
             elements.add(Pair.of("profile_hud", new ProfileElement()));
             elements.add(Pair.of("location_hud", new LocationElement()));
@@ -84,20 +84,18 @@ public class HudRenderHandler extends Handler {
             elements.add(Pair.of("debug_field_hud", new _DebugField()));
         }
 
-        elements.forEach(element -> {
-            LoggerHandler.info("Register Element: " + element.value1());
-            HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, element.value1()), (guiGraphics, deltaTracker) -> {
+
+        LoggerHandler.info("Register Elements");
+        HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_foreground"), (guiGraphics, deltaTracker) -> {
+            elements.forEach(element -> {
                 if (Configs.mainConfig.enableMod.get()) element.value2().render(guiGraphics, deltaTracker);
             });
-        });
 
-        LoggerHandler.info("Register Misc Elements");
-        HudElementRegistry.attachElementBefore(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen"), (guiGraphics, deltaTracker) -> {
             if (Configs.mainConfig.enableMod.get()) this.render(guiGraphics, deltaTracker);
         });
 
-
-        HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "hud_screen_after_subtitles"), (guiGraphics, deltaTracker) -> {
+        LoggerHandler.info("Register Priority Elements");
+        HudElementRegistry.attachElementAfter(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_priority"), (guiGraphics, deltaTracker) -> {
             if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics, deltaTracker);
         });
     }
