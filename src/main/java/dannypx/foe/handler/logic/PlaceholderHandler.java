@@ -16,11 +16,13 @@ import dannypx.foe.type.placeholder.ComponentValue;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,6 +46,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("player", LocalPlayerHandler.instance()::getClientPlayer),
             Map.entry("network", NetworkHandler.instance()::getNetwork),
             Map.entry("scoreboard", ScoreboardHandler.instance()::getScoreboard),
+            Map.entry("screen", ScreenHander.instance()::getScreen),
             Map.entry("tab", TabOverlayHandler.instance()::getTab),
             Map.entry("title", TitleHandler.instance()::getTitle),
             Map.entry("connection", ConnectionHandler.instance()::getConnection),
@@ -78,6 +81,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("substring_front", param -> parseSubStringFromString(param, true)),
             Map.entry("substring_back", param -> parseSubStringFromString(param, false)),
             Map.entry("index_of", PlaceholderHandler::parseIndexOfFromString),
+            Map.entry("repeat", PlaceholderHandler::parseRepeatFromString),
             // Math
             Map.entry("expression", PlaceholderHandler::parseExpressionFromString),
             Map.entry("max", PlaceholderHandler::parseMaxFromString),
@@ -327,6 +331,44 @@ public class PlaceholderHandler extends Handler {
                 } else {
                     return Pair.ofTrue(StringValue.valueOf(index));
                 }
+            }
+        }
+        return noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> parseRepeatFromString(FunctionParser.FunctionPlaceholder placeholder) {
+        if(placeholder.operator == Operator.SEPARATOR && placeholder.left != null && placeholder.right != null) {
+            Pair<Boolean, MutableComponent> leftField;
+            int rightField;
+
+            if(placeholder.leftBracketed) {
+                leftField = parsePlaceholderFromString("%" + placeholder.left + "%");
+            } else {
+                leftField = Pair.ofTrue(Component.literal(placeholder.left));
+            }
+
+            try {
+                if(leftField.value1()) {
+                    if(placeholder.rightBracketed) {
+                        rightField = (int) Float.parseFloat(parsePlaceholderFromString("%" + placeholder.right + "%").value2().getString());
+                    } else {
+                        rightField = (int) Float.parseFloat(placeholder.right);
+                    }
+
+                    if(rightField > 0) {
+                        MutableComponent repeatedComponent = Component.empty();
+
+                        for (int i = 0; i < rightField; i++) {
+                            repeatedComponent.append(leftField.value2());
+                        }
+
+                        return Pair.ofTrue(ComponentValue.of(repeatedComponent));
+                    }
+                } else {
+                    return noResult();
+                }
+            } catch (NumberFormatException e) {
+                return noResult();
             }
         }
         return noResult();
@@ -643,23 +685,91 @@ public class PlaceholderHandler extends Handler {
         return Pair.ofFalse(StringValue.empty());
     }
 
-    public static Pair<Boolean, PlaceholderValue> getNbtValue(TagObject object, String field) {
-        if(object.contains(field)) {
-            Tag data = object.get(field);
+    public static Pair<Boolean, PlaceholderValue> getNbtValue(TagObject object, String[] field) {
+        if(object.contains(field[0])) {
+            Tag data = object.get(field[0]);
             return switch (data.getId()) {
-                case 1 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getBoolean(field)));
-                case 3 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getInt(field)));
-                case 5 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(object.getFloat(field), 2)));
-                case 8 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(object.getString(field)));
+                case 1 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getBoolean(field[0])));
+                case 2 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getShort(field[0])));
+                case 3 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getInt(field[0])));
+                case 4 -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getLong(field[0])));
+                case 5 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.floatToString(object.getFloat(field[0]), 2)));
+                case 6 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(TextHelper.doubleToString(object.getDouble(field[0]), 2)));
+                case 7 -> {
+                    if(field.length > 1) {
+                        try {
+                            int index = Integer.parseInt(field[1]);
+                            yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getByteFromArray(field[0], index)));
+                        } catch (NumberFormatException e) {
+                            yield PlaceholderHandler.noResult();
+                        }
+                    }
+                    yield PlaceholderHandler.noResult();
+                }
+                case 8 -> PlaceholderHandler.getPlaceholderValue(StringValue.of(object.getString(field[0])));
+                case 9 -> {
+                    if(field.length > 2) {
+                        try {
+                            int index = Integer.parseInt(field[1]);
+                            yield getNbtValue(TagObject.of(object.getList(field[0]).getCompound(index).orElse(new CompoundTag())),
+                                    Arrays.copyOfRange(field, 2, field.length)
+                            );
+                        } catch (NumberFormatException e) {
+                            yield PlaceholderHandler.noResult();
+                        }
+                    }
+                    yield PlaceholderHandler.noResult();
+                }
+                case 10 -> getNbtValue(TagObject.of(object.getTag(field[0])), Arrays.copyOfRange(field, 1, field.length));
+                case 11 -> {
+                    if(field.length > 1) {
+                        try {
+                            int index = Integer.parseInt(field[1]);
+                            yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getIntFromArray(field[0], index)));
+                        } catch (NumberFormatException e) {
+                            yield PlaceholderHandler.noResult();
+                        }
+                    }
+                    yield PlaceholderHandler.noResult();
+                }
+                case 12 -> {
+                    if(field.length > 1) {
+                        try {
+                            int index = Integer.parseInt(field[1]);
+                            yield PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(object.getLongFromArray(field[0], index)));
+                        } catch (NumberFormatException e) {
+                            yield PlaceholderHandler.noResult();
+                        }
+                    }
+                    yield PlaceholderHandler.noResult();
+                }
                 default -> PlaceholderHandler.noResult();
             };
         }
         return PlaceholderHandler.noResult();
     }
 
-    public static Pair<Boolean, PlaceholderValue> getNbtValue(ItemStack itemStack, String field) {
-        Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack);
-        return getNbtValue(item.value2(), field);
+    public static Pair<Boolean, PlaceholderValue> getNbtValue(ItemStack itemStack, String[] field) {
+        Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack, true);
+        return item.value1() ? getNbtValue(item.value2(), field) : PlaceholderHandler.noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> getLoreValue(TagObject object, String indexString) {
+        List<Component> loreList = object.getLore();
+
+        try {
+            int index = Integer.parseInt(indexString);
+            if(index < loreList.size() && index >= 0) {
+                return PlaceholderHandler.getPlaceholderValue(ComponentValue.of(loreList.get(index)));
+            }
+        } catch (NumberFormatException ignored) {}
+
+        return PlaceholderHandler.noResult();
+    }
+
+    public static Pair<Boolean, PlaceholderValue> getLoreValue(ItemStack itemStack, String index) {
+        Pair<Boolean, TagObject> item = ValidateItem.isServerItem(itemStack, false);
+        return item.value1() ? getLoreValue(item.value2(), index) : PlaceholderHandler.noResult();
     }
 
     public static boolean getBoolean(Pair<Boolean, MutableComponent> value) {
@@ -672,13 +782,13 @@ public class PlaceholderHandler extends Handler {
         return false;
     }
 
-    public static float getNumber(Pair<Boolean, MutableComponent> value) {
+    public static Float getNumber(Pair<Boolean, MutableComponent> value) {
         if(value.value1()) {
             try {
                 return Float.parseFloat(value.value2().getString());
             } catch (Exception ignored) {}
         }
-        return 0;
+        return null;
     }
 
     private static MutableComponent applyStyleRecursive(Component component, Style activeStyle) {

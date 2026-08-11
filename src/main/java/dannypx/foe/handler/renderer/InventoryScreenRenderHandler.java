@@ -7,6 +7,7 @@ import dannypx.foe.handler.store.CustomButtonDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.CustomButtonMakerScreen;
@@ -68,11 +69,11 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         this.initElements();
     }
 
-    public void render(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
+    public void extractRenderState(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         if(LoadingHandler.instance().isLoadingDone()
                 && Configs.mainConfig.enableMod.get()
         ) {
-            this.renderButtonHelp(guiGraphicsExtractor, true, false);
+            this.extractRenderButtonHelp(guiGraphicsExtractor, true, false);
 
             elements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor, Minecraft.getInstance().getDeltaTracker()));
             if(this.statList != null
@@ -108,7 +109,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                         + (STAT_WIDTH - ((STAT_WIDTH / 4) / 3)) / 2 - headerWidth / 2,
                 minecraft.getWindow().getGuiScaledHeight() / 2
                         - INVENTORY_TOP - 10 + 4 - font.lineHeight / 2,
-                true, true, true, true
+                StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.HAS_CUSTOM_FONT, StringStyle.SMALL_CAPS
         );
     }
 

@@ -1,14 +1,13 @@
 package dannypx.foe.screens.widget;
 
-import com.mojang.brigadier.StringReader;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.commands.arguments.item.ItemInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,8 +20,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.commands.arguments.item.ItemParser;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -84,26 +81,15 @@ public class SmallButtonWidget extends AbstractWidget {
         if (m.matches()) {
             if(m.group(1) != null) {
                 if(minecraft.player != null) {
-                    HolderLookup.Provider lookup = minecraft.player.registryAccess();
+                    ItemStack itemStack = ItemStackHelper.valueOf(icon);
 
-                    ItemParser itemParser = new ItemParser(lookup);
-                    StringReader stringReader = new StringReader(icon);
-                    try {
-                        ItemInput result = itemParser.parse(stringReader);
+                    guiGraphicsExtractor.pose().pushMatrix();
+                    guiGraphicsExtractor.pose().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
+                    guiGraphicsExtractor.pose().scale(12f / 16f, 12f / 16f);
 
-                        ItemStack itemStack = new ItemStack(result.item(), 1);
-                        itemStack.applyComponents(result.components());
+                    guiGraphicsExtractor.item(itemStack, 0, 0);
 
-                        guiGraphicsExtractor.pose().pushMatrix();
-                        guiGraphicsExtractor.pose().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
-                        guiGraphicsExtractor.pose().scale(12f / 16f, 12f / 16f);
-
-                        guiGraphicsExtractor.item(itemStack, 0, 0);
-
-                        guiGraphicsExtractor.pose().popMatrix();
-                    } catch (Exception e) {
-                        LoggerHandler._debug(e.getMessage());
-                    }
+                    guiGraphicsExtractor.pose().popMatrix();
                 }
             } else {
                 int stringWidth = minecraft.font.width(TextHelper.smallCaps(icon));
@@ -114,10 +100,7 @@ public class SmallButtonWidget extends AbstractWidget {
                         minecraft.font,
                         Component.literal(icon),
                         getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,
-                        true,
-                        true,
-                        false,
-                        true
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
                 );
 
                 guiGraphicsExtractor.pose().popMatrix();

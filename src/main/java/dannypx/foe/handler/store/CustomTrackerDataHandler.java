@@ -6,14 +6,17 @@ import dannypx.foe.handler.io.DataModels;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.custom_value.*;
+import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
@@ -59,7 +62,7 @@ public class CustomTrackerDataHandler extends Handler {
     }
 
     public Pair<Boolean, PlaceholderValue> getCustomTrackerData(String[] params) {
-        if(params.length == 3
+        if(params.length >= 3
                 && Objects.equals(params[0], "data")
                 && customTrackerData.trackerList.containsKey(params[1])
         ) {
@@ -69,6 +72,14 @@ public class CustomTrackerDataHandler extends Handler {
                 case "value" -> switch (tracker.value) {
                     case BooleanValue booleanValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(booleanValue.value()));
                     case NumberValue numberValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(numberValue.value()));
+                    case ItemStackValue itemStackValue -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(itemStackValue.value().value1().getHoverName()));
+                    default -> PlaceholderHandler.noResult();
+                };
+                case "itemstack" -> switch (tracker.value) {
+                    case ItemStackValue itemStackValue -> switch (params[3]) {
+                        case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(itemStackValue.value().value1(), params[4]) : PlaceholderHandler.noResult();
+                        default -> PlaceholderHandler.getNbtValue(itemStackValue.value().value1(), Arrays.copyOfRange(params, 3, params.length));
+                    };
                     default -> PlaceholderHandler.noResult();
                 };
                 default -> PlaceholderHandler.noResult();
@@ -141,52 +152,74 @@ public class CustomTrackerDataHandler extends Handler {
         needsUpdate = true;
     }
 
-    public void updateTracker(String trackerAndActionCode) {
-        if(trackerAndActionCode != null && !trackerAndActionCode.isEmpty()) {
-            String[] trackerAndActionSplitString = trackerAndActionCode.split("\\.");
+    public void updateTracker(String[] trackerAndActionCodes) {
+        for (String trackerAndActionCode : trackerAndActionCodes) {
+            if(trackerAndActionCode != null && !trackerAndActionCode.isEmpty()) {
+                String[] trackerAndActionSplitString = trackerAndActionCode.trim().split("\\.");
 
-            if(trackerAndActionSplitString.length == 2 && customTrackerData.trackerList.containsKey(trackerAndActionSplitString[0])) {
-                CustomTracker tracker = customTrackerData.trackerList.get(trackerAndActionSplitString[0]);
+                if(trackerAndActionSplitString.length == 2 && customTrackerData.trackerList.containsKey(trackerAndActionSplitString[0])) {
+                    CustomTracker tracker = customTrackerData.trackerList.get(trackerAndActionSplitString[0]);
 
-                if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
-                    Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
+                    if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
+                        Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
 
-                    Pair<Boolean, MutableComponent> condition = PlaceholderHandler.parsePlaceholderFromString(action.value2());
-                    if(condition.value1()) {
-                        switch (tracker.trackerType) {
-                            case BOOLEAN -> {
-                                BooleanValue valueToUse = action.value3() instanceof EmptyValue
-                                        ? (BooleanValue) BooleanValue.getFalse()
-                                        : action.value3() instanceof PlaceholderStringValue(String value)
-                                          ? (BooleanValue) BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value)))
-                                          : (BooleanValue) action.value3();
-                                BooleanValue value = (BooleanValue) tracker.value;
+                        Pair<Boolean, MutableComponent> condition = PlaceholderHandler.parsePlaceholderFromString(action.value2());
+                        if(condition.value1()) {
+                            switch (tracker.trackerType) {
+                                case BOOLEAN -> {
+                                    BooleanValue valueToUse = action.value3() instanceof EmptyValue
+                                            ? (BooleanValue) BooleanValue.getFalse()
+                                            : action.value3() instanceof PlaceholderStringValue(String value)
+                                              ? (BooleanValue) BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value)))
+                                              : (BooleanValue) action.value3();
+                                    BooleanValue value = (BooleanValue) tracker.value;
 
-                                switch (action.value1()) {
-                                    case SET -> tracker.value = value.setValue(valueToUse.value());
-                                    case TOGGLE -> tracker.value =  value.toggleValue();
+                                    switch (action.value1()) {
+                                        case SET -> tracker.value = valueToUse;
+                                        case TOGGLE -> tracker.value =  value.toggleValue();
+                                    }
                                 }
-                            }
-                            case INTEGER -> {
-                                NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
-                                        ? (NumberValue) NumberValue.of(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value)))
-                                        : (NumberValue) action.value3();
-                                NumberValue value = (NumberValue) tracker.value;
+                                case INTEGER -> {
+                                    NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
+                                            ? (NumberValue) NumberValue.of(PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value)))
+                                            : (NumberValue) action.value3();
+                                    NumberValue value = (NumberValue) tracker.value;
 
-                                switch (action.value1()) {
-                                    case SET -> tracker.value = value.setValue(valueToUse.value());
-                                    case ADD -> tracker.value = value.addValue(valueToUse.value());
-                                    case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
+                                    switch (action.value1()) {
+                                        case SET -> tracker.value = valueToUse;
+                                        case ADD -> tracker.value = value.addValue(valueToUse.value());
+                                        case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
+                                    }
+                                }
+                                case ITEMSTACK -> {
+                                    TrackerValue valueToUse;
+
+                                    if(action.value3() instanceof PlaceholderStringValue(String value)) {
+                                        Float index = PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value));
+                                        if(index != null) {
+                                            if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                                valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
+                                            } else {
+                                                valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
+                                            }
+                                        } else {
+                                            valueToUse = ItemStackValue.of(ItemStack.EMPTY);
+                                        }
+                                    } else valueToUse = action.value3();
+
+                                    switch (action.value1()) {
+                                        case SET -> tracker.value = valueToUse;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                customTrackerData.trackerList.put(trackerAndActionSplitString[0], tracker);
+                    customTrackerData.trackerList.put(trackerAndActionSplitString[0], tracker);
 
-                if(tracker.isPersistent) {
-                    needsUpdate = true;
+                    if(tracker.isPersistent) {
+                        needsUpdate = true;
+                    }
                 }
             }
         }
@@ -198,7 +231,7 @@ public class CustomTrackerDataHandler extends Handler {
                 case SET -> {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
-                    if(valueToUse instanceof BooleanValue || valueToUse instanceof NumberValue) {
+                    if(valueToUse instanceof BooleanValue || valueToUse instanceof NumberValue || valueToUse instanceof ItemStackValue) {
                         newTracker.value = valueToUse;
                     } else if(valueToUse instanceof PlaceholderStringValue(String value1)) {
                         newTracker.value = BooleanValue.of(PlaceholderHandler.getBoolean(PlaceholderHandler.parsePlaceholderFromString(value1)));
@@ -221,7 +254,7 @@ public class CustomTrackerDataHandler extends Handler {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
                     if(newTracker.value instanceof NumberValue currentValue
-                            && valueToUse instanceof NumberValue(float value1)
+                            && valueToUse instanceof NumberValue(Float value1)
                     ) {
                         newTracker.value = currentValue.addValue(value1);
                     } else if(newTracker.value instanceof NumberValue currentValue
@@ -237,7 +270,7 @@ public class CustomTrackerDataHandler extends Handler {
                     CustomTracker newTracker = customTrackerData.trackerList.get(tracker);
 
                     if(newTracker.value instanceof NumberValue currentValue
-                            && valueToUse instanceof NumberValue(float value1)
+                            && valueToUse instanceof NumberValue(Float value1)
                     ) {
                         newTracker.value = currentValue.subtractValue(value1);
                     } else if(newTracker.value instanceof NumberValue currentValue
@@ -267,7 +300,7 @@ public class CustomTrackerDataHandler extends Handler {
 
     //region Model
     public static class CustomTrackerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_TRACKER_DATA_MODEL_VERSION = "0.2";
+        private static final String CUSTOM_TRACKER_DATA_MODEL_VERSION = "0.3";
 
         private static final Map<String, CustomTracker> defaultTrackers = Map.of(
                 "FabledEvent", new CustomTracker(
@@ -285,13 +318,13 @@ public class CustomTrackerDataHandler extends Handler {
                 "FabledDrystreak", new CustomTracker(
                         "FabledDrystreak",
                         TrackerType.INTEGER,
-                        NumberValue.of(0),
-                        NumberValue.of(0),
+                        NumberValue.of(0f),
+                        NumberValue.of(0f),
                         true,
                         true,
                         new HashMap<>(Map.of(
-                                "Add", Triplet.of(TrackerAction.ADD, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>!=fabled)%", NumberValue.of(1)),
-                                "Set", Triplet.of(TrackerAction.SET, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>==fabled)%", NumberValue.of(0))
+                                "Add", Triplet.of(TrackerAction.ADD, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>!=fabled)%", NumberValue.of(1f)),
+                                "Set", Triplet.of(TrackerAction.SET, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>==fabled)%", NumberValue.of(0f))
                         ))
                 )
         );

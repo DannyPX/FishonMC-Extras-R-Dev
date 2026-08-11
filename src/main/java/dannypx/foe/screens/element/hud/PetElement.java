@@ -8,6 +8,7 @@ import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
+import dannypx.foe.type.StringStyle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -141,35 +142,23 @@ public class PetElement extends Element {
                     GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                             pet,
                             x + component1x, y + component1y,
-                            true,
-                            true,
-                            true,
-                            true);
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.HAS_CUSTOM_FONT, StringStyle.SMALL_CAPS);
 
                     GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                             levelComponent,
                             x + component2x, y + component2y,
-                            true,
-                            true,
-                            false,
-                            true);
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
                 }
                 case TOP_RIGHT -> {
                     GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                             pet,
                             x - component1x - petWidth, y + component1y,
-                            true,
-                            true,
-                            true,
-                            true);
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.HAS_CUSTOM_FONT, StringStyle.SMALL_CAPS);
 
                     GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                             levelComponent,
                             x - component2x - levelWidth, y + component2y,
-                            true,
-                            true,
-                            false,
-                            true);
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
                 }
             }
         } else {
@@ -180,17 +169,11 @@ public class PetElement extends Element {
                 case TOP_LEFT -> GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         pet,
                         x + component1x, y + component1y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
                 case TOP_RIGHT -> GuiGraphicsHelper.text(guiGraphicsExtractor, font,
                         pet,
                         x - component1x - petWidth, y + component1y,
-                        true,
-                        true,
-                        false,
-                        true);
+                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS);
             }
         }
     }
