@@ -31,6 +31,8 @@ public class BossEventHandler extends Handler {
     private MutableComponent time = Component.empty();
     private MutableComponent temperature = Component.empty();
     private MutableComponent subLocation = Component.empty();
+    private MutableComponent communityGoalCurrent = Component.empty();
+    private MutableComponent communityGoalMax = Component.empty();
     private String prevBossEvent = "";
 
     public MutableComponent getLocation() {
@@ -53,12 +55,19 @@ public class BossEventHandler extends Handler {
         return subLocation;
     }
 
+    public MutableComponent getCommunityGoalCurrent() {
+        return communityGoalCurrent;
+    }
+
+    public MutableComponent getCommunityGoalMax() {
+        return communityGoalMax;
+    }
+
     public Pair<Boolean, PlaceholderValue> getBossBar(String[] params) {
         if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(location|weather|time|temperature|sub_location)$");
+            Pattern fieldPattern = Pattern.compile("^(location|weather|time|temperature|sub_location|community_goal)$");
 
             if(fieldPattern.matcher(params[0]).matches()
-                    && params.length == 1
             ) {
                 return switch(params[0]) {
                     case "location" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getLocation()));
@@ -66,6 +75,17 @@ public class BossEventHandler extends Handler {
                     case "time" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTime()));
                     case "temperature" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTemperature()));
                     case "sub_location" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getSubLocation()), true);
+                    case "community_goal" -> {
+                        if(params.length > 1) {
+                            yield switch (params[1]) {
+                                case "current" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCommunityGoalCurrent()));
+                                case "max" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCommunityGoalMax()));
+                                default -> PlaceholderHandler.noResult();
+                            };
+                        } else {
+                            yield PlaceholderHandler.noResult();
+                        }
+                    }
                     default -> PlaceholderHandler.noResult();
                 };
             }
@@ -129,6 +149,20 @@ public class BossEventHandler extends Handler {
                                 temperature = Component.literal(temperatureObject.get("text").getAsString().trim())
                                         .withColor(TextColor.parseColor(temperatureObject.get("color").getAsString()).getOrThrow().getValue());
                             }
+                        }
+
+                        if(jsonObject.get("extra").getAsJsonArray().size() > 4 && lerpingBossEvent.getName().getString().contains("Community Goal:")) {
+                            JsonObject communityGoalObject = jsonObject.get("extra").getAsJsonArray().get(4).getAsJsonObject()
+                                    .get("extra").getAsJsonArray().get(0).getAsJsonObject().get("extra").getAsJsonArray().get(0).getAsJsonObject();
+
+                            communityGoalCurrent = Component.literal(communityGoalObject.get("text").getAsString().trim())
+                                    .withColor(TextColor.parseColor(communityGoalObject.get("color").getAsString()).getOrThrow().getValue());
+
+                            JsonObject communityGoalMaxObject = communityGoalObject.get("extra").getAsJsonArray().get(0).getAsJsonObject()
+                                    .get("extra").getAsJsonArray().get(0).getAsJsonObject();
+
+                            communityGoalMax = Component.literal(communityGoalMaxObject.get("text").getAsString().trim())
+                                    .withColor(TextColor.parseColor(communityGoalMaxObject.get("color").getAsString()).getOrThrow().getValue());
                         }
                     }
                 } else if(lerpingBossEvent.getName().getString().contains("\uA201\uEEE1\uA208")) {
