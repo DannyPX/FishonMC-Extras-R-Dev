@@ -332,7 +332,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     long timer = Integer.parseInt(timerEditBox.getValue());
                     long offTimer = Integer.parseInt(offTimerEditBox.getValue());
                     long cycle = timer + offTimer;
-                    long pos = (adjustedWithOffset - offTimer) % cycle;
+                    long pos = (adjustedWithOffset + offTimer) % cycle;
                     long remainingOn = cycle - pos;
                     long midPos = adjustedWithOffset % cycle;
                     long remainingOff = cycle - midPos;
