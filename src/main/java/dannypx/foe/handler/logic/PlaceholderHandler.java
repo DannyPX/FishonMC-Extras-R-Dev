@@ -76,7 +76,7 @@ public class PlaceholderHandler extends Handler {
             Map.entry("or", PlaceholderHandler::parseOrFromString),
             Map.entry("and", PlaceholderHandler::parseAndFromString),
             Map.entry("not", PlaceholderHandler::parseNotFromString),
-            Map.entry("xot", PlaceholderHandler::parseXorFromString),
+            Map.entry("xor", PlaceholderHandler::parseXorFromString),
             // String
             Map.entry("substring_front", param -> parseSubStringFromString(param, true)),
             Map.entry("substring_back", param -> parseSubStringFromString(param, false)),
