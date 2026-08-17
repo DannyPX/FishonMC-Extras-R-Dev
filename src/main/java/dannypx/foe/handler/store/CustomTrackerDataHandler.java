@@ -196,15 +196,22 @@ public class CustomTrackerDataHandler extends Handler {
 
                                     if(action.value3() instanceof PlaceholderStringValue(String value)) {
                                         Float index = PlaceholderHandler.getNumber(PlaceholderHandler.parsePlaceholderFromString(value));
-                                        if(index != null) {
-                                            if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
-                                                valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
-                                            } else {
-                                                valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
+
+                                        if(index != null && index.intValue() >= 0) {
+                                            try {
+                                                if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                                    valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
+                                                } else {
+                                                    valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index.intValue()));
+                                                }
+                                            } catch (IndexOutOfBoundsException e) {
+                                                valueToUse = ItemStackValue.of(ItemStack.EMPTY);
                                             }
                                         } else {
                                             valueToUse = ItemStackValue.of(ItemStack.EMPTY);
                                         }
+                                    } else if (action.value3() instanceof ItemStackValue(Pair<ItemStack, String> value)) {
+                                        valueToUse = ItemStackValue.of(value.value2());
                                     } else valueToUse = action.value3();
 
                                     switch (action.value1()) {
