@@ -38,6 +38,10 @@ public record ItemStackValue(Pair<ItemStack, String> value) implements TrackerVa
         return new ItemStackValue(Pair.of(value, ""));
     }
 
+    public static TrackerValue of(ItemStack value, String value2) {
+        return new ItemStackValue(Pair.of(value, value2));
+    }
+
     public static TrackerValue of(String value) {
         ItemStack itemStack = ItemStackHelper.valueOf(value);
 
@@ -52,9 +56,9 @@ public record ItemStackValue(Pair<ItemStack, String> value) implements TrackerVa
                     } else {
                         itemStack = minecraft.player.getInventory().getItem((int) index);
                     }
+                } else {
+                    itemStack = ItemStack.EMPTY;
                 }
-                itemStack = ItemStack.EMPTY;
-
             } catch (NumberFormatException e) {
                 LoggerHandler.error(e);
             }
