@@ -300,8 +300,16 @@ public class TextHelper {
         return shortenNumber((float) i, decimals);
     }
 
+    public static String floatToString(float f) {
+        return floatToString(f, 0);
+    }
+
     public static String floatToString(float f, int decimals) {
         return String.format(Locale.US, "%." + decimals + "f", f);
+    }
+
+    public static String doubleToString(double d) {
+        return doubleToString(d, 0);
     }
 
     public static String doubleToString(double d, int decimals) {

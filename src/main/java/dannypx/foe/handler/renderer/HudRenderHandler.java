@@ -14,6 +14,8 @@ import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.config.Configs;
+import dannypx.foe.placeholder.evaluator.PlaceholderResult;
+import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
@@ -35,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HudRenderHandler extends Handler {
     private static HudRenderHandler INSTANCE = new HudRenderHandler();
@@ -112,6 +115,29 @@ public class HudRenderHandler extends Handler {
                 || !ScoreboardHandler.instance().getLevel().getString().trim().equals(String.valueOf(LocalPlayerHandler.instance().getExperienceLevel()))) &&
                 ConnectionHandler.instance().isOnServer()
         ) this.renderLoading(guiGraphics);
+
+        if(LoadingHandler.instance().isLoadingDone()) {
+            int posX = minecraft.getWindow().getGuiScaledWidth() / 2 - 200;
+            int posY = minecraft.getWindow().getGuiScaledHeight() / 2;
+
+            GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, Component.literal("Test"), posX, posY, StringStyle.SHADOW);
+
+            List<PlaceholderResult> results = List.of(
+                    PlaceholderHandlerV2.instance().resolve("%test.segment_first% %test.segment_first%"),
+                    PlaceholderHandlerV2.instance().resolve("%test.segment_second%"),
+                    PlaceholderHandlerV2.instance().resolve("%test.segment_third%"),
+                    PlaceholderHandlerV2.instance().resolve("%test.segment_fourth%"),
+                    PlaceholderHandlerV2.instance().resolve("% %test.segment_third%")
+            );
+
+            AtomicInteger line = new AtomicInteger(0);
+            for (PlaceholderResult result : results) {
+                GuiGraphicsHelper.drawString(guiGraphics, minecraft.font,
+                        Component.empty().append(result.success() + " " + result.errors().size() + ": ").append(result.text()),
+                        posX, posY + (minecraft.font.lineHeight + 2) * line.incrementAndGet(), StringStyle.SHADOW
+                );
+            }
+        }
     }
 
     private void renderLoading(GuiGraphics guiGraphics) {
