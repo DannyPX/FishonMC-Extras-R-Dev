@@ -3,7 +3,6 @@ package dannypx.foe.screens.element.hud;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.helper.ItemStackHelper;
@@ -19,10 +18,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class CustomHudIconElement extends Element implements ScreenConstants {
     //region Fields

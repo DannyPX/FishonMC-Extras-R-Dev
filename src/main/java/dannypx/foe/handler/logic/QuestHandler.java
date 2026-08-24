@@ -42,54 +42,6 @@ public class QuestHandler extends Handler {
     public List<Pair<TagObject, Integer>> getLastRewardedItems() {
         return Collections.unmodifiableList(lastRewardedItems);
     }
-
-    public Pair<Boolean, PlaceholderValue> getQuest(String[] params) {
-        if(params.length > 2) {
-            Pattern fieldPattern = Pattern.compile("^(last_rewarded)$");
-
-            if(fieldPattern.matcher(params[0]).matches()) {
-                return switch(params[0]) {
-                    case "last_rewarded" -> switch (params[1]) {
-                        case "pet" -> {
-                            if(lastRewardedPet.getItemStack() != ItemStack.EMPTY) {
-                                yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getName()));
-                                    case "rarity" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getRarityComponent()), true);
-                                    case "rating" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedPet.getRatingComponent()), true);
-                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastRewardedPet, params[3]) : PlaceholderHandler.noResult();
-                                    default -> PlaceholderHandler.getNbtValue(lastRewardedPet, Arrays.copyOfRange(params, 2, params.length));
-                                };
-                            }
-                            yield PlaceholderHandler.noResult();
-                        }
-                        case "item" -> {
-                            if(!lastRewardedItems.isEmpty()) {
-                                try {
-                                    int index = Integer.parseInt(params[2]);
-                                    if(index < lastRewardedItems.size()) {
-                                        Pair<TagObject, Integer> lastRewardedItem = lastRewardedItems.get(index);
-
-                                        yield switch (params[3]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastRewardedItem.value1().getName()));
-                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastRewardedItem.value2()));
-                                            case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(lastRewardedItem.value1(), params[4]) : PlaceholderHandler.noResult();
-                                            default -> PlaceholderHandler.getNbtValue(lastRewardedItem.value1(), Arrays.copyOfRange(params, 3, params.length));
-                                        };
-                                    }
-                                } catch (NumberFormatException e) {
-                                    yield PlaceholderHandler.noResult();
-                                }
-                            }
-                            yield PlaceholderHandler.noResult();
-                        }
-                        default -> PlaceholderHandler.noResult();
-                    };
-                    default -> PlaceholderHandler.noResult();
-                };
-            }
-        }
-        return PlaceholderHandler.noResult();
-    }
     //endregion
 
     //region Methods

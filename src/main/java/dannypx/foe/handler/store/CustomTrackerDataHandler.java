@@ -3,15 +3,10 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
 import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.type.custom_value.*;
-import dannypx.foe.type.placeholder.ComponentValue;
-import dannypx.foe.type.placeholder.PlaceholderValue;
-import dannypx.foe.type.placeholder.StringValue;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import dannypx.foe.type.tuple.Pair;
@@ -62,33 +57,6 @@ public class CustomTrackerDataHandler extends Handler {
             DataFileHandler.instance().saveToFile(DataModels.DataModelType.CUSTOM_TRACKER_DATA);
         }
         this.needsUpdate = false;
-    }
-
-    public Pair<Boolean, PlaceholderValue> getCustomTrackerData(String[] params) {
-        if(params.length >= 3
-                && Objects.equals(params[0], "data")
-                && customTrackerData.trackerList.containsKey(params[1])
-        ) {
-            CustomTracker tracker = customTrackerData.trackerList.get(params[1]);
-
-            return switch (params[2]) {
-                case "value" -> switch (tracker.value) {
-                    case BooleanValue booleanValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(booleanValue.value()));
-                    case NumberValue numberValue -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(numberValue.value()));
-                    case ItemStackValue itemStackValue -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(itemStackValue.value().value1().getHoverName()));
-                    default -> PlaceholderHandler.noResult();
-                };
-                case "itemstack" -> switch (tracker.value) {
-                    case ItemStackValue itemStackValue -> switch (params[3]) {
-                        case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(itemStackValue.value().value1(), params[4]) : PlaceholderHandler.noResult();
-                        default -> PlaceholderHandler.getNbtValue(itemStackValue.value().value1(), Arrays.copyOfRange(params, 3, params.length));
-                    };
-                    default -> PlaceholderHandler.noResult();
-                };
-                default -> PlaceholderHandler.noResult();
-            };
-        }
-        return PlaceholderHandler.noResult();
     }
     //endregion
 

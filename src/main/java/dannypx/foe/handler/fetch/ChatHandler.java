@@ -40,23 +40,6 @@ public class ChatHandler extends Handler {
     final List<String> blacklistedMessageFilters = List.of(
             "REACTIONS »"
     );
-
-    public Pair<Boolean, PlaceholderValue> getChat(String[] params) {
-        if(params.length > 1
-                && minecraft.player != null
-        ) {
-            Pattern fieldPattern = Pattern.compile("^(trigger)$");
-
-            if(fieldPattern.matcher(params[0]).matches()
-            ) {
-                return switch(params[0]) {
-                    case "trigger" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(storedChatTriggerComponent.getOrDefault(params[1], Component.empty())));
-                    default -> PlaceholderHandler.noResult();
-                };
-            }
-        }
-        return PlaceholderHandler.noResult();
-    }
     //endregion
 
     //region Methods

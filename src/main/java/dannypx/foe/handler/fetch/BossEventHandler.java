@@ -2,14 +2,11 @@ package dannypx.foe.handler.fetch;
 
 import com.google.gson.*;
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
-import dannypx.foe.type.placeholder.PlaceholderValue;
-import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.mixin.accessor.BossHealthOverlayAccessor;
 import java.util.*;
-import java.util.regex.Pattern;
+
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -61,36 +58,6 @@ public class BossEventHandler extends Handler {
 
     public MutableComponent getCommunityGoalMax() {
         return communityGoalMax;
-    }
-
-    public Pair<Boolean, PlaceholderValue> getBossBar(String[] params) {
-        if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(location|weather|time|temperature|sub_location|community_goal)$");
-
-            if(fieldPattern.matcher(params[0]).matches()
-            ) {
-                return switch(params[0]) {
-                    case "location" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getLocation()));
-                    case "weather" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getWeather()));
-                    case "time" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTime()));
-                    case "temperature" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getTemperature()));
-                    case "sub_location" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getSubLocation()), true);
-                    case "community_goal" -> {
-                        if(params.length > 1) {
-                            yield switch (params[1]) {
-                                case "current" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCommunityGoalCurrent()));
-                                case "max" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(getCommunityGoalMax()));
-                                default -> PlaceholderHandler.noResult();
-                            };
-                        } else {
-                            yield PlaceholderHandler.noResult();
-                        }
-                    }
-                    default -> PlaceholderHandler.noResult();
-                };
-            }
-        }
-        return PlaceholderHandler.noResult();
     }
     //endregion
 
