@@ -1,7 +1,7 @@
 package dannypx.foe.placeholder.parser;
 
-import dannypx.foe.placeholder.lexing.PlaceholderBalanceHelper;
-import dannypx.foe.placeholder.lexing.PlaceholderTokenizer;
+import dannypx.foe.placeholder.lexer.PlaceholderBalanceHelper;
+import dannypx.foe.placeholder.lexer.PlaceholderTokenizer;
 import dannypx.foe.placeholder.parser.ast.*;
 import dannypx.foe.placeholder.registry.PlaceholderRegistry;
 import dannypx.foe.placeholder.registry.PlaceholderTreeNode;
@@ -83,18 +83,49 @@ public class PlaceholderParser {
 
             Token segmentToken = this.expectPathSegment();
             String segment = segmentToken.text();
-            errorEnd = segmentToken.end();
+            int segmentStart = segmentToken.start();
+            int segmentEnd = segmentToken.end();
+
 
             if(!failed) {
+                boolean isNamedMatch = current.hasNamedChild(segment);
+                boolean isNumericMatch = segmentToken.type() == TokenType.NUMBER && current.hasIndexChild();
+
+                if(!isNamedMatch && !isNumericMatch && current.hasStringArrayWildcard()) {
+                    capturedIndices.add(segment);
+
+                    while (this.peek().type() == TokenType.DOT) {
+                        this.advance();
+                        if(this.peek().type() == TokenType.LPARENTHESIS) {
+                            break;
+                        }
+                        Token wordToken = this.expectPathSegment();
+                        capturedIndices.add(wordToken.text());
+                        segmentEnd = wordToken.end();
+                    }
+
+                    current = current.getStringArrayChild();
+                    errorEnd = segmentEnd;
+                    break;
+                }
+
+                if(!isNamedMatch && !isNumericMatch && current.hasStringWildcard()) {
+                    while(this.isExtendableToken(this.peek().type())) {
+                        segmentEnd = this.advance().end();
+                    }
+
+                    segment = source.substring(segmentStart, segmentEnd).trim();
+                }
+
                 PlaceholderTreeNode child = current.resolveChild(segment, capturedIndices);
 
                 if(child == null) {
                     failed = true;
                     offendingSegment = segment;
                 }
-
                 current = child;
             }
+            errorEnd = segmentEnd;
         }
 
         String fullPath = source.substring(errorStart, errorEnd);
@@ -149,11 +180,10 @@ public class PlaceholderParser {
     }
 
     private Node parseExpression() {
-        Node left = parseOperand();
-        TokenType type = this.peek().type();
+        Node left = this.parseOperand();
+        String op = this.detectAndConsumeOperator();
 
-        if(this.isComparisonOp(type) || this.isArithmeticOp(type)) {
-            String op = this.advance().text();
+        if(op != null) {
             Node right = this.parseOperand();
             return new BinaryOp(op, left, right);
         }
@@ -187,20 +217,38 @@ public class PlaceholderParser {
         }
     }
 
-    private boolean isComparisonOp(TokenType type) {
-        return type == TokenType.LT
-                || type == TokenType.GT
-                || type == TokenType.LTE
-                || type == TokenType.GTE
-                || type == TokenType.EQ
-                || type == TokenType.NOT_EQ;
+    private String detectAndConsumeOperator() {
+        TokenType type = this.peek().type();
+        return switch (type) {
+            case LT -> this.consumeMaybeCompound("<", "<=");
+            case GT -> this.consumeMaybeCompound(">", ">=");
+            case ASSIGN -> this.consumeCompoundOnly("==");
+            case BANG -> this.consumeCompoundOnly("!=");
+            case PLUS, MINUS, STAR, SLASH -> this.advance().text();
+            default -> null;
+        };
     }
 
-    private boolean isArithmeticOp(TokenType type) {
-        return type == TokenType.PLUS
-                || type == TokenType.MINUS
-                || type == TokenType.STAR
-                || type == TokenType.SLASH;
+    private String consumeMaybeCompound(String singleForm, String compoundForm) {
+        this.advance();
+        if(this.peek().type() == TokenType.ASSIGN) {
+            this.advance();
+            return compoundForm;
+        }
+        return singleForm;
+    }
+
+    private String consumeCompoundOnly(String compoundForm) {
+        if(this.peekAhead(1).type() == TokenType.ASSIGN) {
+            this.advance();
+            this.advance();
+            return compoundForm;
+        }
+        return null;
+    }
+
+    private boolean isExtendableToken(TokenType type) {
+        return type == TokenType.WHITESPACE || type == TokenType.IDENTIFIER || type == TokenType.NUMBER;
     }
 
     /// Helpers
@@ -214,6 +262,23 @@ public class PlaceholderParser {
     private Token peek() {
         this.skipWhitespaceTokens();
         return tokens.get(pos);
+    }
+
+    private Token peekAhead(int offset) {
+        this.skipWhitespaceTokens();
+        int i = pos;
+        int seen = 0;
+        while(seen < offset) {
+            i++;
+            if(i >= tokens.size() - 1) {
+                return tokens.get(tokens.size() - 1);
+            }
+            if(tokens.get(i).type() == TokenType.WHITESPACE) {
+                continue;
+            }
+            seen++;
+        }
+        return tokens.get(i);
     }
 
     private Token advance() {

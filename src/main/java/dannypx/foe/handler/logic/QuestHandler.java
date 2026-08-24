@@ -14,10 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class QuestHandler extends Handler {
@@ -37,6 +34,14 @@ public class QuestHandler extends Handler {
     private PetTagObject lastRewardedPet = PetTagObject.empty();
 
     private List<Pair<TagObject, Integer>> lastRewardedItems = new ArrayList<>();
+
+    public PetTagObject getLastRewardedPet() {
+        return lastRewardedPet;
+    }
+
+    public List<Pair<TagObject, Integer>> getLastRewardedItems() {
+        return Collections.unmodifiableList(lastRewardedItems);
+    }
 
     public Pair<Boolean, PlaceholderValue> getQuest(String[] params) {
         if(params.length > 2) {

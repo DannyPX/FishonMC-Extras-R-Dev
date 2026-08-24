@@ -7,6 +7,8 @@ import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.helper.ItemStackHelper;
+import dannypx.foe.placeholder.evaluator.PlaceholderResult;
+import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.type.Alignment;
@@ -135,15 +137,15 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
             }
             case ITEM -> ItemStackHelper.valueOf(customHudIcon.getIcon());
             case PLACEHOLDER -> {
-                Pair<Boolean, MutableComponent> placeholder = PlaceholderHandler.parsePlaceholderFromString(customHudIcon.getIcon());
+                PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(customHudIcon.getIcon());
 
-                if(placeholder.value1()) {
+                if(result.success()) {
                     try {
-                        int slot = Integer.parseInt(placeholder.value2().getString());
+                        int slot = Integer.parseInt(result.text().getString());
                         yield slot >= 0 && slot < 36 ? Minecraft.getInstance().player.getInventory().getItem(slot) : ItemStack.EMPTY;
                     } catch (NumberFormatException ignored) {}
 
-                    yield ItemStackHelper.valueOf(placeholder.value2().toString());
+                    yield ItemStackHelper.valueOf(result.text().getString());
                 }
 
                 yield ItemStack.EMPTY;

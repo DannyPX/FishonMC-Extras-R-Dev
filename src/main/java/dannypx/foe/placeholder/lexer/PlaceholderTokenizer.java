@@ -1,4 +1,4 @@
-package dannypx.foe.placeholder.lexing;
+package dannypx.foe.placeholder.lexer;
 
 import dannypx.foe.placeholder.token.PlaceholderParseException;
 import dannypx.foe.placeholder.token.Token;
@@ -46,14 +46,10 @@ public class PlaceholderTokenizer {
             return this.scanQuotedString();
         }
 
-        if(c == '<' && this.peekChar(1) == '=') return this.consumeFixed(TokenType.LTE, 2);
-        if(c == '>' && this.peekChar(1) == '=') return this.consumeFixed(TokenType.GTE, 2);
-        if(c == '=' && this.peekChar(1) == '=') return this.consumeFixed(TokenType.EQ, 2);
-        if(c == '!' && this.peekChar(1) == '=') return this.consumeFixed(TokenType.NOT_EQ, 2);
-
         if(c == '<') return this.consumeFixed(TokenType.LT, 1);
         if(c == '>') return this.consumeFixed(TokenType.GT, 1);
-        if(c == '=') return this.consumeFixed(TokenType.EQ, 1);
+        if(c == '=') return this.consumeFixed(TokenType.ASSIGN, 1);
+        if(c == '!') return this.consumeFixed(TokenType.BANG, 1);
 
         if(c == '\\' && this.hasNext(1)) {
             int start = pos;

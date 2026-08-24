@@ -116,28 +116,28 @@ public class HudRenderHandler extends Handler {
                 ConnectionHandler.instance().isOnServer()
         ) this.renderLoading(guiGraphics);
 
-        if(LoadingHandler.instance().isLoadingDone()) {
-            int posX = minecraft.getWindow().getGuiScaledWidth() / 2 - 200;
-            int posY = minecraft.getWindow().getGuiScaledHeight() / 2;
-
-            GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, Component.literal("Test"), posX, posY, StringStyle.SHADOW);
-
-            List<PlaceholderResult> results = List.of(
-                    PlaceholderHandlerV2.instance().resolve("%test.segment_first% %test.segment_first%"),
-                    PlaceholderHandlerV2.instance().resolve("%test.segment_second%"),
-                    PlaceholderHandlerV2.instance().resolve("%test.segment_third%"),
-                    PlaceholderHandlerV2.instance().resolve("%test.segment_fourth%"),
-                    PlaceholderHandlerV2.instance().resolve("% %test.segment_third%")
-            );
-
-            AtomicInteger line = new AtomicInteger(0);
-            for (PlaceholderResult result : results) {
-                GuiGraphicsHelper.drawString(guiGraphics, minecraft.font,
-                        Component.empty().append(result.success() + " " + result.errors().size() + ": ").append(result.text()),
-                        posX, posY + (minecraft.font.lineHeight + 2) * line.incrementAndGet(), StringStyle.SHADOW
-                );
-            }
-        }
+//        if(LoadingHandler.instance().isLoadingDone()) {
+//            int posX = minecraft.getWindow().getGuiScaledWidth() / 2 - 200;
+//            int posY = minecraft.getWindow().getGuiScaledHeight() / 2;
+//
+//            GuiGraphicsHelper.drawString(guiGraphics, minecraft.font, Component.literal("Test"), posX, posY, StringStyle.SHADOW);
+//
+//            List<PlaceholderResult> results = List.of(
+//                    PlaceholderHandlerV2.instance().resolve("%test.segment_first% %test.segment_first%"),
+//                    PlaceholderHandlerV2.instance().resolve("&7fps&8: &e%player.fps%"),
+//                    PlaceholderHandlerV2.instance().resolve("&7x&8: &e%player.pos.x% &8/ &7y&8: &e%player.pos.y% &8/ &7z&8: &e%player.pos.z%"),
+//                    PlaceholderHandlerV2.instance().resolve("%boss_bar.location% | %boss_bar.sub_location%"),
+//                    PlaceholderHandlerV2.instance().resolve("%expression.(<expression.(<player.fps>*10)>*10)%")
+//            );
+//
+//            AtomicInteger line = new AtomicInteger(0);
+//            for (PlaceholderResult result : results) {
+//                GuiGraphicsHelper.drawString(guiGraphics, minecraft.font,
+//                        Component.empty().append(result.success() + " " + result.errors().size() + ": ").append(result.text()),
+//                        posX, posY + (minecraft.font.lineHeight + 2) * line.incrementAndGet(), StringStyle.SHADOW
+//                );
+//            }
+//        }
     }
 
     private void renderLoading(GuiGraphics guiGraphics) {

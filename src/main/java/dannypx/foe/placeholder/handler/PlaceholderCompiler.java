@@ -51,7 +51,7 @@ public class PlaceholderCompiler {
         String prefix = start > 0 ? "..." : "";
         String suffix = end < source.length() ? "..." : "";
 
-        return prefix + before + ">>" + after + suffix;
+        return prefix + before + "»" + after + suffix;
     }
 
     public static void clear() {

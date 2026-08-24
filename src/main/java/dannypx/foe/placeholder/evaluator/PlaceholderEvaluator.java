@@ -18,15 +18,15 @@ public class PlaceholderEvaluator {
         PlaceholderColorCodes.Tracker colorCodesTracker = new PlaceholderColorCodes.Tracker();
 
         for (Node child : group.children()) {
-            if(child instanceof Literal literal) {
-                combined.append(colorCodesTracker.consumeLiteral(literal.text()));
+            if(child instanceof Literal(String text)) {
+                combined.append(colorCodesTracker.consumeLiteral(text));
             } else {
                 MutableComponent resolved;
                 try {
                     resolved = this.evalNode(child, success, errors).toComponent();
                 } catch (RuntimeException e) {
                     success[0] = false;
-                    String msg = "Resolved error: " + e;
+                    String msg = "Unresolved error: " + e;
                     errors.add(msg);
                     resolved = Component.literal(msg).withStyle(ChatFormatting.RED);
                 }
@@ -74,11 +74,11 @@ public class PlaceholderEvaluator {
             case BinaryOp b -> {
                 PlaceholderValue left = this.evalNode(b.left(), successAcc, errors);
                 PlaceholderValue right = this.evalNode(b.right(), successAcc, errors);
-                yield this.applyBinary(b.op(), left, right);
+                yield this.applyBinary(b.op(), left, right, successAcc, errors);
             }
             case UnaryOp u -> {
                 PlaceholderValue operand = this.evalNode(u.operand(), successAcc, errors);
-                yield this.applyUnary(u.op(), operand);
+                yield this.applyUnary(u.op(), operand, successAcc, errors);
             }
             case Group g -> {
                 MutableComponent combined = Component.empty();
@@ -92,13 +92,30 @@ public class PlaceholderEvaluator {
     }
 
     private boolean isSuccess(PlaceholderTreeNode node, PlaceholderValue result) {
+        if(result.isForcedFailure()) return false;
         if(result.isNull()) return false;
         return !result.isEmpty() || node.allowsEmpty();
     }
 
     /// Binary/Unary evaluation
 
-    private PlaceholderValue applyBinary(String op, PlaceholderValue leftValue, PlaceholderValue rightValue) {
+    private PlaceholderValue applyBinary(String op, PlaceholderValue leftValue, PlaceholderValue rightValue, boolean[] successAcc, List<String> errors) {
+        if(op.equals("==") || op.equals("!=")) {
+            boolean equal = (leftValue.isValidNumber() && rightValue.isValidNumber())
+                    ? leftValue.toDouble() == rightValue.toDouble()
+                    : leftValue.toString().equals(rightValue.toString());
+            boolean result = op.equals("==") == equal;
+            return PlaceholderValue.text(String.valueOf(result));
+        }
+
+        if(!leftValue.isValidNumber() || !rightValue.isValidNumber()) {
+            PlaceholderValue badOperand = leftValue.isValidNumber() ? rightValue : rightValue;
+            return this.trackedError(
+                    "Non-numeric operand for '" + op + "': '" + badOperand.toString() + "'",
+                    successAcc, errors
+            );
+        }
+
         double left = leftValue.toDouble();
         double right = rightValue.toDouble();
         return switch (op) {
@@ -106,24 +123,32 @@ public class PlaceholderEvaluator {
             case ">" -> PlaceholderValue.text(String.valueOf(left > right));
             case "<=" -> PlaceholderValue.text(String.valueOf(left <= right));
             case ">=" -> PlaceholderValue.text(String.valueOf(left >= right));
-            case "==" -> PlaceholderValue.text(String.valueOf(left == right));
-            case "!=" -> PlaceholderValue.text(String.valueOf(left != right));
             case "+" -> PlaceholderValue.number(left + right);
             case "-" -> PlaceholderValue.number(left - right);
             case "*" -> PlaceholderValue.number(left * right);
             case "/" -> PlaceholderValue.number(left / right);
-            default -> throw new IllegalStateException(
-                    "Unknown binary operator: " + op
-            );
+            default -> this.trackedError("Unknown operator: " + op, successAcc, errors);
         };
     }
 
-    private PlaceholderValue applyUnary(String op, PlaceholderValue operand) {
+    private PlaceholderValue applyUnary(String op, PlaceholderValue operand, boolean[] successAcc, List<String> errors) {
         return switch (op) {
-            case "-" -> PlaceholderValue.number(-operand.toDouble());
-            default -> throw new IllegalStateException(
-                    "Unknown unary operator: " + op
-            );
+            case "-" -> {
+                if(!operand.isValidNumber()) {
+                    yield this.trackedError(
+                            "Non-numeric operand for unary '-': '" + operand.toString() + "'",
+                            successAcc, errors
+                    );
+                }
+                yield PlaceholderValue.number(-operand.toDouble());
+            }
+            default -> this.trackedError("Unknown unary operator: " + op, successAcc, errors);
         };
+    }
+
+    private PlaceholderValue trackedError(String message, boolean[] successAcc, List<String> errors) {
+        successAcc[0] = false;
+        errors.add(message);
+        return PlaceholderValue.component(Component.literal(message).withStyle(ChatFormatting.RED));
     }
 }

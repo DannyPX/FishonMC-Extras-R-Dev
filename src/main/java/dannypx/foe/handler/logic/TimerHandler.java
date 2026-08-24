@@ -33,6 +33,10 @@ public class TimerHandler extends Handler {
     private Map<CustomTimerDataHandler.CustomTimer, Long> lastPos = new HashMap<>();
     private Map<String, Long> lastTriggerCycle = new HashMap<>();
 
+    public List<CustomTimerDataHandler.CustomTimer> getTimers() {
+        return Collections.unmodifiableList(timers);
+    }
+
     public Pair<Boolean, PlaceholderValue> getTimer(String[] params) {
         if(params.length > 1) {
             Pattern fieldPattern = Pattern.compile("^(timer|offset|notification_to_trigger|clean_up_chat_trigger|use_timer|is_period|off_timer|notification_to_trigger_end|time)$");

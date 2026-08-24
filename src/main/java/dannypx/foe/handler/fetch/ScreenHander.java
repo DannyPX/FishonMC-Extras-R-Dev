@@ -38,6 +38,10 @@ public class ScreenHander extends Handler {
     //region Fields
     private Component lastScreen = Component.empty();
 
+    public Component getLastScreen() {
+        return lastScreen;
+    }
+
     public Pair<Boolean, PlaceholderValue> getScreen(String[] params) {
         if(params.length > 0) {
             Pattern fieldPattern = Pattern.compile("^(last_screen)$");

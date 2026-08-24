@@ -103,7 +103,7 @@ public class HitResultHandler extends Handler {
         }
     }
 
-    private MutableComponent getBlockFromHitResult() {
+    public MutableComponent getBlockFromHitResult() {
         if(getBlockHitResult() != null && minecraft.level != null) {
             BlockPos blockPos = getBlockHitResult().getBlockPos();
             Block block = minecraft.level.getBlockState(blockPos).getBlock();

@@ -4,6 +4,7 @@ import dannypx.foe.placeholder.functions.*;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class PlaceholderTreeNode {
-    private enum WildcardType { NONE, INDEX, STRING }
+    private enum WildcardType { NONE, INDEX, STRING, STRING_ARRAY }
+
+    public enum ValueKind { NONE, STRING, COMPONENT, NUMBER, BOOLEAN, VALUE }
+    public enum EvalKind { NONE, STRING, COMPONENT, NUMBER, BOOLEAN, VALUE }
 
     private final String key;
     private final WildcardType wildcardType;
@@ -19,11 +23,15 @@ public class PlaceholderTreeNode {
 
     private PlaceholderTreeNode indexChild;
     private PlaceholderTreeNode stringChild;
+    private PlaceholderTreeNode stringArrayChild;
 
     private Function<List<String>, PlaceholderValue> resolver;
     private Function<List<PlaceholderValue>, PlaceholderValue> evalFunction;
 
     private boolean allowEmpty = false;
+
+    private ValueKind valueKind = ValueKind.NONE;
+    private EvalKind evalKind = EvalKind.NONE;
 
     private PlaceholderTreeNode(@Nullable String key, WildcardType wildcardType) {
         this.key = key;
@@ -44,64 +52,109 @@ public class PlaceholderTreeNode {
         return new PlaceholderTreeNode(null, WildcardType.STRING);
     }
 
+    public static PlaceholderTreeNode nodeStringArray() {
+        return new PlaceholderTreeNode(null, WildcardType.STRING_ARRAY);
+    }
+
     public PlaceholderTreeNode branch(PlaceholderTreeNode child) {
         switch (child.wildcardType) {
             case NONE -> children.put(child.key, child);
             case INDEX -> this.indexChild = child;
             case STRING -> this.stringChild = child;
+            case STRING_ARRAY -> this.stringArrayChild = child;
         }
         return this;
     }
 
     /// .value resolvers
 
+    public PlaceholderTreeNode value(Supplier<PlaceholderValue> supplier) {
+        this.resolver = args -> supplier.get();
+        this.valueKind = ValueKind.VALUE;
+        return this;
+    }
+
+    public PlaceholderTreeNode value(PlaceholderValueFunction function) {
+        this.resolver = function::resolve;
+        this.valueKind = ValueKind.VALUE;
+        return this;
+    }
+
     public PlaceholderTreeNode valueString(Supplier<String> supplier) {
         this.resolver = args -> PlaceholderValue.text(supplier.get());
+        this.valueKind = ValueKind.STRING;
         return this;
     }
 
     public PlaceholderTreeNode valueString(PlaceholderStringFunction function) {
         this.resolver = args -> PlaceholderValue.text(function.resolve(args));
+        this.valueKind = ValueKind.STRING;
         return this;
     }
 
     public PlaceholderTreeNode valueComponent(Supplier<MutableComponent> supplier) {
         this.resolver = args -> PlaceholderValue.component(supplier.get());
+        this.valueKind = ValueKind.COMPONENT;
         return this;
     }
 
     public PlaceholderTreeNode valueComponent(PlaceholderComponentFunction function) {
         this.resolver = args -> PlaceholderValue.component(function.resolve(args));
+        this.valueKind = ValueKind.COMPONENT;
         return this;
     }
 
     public PlaceholderTreeNode valueNumber(Supplier<Number> supplier) {
         this.resolver = args -> PlaceholderValue.number(supplier.get());
+        this.valueKind = ValueKind.NUMBER;
         return this;
     }
 
     public PlaceholderTreeNode valueNumber(PlaceholderNumberFunction function) {
         this.resolver = args -> PlaceholderValue.number(function.resolve(args));
+        this.valueKind = ValueKind.NUMBER;
+        return this;
+    }
+
+    public PlaceholderTreeNode valueBoolean(Supplier<Boolean> supplier) {
+        this.resolver = args -> PlaceholderValue.bool(supplier.get());
+        this.valueKind = ValueKind.BOOLEAN;
+        return this;
+    }
+
+    public PlaceholderTreeNode valueBoolean(PlaceholderBooleanFunction function) {
+        this.resolver = args -> PlaceholderValue.bool(function.resolve(args));
+        this.valueKind = ValueKind.BOOLEAN;
         return this;
     }
 
     public PlaceholderTreeNode evalString(PlaceholderEvalStringFunction function) {
         this.evalFunction = args -> PlaceholderValue.text(function.resolve(args));
+        this.evalKind = EvalKind.STRING;
         return this;
     }
 
     public PlaceholderTreeNode evalComponent(PlaceholderEvalComponentFunction function) {
         this.evalFunction = args -> PlaceholderValue.component(function.resolve(args));
+        this.evalKind = EvalKind.COMPONENT;
         return this;
     }
 
     public PlaceholderTreeNode evalNumber(PlaceholderEvalNumberFunction function) {
         this.evalFunction = args -> PlaceholderValue.number(function.resolve(args));
+        this.evalKind = EvalKind.NUMBER;
+        return this;
+    }
+
+    public PlaceholderTreeNode evalBoolean(PlaceholderEvalBooleanFunction function) {
+        this.evalFunction = args -> PlaceholderValue.bool(function.resolve(args));
+        this.evalKind = EvalKind.BOOLEAN;
         return this;
     }
 
     public PlaceholderTreeNode evalValue(PlaceholderEvalValueFunction function) {
         this.evalFunction = function::resolve;
+        this.evalKind = EvalKind.VALUE;
         return this;
     }
 
@@ -118,6 +171,46 @@ public class PlaceholderTreeNode {
 
     public String key() {
         return key;
+    }
+
+    public boolean hasNamedChild(String key) {
+        return children.containsKey(key);
+    }
+
+    public boolean hasIndexChild() {
+        return indexChild != null;
+    }
+
+    public boolean hasStringWildcard() {
+        return stringChild != null;
+    }
+
+    public boolean hasStringArrayWildcard() {
+        return stringArrayChild != null;
+    }
+
+    public Map<String, PlaceholderTreeNode> getChildren() {
+        return Collections.unmodifiableMap(children);
+    }
+
+    public PlaceholderTreeNode getIndexChild() {
+        return indexChild;
+    }
+
+    public PlaceholderTreeNode getStringChild() {
+        return stringChild;
+    }
+
+    public PlaceholderTreeNode getStringArrayChild() {
+        return stringArrayChild;
+    }
+
+    public ValueKind getValueKind() {
+        return valueKind;
+    }
+
+    public EvalKind getEvalKind() {
+        return evalKind;
     }
 
     public PlaceholderTreeNode resolveChild(String segment, List<String> captured) {

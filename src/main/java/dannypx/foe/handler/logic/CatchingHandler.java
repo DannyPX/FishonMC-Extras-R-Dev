@@ -14,10 +14,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.type.tuple.Triplet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -56,6 +53,26 @@ public class CatchingHandler extends Handler {
 
     public boolean isScanDone() {
         return scanDone;
+    }
+
+    public FishTagObject getLastCaughtFish() {
+        return lastCaughtFish;
+    }
+
+    public Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> getLastDataFish() {
+        return lastDataFish;
+    }
+
+    public List<Triplet<TagObject, Integer, Pair<String, Integer>>> getLastCaughtItems() {
+        return Collections.unmodifiableList(lastCaughtItems);
+    }
+
+    public PetTagObject getLastCaughtPet() {
+        return lastCaughtPet;
+    }
+
+    public Pair<Pair<String, Integer>, Pair<String, Integer>> getLastDataPet() {
+        return lastDataPet;
     }
 
     public Pair<Boolean, PlaceholderValue> getCatch(String[] params) {

@@ -1,6 +1,7 @@
 package dannypx.foe.placeholder.handler;
 
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.placeholder.evaluator.PlaceholderEvaluator;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
 import dannypx.foe.placeholder.registry.PlaceholderRegistry;
@@ -29,13 +30,11 @@ public class PlaceholderHandlerV2 extends Handler {
     //region Methods
     @Override
     public void tick() {
-        //TODO Attach to global tick
         PlaceholderCompiler.tick();
     }
 
     @Override
     public void init() {
-        //TODO Attach to global init
         PlaceholderRegistry.init();
     }
 

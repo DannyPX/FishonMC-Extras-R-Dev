@@ -11,6 +11,7 @@ import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,10 @@ public class ChatHandler extends Handler {
 
     //region Fields
     private Map<String, Component> storedChatTriggerComponent = new HashMap<>();
+
+    public Map<String, Component> getStoredChatTriggerComponent() {
+        return Collections.unmodifiableMap(storedChatTriggerComponent);
+    }
 
     final List<String> blacklistedMessageFilters = List.of(
             "REACTIONS »"

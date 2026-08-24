@@ -7,6 +7,8 @@ import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.placeholder.evaluator.PlaceholderResult;
+import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
@@ -251,12 +253,10 @@ public class CustomHudElement extends Element implements ScreenConstants {
         AtomicBoolean hasData = new AtomicBoolean(false);
 
         customHud.getStringLines().forEach(componentParts -> {
-            String componentString = componentParts.value1().replace("&", "§");
-            Pair<Boolean, MutableComponent> componentLine = PlaceholderHandler.parsePlaceholderFromString(componentString);
-            if(componentLine.value1()) {
-                componentLines.add(Triplet.of(componentParts.value2(), componentParts.value3(), componentLine.value2()));
-            }
-            if(componentLine.value1() && !componentLine.value2().getString().isBlank()) {
+            PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(componentParts.value1());
+
+            if(result.success() || !result.errors().isEmpty()) {
+                componentLines.add(Triplet.of(componentParts.value2(), componentParts.value3(), result.text()));
                 hasData.set(true);
             }
         });

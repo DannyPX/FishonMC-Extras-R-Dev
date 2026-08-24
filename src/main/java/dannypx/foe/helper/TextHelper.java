@@ -481,7 +481,7 @@ public class TextHelper {
         return lines;
     }
 
-    public static Component substring(Component component, int start, int end) {
+    public static MutableComponent substring(Component component, int start, int end) {
         int length = component.getString().length();
 
         if (start < 0 || end < 0 || start > end || end > length) {
@@ -504,6 +504,28 @@ public class TextHelper {
             }
 
             index.addAndGet(string.length());
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
+    public static MutableComponent toLowercase(Component component) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(string.toLowerCase(Locale.US)).setStyle(style));
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
+    public static MutableComponent toUppercase(Component component) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(string.toUpperCase(Locale.US)).setStyle(style));
             return Optional.empty();
         }, Style.EMPTY);
 

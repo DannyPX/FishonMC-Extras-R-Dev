@@ -1,4 +1,4 @@
-package dannypx.foe.placeholder.lexing;
+package dannypx.foe.placeholder.lexer;
 
 import dannypx.foe.placeholder.token.PlaceholderParseException;
 
