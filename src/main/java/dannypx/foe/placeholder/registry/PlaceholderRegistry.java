@@ -11,6 +11,7 @@ import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.PetTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
+import dannypx.foe.placeholder.evaluator.PlaceholderEvaluationException;
 import dannypx.foe.placeholder.functions.PlaceholderValue;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tuple.Pair;
@@ -35,256 +36,528 @@ public class PlaceholderRegistry {
         //region Placeholders
         register(
                 node("boss_bar")
-                        .branch(node("location").valueComponent(BossEventContext::getLocation))
-                        .branch(node("weather").valueComponent(BossEventContext::getWeather))
-                        .branch(node("time").valueComponent(BossEventContext::getTime))
-                        .branch(node("temperature").valueComponent(BossEventContext::getTemperature))
-                        .branch(node("sub_location").valueComponent(BossEventContext::getSubLocation).allowEmpty())
+                        .branch(node("location").valueComponent(BossEventContext::getLocation)
+                                .description("Returns the current location.")
+                        )
+                        .branch(node("weather").valueComponent(BossEventContext::getWeather)
+                                .description("Returns the current weather.")
+                        )
+                        .branch(node("time").valueComponent(BossEventContext::getTime)
+                                .description("Returns the server time.")
+                        )
+                        .branch(node("temperature").valueComponent(BossEventContext::getTemperature)
+                                .description("Returns the current temperature at location.")
+                        )
+                        .branch(node("sub_location").valueComponent(BossEventContext::getSubLocation).allowEmpty()
+                                .description("Returns the current sub location if available.")
+                        )
                         .branch(node("community_goal")
-                                .branch(node("current").valueComponent(BossEventContext::getCommunityGoalCurrent))
-                                .branch(node("max").valueComponent(BossEventContext::getCommunityGoalMax))
+                                .branch(node("current").valueComponent(BossEventContext::getCommunityGoalCurrent)
+                                        .description("Returns the current amount of fishes caught for the community goal.")
+                                )
+                                .branch(node("max").valueComponent(BossEventContext::getCommunityGoalMax)
+                                        .description("Returns the amount needed of fishes caught for the community goal.")
+                                )
                         )
         );
 
         register(
                 node("player")
-                        .branch(node("name").valueString(PlayerContext::getName))
-                        .branch(node("level").valueNumber(PlayerContext::getLevel))
-                        .branch(node("level_progress").valueNumber(PlayerContext::getLevelProgress))
-                        .branch(node("pos")
-                                .branch(node("x").valueNumber(PlayerContext::getPosX))
-                                .branch(node("y").valueNumber(PlayerContext::getPosY))
-                                .branch(node("z").valueNumber(PlayerContext::getPosZ))
+                        .branch(node("name").valueString(PlayerContext::getName)
+                                .description("Returns the player name.")
                         )
-                        .branch(node("fps").valueNumber(PlayerContext::getFps))
+                        .branch(node("level").valueNumber(PlayerContext::getLevel)
+                                .description("Returns the player fishing level.")
+                        )
+                        .branch(node("level_progress").valueNumber(PlayerContext::getLevelProgress)
+                                .description("Returns the player fishing percentage to next fishing level.")
+                        )
+                        .branch(node("pos")
+                                .branch(node("x").valueNumber(PlayerContext::getPosX)
+                                        .description("Returns the player x coordinate")
+                                )
+                                .branch(node("y").valueNumber(PlayerContext::getPosY)
+                                        .description("Returns the player y coordinate")
+                                )
+                                .branch(node("z").valueNumber(PlayerContext::getPosZ)
+                                        .description("Returns the player z coordinate")
+                                )
+                        )
+                        .branch(node("fps").valueNumber(PlayerContext::getFps)
+                                .description("Returns the screens FPS.")
+                        )
         );
 
         register(
                 node("scoreboard")
-                        .branch(node("level").valueComponent(ScoreboardContext::getLevel))
-                        .branch(node("wallet").valueNumber(ScoreboardContext::getWallet))
-                        .branch(node("credits").valueNumber(ScoreboardContext::getCredits))
-                        .branch(node("catches").valueNumber(ScoreboardContext::getCatches))
-                        .branch(node("location_min").valueNumber(ScoreboardContext::getLocationMin))
-                        .branch(node("location_max").valueNumber(ScoreboardContext::getLocationMax))
-                        .branch(node("catch_rate").valueString(ScoreboardContext::getCatchRate))
-                        .branch(node("crew").valueString(ScoreboardContext::getCrew))
-                        .branch(node("crew_nearby").valueComponent(ScoreboardContext::getCrewNearby))
-                        .branch(node("version").valueString(ScoreboardContext::getVersion))
-                        .branch(node("date").valueString(ScoreboardContext::getDate))
+                        .branch(node("level").valueComponent(ScoreboardContext::getLevel)
+                                .description("Returns the player fishing level (Formatted).")
+                        )
+                        .branch(node("wallet").valueNumber(ScoreboardContext::getWallet)
+                                .description("Returns the players money balance.")
+                        )
+                        .branch(node("credits").valueNumber(ScoreboardContext::getCredits)
+                                .description("Returns the players credit balance.")
+                        )
+                        .branch(node("catches").valueNumber(ScoreboardContext::getCatches)
+                                .description("Returns the players total catches.")
+                        )
+                        .branch(node("location_min").valueNumber(ScoreboardContext::getLocationMin)
+                                .description("Returns the unique fish caught of the current location.")
+                        )
+                        .branch(node("location_max").valueNumber(ScoreboardContext::getLocationMax)
+                                .description("Returns the unique fish amount needed of the current location.")
+                        )
+                        .branch(node("catch_rate").valueString(ScoreboardContext::getCatchRate)
+                                .description("Returns the players catch rate.")
+                        )
+                        .branch(node("crew").valueString(ScoreboardContext::getCrew)
+                                .description("Returns the current crew name if available.")
+                        )
+                        .branch(node("crew_nearby").valueComponent(ScoreboardContext::getCrewNearby)
+                                .description("Returns whether the player is near a crew member.")
+                        )
+                        .branch(node("version").valueString(ScoreboardContext::getVersion)
+                                .description("Returns the server version.")
+                        )
+                        .branch(node("date").valueString(ScoreboardContext::getDate)
+                                .description("Returns the server date.")
+                        )
         );
 
         register(
                 node("tab")
-                        .branch(node("player_name").valueComponent(TabOverlayContext::getPlayerName))
-                        .branch(node("instance").valueString(TabOverlayContext::getInstance))
-                        .branch(node("is_in_instance").valueBoolean(TabOverlayContext::getIsInInstance))
+                        .branch(node("player_name").valueComponent(TabOverlayContext::getPlayerName)
+                                .description("Returns the player name and rank.")
+                        )
+                        .branch(node("instance").valueString(TabOverlayContext::getInstance)
+                                .description("Returns the instance lobby number.")
+                        )
+                        .branch(node("is_in_instance").valueBoolean(TabOverlayContext::getIsInInstance)
+                                .description("Returns whether the player is in a fishing instance.")
+                        )
         );
 
         register(
                 node("title")
-                        .branch(node("title").valueComponent(TitleContext::getTitle))
-                        .branch(node("subtitle").valueComponent(TitleContext::getSubTitle))
+                        .branch(node("title").valueComponent(TitleContext::getTitle)
+                                .description("Returns the last title shown.")
+                        )
+                        .branch(node("subtitle").valueComponent(TitleContext::getSubTitle)
+                                .description("Returns the last subtitle shown.")
+                        )
         );
 
         register(
                 node("connection")
-                        .branch(node("is_on_server").valueBoolean(ConnectionContext::getIsOnServer))
-                        .branch(node("was_on_server").valueBoolean(ConnectionContext::getWasOnServer))
+                        .branch(node("is_on_server").valueBoolean(ConnectionContext::getIsOnServer)
+                                .description("Returns whether the player is on the server.")
+                        )
+                        .branch(node("was_on_server").valueBoolean(ConnectionContext::getWasOnServer)
+                                .description("Returns whether the player joined the server at least once.")
+                        )
         );
 
         register(
                 node("inventory")
-                        .branch(node("empty_slots").valueNumber(InventoryContext::getEmptySlots))
+                        .branch(node("empty_slots").valueNumber(InventoryContext::getEmptySlots)
+                                .description("Returns the number of empty slots in inventory.")
+                        )
                         .branch(node("fishing_rod")
                                 .branch(node("line")
-                                        .branch(node("name").valueComponent(InventoryContext::getFishingRodLineName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodLineLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getFishingRodLineNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getFishingRodLineName)
+                                                .description("Returns the name of the fishing line.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodLineLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getFishingRodLineNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                                 .branch(node("reel")
-                                        .branch(node("name").valueComponent(InventoryContext::getFishingRodReelName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodReelLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getFishingRodReelNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getFishingRodReelName)
+                                                .description("Returns the name of the fishing reel.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodReelLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getFishingRodReelNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                                 .branch(node("pole")
-                                        .branch(node("name").valueComponent(InventoryContext::getFishingRodPoleName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodPoleLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getFishingRodPoleNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getFishingRodPoleName)
+                                                .description("Returns the name of the fishing pole.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodPoleLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getFishingRodPoleNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
-                                .branch(node("name").valueComponent(InventoryContext::getFishingRodName))
-                                .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodLore)))
-                                .branch(nodeStringArray().value(InventoryContext::getFishingRodNbt))
+                                .branch(node("name").valueComponent(InventoryContext::getFishingRodName)
+                                        .description("Returns the name of the fishing rod.")
+                                )
+                                .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getFishingRodLore))
+                                        .description("Returns the lore line of the specified index.")
+                                )
+                                .branch(nodeStringArray().value(InventoryContext::getFishingRodNbt)
+                                        .description("Returns the custom data NBT value of the specified values.")
+                                )
                         )
                         .branch(node("pet")
-                                .branch(node("name").valueComponent(InventoryContext::getPetName))
-                                .branch(node("level").valueNumber(InventoryContext::getPetLevel))
-                                .branch(node("level_progress").valueNumber(InventoryContext::getPetLevelProgress))
-                                .branch(node("rating").valueComponent(InventoryContext::getPetRating))
-                                .branch(node("rating_percent").valueNumber(InventoryContext::getPetRatingPercent))
-                                .branch(node("rarity").valueComponent(InventoryContext::getPetRarity))
-                                .branch(node("location_luck_percent").valueNumber(InventoryContext::getPetLocationLuckPercent))
-                                .branch(node("location_scale_percent").valueNumber(InventoryContext::getPetLocationScalePercent))
-                                .branch(node("climate_luck_percent").valueNumber(InventoryContext::getPetClimateLuckPercent))
-                                .branch(node("climate_scale_percent").valueNumber(InventoryContext::getPetClimateScalePercent))
-                                .branch(node("location_luck").valueNumber(InventoryContext::getPetLocationLuck))
-                                .branch(node("location_scale").valueNumber(InventoryContext::getPetLocationScale))
-                                .branch(node("climate_luck").valueNumber(InventoryContext::getPetClimateLuck))
-                                .branch(node("climate_scale").valueNumber(InventoryContext::getPetClimateScale))
-                                .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getPetLore)))
-                                .branch(nodeStringArray().value(InventoryContext::getPetNbt))
+                                .branch(node("name").valueComponent(InventoryContext::getPetName)
+                                        .description("Returns the name of the current equipped pet.")
+                                )
+                                .branch(node("level").valueNumber(InventoryContext::getPetLevel)
+                                        .description("Returns the level of the current equipped pet.")
+                                )
+                                .branch(node("level_progress").valueNumber(InventoryContext::getPetLevelProgress)
+                                        .description("Returns the level progress to the next level of the current equipped pet.")
+                                )
+                                .branch(node("rating").valueComponent(InventoryContext::getPetRating)
+                                        .description("Returns the rating of the current equipped pet.")
+                                )
+                                .branch(node("rating_percent").valueNumber(InventoryContext::getPetRatingPercent)
+                                        .description("Returns the rating percentage of the current equipped pet.")
+                                )
+                                .branch(node("rarity").valueComponent(InventoryContext::getPetRarity)
+                                        .description("Returns the rarity of the current equipped pet.")
+                                )
+                                .branch(node("location_luck_percent").valueNumber(InventoryContext::getPetLocationLuckPercent)
+                                        .description("Returns the location luck percentage of the equipped pet.")
+                                )
+                                .branch(node("location_scale_percent").valueNumber(InventoryContext::getPetLocationScalePercent)
+                                        .description("Returns the location scale percentage of the equipped pet.")
+                                )
+                                .branch(node("climate_luck_percent").valueNumber(InventoryContext::getPetClimateLuckPercent)
+                                        .description("Returns the climate luck percentage of the equipped pet.")
+                                )
+                                .branch(node("climate_scale_percent").valueNumber(InventoryContext::getPetClimateScalePercent)
+                                        .description("Returns the climate scale percentage of the equipped pet.")
+                                )
+                                .branch(node("location_luck").valueNumber(InventoryContext::getPetLocationLuck)
+                                        .description("Returns the location luck value of the equipped pet.")
+                                )
+                                .branch(node("location_scale").valueNumber(InventoryContext::getPetLocationScale)
+                                        .description("Returns the location scale value of the equipped pet.")
+                                )
+                                .branch(node("climate_luck").valueNumber(InventoryContext::getPetClimateLuck)
+                                        .description("Returns the climate luck value of the equipped pet.")
+                                )
+                                .branch(node("climate_scale").valueNumber(InventoryContext::getPetClimateScale)
+                                        .description("Returns the slimate scale value of the equipped pet.")
+                                )
+                                .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getPetLore))
+                                        .description("Returns the lore line of the specified index.")
+                                )
+                                .branch(nodeStringArray().value(InventoryContext::getPetNbt)
+                                        .description("Returns the custom data NBT value of the specified values.")
+                                )
                         )
                         .branch(node("armor")
                                 .branch(node("chestplate")
-                                        .branch(node("name").valueComponent(InventoryContext::getChestplateName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getChestplateLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getBootsNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getChestplateName)
+                                                .description("Returns the name of the equipped chestplate.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getChestplateLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getBootsNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                                 .branch(node("leggings")
-                                        .branch(node("name").valueComponent(InventoryContext::getLeggingsName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getLeggingsLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getLeggingsNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getLeggingsName)
+                                                .description("Returns the name of the equipped leggings.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getLeggingsLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getLeggingsNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                                 .branch(node("boots")
-                                        .branch(node("name").valueComponent(InventoryContext::getBootsName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getBootsLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getBootsNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getBootsName)
+                                                .description("Returns the name of the equipped leggings.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getBootsLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getBootsNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                         )
                         .branch(node("held_item")
-                                .branch(node("name").valueComponent(InventoryContext::getHeldItemName))
-                                .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getHeldItemLore)))
-                                .branch(nodeStringArray().value(InventoryContext::getHeldItemNbt))
+                                .branch(node("name").valueComponent(InventoryContext::getHeldItemName)
+                                        .description("Returns the name of the current held item.")
+                                )
+                                .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getHeldItemLore))
+                                        .description("Returns the lore line of the specified index.")
+                                )
+                                .branch(nodeStringArray().value(InventoryContext::getHeldItemNbt)
+                                        .description("Returns the custom data NBT value of the specified values.")
+                                )
                         )
                         .branch(node("slot")
                                 .branch(nodeIndex()
-                                        .branch(node("name").valueComponent(InventoryContext::getSlotName))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getSlotLore)))
-                                        .branch(nodeStringArray().value(InventoryContext::getSlotNbt))
+                                        .branch(node("name").valueComponent(InventoryContext::getSlotName)
+                                                .description("Returns the name of the item in the specified index slot.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getSlotLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(InventoryContext::getSlotNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                         )
         );
 
         register(node("key_bind")
-                .branch(node("open_main").valueString(KeyBindContext::getOpenMainKeyBind))
-                .branch(node("inspect").valueString(KeyBindContext::getInspectKeyBind))
+                .branch(node("open_main").valueString(KeyBindContext::getOpenMainKeyBind)
+                        .description("Returns the key bind of opening the main FOER screen.")
+                )
+                .branch(node("inspect").valueString(KeyBindContext::getInspectKeyBind)
+                        .description("Returns the key bind of inspecting items if available.")
+                )
         );
 
         register(node("loading")
-                .branch(node("is_loading_done").valueBoolean(LoadingContext::getIsLoadingDone))
-                .branch(node("is_error").valueBoolean(LoadingContext::getIsError))
+                .branch(node("is_loading_done").valueBoolean(LoadingContext::getIsLoadingDone)
+                        .description("Returns whether the mod is loaded.")
+                )
+                .branch(node("is_error").valueBoolean(LoadingContext::getIsError)
+                        .description("Returns whether the mod has an error during loading.")
+                )
         );
 
         register(node("hit_result")
                 .branch(node("block")
-                        .branch(node("name").valueComponent(HitResultContext::getBlockName))
+                        .branch(node("name").valueComponent(HitResultContext::getBlockName)
+                                .description("Returns the name of the block at the crosshair.")
+                        )
                 )
                 .branch(node("entity")
-                        .branch(node("name").valueComponent(HitResultContext::getEntityName))
+                        .branch(node("name").valueComponent(HitResultContext::getEntityName)
+                                .description("Returns the name of the entity at the crosshair.")
+                        )
                 )
                 .branch(node("item_frame")
-                        .branch(node("name").valueComponent(HitResultContext::getItemFromItemFrameName))
+                        .branch(node("name").valueComponent(HitResultContext::getItemFromItemFrameName)
+                                .description("Returns the name of the item in the item frame at the crosshair if available.")
+                        )
                 )
         );
 
         register(node("network")
-                .branch(node("ping").valueNumber(NetworkContext::getPing))
+                .branch(node("ping").valueNumber(NetworkContext::getPing)
+                        .description("Returns the client ping to the server.")
+                )
         );
 
         register(node("crew")
                 .branch(node("online")
                         .branch(nodeIndex()
-                                .branch(node("name").valueString(CrewContext::getOnlineName))
-                                .branch(node("id").valueString(CrewContext::getOnlineId))
+                                .branch(node("name").valueString(CrewContext::getOnlineName)
+                                        .description("Returns the name of the online crew member at the specified index.")
+                                )
+                                .branch(node("id").valueString(CrewContext::getOnlineId)
+                                        .description("Returns the UUID of the online crew member at the specified index.")
+                                )
                         )
                 )
                 .branch(node("offline")
                         .branch(nodeIndex()
-                                .branch(node("name").valueString(CrewContext::getOfflineName))
-                                .branch(node("id").valueString(CrewContext::getOfflineId))
+                                .branch(node("name").valueString(CrewContext::getOfflineName)
+                                        .description("Returns the name of the offline crew member at the specified index.")
+                                )
+                                .branch(node("id").valueString(CrewContext::getOfflineId)
+                                        .description("Returns the UUID of the offline crew member at the specified index.")
+                                )
                         )
                 )
-                .branch(node("is_crew_nearby").valueBoolean(CrewContext::getIsCrewNearby)) //TODO Use icons
+                .branch(node("is_crew_nearby").valueBoolean(CrewContext::getIsCrewNearby) //TODO Use icons
+                        .description("Returns whether the player is near a crew member. (Quick version)")
+                )
         );
 
         register(node("chat")
-                .branch(node("trigger").branch(nodeString().valueComponent(ChatContext::getStoredChatTrigger)))
+                .branch(node("trigger").branch(nodeString().valueComponent(ChatContext::getStoredChatTrigger))
+                        .description("Returns the last stored message from the specified chat trigger.")
+                )
         );
 
         register(node("timer")
                 .branch(nodeString()
-                        .branch(node("timer").valueNumber(TimerContext::getTimer))
-                        .branch(node("offset").valueNumber(TimerContext::getOffset))
-                        .branch(node("notification_to_trigger").valueString(TimerContext::getNotificationToTrigger))
-                        .branch(node("clean_up_chat_trigger").valueString(TimerContext::getCleanUpChatTrigger))
-                        .branch(node("use_timer").valueBoolean(TimerContext::getIsUseTimer))
-                        .branch(node("is_period").valueBoolean(TimerContext::getIsPeriod))
-                        .branch(node("off_timer").valueNumber(TimerContext::getOffTimer))
-                        .branch(node("notification_to_trigger_end").valueString(TimerContext::getNotificationToTriggerEnd))
+                        .branch(node("timer").valueNumber(TimerContext::getTimer)
+                                .description("Returns the timer in seconds from the specified timer.")
+                        )
+                        .branch(node("offset").valueNumber(TimerContext::getOffset)
+                                .description("Returns the offset in seconds from the specified timer.")
+                        )
+                        .branch(node("notification_to_trigger").valueString(TimerContext::getNotificationToTrigger)
+                                .description("Returns the notifications to trigger from the specified timer.")
+                        )
+                        .branch(node("clean_up_chat_trigger").valueString(TimerContext::getCleanUpChatTrigger)
+                                .description("Returns the chat triggers to clean from the specified timer.")
+                        )
+                        .branch(node("use_timer").valueBoolean(TimerContext::getIsUseTimer)
+                                .description("Returns whether the specified timer is active.")
+                        )
+                        .branch(node("is_period").valueBoolean(TimerContext::getIsPeriod)
+                                .description("Returns whether the specified timer is in period mode.")
+                        )
+                        .branch(node("off_timer").valueNumber(TimerContext::getOffTimer)
+                                .description("Returns the timer when off in seconds from the specified timer.")
+                        )
+                        .branch(node("notification_to_trigger_end").valueString(TimerContext::getNotificationToTriggerEnd)
+                                .description("Returns the the notifications to trigger when off from the specified timer.")
+                        )
                         .branch(node("time")
-                                .branch(node("second").valueNumber(TimerContext::getTimeSecond))
-                                .branch(node("minute").valueNumber(TimerContext::getTimeMinute))
-                                .branch(node("hour").valueNumber(TimerContext::getTimeHour))
+                                .branch(node("second").valueString(TimerContext::getTimeSecond)
+                                        .description("Returns the second hand from the time from the specified timer.")
+                                )
+                                .branch(node("minute").valueString(TimerContext::getTimeMinute)
+                                        .description("Returns the minute hand from the time from the specified timer.")
+                                )
+                                .branch(node("hour").valueNumber(TimerContext::getTimeHour)
+                                        .description("Returns the hour hand from the time from the specified timer.")
+                                )
                                 .branch(node("on")
-                                        .branch(node("second").valueNumber(TimerContext::getOnTimeSecond))
-                                        .branch(node("minute").valueNumber(TimerContext::getOnTimeMinute))
-                                        .branch(node("hour").valueNumber(TimerContext::getOnTimeHour))
+                                        .branch(node("second").valueString(TimerContext::getOnTimeSecond)
+                                                .description("Returns the second hand in the on period from the time from the specified timer.")
+                                        )
+                                        .branch(node("minute").valueString(TimerContext::getOnTimeMinute)
+                                                .description("Returns the minute hand in the on period from the time from the specified timer.")
+                                        )
+                                        .branch(node("hour").valueNumber(TimerContext::getOnTimeHour)
+                                                .description("Returns the hour hand in the on period from the time from the specified timer.")
+                                        )
                                 )
                                 .branch(node("off")
-                                        .branch(node("second").valueNumber(TimerContext::getOffTimeSecond))
-                                        .branch(node("minute").valueNumber(TimerContext::getOffTimeMinute))
-                                        .branch(node("hour").valueNumber(TimerContext::getOffTimeHour))
+                                        .branch(node("second").valueString(TimerContext::getOffTimeSecond)
+                                                .description("Returns the second hand in the off period from the time from the specified timer.")
+                                        )
+                                        .branch(node("minute").valueString(TimerContext::getOffTimeMinute)
+                                                .description("Returns the minute hand in the off period from the time from the specified timer.")
+                                        )
+                                        .branch(node("hour").valueNumber(TimerContext::getOffTimeHour)
+                                                .description("Returns the hour hand in the off period from the time from the specified timer.")
+                                        )
                                 )
                         )
-                        .branch(node("is_on").valueBoolean(TimerContext::getIsOn))
-                        .branch(node("is_off").valueBoolean(TimerContext::getIsOff))
+                        .branch(node("is_on").valueBoolean(TimerContext::getIsOn)
+                                .description("Returns whether the period timer is currently in on mode.")
+                        )
+                        .branch(node("is_off").valueBoolean(TimerContext::getIsOff)
+                                .description("Returns whether the period timer is currently in off mode.")
+                        )
                 )
         );
 
         register(node("catch")
                 .branch(node("last_caught")
                         .branch(node("fish")
-                                .branch(node("name").valueComponent(CatchContext::getLastCaughtFishName))
+                                .branch(node("name").valueComponent(CatchContext::getLastCaughtFishName)
+                                        .description("Returns the name of the last caught fish.")
+                                )
                                 .branch(node("rarity")
-                                        .branch(node("id").valueString(CatchContext::getLastCaughtFishRarityName))
-                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtFishRarityIcon))
-                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtFishRarityDryStreak))
+                                        .branch(node("id").valueString(CatchContext::getLastCaughtFishRarityName)
+                                                .description("Returns the rarity id of the last caught fish.")
+                                        )
+                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtFishRarityIcon)
+                                                .description("Returns the rarity of the last caught fish.")
+                                        )
+                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtFishRarityDryStreak)
+                                                .description("Returns the rarity drystreak of the last caught fish.")
+                                        )
                                 )
                                 .branch(node("variant")
-                                        .branch(node("id").valueString(CatchContext::getLastCaughtFishVariantName))
-                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtFishVariantIcon))
-                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtFishVariantDryStreak))
+                                        .branch(node("id").valueString(CatchContext::getLastCaughtFishVariantName)
+                                                .description("Returns the variant id of the last caught fish.")
+                                        )
+                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtFishVariantIcon)
+                                                .description("Returns the variant of the last caught fish.")
+                                        )
+                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtFishVariantDryStreak)
+                                                .description("Returns the variant drystreak of the last caught fish.")
+                                        )
                                 )
                                 .branch(node("size")
-                                        .branch(node("id").valueString(CatchContext::getLastCaughtFishSizeName))
-                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtFishSizeIcon))
-                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtFishSizeDryStreak))
+                                        .branch(node("id").valueString(CatchContext::getLastCaughtFishSizeName)
+                                                .description("Returns the fish size id of the last caught fish.")
+                                        )
+                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtFishSizeIcon)
+                                                .description("Returns the fish size of the last caught fish.")
+                                        )
+                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtFishSizeDryStreak)
+                                                .description("Returns the fish size drystreak of the last caught fish.")
+                                        )
                                 )
-                                .branch(node("lore").branch(nodeIndex().valueComponent(CatchContext::getLastCaughtFishLore)))
-                                .branch(nodeStringArray().value(CatchContext::getLastCaughtFishNbt))
+                                .branch(node("lore").branch(nodeIndex().valueComponent(CatchContext::getLastCaughtFishLore))
+                                        .description("Returns the lore line of the specified index.")
+                                )
+                                .branch(nodeStringArray().value(CatchContext::getLastCaughtFishNbt)
+                                        .description("Returns the custom data NBT value of the specified values.")
+                                )
                         )
                         .branch(node("pet")
-                                .branch(node("name").valueComponent(CatchContext::getLastCaughtPetName))
-                                .branch(node("rarity")
-                                        .branch(node("id").valueString(CatchContext::getLastCaughtPetRarityName))
-                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtPetRarityIcon))
-                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtPetRarityDryStreak))
-                                ).branch(node("rating")
-                                        .branch(node("id").valueString(CatchContext::getLastCaughtPetRatingName))
-                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtPetRatingIcon))
-                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtPetRatingDryStreak))
+                                .branch(node("name").valueComponent(CatchContext::getLastCaughtPetName)
+                                        .description("Returns the name of the last caught pet.")
                                 )
-                                .branch(node("lore").branch(nodeIndex().valueComponent(CatchContext::getLastCaughtPetLore)))
-                                .branch(nodeStringArray().value(CatchContext::getLastCaughtPetNbt))
+                                .branch(node("rarity")
+                                        .branch(node("id").valueString(CatchContext::getLastCaughtPetRarityName)
+                                                .description("Returns the rarity id of the last caught pet.")
+                                        )
+                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtPetRarityIcon)
+                                                .description("Returns the rarity of the last caught pet.")
+                                        )
+                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtPetRarityDryStreak)
+                                                .description("Returns the rarity drystreak of the last caught pet.")
+                                        )
+                                ).branch(node("rating")
+                                        .branch(node("id").valueString(CatchContext::getLastCaughtPetRatingName)
+                                                .description("Returns the rating id of the last caught pet.")
+                                        )
+                                        .branch(node("icon").valueComponent(CatchContext::getLastCaughtPetRatingIcon)
+                                                .description("Returns the rating of the last caught pet.")
+                                        )
+                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtPetRatingDryStreak)
+                                                .description("Returns the rating drystreak of the last caught pet.")
+                                        )
+                                )
+                                .branch(node("lore").branch(nodeIndex().valueComponent(CatchContext::getLastCaughtPetLore))
+                                        .description("Returns the lore line of the specified index.")
+                                )
+                                .branch(nodeStringArray().value(CatchContext::getLastCaughtPetNbt)
+                                        .description("Returns the custom data NBT value of the specified values.")
+                                )
                         )
                         .branch(node("item")
                                 .branch(nodeIndex()
-                                        .branch(node("name").valueComponent(CatchContext::getLastCaughtItemName))
-                                        .branch(node("amount").valueNumber(CatchContext::getLastCaughtItemStackAmount))
-                                        .branch(node("id").valueString(CatchContext::getLastCaughtItemId))
-                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtItemDryStreak))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(CatchContext::getLastCaughtItemLore)))
-                                        .branch(nodeStringArray().value(CatchContext::getLastCaughtItemNbt))
+                                        .branch(node("name").valueComponent(CatchContext::getLastCaughtItemName)
+                                                .description("Returns the name of the last caught item at the specified index.")
+                                        )
+                                        .branch(node("amount").valueNumber(CatchContext::getLastCaughtItemStackAmount)
+                                                .description("Returns the amount of the last caught item at the specified index.")
+                                        )
+                                        .branch(node("id").valueString(CatchContext::getLastCaughtItemId)
+                                                .description("Returns the item id of the last caught item at the specified index.")
+                                        )
+                                        .branch(node("last_drystreak").valueNumber(CatchContext::getLastCaughtItemDryStreak)
+                                                .description("Returns the item drystreak of the last caught item at the specified index.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(CatchContext::getLastCaughtItemLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(CatchContext::getLastCaughtItemNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                         )
                 )
@@ -293,69 +566,139 @@ public class PlaceholderRegistry {
         register(node("quest")
                 .branch(node("last_rewarded")
                         .branch(node("pet")
-                                .branch(node("name").valueComponent(QuestContext::getLastRewardedPetName))
-                                .branch(node("level").valueNumber(QuestContext::getLastRewardedPetLevel))
-                                .branch(node("level_progress").valueNumber(QuestContext::getLastRewardedPetLevelProgress))
-                                .branch(node("rating").valueComponent(QuestContext::getLastRewardedPetRating))
-                                .branch(node("rating_percent").valueNumber(QuestContext::getLastRewardedPetRatingPercent))
-                                .branch(node("rarity").valueComponent(QuestContext::getLastRewardedPetRarity))
-                                .branch(node("location_luck_percent").valueNumber(QuestContext::getLastRewardedPetLocationLuckPercent))
-                                .branch(node("location_scale_percent").valueNumber(QuestContext::getLastRewardedPetLocationScalePercent))
-                                .branch(node("climate_luck_percent").valueNumber(QuestContext::getLastRewardedPetClimateLuckPercent))
-                                .branch(node("climate_scale_percent").valueNumber(QuestContext::getLastRewardedPetClimateScalePercent))
-                                .branch(node("location_luck").valueNumber(QuestContext::getLastRewardedPetLocationLuck))
-                                .branch(node("location_scale").valueNumber(QuestContext::getLastRewardedPetLocationScale))
-                                .branch(node("climate_luck").valueNumber(QuestContext::getLastRewardedPetClimateLuck))
-                                .branch(node("climate_scale").valueNumber(QuestContext::getLastRewardedPetClimateScale))
-                                .branch(node("lore").branch(nodeIndex().valueComponent(QuestContext::getLastRewardedPetLore)))
-                                .branch(nodeStringArray().value(QuestContext::getLastRewardedPetNbt))
+                                .branch(node("name").valueComponent(QuestContext::getLastRewardedPetName)
+                                        .description("Returns the name of the last rewarded pet.")
+                                )
+                                .branch(node("level").valueNumber(QuestContext::getLastRewardedPetLevel)
+                                        .description("Returns the level of the last rewarded pet.")
+                                )
+                                .branch(node("level_progress").valueNumber(QuestContext::getLastRewardedPetLevelProgress)
+                                        .description("Returns the level progress to the next level of the last rewarded pet.")
+                                )
+                                .branch(node("rating").valueComponent(QuestContext::getLastRewardedPetRating)
+                                        .description("Returns the rating of the last rewarded pet.")
+                                )
+                                .branch(node("rating_percent").valueNumber(QuestContext::getLastRewardedPetRatingPercent)
+                                        .description("Returns the rating percentage of the last rewarded pet.")
+                                )
+                                .branch(node("rarity").valueComponent(QuestContext::getLastRewardedPetRarity)
+                                        .description("Returns the rarity of the last rewarded pet.")
+                                )
+                                .branch(node("location_luck_percent").valueNumber(QuestContext::getLastRewardedPetLocationLuckPercent)
+                                        .description("Returns the location luck percentage of the last rewarded pet.")
+                                )
+                                .branch(node("location_scale_percent").valueNumber(QuestContext::getLastRewardedPetLocationScalePercent)
+                                        .description("Returns the location scale percentage of the last rewarded pet.")
+                                )
+                                .branch(node("climate_luck_percent").valueNumber(QuestContext::getLastRewardedPetClimateLuckPercent)
+                                        .description("Returns the climate luck percentage of the last rewarded pet.")
+                                )
+                                .branch(node("climate_scale_percent").valueNumber(QuestContext::getLastRewardedPetClimateScalePercent)
+                                        .description("Returns the climate scale percentage of the last rewarded pet.")
+                                )
+                                .branch(node("location_luck").valueNumber(QuestContext::getLastRewardedPetLocationLuck)
+                                        .description("Returns the location luck value of the last rewarded pet.")
+                                )
+                                .branch(node("location_scale").valueNumber(QuestContext::getLastRewardedPetLocationScale)
+                                        .description("Returns the location scale value of the last rewarded pet.")
+                                )
+                                .branch(node("climate_luck").valueNumber(QuestContext::getLastRewardedPetClimateLuck)
+                                        .description("Returns the climate luck value of the last rewarded pet.")
+                                )
+                                .branch(node("climate_scale").valueNumber(QuestContext::getLastRewardedPetClimateScale)
+                                        .description("Returns the climate scale value of the last rewarded pet.")
+                                )
+                                .branch(node("lore").branch(nodeIndex().valueComponent(QuestContext::getLastRewardedPetLore))
+                                        .description("Returns the lore line of the specified index.")
+                                )
+                                .branch(nodeStringArray().value(QuestContext::getLastRewardedPetNbt)
+                                        .description("Returns the custom data NBT value of the specified values.")
+                                )
                         )
                         .branch(node("item")
                                 .branch(nodeIndex()
-                                        .branch(node("name").valueComponent(QuestContext::getLastRewardedItemName))
-                                        .branch(node("rarity").valueComponent(QuestContext::getLastRewardedItemRarity))
-                                        .branch(node("amount").valueNumber(QuestContext::getLastRewardedItemAmount))
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(QuestContext::getLastRewardedItemLore)))
-                                        .branch(nodeStringArray().value(QuestContext::getLastRewardedItemNbt))
+                                        .branch(node("name").valueComponent(QuestContext::getLastRewardedItemName)
+                                                .description("Returns the name of the last rewarded item at the specified index.")
+                                        )
+                                        .branch(node("rarity").valueComponent(QuestContext::getLastRewardedItemRarity)
+                                                .description("Returns the rarity of the last rewarded item at the specified index.")
+                                        )
+                                        .branch(node("amount").valueNumber(QuestContext::getLastRewardedItemAmount)
+                                                .description("Returns the amount of the last rewarded item at the specified index.")
+                                        )
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(QuestContext::getLastRewardedItemLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(QuestContext::getLastRewardedItemNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                         )
                 )
         );
 
         register(node("screen")
-                .branch(node("last_screen").valueComponent(ScreenContext::getLastScreen))
+                .branch(node("last_screen").valueComponent(ScreenContext::getLastScreen)
+                        .description("Returns the name of the last screen visited.")
+                )
         );
 
         register(node("constant_data")
                 .branch(node("data")
                         .branch(node("fish")
-                                .branch(node("variant").branch(nodeString().valueComponent(ConstantDataContext::getFishVariant)))
-                                .branch(node("rarity").branch(nodeString().valueComponent(ConstantDataContext::getFishRarity)))
-                                .branch(node("size").branch(nodeString().valueComponent(ConstantDataContext::getFishSize)))
+                                .branch(node("variant").branch(nodeString().valueComponent(ConstantDataContext::getFishVariant))
+                                        .description("Returns the variant from the specified id.")
+                                )
+                                .branch(node("rarity").branch(nodeString().valueComponent(ConstantDataContext::getFishRarity))
+                                        .description("Returns the rarity from the specified id.")
+                                )
+                                .branch(node("size").branch(nodeString().valueComponent(ConstantDataContext::getFishSize))
+                                        .description("Returns the fish size from the specified id.")
+                                )
                         )
                         .branch(node("pet")
-                                .branch(node("rarity").branch(nodeString().valueComponent(ConstantDataContext::getPetRarity)))
-                                .branch(node("rating").branch(nodeString().valueComponent(ConstantDataContext::getPetRating)))
+                                .branch(node("rarity").branch(nodeString().valueComponent(ConstantDataContext::getPetRarity))
+                                        .description("Returns the rarity from the specified id.")
+                                )
+                                .branch(node("rating").branch(nodeString().valueComponent(ConstantDataContext::getPetRating))
+                                        .description("Returns the pet rating from the specified id.")
+                                )
                         )
                 )
         );
 
         register(node("profile_data")
                 .branch(node("data")
-                        .branch(node("active_pet_slot").valueNumber(ProfileDataContext::getActivePetSlot))
-                        .branch(node("has_imported_stats").valueBoolean(ProfileDataContext::getHasImportedStats))
-                        .branch(node("has_imported_crew").valueBoolean(ProfileDataContext::getHasImportedCrew))
-                        .branch(node("is_in_crew_chat").valueBoolean(ProfileDataContext::getIsInCrewChat))
-                        .branch(node("tournament_contribution").valueBoolean(ProfileDataContext::getTournamentContribution))
+                        .branch(node("active_pet_slot").valueNumber(ProfileDataContext::getActivePetSlot)
+                                .description("Returns the slot number of the active pet.")
+                        )
+                        .branch(node("has_imported_stats").valueBoolean(ProfileDataContext::getHasImportedStats)
+                                .description("Returns whether the player stats are imported at least once.")
+                        )
+                        .branch(node("has_imported_crew").valueBoolean(ProfileDataContext::getHasImportedCrew)
+                                .description("Returns whether the crew data are imported at least once.")
+                        )
+                        .branch(node("is_in_crew_chat").valueBoolean(ProfileDataContext::getIsInCrewChat)
+                                .description("Returns whether the player has crew chat activated.")
+                        )
+                        .branch(node("tournament_contribution").valueBoolean(ProfileDataContext::getTournamentContribution)
+                                .description("Returns whether the player is contributing to the tournament.")
+                        )
                 )
         );
 
         register(node("quest_data")
                 .branch(node("data")
                         .branch(nodeIndex()
-                                .branch(node("goal").valueComponent(QuestDataContext::getGoal))
-                                .branch(node("max").valueNumber(QuestDataContext::getMax))
-                                .branch(node("current").valueNumber(QuestDataContext::getCurrent))
+                                .branch(node("goal").valueComponent(QuestDataContext::getGoal)
+                                        .description("Returns the goal of the quest at the specified index slot.")
+                                )
+                                .branch(node("max").valueNumber(QuestDataContext::getMax)
+                                        .description("Returns the amount needed for the goal of the quest at the specified index slot.")
+                                )
+                                .branch(node("current").valueNumber(QuestDataContext::getCurrent)
+                                        .description("Returns the current amount towards the goal of the quest at the specified index slot.")
+                                )
                         )
                 )
         );
@@ -363,46 +706,77 @@ public class PlaceholderRegistry {
         register(node("stats_data")
                 .branch(node("data")
                         .branch(node("fish")
-                                .branch(node("total").valueNumber(StatsDataContext::getFishTotal))
+                                .branch(node("total").valueNumber(StatsDataContext::getFishTotal)
+                                        .description("Returns the total fish caught.")
+                                )
                                 .branch(node("rarity")
                                         .branch(nodeString()
-                                                .branch(node("count").valueNumber(StatsDataContext::getFishRarityCount))
-                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getFishRarityDryStreak))
+                                                .branch(node("count").valueNumber(StatsDataContext::getFishRarityCount)
+                                                        .description("Returns the amount caught of the specified rarity.")
+                                                )
+                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getFishRarityDryStreak)
+                                                        .description("Returns the dry streak of the specified rarity.")
+                                                )
                                         )
                                 )
                                 .branch(node("size")
                                         .branch(nodeString()
-                                                .branch(node("count").valueNumber(StatsDataContext::getFishSizeCount))
-                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getFishSizeDryStreak))
+                                                .branch(node("count").valueNumber(StatsDataContext::getFishSizeCount)
+                                                        .description("Returns the amount caught of the specified fish size.")
+                                                )
+                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getFishSizeDryStreak)
+                                                        .description("Returns the dry streak of the specified fish size.")
+                                                )
                                         )
                                 )
                                 .branch(node("variant")
                                         .branch(nodeString()
-                                                .branch(node("count").valueNumber(StatsDataContext::getFishVariantCount))
-                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getFishVariantDryStreak))
+                                                .branch(node("count").valueNumber(StatsDataContext::getFishVariantCount)
+                                                        .description("Returns the amount caught of the specified variant.")
+                                                )
+                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getFishVariantDryStreak)
+                                                        .description("Returns the dry streak of the specified variant.")
+                                                )
                                         )
                                 )
                         )
                         .branch(node("pet")
-                                .branch(node("total").valueNumber(StatsDataContext::getPetTotal))
-                                .branch(node("dry_streak").valueNumber(StatsDataContext::getPetDryStreak))
+                                .branch(node("total").valueNumber(StatsDataContext::getPetTotal)
+                                        .description("Returns the total pets caught.")
+                                )
+                                .branch(node("dry_streak").valueNumber(StatsDataContext::getPetDryStreak)
+                                        .description("Returns the dry streak of caught pets.")
+                                )
                                 .branch(node("rarity")
                                         .branch(nodeString()
-                                                .branch(node("count").valueNumber(StatsDataContext::getPetRarityCount))
-                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getPetRarityDryStreak))
+                                                .branch(node("count").valueNumber(StatsDataContext::getPetRarityCount)
+                                                        .description("Returns the amount caught of the specified rarity.")
+                                                )
+                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getPetRarityDryStreak)
+                                                        .description("Returns the dry streak of the specified rarity.")
+                                                )
                                         )
                                 )
                                 .branch(node("rating")
                                         .branch(nodeString()
-                                                .branch(node("count").valueNumber(StatsDataContext::getPetRatingCount))
-                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getPetRatingDryStreak))
+                                                .branch(node("count").valueNumber(StatsDataContext::getPetRatingCount)
+                                                        .description("Returns the amount caught of the specified pet rating.")
+                                                )
+                                                .branch(node("dry_streak").valueNumber(StatsDataContext::getPetRatingDryStreak)
+                                                        .description("Returns the dry streak of the specified pet rating.")
+                                                )
                                         )
                                 )
                         )
                         .branch(node("item")
                                 .branch(nodeString()
-                                        .branch(node("count").valueNumber(StatsDataContext::getItemCount))
-                                        .branch(node("dry_streak").valueNumber(StatsDataContext::getItemDryStreak))
+                                        .branch(node("count").valueNumber(StatsDataContext::getItemCount)
+                                                .description("Returns the amount caught of the specified item value.")
+
+                                        )
+                                        .branch(node("dry_streak").valueNumber(StatsDataContext::getItemDryStreak)
+                                                .description("Returns the dry streak of the specified item value.")
+                                        )
                                 )
                         )
                 )
@@ -411,8 +785,12 @@ public class PlaceholderRegistry {
         register(node("crew_data")
                 .branch(node("data")
                         .branch(nodeIndex()
-                                .branch(node("id").valueString(CrewDataContext::getUuid))
-                                .branch(node("name").valueString(CrewDataContext::getName))
+                                .branch(node("id").valueString(CrewDataContext::getUuid)
+                                        .description("Returns the UUID of the player of the specified index.")
+                                )
+                                .branch(node("name").valueString(CrewDataContext::getName)
+                                        .description("Returns the name of the player of the specified index.")
+                                )
                         )
                 )
         );
@@ -420,10 +798,16 @@ public class PlaceholderRegistry {
         register(node("tracker_data")
                 .branch(node("data")
                         .branch(nodeString()
-                                .branch(node("value").value(TrackerDataContext::getValue))
+                                .branch(node("value").value(TrackerDataContext::getValue)
+                                        .description("Return the current value of the specified tracker.")
+                                )
                                 .branch(node("itemstack")
-                                        .branch(node("lore").branch(nodeIndex().valueComponent(TrackerDataContext::getItemLore)))
-                                        .branch(nodeStringArray().value(TrackerDataContext::getItemNbt))
+                                        .branch(node("lore").branch(nodeIndex().valueComponent(TrackerDataContext::getItemLore))
+                                                .description("Returns the lore line of the specified index.")
+                                        )
+                                        .branch(nodeStringArray().value(TrackerDataContext::getItemNbt)
+                                                .description("Returns the custom data NBT value of the specified values.")
+                                        )
                                 )
                         )
                 )
@@ -431,44 +815,150 @@ public class PlaceholderRegistry {
         //endregion
 
         //region Boolean Functions
-        register(node("condition").evalBoolean(EvaluationContext::evalCondition));
-        register(node("is_blank").evalBoolean(EvaluationContext::evalIsBlank));
-        register(node("contains").evalBoolean(EvaluationContext::evalContains));
-        register(node("ends_with").evalBoolean(EvaluationContext::evalEndsWith));
-        register(node("starts_with").evalBoolean(EvaluationContext::evalStartsWith));
-        register(node("or").evalBoolean(EvaluationContext::evalOr));
-        register(node("and").evalBoolean(EvaluationContext::evalAnd));
-        register(node("not").evalBoolean(EvaluationContext::evalNot));
-        register(node("xor").evalBoolean(EvaluationContext::evalXor));
+        register(node("condition").evalBoolean(EvaluationContext::evalCondition)
+                .description("Returns a boolean from the specified valid condition using the following operators; <, <=, >, >=, ==, !=.")
+                .param("condition", "boolean")
+        );
+        register(node("if").evalValue(EvaluationContext::evalConditionIf)
+                .description("Returns the true value or false value based on the specified valid condition using the following operators; <, <=, >, >=, ==, !=.")
+                .param("condition", "boolean")
+                .param("true", "dynamic")
+                .paramOptional("false", "dynamic")
+        );
+        register(node("is_blank").evalBoolean(EvaluationContext::evalIsBlank)
+                .description("Returns true if the value is empty or contains only white space codepoints, otherwise false.")
+                .param("value", "string|component")
+        );
+        register(node("contains").evalBoolean(EvaluationContext::evalContains)
+                .description("Returns true if and only if this value contains the specified search parameter.")
+                .param("value", "string|component")
+                .param("search", "string|component")
+        );
+        register(node("ends_with").evalBoolean(EvaluationContext::evalEndsWith)
+                .description("Returns true if this value ends with the specified suffix.")
+                .param("value", "string|component")
+                .param("suffix", "string|component")
+        );
+        register(node("starts_with").evalBoolean(EvaluationContext::evalStartsWith)
+                .description("Returns true if this value starts with the specified prefix.")
+                .param("value", "string|component")
+                .param("prefix", "string|component")
+        );
+        register(node("or").evalBoolean(EvaluationContext::evalOr)
+                .description("Returns true if at least one value is true.")
+                .paramVariadic("value", "boolean")
+        );
+        register(node("and").evalBoolean(EvaluationContext::evalAnd)
+                .description("Returns true if all values is true.")
+                .paramVariadic("value", "boolean")
+        );
+        register(node("not").evalBoolean(EvaluationContext::evalNot)
+                .description("Returns the reverse boolean value.")
+                .paramVariadic("value", "boolean")
+        );
+        register(node("xor").evalBoolean(EvaluationContext::evalXor)
+                .description("Returns true if at least one but not all is true. If more than 3 values, returns true if an odd number of values are true.")
+                .paramVariadic("value", "boolean")
+        );
         //endregion
 
         //region String Manipulation Functions
-        register(node("substring").evalValue(EvaluationContext::evalSubstring));
-        register(node("index_of").evalNumber(EvaluationContext::evalIndexOf));
-        register(node("repeat").evalValue(EvaluationContext::evalRepeat));
-        register(node("uppercase").evalValue(EvaluationContext::evalUppercase));
-        register(node("lowercase").evalValue(EvaluationContext::evalLowercase));
-        register(node("shorten_number").evalString(EvaluationContext::evalShortenNumber));
-        register(node("remove_format").evalString(EvaluationContext::evalRemoveFormat));
-        register(node("format_time").evalString(EvaluationContext::evalFormatTime));
+        register(node("substring").evalValue(EvaluationContext::evalSubstring)
+                .description("Returns a value that is a substring of this value. The substring begins with the character at the specified start index and extends to the end of this string, or extends to the specified end index.")
+                .param("value", "string|component")
+                .param("start", "number")
+                .paramOptional("end", "number")
+        );
+        register(node("index_of").evalNumber(EvaluationContext::evalIndexOf)
+                .description("Returns the index within this value of the first occurrence of the specified search value, or starting at the specified from_index index.")
+                .param("value", "string|component")
+                .param("search", "string|component")
+                .paramOptional("from_index", "number")
+        );
+        register(node("repeat").evalValue(EvaluationContext::evalRepeat)
+                .description("Returns a value whose value is the concatenation of this value repeated count times.")
+                .param("value", "string|component")
+                .param("count", "number")
+        );
+        register(node("uppercase").evalValue(EvaluationContext::evalUppercase)
+                .description("Converts all of the characters in this value to upper case.")
+                .param("value", "string|component")
+        );
+        register(node("lowercase").evalValue(EvaluationContext::evalLowercase)
+                .description("Converts all of the characters in this value to lower case.")
+                .param("value", "string|component")
+        );
+        register(node("shorten_number").evalString(EvaluationContext::evalShortenNumber)
+                .description("Returns the value to numeric abbreviations like 1K (1.000), 1M (1.000.000), 1B (1.000.000.000), with up to 2 decimals.")
+                .param("value", "number")
+        );
+        register(node("remove_format").evalString(EvaluationContext::evalRemoveFormat)
+                .description("Returns the plain text of the specified value.")
+                .param("value", "component")
+        );
+        register(node("format_time").evalString(EvaluationContext::evalFormatTime)
+                .description("Returns the number with a leading zero if and only if the specified value is one digit.")
+                .param("value", "number")
+        );
         //endregion
 
         //region Math Functions
-        register(node("expression").evalNumber(EvaluationContext::evalExpression));
-        register(node("max").evalNumber(EvaluationContext::evalMax));
-        register(node("min").evalNumber(EvaluationContext::evalMin));
-        register(node("abs").evalNumber(EvaluationContext::evalAbs));
-        register(node("ceil").evalNumber(EvaluationContext::evalCeil));
-        register(node("floor").evalNumber(EvaluationContext::evalFloor));
-        register(node("round").evalNumber(EvaluationContext::evalRound));
-        register(node("mod").evalNumber(EvaluationContext::evalMod));
-        register(node("clamp").evalNumber(EvaluationContext::evalClamp));
-        register(node("log").evalNumber(EvaluationContext::evalLog));
-        register(node("pow").evalNumber(EvaluationContext::evalPow));
+        register(node("expression").evalNumber(EvaluationContext::evalExpression)
+                .description("Returns a number from the specified valid expression using the following operators; +, -, *, /.")
+                .param("expression", "number")
+        );
+        register(node("max").evalNumber(EvaluationContext::evalMax)
+                .description("Returns the greatest number of all values.")
+                .paramVariadic("value", "number")
+        );
+        register(node("min").evalNumber(EvaluationContext::evalMin)
+                .description("Returns the smallest number of all values.")
+                .paramVariadic("value", "number")
+        );
+        register(node("abs").evalNumber(EvaluationContext::evalAbs)
+                .description("Returns the absolute value of the specified value.")
+                .param("value", "number")
+        );
+        register(node("ceil").evalNumber(EvaluationContext::evalCeil)
+                .description("Returns the nearest specified value rounded up to a mathematical integer.")
+                .param("value", "number")
+        );
+        register(node("floor").evalNumber(EvaluationContext::evalFloor)
+                .description("Returns the nearest specified value rounded down to a mathematical integer.")
+                .param("value", "number")
+        );
+        register(node("round").evalNumber(EvaluationContext::evalRound)
+                .description("Returns the nearest specified value rounded to the nearest mathematical integer.")
+                .param("value", "number")
+                .paramOptional("decimals", "number")
+        );
+        register(node("mod").evalNumber(EvaluationContext::evalMod)
+                .description("Returns the modulus of a mod b.")
+                .param("a", "number")
+                .param("b", "number")
+        );
+        register(node("clamp").evalNumber(EvaluationContext::evalClamp)
+                .description("Clamps the value to fit between min and max.")
+                .param("value", "number")
+                .param("min", "number")
+                .param("max", "number")
+        );
+        register(node("log").evalNumber(EvaluationContext::evalLog)
+                .description("Returns the natural logarithm of the specified value.")
+                .param("value", "number")
+        );
+        register(node("pow").evalNumber(EvaluationContext::evalPow)
+                .description("Returns the value of a raised to the power of b.")
+                .param("a", "number")
+                .param("b", "number")
+        );
         //endregion
 
         //region Misc
-        register(node("hide_line").evalValue(EvaluationContext::evalHideLine).allowEmpty());
+        register(node("hide_line").evalValue(EvaluationContext::evalHideLine).allowEmpty()
+                .description("Hides the full line if and only if the specified should_hide value is true.")
+                .param("should_hide", "boolean")
+        );
         //endregion
     }
 
@@ -1035,7 +1525,7 @@ public class PlaceholderRegistry {
             return "";
         }
 
-        static Number getTimeSecond(List<String> indices) {
+        static String getTimeSecond(List<String> indices) {
             CustomTimerDataHandler.CustomTimer timer = TimerHandler.instance().getTimers().stream().filter(t -> Objects.equals(t.getName(), indices.getFirst())).findFirst().orElse(null);
             if(timer != null) {
                 long timeSeconds = System.currentTimeMillis() / 1000;
@@ -1043,12 +1533,12 @@ public class PlaceholderRegistry {
                 long pos = adjusted % timer.getTimer();
                 long remaining = timer.getTimer() - pos;
 
-                return Math.floor(remaining % 60);
+                return String.format(Locale.US, "%02d", Double.valueOf(Math.floor(remaining % 60)).intValue());
             }
-            return null;
+            return "";
         }
 
-        static Number getTimeMinute(List<String> indices) {
+        static String getTimeMinute(List<String> indices) {
             CustomTimerDataHandler.CustomTimer timer = TimerHandler.instance().getTimers().stream().filter(t -> Objects.equals(t.getName(), indices.getFirst())).findFirst().orElse(null);
             if(timer != null) {
                 long timeSeconds = System.currentTimeMillis() / 1000;
@@ -1056,9 +1546,9 @@ public class PlaceholderRegistry {
                 long pos = adjusted % timer.getTimer();
                 long remaining = timer.getTimer() - pos;
 
-                return Math.floor((double) (remaining % 3600) / 60);
+                return String.format(Locale.US, "%02d", Double.valueOf(Math.floor((double) (remaining % 3600) / 60)).intValue());
             }
-            return null;
+            return "";
         }
 
         static Number getTimeHour(List<String> indices) {
@@ -1074,7 +1564,7 @@ public class PlaceholderRegistry {
             return null;
         }
 
-        static Number getOnTimeSecond(List<String> indices) {
+        static String getOnTimeSecond(List<String> indices) {
             CustomTimerDataHandler.CustomTimer timer = TimerHandler.instance().getTimers().stream().filter(t -> Objects.equals(t.getName(), indices.getFirst())).findFirst().orElse(null);
             if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
                 long cycle = timerPeriod.getTimer() + timerPeriod.getOffTimer();
@@ -1084,12 +1574,12 @@ public class PlaceholderRegistry {
                         ? timerPeriod.getTimer() - pos
                         : (cycle - pos) + timerPeriod.getTimer();
 
-                return Math.floor(remaining % 60);
+                return String.format(Locale.US, "%02d", Double.valueOf(Math.floor(remaining % 60)).intValue());
             }
-            return null;
+            return "";
         }
 
-        static Number getOnTimeMinute(List<String> indices) {
+        static String getOnTimeMinute(List<String> indices) {
             CustomTimerDataHandler.CustomTimer timer = TimerHandler.instance().getTimers().stream().filter(t -> Objects.equals(t.getName(), indices.getFirst())).findFirst().orElse(null);
             if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
                 long cycle = timerPeriod.getTimer() + timerPeriod.getOffTimer();
@@ -1099,9 +1589,9 @@ public class PlaceholderRegistry {
                         ? timerPeriod.getTimer() - pos
                         : (cycle - pos) + timerPeriod.getTimer();
 
-                return Math.floor((double) (remaining % 3600) / 60);
+                return String.format(Locale.US, "%02d", Double.valueOf(Math.floor((double) (remaining % 3600) / 60)).intValue());
             }
-            return null;
+            return "";
         }
 
         static Number getOnTimeHour(List<String> indices) {
@@ -1119,7 +1609,7 @@ public class PlaceholderRegistry {
             return null;
         }
 
-        static Number getOffTimeSecond(List<String> indices) {
+        static String getOffTimeSecond(List<String> indices) {
             CustomTimerDataHandler.CustomTimer timer = TimerHandler.instance().getTimers().stream().filter(t -> Objects.equals(t.getName(), indices.getFirst())).findFirst().orElse(null);
             if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
                 long cycle = timerPeriod.getTimer() + timerPeriod.getOffTimer();
@@ -1127,12 +1617,12 @@ public class PlaceholderRegistry {
                 long pos = adjusted % cycle;
                 long remaining = cycle - pos;
 
-                return Math.floor(remaining % 60);
+                return String.format(Locale.US, "%02d", Double.valueOf(Math.floor(remaining % 60)).intValue());
             }
-            return null;
+            return "";
         }
 
-        static Number getOffTimeMinute(List<String> indices) {
+        static String getOffTimeMinute(List<String> indices) {
             CustomTimerDataHandler.CustomTimer timer = TimerHandler.instance().getTimers().stream().filter(t -> Objects.equals(t.getName(), indices.getFirst())).findFirst().orElse(null);
             if(timer instanceof CustomTimerDataHandler.CustomTimerPeriod timerPeriod) {
                 long cycle = timerPeriod.getTimer() + timerPeriod.getOffTimer();
@@ -1140,9 +1630,9 @@ public class PlaceholderRegistry {
                 long pos = adjusted % cycle;
                 long remaining = cycle - pos;
 
-                return Math.floor((double) (remaining % 3600) / 60);
+                return String.format(Locale.US, "%02d", Double.valueOf(Math.floor((double) (remaining % 3600) / 60)).intValue());
             }
-            return null;
+            return "";
         }
 
         static Number getOffTimeHour(List<String> indices) {
@@ -1648,10 +2138,31 @@ public class PlaceholderRegistry {
         /// Boolean
 
         static Boolean evalCondition(List<PlaceholderValue> args) {
-            return !args.isEmpty() && args.getFirst().toBoolean();
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            };
+            return args.getFirst().toBoolean();
+        }
+
+        static PlaceholderValue evalConditionIf(List<PlaceholderValue> args) {
+            if(args.size() < 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 2 arguments, got " + 0
+                );
+            };
+            return args.getFirst().toBoolean()
+                    ? args.get(1)
+                    : (args.size() >= 3 ? args.get(2) : PlaceholderValue.bool(false));
         }
 
         static Boolean evalOr(List<PlaceholderValue> args) {
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            };
             for (PlaceholderValue arg : args) {
                 if(arg.toBoolean()) return true;
             }
@@ -1659,6 +2170,11 @@ public class PlaceholderRegistry {
         }
 
         static Boolean evalAnd(List<PlaceholderValue> args) {
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            };
             for (PlaceholderValue arg : args) {
                 if(!arg.toBoolean()) return false;
             }
@@ -1666,6 +2182,11 @@ public class PlaceholderRegistry {
         }
 
         static Boolean evalXor(List<PlaceholderValue> args) {
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            };
             boolean result = false;
             for (PlaceholderValue arg : args) {
                 result ^= arg.toBoolean();
@@ -1674,26 +2195,48 @@ public class PlaceholderRegistry {
         }
 
         static Boolean evalNot(List<PlaceholderValue> args) {
-            boolean value = !args.isEmpty() && args.getFirst().toBoolean();
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            boolean value = args.getFirst().toBoolean();
             return !value;
         }
 
         static Boolean evalIsBlank(List<PlaceholderValue> args) {
-            return args.isEmpty() || args.getFirst().toString().isBlank();
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return args.getFirst().toString().isBlank();
         }
 
         static Boolean evalContains(List<PlaceholderValue> args) {
-            if(args.size() < 2) return false;
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
             return args.getFirst().toString().contains(args.get(1).toString());
         }
 
         static Boolean evalEndsWith(List<PlaceholderValue> args) {
-            if(args.size() < 2) return false;
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
             return args.getFirst().toString().endsWith(args.get(1).toString());
         }
 
         static Boolean evalStartsWith(List<PlaceholderValue> args) {
-            if(args.size() < 2) return false;
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
             return args.getFirst().toString().startsWith(args.get(1).toString());
         }
 
@@ -1704,6 +2247,11 @@ public class PlaceholderRegistry {
         }
 
         static Number evalMax(List<PlaceholderValue> args) {
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            };
             double result = Double.NEGATIVE_INFINITY;
             for (PlaceholderValue arg : args) {
                 result = Math.max(result, arg.toDouble());
@@ -1712,6 +2260,11 @@ public class PlaceholderRegistry {
         }
 
         static Number evalMin(List<PlaceholderValue> args) {
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            };
             double result = Double.POSITIVE_INFINITY;
             for (PlaceholderValue arg : args) {
                 result = Math.min(result, arg.toDouble());
@@ -1720,19 +2273,38 @@ public class PlaceholderRegistry {
         }
 
         static Number evalAbs(List<PlaceholderValue> args) {
-            return args.isEmpty() ? 0 : Math.abs(args.getFirst().toDouble());
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return Math.abs(args.getFirst().toDouble());
         }
 
         static Number evalCeil(List<PlaceholderValue> args) {
-            return args.isEmpty() ? 0 : Math.ceil(args.getFirst().toDouble());
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return Math.ceil(args.getFirst().toDouble());
         }
 
         static Number evalFloor(List<PlaceholderValue> args) {
-            return args.isEmpty() ? 0 : Math.floor(args.getFirst().toDouble());
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return Math.floor(args.getFirst().toDouble());
         }
 
         static Number evalRound(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return null;
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + 0
+                );
+            }
 
             int decimals = 0;
             if(args.size() > 1) decimals = args.get(1).toInteger();
@@ -1743,7 +2315,11 @@ public class PlaceholderRegistry {
         }
 
         static Number evalMod(List<PlaceholderValue> args) {
-            if(args.size() < 2) return null;
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
             double a = args.getFirst().toDouble();
             double b = args.get(1).toDouble();
 
@@ -1751,8 +2327,11 @@ public class PlaceholderRegistry {
         }
 
         static Number evalClamp(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return null;
-            if(args.size() < 3) return args.getFirst().toDouble();
+            if(args.size() != 3) {
+                throw new PlaceholderEvaluationException(
+                        "expects 3 arguments, got " + args.size()
+                );
+            };
 
             double value = args.getFirst().toDouble();
             double min = args.get(1).toDouble();
@@ -1762,12 +2341,20 @@ public class PlaceholderRegistry {
         }
 
         static Number evalLog(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return null;
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
             return Math.log(args.getFirst().toDouble());
         }
 
         static Number evalPow(List<PlaceholderValue> args) {
-            if(args.size() < 2) return null;
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
             double a = args.getFirst().toDouble();
             double b = args.get(1).toDouble();
 
@@ -1777,8 +2364,11 @@ public class PlaceholderRegistry {
         /// String Manipulation
 
         static PlaceholderValue evalSubstring(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return PlaceholderValue.emptyText();
-            if(args.size() < 2) return args.getFirst();
+            if(args.size() < 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 2 arguments, got " + args.size()
+                );
+            };
 
             PlaceholderValue value = args.getFirst();
             int length = value.toString().length();
@@ -1797,24 +2387,28 @@ public class PlaceholderRegistry {
         }
 
         static Number evalIndexOf(List<PlaceholderValue> args) {
-            if(args.size() < 2) return -1;
-            if(args.size() < 3) {
-                String value = args.getFirst().toString();
-                String valueToSearch = args.get(1).toString();
+            if(args.size() < 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 2 arguments, got " + args.size()
+                );
+            };
+            String value = args.getFirst().toString();
+            String valueToSearch = args.get(1).toString();
 
+            if(args.size() < 3) {
                 return value.indexOf(valueToSearch);
             } else {
-                String value = args.getFirst().toString();
-                String valueToSearch = args.get(1).toString();
                 int fromIndex = args.get(2).toInteger();
-
                 return value.indexOf(valueToSearch, fromIndex);
             }
         }
 
         static PlaceholderValue evalRepeat(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return PlaceholderValue.emptyText();
-            if(args.size() < 2) return args.getFirst();
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
 
             PlaceholderValue value = args.getFirst();
 
@@ -1835,7 +2429,11 @@ public class PlaceholderRegistry {
         }
 
         static PlaceholderValue evalUppercase(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return PlaceholderValue.emptyText();
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
 
             PlaceholderValue value = args.getFirst();
 
@@ -1847,7 +2445,11 @@ public class PlaceholderRegistry {
         }
 
         static PlaceholderValue evalLowercase(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return PlaceholderValue.emptyText();
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
 
             PlaceholderValue value = args.getFirst();
 
@@ -1859,28 +2461,42 @@ public class PlaceholderRegistry {
         }
 
         static String evalShortenNumber(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return "";
-
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
             Number number = args.getFirst().toDouble();
 
             return TextHelper.shortenNumber(number.floatValue(), 2);
         }
 
         static String evalRemoveFormat(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return "";
-
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
             return args.getFirst().toString();
         }
 
         static String evalFormatTime(List<PlaceholderValue> args) {
-            if(args.isEmpty()) return "";
-
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
             return String.format(Locale.US, "%02d", args.getFirst().toInteger());
         }
 
         /// Misc
 
         static PlaceholderValue evalHideLine(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
             return args.getFirst().toBoolean() ? PlaceholderValue.emptyText().markFailure() : PlaceholderValue.emptyText();
         }
     }
@@ -1891,18 +2507,18 @@ public class PlaceholderRegistry {
         JsonObject root = new JsonObject();
 
         for (Map.Entry<String, PlaceholderTreeNode> entry : ROOTS.entrySet()) {
-            root.add(entry.getKey(), describeNode(entry.getValue()));
+            root.add(entry.getKey(), describeNode(entry.getKey(), entry.getValue()));
         }
 
         return root;
     }
 
     public static String toJsonSchemaString() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         return gson.toJson(toJsonSchema());
     }
 
-    private static JsonElement describeNode(PlaceholderTreeNode node) {
+    private static JsonElement describeNode(String name, PlaceholderTreeNode node) {
         boolean hasChildren = !node.getChildren().isEmpty()
                 || node.getIndexChild() != null
                 || node.getStringChild() != null
@@ -1911,42 +2527,95 @@ public class PlaceholderRegistry {
         boolean hasOwnFunction = node.getEvalKind() != EvalKind.NONE;
 
         if(!hasChildren) {
-            if(hasOwnValue && hasOwnFunction) return selfDescriptor(node);
-            if(hasOwnValue) return new JsonPrimitive(valueTag(node.getValueKind()));
-            if(hasOwnFunction) return new JsonPrimitive(evalTag(node.getEvalKind()));
+            if(hasOwnValue && hasOwnFunction) return selfDescriptor(name, node);
+            if(hasOwnValue) return describeValueLeaf(node);
+            if(hasOwnFunction) return describeFunctionLeaf(name, node);
 
             return new JsonPrimitive("unknown");
         }
 
         JsonObject object = new JsonObject();
         if(hasOwnValue && hasOwnFunction) {
-            object.add("$self", selfDescriptor(node));
+            object.add("$self", selfDescriptor(name, node));
         } else if (hasOwnValue) {
-            object.addProperty("$self", valueTag(node.getValueKind()));
+            object.add("$self", describeValueLeaf(node));
         } else if (hasOwnFunction) {
-            object.addProperty("$self", evalTag(node.getEvalKind()));
+            object.add("$self", describeFunctionLeaf(name, node));
         }
 
         for (Map.Entry<String, PlaceholderTreeNode> child : node.getChildren().entrySet()) {
-            object.add(child.getKey(), describeNode(child.getValue()));
+            object.add(child.getKey(), describeNode(child.getKey(), child.getValue()));
         }
         if(node.getIndexChild() != null) {
-            object.add("<index>", describeNode(node.getIndexChild()));
+            object.add("<index>", describeNode("<index>", node.getIndexChild()));
         }
         if(node.getStringChild() != null) {
-            object.add("<string>", describeNode(node.getStringChild()));
+            object.add("<string>", describeNode("<string>", node.getStringChild()));
         }
         if(node.getStringArrayChild() != null) {
-            object.add("<string[]>", describeNode(node.getStringArrayChild()));
+            object.add("<string[]>", describeNode("<string[]>", node.getStringArrayChild()));
         }
         return object;
     }
 
-    private static JsonObject selfDescriptor(PlaceholderTreeNode node) {
+    private static JsonObject selfDescriptor(String name, PlaceholderTreeNode node) {
         JsonObject self = new JsonObject();
-        self.addProperty("value", valueTag(node.getValueKind()));
-        self.addProperty("function", evalTag(node.getEvalKind()));
+        self.add("value", describeValueLeaf(node));
+        self.add("function", describeFunctionLeaf(name, node));
         return self;
+    }
+
+    private static JsonElement describeValueLeaf(PlaceholderTreeNode node) {
+        String tag = valueTag(node.getValueKind());
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("returns", tag);
+        if(node.getDescription() != null) {
+            obj.addProperty("description", node.getDescription());
+        }
+        return obj;
+    }
+
+    private static JsonObject describeFunctionLeaf(String name, PlaceholderTreeNode node) {
+        String returnTag = evalTag(node.getEvalKind());
+        List<Param> params = node.getParams();
+
+        JsonObject obj = new JsonObject();
+        if(params.isEmpty()) {
+            obj.addProperty("signature", name + ".(value): " + returnTag);
+            obj.addProperty("returns", returnTag);
+            if(node.getDescription() != null) {
+                obj.addProperty("description", node.getDescription());
+            }
+            return obj;
+        }
+
+        StringBuilder signature = new StringBuilder(name).append(".(");
+        JsonArray paramsArray = new JsonArray();
+        for (int i = 0; i < params.size(); i++) {
+            Param param = params.get(i);
+            if(i > 0) signature.append(", ");
+            if(param.variadic()) signature.append("...");
+            signature.append(param.name());
+            if(param.optional()) signature.append("?");
+            signature.append(": ").append(param.type());
+
+            JsonObject paramObj = new JsonObject();
+            paramObj.addProperty("name", param.name());
+            paramObj.addProperty("type", param.type());
+            if(param.optional()) paramObj.addProperty("optional", true);
+            if(param.variadic()) paramObj.addProperty("variadic", true);
+            paramsArray.add(paramObj);
+        }
+        signature.append("): ").append(returnTag);
+
+        obj.addProperty("signature", signature.toString());
+        obj.addProperty("returns", returnTag);
+        if(node.getDescription() != null) {
+            obj.addProperty("description", node.getDescription());
+        }
+        obj.add("params", paramsArray);
+        return obj;
     }
 
     private static String valueTag(ValueKind valueKind) {
@@ -1963,11 +2632,11 @@ public class PlaceholderRegistry {
     private static String evalTag(EvalKind evalKind) {
         return switch (evalKind) {
             case NONE -> "none";
-            case STRING -> "function<string>";
-            case COMPONENT -> "function<component>";
-            case NUMBER -> "function<number>";
-            case BOOLEAN -> "function<boolean>";
-            case VALUE -> "function<value>";
+            case STRING -> "string";
+            case COMPONENT -> "component";
+            case NUMBER -> "number";
+            case BOOLEAN -> "boolean";
+            case VALUE -> "dynamic";
         };
     }
     //endregion

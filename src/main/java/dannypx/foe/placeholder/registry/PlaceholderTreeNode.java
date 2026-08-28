@@ -4,10 +4,7 @@ import dannypx.foe.placeholder.functions.*;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -16,6 +13,8 @@ public class PlaceholderTreeNode {
 
     public enum ValueKind { NONE, STRING, COMPONENT, NUMBER, BOOLEAN, VALUE }
     public enum EvalKind { NONE, STRING, COMPONENT, NUMBER, BOOLEAN, VALUE }
+
+    public record Param(String name, String type, boolean optional, boolean variadic) {}
 
     private final String key;
     private final WildcardType wildcardType;
@@ -32,6 +31,8 @@ public class PlaceholderTreeNode {
 
     private ValueKind valueKind = ValueKind.NONE;
     private EvalKind evalKind = EvalKind.NONE;
+    private final List<Param> params = new ArrayList<>();
+    private String description = null;
 
     private PlaceholderTreeNode(@Nullable String key, WildcardType wildcardType) {
         this.key = key;
@@ -158,6 +159,28 @@ public class PlaceholderTreeNode {
         return this;
     }
 
+    /// Documentation
+
+    public PlaceholderTreeNode param(String name, String type) {
+        params.add(new Param(name, type, false, false));
+        return this;
+    }
+
+    public PlaceholderTreeNode paramOptional(String name, String type) {
+        params.add(new Param(name, type, true, false));
+        return this;
+    }
+
+    public PlaceholderTreeNode paramVariadic(String name, String type) {
+        params.add(new Param(name, type, false, true));
+        return this;
+    }
+
+    public PlaceholderTreeNode description(String text) {
+        this.description = text;
+        return this;
+    }
+
     ///
 
     public PlaceholderTreeNode allowEmpty() {
@@ -211,6 +234,14 @@ public class PlaceholderTreeNode {
 
     public EvalKind getEvalKind() {
         return evalKind;
+    }
+
+    public List<Param> getParams() {
+        return Collections.unmodifiableList(params);
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public PlaceholderTreeNode resolveChild(String segment, List<String> captured) {

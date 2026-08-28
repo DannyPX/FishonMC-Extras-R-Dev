@@ -50,10 +50,18 @@ public class PlaceholderEvaluator {
             }
             case PlaceholderReference p -> {
                 PlaceholderTreeNode treeNode = p.resolved();
-                PlaceholderValue result = treeNode.resolveValue(p.indices());
+                PlaceholderValue result;
+
+                try {
+                    result = treeNode.resolveValue(p.indices());
+                } catch (PlaceholderEvaluationException e) {
+                    yield this.trackedError("'" + treeNode.key() + "' " +  e.getMessage(), successAcc, errors);
+                }
+
                 if(!this.isSuccess(treeNode, result)) {
                     successAcc[0] = false;
                 }
+
                 yield result.isNull() ? PlaceholderValue.text("") : result;
             }
             case FunctionCall f -> {
@@ -64,7 +72,12 @@ public class PlaceholderEvaluator {
                     evaluatedArgs.add(this.evalNode(argNode, successAcc, errors));
                 }
 
-                PlaceholderValue result = treeNode.resolveEval(evaluatedArgs);
+                PlaceholderValue result;
+                try {
+                    result = treeNode.resolveEval(evaluatedArgs);;
+                } catch (PlaceholderEvaluationException e) {
+                    yield this.trackedError("'" + treeNode.key() + "' " +  e.getMessage(), successAcc, errors);
+                }
 
                 if(!isSuccess(treeNode, result)) {
                     successAcc[0] = false;
