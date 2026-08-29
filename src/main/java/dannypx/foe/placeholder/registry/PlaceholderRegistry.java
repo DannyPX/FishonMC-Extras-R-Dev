@@ -900,6 +900,10 @@ public class PlaceholderRegistry {
                 .description("Returns the number with a leading zero if and only if the specified value is one digit.")
                 .param("value", "number")
         );
+        register(node("format_fancy_boolean").evalComponent(EvaluationContext::evalFormatFancyBoolean)
+                .param("value", "boolean")
+                .description("Returns a prettier version of a boolean. (It is formatted and thus is not a valid boolean as value)")
+        );
         //endregion
 
         //region Math Functions
@@ -2487,6 +2491,15 @@ public class PlaceholderRegistry {
                 );
             };
             return String.format(Locale.US, "%02d", args.getFirst().toInteger());
+        }
+
+        static MutableComponent evalFormatFancyBoolean(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
+            return TextHelper.literal(args.getFirst().toBoolean(), true);
         }
 
         /// Misc
