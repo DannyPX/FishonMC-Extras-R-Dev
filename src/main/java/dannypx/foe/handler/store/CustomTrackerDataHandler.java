@@ -3,6 +3,7 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
+import dannypx.foe.handler.logic.UpdateHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
 import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
@@ -11,6 +12,7 @@ import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
+import dannypx.foe.type.version.Version;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -67,8 +69,8 @@ public class CustomTrackerDataHandler extends Handler {
         } else if(customTrackerData.uuid != null && this.needsUpdate) {
             this.updateCustomTrackerData();
         } else if(!CustomTrackerDataModel.CUSTOM_TRACKER_DATA_MODEL_VERSION.equals(customTrackerData.version)) {
+            this.updateDefault();
             customTrackerData.version = CustomTrackerDataModel.CUSTOM_TRACKER_DATA_MODEL_VERSION;
-            this.fixDefault();
             needsUpdate = true;
         }
     }
@@ -265,6 +267,12 @@ public class CustomTrackerDataHandler extends Handler {
         }
     }
 
+    public void updateDefault() {
+        CustomTrackerDataModel.defaultTrackers.forEach((key, timer) -> {
+            customTrackerData.trackerList.putIfAbsent(key, timer);
+        });
+    }
+
     public void fixDefault() {
         customTrackerData.trackerList.putAll(CustomTrackerDataModel.defaultTrackers);
         needsUpdate = true;
@@ -302,8 +310,8 @@ public class CustomTrackerDataHandler extends Handler {
                         true,
                         true,
                         new HashMap<>(Map.of(
-                                "Add", Triplet.of(TrackerAction.ADD, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>!=fabled)%", NumberValue.of(1f)),
-                                "Set", Triplet.of(TrackerAction.SET, "%condition.(<tracker_data.data.FabledEvent.value>==true)%%condition.(<catch.last_caught.fish.variant.fabled.name>==fabled)%", NumberValue.of(0f))
+                                "Add", Triplet.of(TrackerAction.ADD, "%and.(<condition.(<catch.last_caught.fish.variant.fabled.id>!=fabled)>,<condition.(<tracker_data.data.FabledEvent.value>==true)>)%", NumberValue.of(1f)),
+                                "Set", Triplet.of(TrackerAction.SET, "%and.(<condition.(<catch.last_caught.fish.variant.fabled.id>==fabled)>,<condition.(<tracker_data.data.FabledEvent.value>==true)>)%", NumberValue.of(0f))
                         ))
                 )
         );
