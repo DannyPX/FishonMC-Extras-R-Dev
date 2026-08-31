@@ -57,8 +57,6 @@ public class CustomHudDataHandler extends Handler {
             this.updateCustomHudData();
         } else if(!CustomHudDataModel.CUSTOM_HUD_DATA_MODEL_VERSION.equals(customHudData.version)) {
             this.updateDefault();
-            UpdateHandler.checkUpdate(Version.of(customHudData.version));
-
             customHudData.version = CustomHudDataModel.CUSTOM_HUD_DATA_MODEL_VERSION;
             needsUpdate = true;
         }

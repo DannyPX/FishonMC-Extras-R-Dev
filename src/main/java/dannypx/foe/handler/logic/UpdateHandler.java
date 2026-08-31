@@ -4,6 +4,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
+import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.version.Version;
 import net.minecraft.network.chat.Component;
@@ -25,18 +26,22 @@ public class UpdateHandler extends Handler {
     //endregion
 
     //region Methods
-    public static void checkUpdate(Version before) {
+    public static void checkUpdate() {
+        Version before = Version.of(ProfileDataHandler.instance().getProfileData().modVersion);
+        Version now = Version.of(FishOnMCExtras.VERSION);
         Version v038 = Version.of("0.3.8");
 
-        if(Version.of(FishOnMCExtras.VERSION).compareTo(before) > 0) {
+        if(before.get() == null || now.compareTo(before) > 0) {
             // Put all update cycles here
-            if(v038.compareTo(before) > 0) updateToV038();
+            if(before.get() == null  || (v038.compareTo(before) > 0)) updateToV038();
         }
     }
 
     public static void updateToV038() {
         CustomTrackerDataHandler.instance().fixDefault();
         CustomHudDataHandler.instance().fixDefault();
+
+        ProfileDataHandler.instance().updateVersion();
     }
     //endregion
 

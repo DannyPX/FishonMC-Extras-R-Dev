@@ -69,9 +69,7 @@ public class CustomTrackerDataHandler extends Handler {
         } else if(customTrackerData.uuid != null && this.needsUpdate) {
             this.updateCustomTrackerData();
         } else if(!CustomTrackerDataModel.CUSTOM_TRACKER_DATA_MODEL_VERSION.equals(customTrackerData.version)) {
-            this.fixDefault();
-            UpdateHandler.checkUpdate(Version.of(customTrackerData.version));
-
+            this.updateDefault();
             customTrackerData.version = CustomTrackerDataModel.CUSTOM_TRACKER_DATA_MODEL_VERSION;
             needsUpdate = true;
         }
@@ -267,6 +265,12 @@ public class CustomTrackerDataHandler extends Handler {
                 }
             }
         }
+    }
+
+    public void updateDefault() {
+        CustomTrackerDataModel.defaultTrackers.forEach((key, timer) -> {
+            customTrackerData.trackerList.putIfAbsent(key, timer);
+        });
     }
 
     public void fixDefault() {
