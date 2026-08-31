@@ -19,7 +19,6 @@ import dannypx.foe.screens.MainScreen;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
-import dannypx.foe.type.tuple.Pair;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -44,7 +43,8 @@ public class CommandRegistry {
                 command("foe")
                         .then(command("config").executes(Command.Foe::openConfig))
                         .then(command("main").executes(Command.Foe::openMainScreen))
-                        .then(command("export_schema").executes(Command.Foe::exportSchema))
+                        .then(command("export_placeholder_schema").executes(Command.Foe::exportPlaceholderSchema))
+                        .then(command("export_placeholder_list").executes(Command.Foe::exportPlaceholderList))
                         .then(command("stats")
                                 .then(command("import").executes(Command.Stats::importStats))
                                 .then(command("cancel").executes(Command.Stats::cancelStats))
@@ -197,8 +197,12 @@ public class CommandRegistry {
                 return executeCommand(() -> Minecraft.getInstance().setScreen(new MainScreen(Minecraft.getInstance().screen)));
             }
 
-            public static int exportSchema(CommandContext<FabricClientCommandSource> context) {
+            public static int exportPlaceholderSchema(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Exported placeholder schema to logs").withStyle(ChatFormatting.GREEN), () -> LoggerHandler.info(PlaceholderRegistry.toJsonSchemaString()));
+            }
+
+            public static int exportPlaceholderList(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Exported placeholder list to logs").withStyle(ChatFormatting.GREEN), () -> LoggerHandler.info(PlaceholderRegistry.toJsonPathListString()));
             }
         }
 

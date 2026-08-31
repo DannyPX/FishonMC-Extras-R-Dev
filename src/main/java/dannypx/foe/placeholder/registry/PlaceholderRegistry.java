@@ -2531,6 +2531,36 @@ public class PlaceholderRegistry {
         return gson.toJson(toJsonSchema());
     }
 
+    public static JsonObject toJsonPathList() {
+        JsonObject root = new JsonObject();
+
+        for (Map.Entry<String, PlaceholderTreeNode> entry : ROOTS.entrySet()) {
+            JsonArray paths = new JsonArray();
+            collectPaths(entry.getKey(), entry.getValue(), paths);
+            root.add(entry.getKey(), paths);
+        }
+
+        return root;
+    }
+
+    public static String toJsonPathListString() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        return gson.toJson(toJsonPathList());
+    }
+
+    public static void collectPaths(String path, PlaceholderTreeNode node, JsonArray out) {
+        if(node.getValueKind() != ValueKind.NONE) out.add(path);
+        if(node.getEvalKind() != EvalKind.NONE) out.add(path + ".()");
+
+        for (Map.Entry<String, PlaceholderTreeNode> child : node.getChildren().entrySet()) {
+            collectPaths(path + "." + child.getKey(), child.getValue(), out);
+        }
+
+        if(node.getIndexChild() != null) collectPaths(path + ".<index>", node.getIndexChild(), out);
+        if(node.getStringChild() != null) collectPaths(path + ".<string>", node.getStringChild(), out);
+        if(node.getStringArrayChild() != null) collectPaths(path + ".<string[]>", node.getStringArrayChild(), out);
+    }
+
     private static JsonElement describeNode(String name, PlaceholderTreeNode node) {
         boolean hasChildren = !node.getChildren().isEmpty()
                 || node.getIndexChild() != null
