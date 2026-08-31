@@ -7,6 +7,8 @@ import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
+import dannypx.foe.placeholder.evaluator.PlaceholderResult;
+import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
@@ -365,7 +367,7 @@ public class NotifierHandler extends Handler {
                     itemStack = ItemStackHelper.valueOf(notification.getIcon());
                 }
 
-                List<MutableComponent> lines = notification.getStringLines().stream().map(string -> string.replace("&", "§")).map(PlaceholderHandler::parsePlaceholderFromString).filter(Pair::value1).map(Pair::value2).toList();
+                List<MutableComponent> lines = notification.getStringLines().stream().map(PlaceholderHandlerV2.instance()::resolve).filter(result -> result.success() || !result.errors().isEmpty()).map(PlaceholderResult::text).toList();
                 List<Component> newLines = new ArrayList<>();
 
                 lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));
@@ -386,8 +388,6 @@ public class NotifierHandler extends Handler {
                             )
                     );
                 }
-
-
             }
         }
     }

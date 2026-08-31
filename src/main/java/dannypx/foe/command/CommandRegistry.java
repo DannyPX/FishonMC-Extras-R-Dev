@@ -9,15 +9,16 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.TimerHandler;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.placeholder.registry.PlaceholderRegistry;
 import dannypx.foe.screens.MainScreen;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
-import dannypx.foe.type.tuple.Pair;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -40,147 +41,149 @@ public class CommandRegistry {
     public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
                 command("foe")
-                .then(command("config").executes(Command.Foe::openConfig))
-                .then(command("main").executes(Command.Foe::openMainScreen))
-                .then(command("stats")
-                        .then(command("import").executes(Command.Stats::importStats))
-                        .then(command("cancel").executes(Command.Stats::cancelStats))
-                        .then(command("reset").executes(Command.Stats::resetStats))
-                )
-                .then(command("crew")
-                        .then(command("import").executes(Command.Crew::importCrew))
-                        .then(command("cancel").executes(Command.Crew::cancelCrew))
-                )
-                .then(command("reset_to_defaults")
-                        .then(command("button").executes(Command.Reset::resetButton))
-                        .then(command("chat_trigger").executes(Command.Reset::resetChatTrigger))
-                        .then(command("event_trigger").executes(Command.Reset::resetEventTrigger))
-                        .then(command("notification").executes(Command.Reset::resetNotification))
-                        .then(command("chat_notification").executes(Command.Reset::resetChatNotification))
-                        .then(command("timer").executes(Command.Reset::resetTimer))
-                        .then(command("hud").executes(Command.Reset::resetHud))
-                        .then(command("tracker").executes(Command.Reset::resetTracker))
-                )
-                .then(command("fix_defaults")
-                        .then(command("chat_trigger").executes(Command.Fix::fixChatTrigger))
-                        .then(command("event_trigger").executes(Command.Fix::fixEventTrigger))
-                        .then(command("notification").executes(Command.Fix::fixNotification))
-                        .then(command("chat_notification").executes(Command.Fix::fixChatNotification))
-                        .then(command("timer").executes(Command.Fix::fixTimer))
-                        .then(command("hud").executes(Command.Fix::fixHud))
-                        .then(command("tracker").executes(Command.Fix::fixTracker))
-                )
-                .then(command("toggle")
-                        .then(command("render")
-                                .then(command("armor").executes(Command.Toggle::toggleArmor))
-                                .then(command("pet_names").executes(Command.Toggle::togglePetNames))
-                                .then(command("name_plates").executes(Command.Toggle::toggleNamePlates))
-                                .then(command("fishingHook_model").executes(Command.Toggle::toggleFishingHookModel))
-                                .then(command("bait_on_fishing_hook").executes(Command.Toggle::toggleBaitOnFishingHook))
+                        .then(command("config").executes(Command.Foe::openConfig))
+                        .then(command("main").executes(Command.Foe::openMainScreen))
+                        .then(command("export_placeholder_schema").executes(Command.Foe::exportPlaceholderSchema))
+                        .then(command("export_placeholder_list").executes(Command.Foe::exportPlaceholderList))
+                        .then(command("stats")
+                                .then(command("import").executes(Command.Stats::importStats))
+                                .then(command("cancel").executes(Command.Stats::cancelStats))
+                                .then(command("reset").executes(Command.Stats::resetStats))
                         )
-                )
-                .then(command("tracker")
-                        .then(command("set")
-                                .then(ClientCommandManager.argument("tracker", StringArgumentType.string()).then(
-                                        ClientCommandManager.argument("value", StringArgumentType.string())
-                                                .executes(Command.DataTracker::setValue)
-                                ))
+                        .then(command("crew")
+                                .then(command("import").executes(Command.Crew::importCrew))
+                                .then(command("cancel").executes(Command.Crew::cancelCrew))
+                        )
+                        .then(command("reset_to_defaults")
+                                .then(command("button").executes(Command.Reset::resetButton))
+                                .then(command("chat_trigger").executes(Command.Reset::resetChatTrigger))
+                                .then(command("event_trigger").executes(Command.Reset::resetEventTrigger))
+                                .then(command("notification").executes(Command.Reset::resetNotification))
+                                .then(command("chat_notification").executes(Command.Reset::resetChatNotification))
+                                .then(command("timer").executes(Command.Reset::resetTimer))
+                                .then(command("hud").executes(Command.Reset::resetHud))
+                                .then(command("tracker").executes(Command.Reset::resetTracker))
+                        )
+                        .then(command("fix_defaults")
+                                .then(command("chat_trigger").executes(Command.Fix::fixChatTrigger))
+                                .then(command("event_trigger").executes(Command.Fix::fixEventTrigger))
+                                .then(command("notification").executes(Command.Fix::fixNotification))
+                                .then(command("chat_notification").executes(Command.Fix::fixChatNotification))
+                                .then(command("timer").executes(Command.Fix::fixTimer))
+                                .then(command("hud").executes(Command.Fix::fixHud))
+                                .then(command("tracker").executes(Command.Fix::fixTracker))
                         )
                         .then(command("toggle")
-                                .then(ClientCommandManager.argument("tracker", StringArgumentType.string())
-                                        .executes(Command.DataTracker::toggleValue)
+                                .then(command("render")
+                                        .then(command("armor").executes(Command.Toggle::toggleArmor))
+                                        .then(command("pet_names").executes(Command.Toggle::togglePetNames))
+                                        .then(command("name_plates").executes(Command.Toggle::toggleNamePlates))
+                                        .then(command("fishingHook_model").executes(Command.Toggle::toggleFishingHookModel))
+                                        .then(command("bait_on_fishing_hook").executes(Command.Toggle::toggleBaitOnFishingHook))
                                 )
                         )
-                        .then(command("add")
-                                .then(ClientCommandManager.argument("tracker", StringArgumentType.string()).then(
-                                        ClientCommandManager.argument("value", IntegerArgumentType.integer(0))
-                                                .executes(Command.DataTracker::addValue)
-                                ))
-                        )
-                        .then(command("subtract")
-                                .then(ClientCommandManager.argument("tracker", StringArgumentType.string()).then(
-                                        ClientCommandManager.argument("value", IntegerArgumentType.integer(0))
-                                                .executes(Command.DataTracker::subtractValue)
-                                ))
-                        )
-                )
-                .then(command("stats_data")
-                        .then(command("set")
-                                .then(command("fish")
-                                        .then(command("total")
-                                                .then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                        context -> Command.DataStats.updateTotal(context, "fish")
-                                                ))
+                        .then(command("tracker")
+                                .then(command("set")
+                                        .then(ClientCommandManager.argument("tracker", StringArgumentType.string()).then(
+                                                ClientCommandManager.argument("value", StringArgumentType.string())
+                                                        .executes(Command.DataTracker::setValue)
+                                        ))
+                                )
+                                .then(command("toggle")
+                                        .then(ClientCommandManager.argument("tracker", StringArgumentType.string())
+                                                .executes(Command.DataTracker::toggleValue)
                                         )
-                                        .then(command("size")
-                                                .then(ClientCommandManager.argument("field", StringArgumentType.string())
-                                                        .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "fish", "size", "amount")
-                                                        )))
-                                                        .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "fish", "size", "caught_on")
-                                                        )))
+                                )
+                                .then(command("add")
+                                        .then(ClientCommandManager.argument("tracker", StringArgumentType.string()).then(
+                                                ClientCommandManager.argument("value", IntegerArgumentType.integer(0))
+                                                        .executes(Command.DataTracker::addValue)
+                                        ))
+                                )
+                                .then(command("subtract")
+                                        .then(ClientCommandManager.argument("tracker", StringArgumentType.string()).then(
+                                                ClientCommandManager.argument("value", IntegerArgumentType.integer(0))
+                                                        .executes(Command.DataTracker::subtractValue)
+                                        ))
+                                )
+                        )
+                        .then(command("stats_data")
+                                .then(command("set")
+                                        .then(command("fish")
+                                                .then(command("total")
+                                                        .then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                context -> Command.DataStats.updateTotal(context, "fish")
+                                                        ))
+                                                )
+                                                .then(command("size")
+                                                        .then(ClientCommandManager.argument("field", StringArgumentType.string())
+                                                                .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "fish", "size", "amount")
+                                                                )))
+                                                                .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "fish", "size", "caught_on")
+                                                                )))
+                                                        )
+                                                )
+                                                .then(command("variant")
+                                                        .then(ClientCommandManager.argument("field", StringArgumentType.string())
+                                                                .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "fish", "variant", "amount")
+                                                                )))
+                                                                .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "fish", "variant", "caught_on")
+                                                                )))
+                                                        )
+                                                )
+                                                .then(command("rarity")
+                                                        .then(ClientCommandManager.argument("field", StringArgumentType.string())
+                                                                .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "fish", "rarity", "amount")
+                                                                )))
+                                                                .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "fish", "rarity", "caught_on")
+                                                                )))
+                                                        )
                                                 )
                                         )
-                                        .then(command("variant")
-                                                .then(ClientCommandManager.argument("field", StringArgumentType.string())
-                                                        .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "fish", "variant", "amount")
-                                                        )))
-                                                        .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "fish", "variant", "caught_on")
-                                                        )))
+                                        .then(command("pet")
+                                                .then(command("total")
+                                                        .then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(context -> Command.DataStats.updateTotal(context, "pet")))
+                                                )
+                                                .then(command("rarity")
+                                                        .then(ClientCommandManager.argument("field", StringArgumentType.string())
+                                                                .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "pet", "rarity", "amount")
+                                                                )))
+                                                                .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "pet", "rarity", "caught_on")
+                                                                )))
+                                                        )
+                                                )
+                                                .then(command("rating")
+                                                        .then(ClientCommandManager.argument("field", StringArgumentType.string())
+                                                                .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "pet", "rating", "amount")
+                                                                )))
+                                                                .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
+                                                                        context -> Command.DataStats.updateField(context, "pet", "rating", "caught_on")
+                                                                )))
+                                                        )
                                                 )
                                         )
-                                        .then(command("rarity")
+                                        .then(command("item")
                                                 .then(ClientCommandManager.argument("field", StringArgumentType.string())
                                                         .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "fish", "rarity", "amount")
+                                                                context -> Command.DataStats.updateField(context, "item","amount")
                                                         )))
                                                         .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "fish", "rarity", "caught_on")
+                                                                context -> Command.DataStats.updateField(context, "item","caught_on")
                                                         )))
                                                 )
                                         )
                                 )
-                                .then(command("pet")
-                                        .then(command("total")
-                                                .then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(context -> Command.DataStats.updateTotal(context, "pet")))
-                                        )
-                                        .then(command("rarity")
-                                                .then(ClientCommandManager.argument("field", StringArgumentType.string())
-                                                        .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "pet", "rarity", "amount")
-                                                        )))
-                                                        .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "pet", "rarity", "caught_on")
-                                                        )))
-                                                )
-                                        )
-                                        .then(command("rating")
-                                                .then(ClientCommandManager.argument("field", StringArgumentType.string())
-                                                        .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "pet", "rating", "amount")
-                                                        )))
-                                                        .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                                context -> Command.DataStats.updateField(context, "pet", "rating", "caught_on")
-                                                        )))
-                                                )
-                                        )
-                                )
-                                .then(command("item")
-                                        .then(ClientCommandManager.argument("field", StringArgumentType.string())
-                                                .then(command("amount").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                        context -> Command.DataStats.updateField(context, "item","amount")
-                                                )))
-                                                .then(command("caught_on").then(ClientCommandManager.argument("value", IntegerArgumentType.integer()).executes(
-                                                        context -> Command.DataStats.updateField(context, "item","caught_on")
-                                                )))
-                                        )
-                                )
                         )
-                )
-                .executes(Command.Foe::openMainScreen)
+                        .executes(Command.Foe::openMainScreen)
         );
     }
 
@@ -192,6 +195,14 @@ public class CommandRegistry {
 
             public static int openMainScreen(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(() -> Minecraft.getInstance().setScreen(new MainScreen(Minecraft.getInstance().screen)));
+            }
+
+            public static int exportPlaceholderSchema(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Exported placeholder schema to logs").withStyle(ChatFormatting.GREEN), () -> LoggerHandler.info(PlaceholderRegistry.toJsonSchemaString()));
+            }
+
+            public static int exportPlaceholderList(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Exported placeholder list to logs").withStyle(ChatFormatting.GREEN), () -> LoggerHandler.info(PlaceholderRegistry.toJsonPathListString()));
             }
         }
 

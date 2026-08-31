@@ -14,10 +14,7 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import dannypx.foe.type.tuple.Triplet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -58,125 +55,24 @@ public class CatchingHandler extends Handler {
         return scanDone;
     }
 
-    public Pair<Boolean, PlaceholderValue> getCatch(String[] params) {
-        if(params.length > 2) {
-            Pattern fieldPattern = Pattern.compile("^(last_caught)$");
+    public FishTagObject getLastCaughtFish() {
+        return lastCaughtFish;
+    }
 
-            if(fieldPattern.matcher(params[0]).matches()) {
-                return switch(params[0]) {
-                    case "last_caught" -> switch (params[1]) {
-                        case "fish" -> {
-                            if(lastCaughtFish.getItemStack() != ItemStack.EMPTY && lastDataFish != null) {
-                                yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastCaughtFish.getName()));
-                                    case "rarity", "variant", "size" -> {
-                                        Pair<String, Integer> drystreakData = null;
-                                        Component icon = null;
+    public Triplet<Pair<String, Integer>, Pair<String, Integer>, Pair<String, Integer>> getLastDataFish() {
+        return lastDataFish;
+    }
 
-                                        switch (params[2]) {
-                                            case "rarity" -> {
-                                                drystreakData = lastDataFish.value1();
-                                                icon = lastCaughtFish.getRarityComponent();
-                                            }
-                                            case "variant" -> {
-                                                drystreakData = lastDataFish.value2();
-                                                icon = lastCaughtFish.getVariantComponent();
-                                            }
-                                            case "size" -> {
-                                                drystreakData = lastDataFish.value3();
-                                                icon = lastCaughtFish.getFishSizeComponent();
-                                            }
-                                        }
+    public List<Triplet<TagObject, Integer, Pair<String, Integer>>> getLastCaughtItems() {
+        return Collections.unmodifiableList(lastCaughtItems);
+    }
 
-                                        if(icon != null
-                                                && params.length == 4
-                                        ) {
-                                            yield switch (params[3]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(drystreakData.value1()));
-                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(icon), true);
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(drystreakData.value2()));
-                                                default -> PlaceholderHandler.noResult();
-                                            };
-                                        }
-                                        yield PlaceholderHandler.noResult();
-                                    }
-                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastCaughtFish, params[3]) : PlaceholderHandler.noResult();
-                                    default -> PlaceholderHandler.getNbtValue(lastCaughtFish, Arrays.copyOfRange(params, 2, params.length));
-                                };
-                            }
-                            yield PlaceholderHandler.noResult();
-                        }
-                        case "pet" -> {
-                            if(lastCaughtPet.getItemStack() != ItemStack.EMPTY && lastDataPet != null) {
-                                yield switch (params[2]) {
-                                    case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastCaughtPet.getName()));
-                                    case "rarity", "rating" -> {
-                                        Pair<String, Integer> drystreakData = null;
-                                        Component icon = null;
+    public PetTagObject getLastCaughtPet() {
+        return lastCaughtPet;
+    }
 
-                                        switch (params[2]) {
-                                            case "rarity" -> {
-                                                drystreakData = lastDataPet.value1();
-                                                icon = lastCaughtPet.getRarityComponent();
-                                            }
-                                            case "rating" -> {
-                                                drystreakData = lastDataPet.value2();
-                                                icon = lastCaughtPet.getRatingComponent();
-                                            }
-                                        }
-
-                                        if(icon != null
-                                                && params.length == 4
-                                        ) {
-                                            yield switch (params[3]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(drystreakData.value1()));
-                                                case "icon" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(icon), true);
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(drystreakData.value2()));
-                                                default -> PlaceholderHandler.noResult();
-                                            };
-                                        }
-                                        yield PlaceholderHandler.noResult();
-                                    }
-                                    case "lore" -> params.length > 3 ? PlaceholderHandler.getLoreValue(lastCaughtPet, params[3]) : PlaceholderHandler.noResult();
-                                    default -> PlaceholderHandler.getNbtValue(lastCaughtPet, Arrays.copyOfRange(params, 2, params.length));
-                                };
-                            }
-                            yield PlaceholderHandler.noResult();
-                        }
-                        case "item" -> {
-                            if(!lastCaughtItems.isEmpty()
-                                    && params.length >= 4
-                            ) {
-                                try {
-                                    int index = Integer.parseInt(params[2]);
-                                    if(index < lastCaughtItems.size()) {
-                                        Triplet<TagObject, Integer, Pair<String, Integer>> lastCaughtItem = lastCaughtItems.get(index);
-
-                                        yield switch (params[3]) {
-                                            case "name" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastCaughtItem.value1().getName()));
-                                            case "amount" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value2()));
-                                            case "dry_streak" -> switch (params[4]) {
-                                                case "name" -> PlaceholderHandler.getPlaceholderValue(StringValue.of(lastCaughtItem.value3().value1()));
-                                                case "last_drystreak" -> PlaceholderHandler.getPlaceholderValue(StringValue.valueOf(lastCaughtItem.value3().value2()));
-                                                default -> PlaceholderHandler.noResult();
-                                            };
-                                            case "lore" -> params.length > 4 ? PlaceholderHandler.getLoreValue(lastCaughtItem.value1(), params[4]) : PlaceholderHandler.noResult();
-                                            default -> PlaceholderHandler.getNbtValue(lastCaughtItem.value1(), Arrays.copyOfRange(params, 3, params.length));
-                                        };
-                                    }
-                                } catch (NumberFormatException e) {
-                                    yield PlaceholderHandler.noResult();
-                                }
-                            }
-                            yield PlaceholderHandler.noResult();
-                        }
-                        default -> PlaceholderHandler.noResult();
-                    };
-                    default -> PlaceholderHandler.noResult();
-                };
-            }
-        }
-        return PlaceholderHandler.noResult();
+    public Pair<Pair<String, Integer>, Pair<String, Integer>> getLastDataPet() {
+        return lastDataPet;
     }
     //endregion
 
