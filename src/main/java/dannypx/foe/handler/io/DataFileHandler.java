@@ -6,6 +6,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
+import dannypx.foe.handler.logic.UpdateHandler;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.type.custom_value.TrackerValue;
 import dannypx.foe.type.tuple.Pair;
@@ -62,6 +63,7 @@ public class DataFileHandler extends Handler {
         for (DataModels.DataModelType value : DataModels.DataModelType.values()) {
             this.loadDataToMemory(value);
         }
+        UpdateHandler.checkUpdate();
     }
 
     private boolean loadDataToMemory(DataModels.DataModelType dataModelType) {

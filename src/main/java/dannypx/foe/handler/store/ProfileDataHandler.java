@@ -1,5 +1,6 @@
 package dannypx.foe.handler.store;
 
+import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
@@ -9,6 +10,7 @@ import dannypx.foe.type.tuple.Pair;
 
 import java.util.*;
 
+import dannypx.foe.type.version.Version;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -108,11 +110,20 @@ public class ProfileDataHandler extends Handler {
             }
         }
     }
+
+    public void updateVersion() {
+        if(!Version.of(profileData.modVersion).equals(Version.of(FishOnMCExtras.VERSION))) {
+            profileData.modVersion = FishOnMCExtras.VERSION;
+            this.needsUpdate = true;
+        }
+    }
     //endregion
 
     //region Model
     public static class ProfileDataModel extends DataModels.DataModel {
         private static final String PROFILE_DATA_MODEL_VERSION = "0.5";
+
+        public String modVersion = "0";
 
         public int activePetSlot = -1;
         public boolean hasImportedStats = false;

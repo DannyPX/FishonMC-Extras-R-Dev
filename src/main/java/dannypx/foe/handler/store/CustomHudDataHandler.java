@@ -3,11 +3,14 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
+import dannypx.foe.handler.logic.UpdateHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
 import java.util.*;
+
+import dannypx.foe.type.version.Version;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -53,8 +56,8 @@ public class CustomHudDataHandler extends Handler {
         } else if(customHudData.uuid != null && this.needsUpdate) {
             this.updateCustomHudData();
         } else if(!CustomHudDataModel.CUSTOM_HUD_DATA_MODEL_VERSION.equals(customHudData.version)) {
-            customHudData.version = CustomHudDataModel.CUSTOM_HUD_DATA_MODEL_VERSION;
             this.updateDefault();
+            customHudData.version = CustomHudDataModel.CUSTOM_HUD_DATA_MODEL_VERSION;
             needsUpdate = true;
         }
     }
@@ -139,8 +142,8 @@ public class CustomHudDataHandler extends Handler {
         private static final Map<String, CustomHud> defaultHuds = Map.of(
                 "Quest Hud",
                 new CustomHud(new ArrayList<>(Arrays.asList(
-                        Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%&7&l- &fQuests &7-", true, true),
-                        Triplet.of("%is_not_blank.(<quest_data.data.0.goal>)%", false, false),
+                        Triplet.of("%hide_line.(<is_blank.(<quest_data.data.0.goal>)>)%&7&l- &fQuests &7-", true, true),
+                        Triplet.of("%hide_line.(<is_blank.(<quest_data.data.0.goal>)>)%", false, false),
                         Triplet.of("%quest_data.data.0.goal% &e%quest_data.data.0.current%&7/&f%quest_data.data.0.max%", false, true),
                         Triplet.of("%quest_data.data.1.goal% &e%quest_data.data.1.current%&7/&f%quest_data.data.1.max%", false, true),
                         Triplet.of("%quest_data.data.2.goal% &e%quest_data.data.2.current%&7/&f%quest_data.data.2.max%", false, true),
@@ -161,19 +164,19 @@ public class CustomHudDataHandler extends Handler {
                 "Contest Hud",
                 new CustomHud(new ArrayList<>(Arrays.asList(
                         Triplet.of("&7&l- &fContest &7-", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%", false, false),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=false)%&fStarts in: &e%timer.Contest Timer.time.off.minute%&7:&e%timer.Contest Timer.time.off.second%", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%", false, false),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)% %substring_back.(<chat.trigger.Contest Location>,<expression.(<index_of.(<chat.trigger.Contest Location>,:)>\\+2)>)%", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)% %substring_back.(<chat.trigger.Contest Type>,<expression.(<index_of.(<chat.trigger.Contest Type>,:)>\\+2)>)%", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%&fEnds in: &e%timer.Contest Timer.time.on.minute%&7:&e%timer.Contest Timer.time.on.second%", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest 1st>=lb)%", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 1st%", false, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 2nd%", false, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%chat.trigger.Contest 3rd%", false, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%condition.(<chat.trigger.Contest Placement>=You)%", false, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%substring_front.(<chat.trigger.Contest Placement>,<expression.(<index_of.(<chat.trigger.Contest Placement>,out of)>\\-2)>)%", true, true),
-                        Triplet.of("%condition.(<timer.Contest Timer.time.is_on>=true)%%not.(<condition.(<chat.trigger.Contest Placement>=Unranked)>)%%condition.(<chat.trigger.Contest Location>=<boss_bar.location>)%%substring_back.(<chat.trigger.Contest Placement>,<expression.(<index_of.(<chat.trigger.Contest Placement>,out of)>\\-1)>)%", true, true)
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_on>)%", false, false),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_on>)%&fStarts in: &e%timer.Contest Timer.time.off.minute%&7:&e%timer.Contest Timer.time.off.second%", true, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%", false, false),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)% %substring.(<chat.trigger.Contest Location>,<expression.(<index_of.(<chat.trigger.Contest Location>,\":\")>+2)>)%", true, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)% %substring.(<chat.trigger.Contest Type>,<expression.(<index_of.(<chat.trigger.Contest Type>,\":\")>+2)>)%", true, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%&fEnds in: &e%timer.Contest Timer.time.on.minute%&7:&e%timer.Contest Timer.time.on.second%", true, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>,\"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>,<boss_bar.location>)>)>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest 1st>,\"lb\")>)>)%", true, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>,\"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>,<boss_bar.location>)>)>)%%chat.trigger.Contest 1st%", false, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>,\"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>,<boss_bar.location>)>)>)%%chat.trigger.Contest 2nd%", false, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>,\"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>,<boss_bar.location>)>)>)%%chat.trigger.Contest 3rd%", false, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>,\"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>,<boss_bar.location>)>)>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Placement>,\"You\")>)>)%", false, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>,\"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>,<boss_bar.location>)>)>)%%substring.(<chat.trigger.Contest Placement>,0,<expression.(<index_of.(<chat.trigger.Contest Placement>,\"out of\")>-2)>)%", true, true),
+                        Triplet.of("%hide_line.(<timer.Contest Timer.is_off>)%%hide_line.(<contains.(<chat.trigger.Contest Placement>, \"Unranked\")>)%%hide_line.(<not.(<contains.(<chat.trigger.Contest Location>, <boss_bar.location>)>)>)%%substring.(<chat.trigger.Contest Placement>,<expression.(<index_of.(<chat.trigger.Contest Placement>, \"out of\")> - 1)>)%", true, true)
                 )),
                         Alignment.RIGHT,
                         1,
