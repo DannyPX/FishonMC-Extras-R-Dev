@@ -3,6 +3,8 @@ package dannypx.foe.handler.logic;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.store.CustomChatNotificationDataHandler;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.placeholder.evaluator.PlaceholderResult;
+import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -27,10 +29,10 @@ public class ChatNotifierHandler extends Handler {
                 String notification = CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.getOrDefault(notificationId.trim(), "");
 
                 if(!notification.isBlank()) {
-                    Pair<Boolean, MutableComponent> message = PlaceholderHandler.parsePlaceholderFromString(notification.replace("&", "§"));
+                    PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(notification);
 
-                    if(message.value1()) {
-                        this.sendChatMessage(message.value2());
+                    if(result.success() || !result.errors().isEmpty()) {
+                        this.sendChatMessage(result.text());
                     }
                 }
             }
