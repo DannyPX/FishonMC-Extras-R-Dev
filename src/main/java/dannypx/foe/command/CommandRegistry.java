@@ -10,7 +10,9 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
+import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.TimerHandler;
+import dannypx.foe.handler.logic.UpdateHandler;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
@@ -45,6 +47,9 @@ public class CommandRegistry {
                         .then(command("main").executes(Command.Foe::openMainScreen))
                         .then(command("export_placeholder_schema").executes(Command.Foe::exportPlaceholderSchema))
                         .then(command("export_placeholder_list").executes(Command.Foe::exportPlaceholderList))
+                        .then(command("update")
+                                .then(command("0.3.8").then(command("confirm").executes(Command.Update::confirmV038)))
+                        )
                         .then(command("stats")
                                 .then(command("import").executes(Command.Stats::importStats))
                                 .then(command("cancel").executes(Command.Stats::cancelStats))
@@ -203,6 +208,12 @@ public class CommandRegistry {
 
             public static int exportPlaceholderList(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Exported placeholder list to logs").withStyle(ChatFormatting.GREEN), () -> LoggerHandler.info(PlaceholderRegistry.toJsonPathListString()));
+            }
+        }
+
+        static class Update {
+            public static int confirmV038(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(() -> NotifierHandler.instance().removeNotification(UpdateHandler.V_0_3_8_KEY));
             }
         }
 
