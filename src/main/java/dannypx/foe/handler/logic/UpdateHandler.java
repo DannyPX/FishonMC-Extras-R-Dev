@@ -2,6 +2,7 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.store.CustomChatNotificationDataHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
@@ -47,6 +48,7 @@ public class UpdateHandler extends Handler {
 
         CustomTrackerDataHandler.instance().fixDefault();
         CustomHudDataHandler.instance().fixDefault();
+        CustomChatNotificationDataHandler.instance().fixDefault();
 
         ProfileDataHandler.instance().updateVersion();
 
