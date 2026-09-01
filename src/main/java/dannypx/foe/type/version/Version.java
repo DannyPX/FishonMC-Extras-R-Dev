@@ -13,13 +13,20 @@ public class Version implements Comparable<Version> {
     public Version(String version) {
         if(version == null)
             throw new IllegalArgumentException("Version can not be null");
+
+        int buildDelimPos = version.indexOf('+');
+        if (buildDelimPos >= 0) {
+            version = version.substring(0, buildDelimPos);
+        }
+
         if(!version.matches("[0-9]+(\\.[0-9]+)*"))
             throw new IllegalArgumentException("Invalid version format");
+
         this.version = version;
     }
 
     public static Version of(String s) {
-        return new Version(s);
+        return new Version(s.trim());
     }
 
     @Override

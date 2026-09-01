@@ -113,7 +113,7 @@ public class ProfileDataHandler extends Handler {
 
     public void updateVersion() {
         if(!Version.of(profileData.modVersion).equals(Version.of(FishOnMCExtras.VERSION))) {
-            profileData.modVersion = FishOnMCExtras.VERSION;
+            profileData.modVersion = Version.of(FishOnMCExtras.VERSION).toString();
             this.needsUpdate = true;
         }
     }
