@@ -38,6 +38,8 @@ public class UpdateHandler extends Handler {
     }
 
     public static void updateToV038() {
+        LoggerHandler.info("Update to 0.3.8 defaults");
+
         CustomTrackerDataHandler.instance().fixDefault();
         CustomHudDataHandler.instance().fixDefault();
 
