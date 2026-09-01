@@ -306,8 +306,16 @@ public class TextHelper {
         return shortenNumber((float) i, decimals);
     }
 
+    public static String floatToString(float f) {
+        return floatToString(f, 0);
+    }
+
     public static String floatToString(float f, int decimals) {
         return String.format(Locale.US, "%." + decimals + "f", f);
+    }
+
+    public static String doubleToString(double d) {
+        return doubleToString(d, 0);
     }
 
     public static String doubleToString(double d, int decimals) {
@@ -479,7 +487,7 @@ public class TextHelper {
         return lines;
     }
 
-    public static Component substring(Component component, int start, int end) {
+    public static MutableComponent substring(Component component, int start, int end) {
         int length = component.getString().length();
 
         if (start < 0 || end < 0 || start > end || end > length) {
@@ -502,6 +510,28 @@ public class TextHelper {
             }
 
             index.addAndGet(string.length());
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
+    public static MutableComponent toLowercase(Component component) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(string.toLowerCase(Locale.US)).setStyle(style));
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
+    public static MutableComponent toUppercase(Component component) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(string.toUpperCase(Locale.US)).setStyle(style));
             return Optional.empty();
         }, Style.EMPTY);
 

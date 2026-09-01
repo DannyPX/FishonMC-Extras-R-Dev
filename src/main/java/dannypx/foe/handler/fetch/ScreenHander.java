@@ -4,11 +4,8 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.EventHandler;
 import dannypx.foe.handler.logic.InventoryHandler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
-import dannypx.foe.type.placeholder.ComponentValue;
-import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.tuple.Pair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
@@ -21,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ScreenHander extends Handler {
     private static ScreenHander INSTANCE = new ScreenHander();
@@ -36,20 +32,8 @@ public class ScreenHander extends Handler {
     //region Fields
     private Component lastScreen = Component.empty();
 
-    public Pair<Boolean, PlaceholderValue> getScreen(String[] params) {
-        if(params.length > 0) {
-            Pattern fieldPattern = Pattern.compile("^(last_screen)$");
-
-            if(fieldPattern.matcher(params[0]).matches()
-                    && params.length == 1
-            ) {
-                return switch(params[0]) {
-                    case "last_screen" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(lastScreen));
-                    default -> PlaceholderHandler.noResult();
-                };
-            }
-        }
-        return PlaceholderHandler.noResult();
+    public Component getLastScreen() {
+        return lastScreen;
     }
     //endregion
 

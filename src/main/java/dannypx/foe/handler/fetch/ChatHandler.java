@@ -11,6 +11,7 @@ import dannypx.foe.type.placeholder.PlaceholderValue;
 import dannypx.foe.type.placeholder.ComponentValue;
 import dannypx.foe.type.tuple.Pair;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,26 +33,13 @@ public class ChatHandler extends Handler {
     //region Fields
     private Map<String, Component> storedChatTriggerComponent = new HashMap<>();
 
+    public Map<String, Component> getStoredChatTriggerComponent() {
+        return Collections.unmodifiableMap(storedChatTriggerComponent);
+    }
+
     final List<String> blacklistedMessageFilters = List.of(
             "REACTIONS »"
     );
-
-    public Pair<Boolean, PlaceholderValue> getChat(String[] params) {
-        if(params.length > 1
-                && minecraft.player != null
-        ) {
-            Pattern fieldPattern = Pattern.compile("^(trigger)$");
-
-            if(fieldPattern.matcher(params[0]).matches()
-            ) {
-                return switch(params[0]) {
-                    case "trigger" -> PlaceholderHandler.getPlaceholderValue(ComponentValue.of(storedChatTriggerComponent.getOrDefault(params[1], Component.empty())));
-                    default -> PlaceholderHandler.noResult();
-                };
-            }
-        }
-        return PlaceholderHandler.noResult();
-    }
     //endregion
 
     //region Methods
