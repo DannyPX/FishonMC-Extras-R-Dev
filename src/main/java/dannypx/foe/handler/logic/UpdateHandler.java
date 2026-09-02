@@ -35,22 +35,28 @@ public class UpdateHandler extends Handler {
     public static void checkUpdate() {
         Version before = Version.of(ProfileDataHandler.instance().getProfileData().modVersion);
         Version now = Version.of(FishOnMCExtras.VERSION);
+
         Version v038 = Version.of("0.3.8");
+        Version v039 = Version.of("0.3.9");
 
         if(before.get() == null || now.compareTo(before) > 0) {
             // Put all update cycles here
             if(before.get() == null  || (v038.compareTo(before) > 0)) updateToV038();
+            if(before.get() == null  || (v039.compareTo(before) > 0)) updateToV039();
+
+            ProfileDataHandler.instance().updateVersion();
         }
     }
 
     public static void updateToV038() {
         LoggerHandler.info("Update to 0.3.8 defaults");
+        LoggerHandler.info("- CustomTrackerDataHandler");
+        LoggerHandler.info("- CustomHudDataHandler");
+        LoggerHandler.info("- CustomChatNotificationDataHandler");
 
         CustomTrackerDataHandler.instance().fixDefault();
         CustomHudDataHandler.instance().fixDefault();
         CustomChatNotificationDataHandler.instance().fixDefault();
-
-        ProfileDataHandler.instance().updateVersion();
 
         NotifierHandler.instance().notifyUpdate(
                 new NotifierHandler.Notification(9, 1,
@@ -71,6 +77,13 @@ public class UpdateHandler extends Handler {
                 ),
                 V_0_3_8_KEY
         );
+    }
+
+    private static void updateToV039() {
+        LoggerHandler.info("Update to 0.3.9 defaults");
+        LoggerHandler.info("- CustomChatNotificationDataHandler");
+
+        CustomChatNotificationDataHandler.instance().fixDefault();
     }
     //endregion
 
