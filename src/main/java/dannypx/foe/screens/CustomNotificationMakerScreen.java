@@ -330,7 +330,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     private AbstractWidget wikiButton() {
         return Button.builder(Component.literal("Wiki"), button -> {
-                    String url = Configs.mainConfig.wikiPage.get();
+                    String url = Configs.mainConfig.wikiPageUrl.get();
 
                     this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
