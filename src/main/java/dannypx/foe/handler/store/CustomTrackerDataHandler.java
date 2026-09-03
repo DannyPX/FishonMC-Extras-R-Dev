@@ -138,7 +138,7 @@ public class CustomTrackerDataHandler extends Handler {
 
                         PlaceholderResult condition = PlaceholderHandlerV2.instance().resolve(action.value2());
 
-                        if(condition.success() && Boolean.parseBoolean(condition.text().getString())) {
+                        if((condition.success()[0] && !condition.success()[1]) && Boolean.parseBoolean(condition.text().getString())) {
                             switch (tracker.trackerType) {
                                 case BOOLEAN -> {
                                     BooleanValue valueToUse = action.value3() instanceof EmptyValue
