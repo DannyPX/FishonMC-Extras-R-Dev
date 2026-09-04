@@ -2043,7 +2043,7 @@ public class PlaceholderRegistry {
             String location = BossEventHandler.instance().getLocation().getString();
             List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.getOrDefault(location, List.of());
             int index = Integer.parseInt(indices.getFirst());
-            if(!quests.isEmpty() && index >= quests.size()) return false;
+            if(quests.isEmpty() || index >= quests.size()) return false;
             if(index >= 0) return true;
             return null;
         }
