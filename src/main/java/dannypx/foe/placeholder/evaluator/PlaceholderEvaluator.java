@@ -1,6 +1,5 @@
 package dannypx.foe.placeholder.evaluator;
 
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.placeholder.functions.PlaceholderValue;
 import dannypx.foe.placeholder.parser.ast.*;
 import dannypx.foe.placeholder.registry.PlaceholderTreeNode;
