@@ -374,7 +374,7 @@ public class NotifierHandler extends Handler {
 
                 List<MutableComponent> lines = notification.getStringLines().stream()
                         .map(PlaceholderHandlerV2.instance()::resolve)
-                        .filter(result -> (result.success()[0] && !result.success()[1]) || !result.errors().isEmpty())
+                        .filter(result -> (result.success()[0] || !result.errors().isEmpty()) && !result.success()[1])
                         .map(PlaceholderResult::text).toList();
                 List<Component> newLines = new ArrayList<>();
 
