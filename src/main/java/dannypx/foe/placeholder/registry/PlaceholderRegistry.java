@@ -2387,7 +2387,7 @@ public class PlaceholderRegistry {
                         "expects at least 2 arguments, got " + args.size()
                 );
             };
-            if(args.size() > 2) {
+            if(args.size() > 2 && args.get(2).toBoolean()) {
                 return args.getFirst().toString().toLowerCase(Locale.US).contains(args.get(1).toString().toLowerCase(Locale.US));
             } else {
                 return args.getFirst().toString().contains(args.get(1).toString());
@@ -2400,7 +2400,7 @@ public class PlaceholderRegistry {
                         "expects at least 2 arguments, got " + args.size()
                 );
             };
-            if(args.size() > 2) {
+            if(args.size() > 2 && args.get(2).toBoolean()) {
                 return args.getFirst().toString().toLowerCase(Locale.US).endsWith(args.get(1).toString().toLowerCase(Locale.US));
             } else {
                 return args.getFirst().toString().endsWith(args.get(1).toString());
@@ -2413,7 +2413,7 @@ public class PlaceholderRegistry {
                         "expects at least 2 arguments, got " + args.size()
                 );
             };
-            if(args.size() > 2) {
+            if(args.size() > 2 && args.get(2).toBoolean()) {
                 return args.getFirst().toString().toLowerCase(Locale.US).startsWith(args.get(1).toString().toLowerCase(Locale.US));
             } else {
                 return args.getFirst().toString().startsWith(args.get(1).toString());
