@@ -31,7 +31,7 @@ public class ChatNotifierHandler extends Handler {
                 if(!notification.isBlank()) {
                     PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(notification, false);
 
-                    if((result.success()[0] && !result.success()[1]) || !result.errors().isEmpty()) {
+                    if((result.success()[0] || !result.errors().isEmpty()) && !result.success()[1]) {
                         this.sendChatMessage(result.text());
                     }
                 }
