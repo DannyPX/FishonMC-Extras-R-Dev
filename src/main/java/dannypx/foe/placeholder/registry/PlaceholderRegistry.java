@@ -2298,7 +2298,7 @@ public class PlaceholderRegistry {
         static Boolean evalCondition(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             return args.getFirst().toBoolean();
@@ -2317,7 +2317,7 @@ public class PlaceholderRegistry {
         static PlaceholderValue evalConditionIf(List<PlaceholderValue> args) {
             if(args.size() < 2) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 2 arguments, got " + 0
+                        "expects at least 2 arguments, got " + args.size()
                 );
             };
             return args.getFirst().toBoolean()
@@ -2328,7 +2328,7 @@ public class PlaceholderRegistry {
         static Boolean evalOr(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             for (PlaceholderValue arg : args) {
@@ -2340,7 +2340,7 @@ public class PlaceholderRegistry {
         static Boolean evalAnd(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             for (PlaceholderValue arg : args) {
@@ -2352,7 +2352,7 @@ public class PlaceholderRegistry {
         static Boolean evalXor(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             boolean result = false;
@@ -2509,7 +2509,7 @@ public class PlaceholderRegistry {
         static Number evalMax(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             double result = Double.NEGATIVE_INFINITY;
@@ -2522,7 +2522,7 @@ public class PlaceholderRegistry {
         static Number evalMin(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             double result = Double.POSITIVE_INFINITY;
@@ -2535,7 +2535,7 @@ public class PlaceholderRegistry {
         static Number evalSum(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             double result = 0;
@@ -2548,7 +2548,7 @@ public class PlaceholderRegistry {
         static Number evalAverage(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             };
             double result = 0;
@@ -2588,7 +2588,7 @@ public class PlaceholderRegistry {
         static Number evalRound(List<PlaceholderValue> args) {
             if(args.isEmpty()) {
                 throw new PlaceholderEvaluationException(
-                        "expects at least 1 argument, got " + 0
+                        "expects at least 1 argument, got " + args.size()
                 );
             }
 
