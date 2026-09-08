@@ -1092,7 +1092,7 @@ public class PlaceholderRegistry {
         register(node("random").evalNumber(EvaluationContext::evalRandom)
                 .description("Returns a random number between 0.0 (inclusive) and 1.0 (exclusive).")
         );
-        register(node("random").evalNumber(EvaluationContext::evalRandomRange)
+        register(node("random_range").evalNumber(EvaluationContext::evalRandomRange)
                 .description("Returns a random number between min (inclusive) and max (exclusive).")
                 .param("min", DocTypeKind.NUMBER)
                 .param("max", DocTypeKind.NUMBER)
