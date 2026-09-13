@@ -19,11 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemInHandLayer.class)
 public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
     @Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
-    private void injectSubmitArmWithItem(S armedEntityRenderState, ItemStackRenderState itemStackRenderState, ItemStack itemStack, HumanoidArm humanoidArm, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, CallbackInfo ci) {
+    private void injectSubmitArmWithItem(S state, ItemStackRenderState item, ItemStack itemStack, HumanoidArm arm, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
         if (ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && !Configs.rendererConfig.showPet.get()
-                && armedEntityRenderState instanceof ArmorStandRenderState
+                && state instanceof ArmorStandRenderState
                 && Configs.mixinConfig.itemInHandLayerMixinSubmitArmWithItem.get()
                 && ValidateItem.isPet(itemStack).value1()
         ) {
