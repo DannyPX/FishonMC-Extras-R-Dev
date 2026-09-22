@@ -66,6 +66,7 @@ public class CommandRegistry {
                                 .then(command("timer").executes(Command.Reset::resetTimer))
                                 .then(command("hud").executes(Command.Reset::resetHud))
                                 .then(command("tracker").executes(Command.Reset::resetTracker))
+                                .then(command("snippet").executes(Command.Reset::resetSnippet))
                         )
                         .then(command("fix_defaults")
                                 .then(command("chat_trigger").executes(Command.Fix::fixChatTrigger))
@@ -75,6 +76,7 @@ public class CommandRegistry {
                                 .then(command("timer").executes(Command.Fix::fixTimer))
                                 .then(command("hud").executes(Command.Fix::fixHud))
                                 .then(command("tracker").executes(Command.Fix::fixTracker))
+                                .then(command("snippet").executes(Command.Fix::fixSnippet))
                         )
                         .then(command("toggle")
                                 .then(command("render")
@@ -287,6 +289,10 @@ public class CommandRegistry {
             public static int resetTracker(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Reset trackers to default config").withStyle(ChatFormatting.GREEN), () -> CustomTrackerDataHandler.instance().resetTrackers());
             }
+
+            public static int resetSnippet(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Reset snippets to default config").withStyle(ChatFormatting.GREEN), () -> CustomSnippetDataHandler.instance().resetSnippets());
+            }
         }
 
         static class Fix {
@@ -326,6 +332,10 @@ public class CommandRegistry {
 
             public static int fixTracker(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Fixed default trackers").withStyle(ChatFormatting.GREEN), () -> CustomTrackerDataHandler.instance().fixDefault());
+            }
+
+            public static int fixSnippet(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Fixed default snippets").withStyle(ChatFormatting.GREEN), () -> CustomSnippetDataHandler.instance().fixDefault());
             }
         }
 

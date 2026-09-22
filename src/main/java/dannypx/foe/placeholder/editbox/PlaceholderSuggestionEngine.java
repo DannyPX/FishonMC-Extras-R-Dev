@@ -7,10 +7,7 @@ import dannypx.foe.placeholder.token.PlaceholderParseException;
 import dannypx.foe.placeholder.token.Token;
 import dannypx.foe.placeholder.token.TokenType;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class PlaceholderSuggestionEngine {
     private PlaceholderSuggestionEngine() {}
@@ -123,13 +120,16 @@ public class PlaceholderSuggestionEngine {
         Frame top = stack.peek();
         if(top == null || !top.isPath()) return PlaceholderSuggestionContext.NONE;
 
-        String prefix = top.current.toString().trim();
-        int replaceStart = top.currentStart;
+        String raw = top.current.toString();
+        String prefix = raw.trim();
+        int leadingWs = raw.length() - raw.stripLeading().length();
+        int replaceStart = top.currentStart + leadingWs;
 
         if(top.committed.isEmpty()) {
             List<Suggestion> matches = PlaceholderRegistry.getRootNames().stream()
                     .filter(name -> matches(name, prefix))
-                    .filter(name -> !name.equals(prefix))
+//                    .filter(name -> !name.equals(prefix))
+                    .sorted()
                     .map(name -> new Suggestion(name, PlaceholderRegistry.getRoot(name).hasEval()))
                     .toList();
             return new PlaceholderSuggestionContext(PlaceholderSuggestionContext.Kind.ROOT, matches, replaceStart, caret);
@@ -143,8 +143,8 @@ public class PlaceholderSuggestionEngine {
 
         List<Suggestion> matches = node.getChildren().entrySet().stream()
                 .filter(e -> matches(e.getKey(), prefix))
-                .filter(e -> !e.getKey().equals(prefix))
-                .sorted((a, b) -> a.getKey().compareTo(b.getKey()))
+//                .filter(e -> !e.getKey().equals(prefix))
+                .sorted(Map.Entry.comparingByKey())
                 .map(e -> new Suggestion(e.getKey(), e.getValue().hasEval()))
                 .toList();
         return new PlaceholderSuggestionContext(PlaceholderSuggestionContext.Kind.CHILD, matches, replaceStart, caret);
