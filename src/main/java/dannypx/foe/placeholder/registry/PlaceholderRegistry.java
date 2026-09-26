@@ -1136,6 +1136,12 @@ public class PlaceholderRegistry {
         return ROOTS.get(key);
     }
 
+    public static List<String> getRootNames() {
+        List<String> names = new ArrayList<>(ROOTS.keySet());
+        names.sort(String::compareTo);
+        return names;
+    }
+
     //region Placeholder Contexts
 
     static class BossEventContext {
