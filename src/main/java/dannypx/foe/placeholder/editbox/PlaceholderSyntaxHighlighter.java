@@ -20,7 +20,7 @@ public final class PlaceholderSyntaxHighlighter {
             return new Span(start, end, color, false);
         };
 
-        public static Span of (int start, int end, int color, boolean error) {
+        public static Span of(int start, int end, int color, boolean error) {
             return new Span(start, end, color, error);
         }
     }
