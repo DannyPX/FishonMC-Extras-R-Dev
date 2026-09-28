@@ -302,10 +302,6 @@ public class TextHelper {
         }
     }
 
-    public static String shortenNumber(int i, int decimals) {
-        return shortenNumber((float) i, decimals);
-    }
-
     public static String floatToString(float f) {
         return floatToString(f, 0);
     }
@@ -487,6 +483,10 @@ public class TextHelper {
         return lines;
     }
 
+    public static MutableComponent substring(Component component, int start) {
+        return substring(component, start, component.getString().length());
+    }
+
     public static MutableComponent substring(Component component, int start, int end) {
         int length = component.getString().length();
 
@@ -568,7 +568,7 @@ public class TextHelper {
 
             cursor = matchEnd;
         }
-        result.append(substring(component, cursor, flat.length()));
+        result.append(substring(component, cursor));
 
         return result;
     }
@@ -586,7 +586,7 @@ public class TextHelper {
         int matchEnd = matchStart + target.length();
 
         MutableComponent before = substring(component, 0, matchStart);
-        MutableComponent after = substring(component, matchEnd, flat.length());
+        MutableComponent after = substring(component, matchEnd);
         Style replacementStyle = matchStart > 0 ? styleAt(component, matchStart - 1) : Style.EMPTY;
 
         return before.append(Component.literal(replacement).setStyle(replacementStyle)).append(after);
