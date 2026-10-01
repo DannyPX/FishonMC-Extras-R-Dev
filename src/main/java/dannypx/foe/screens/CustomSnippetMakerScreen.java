@@ -10,7 +10,7 @@ import dannypx.foe.handler.store.CustomSnippetDataHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
-import dannypx.foe.screens.widget.PlaceholderMultiLineEditBox;
+import dannypx.foe.placeholder.editbox.PlaceholderMultiLineEditBox;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
 import net.minecraft.client.Minecraft;
