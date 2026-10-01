@@ -2,7 +2,7 @@ package dannypx.foe.placeholder.editbox;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -127,14 +127,14 @@ public class PlaceholderEditBox extends EditBox {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
     }
 
-    public void renderSuggestions(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderSuggestions(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         if(!isFocused() || !isSuggesting()) return;
 
-        guiGraphics.nextStratum();
+        guiGraphicsExtractor.nextStratum();
 
         List<PlaceholderSuggestionEngine.Suggestion> items = context.suggestions();
         int visible = Math.min(items.size(), MAX_VISIBLE_ROWS);
@@ -143,14 +143,14 @@ public class PlaceholderEditBox extends EditBox {
         int width = this.getWidth();
         int panelHeight = visible * ROW_HEIGHT;
 
-        guiGraphics.fill(x, y, x + width, y + panelHeight, 0xF0101010);
+        guiGraphicsExtractor.fill(x, y, x + width, y + panelHeight, 0xF0101010);
         for (int i = 0; i < visible; i++) {
             PlaceholderSuggestionEngine.Suggestion item = items.get(i);
             int rowTop = y + i * ROW_HEIGHT;
-            if(i == highlighted) guiGraphics.fill(x, rowTop, x + width, rowTop + ROW_HEIGHT, 0x803366CC);
+            if(i == highlighted) guiGraphicsExtractor.fill(x, rowTop, x + width, rowTop + ROW_HEIGHT, 0x803366CC);
             int textColor = (i == highlighted) ? 0xFFFFFF55 : 0xFFCCCCCC;
             String label = item.name() + (item.isFunction() ? "(...)" : "");
-            guiGraphics.drawString(font, label, x + 3, rowTop + 2, textColor, false);
+            guiGraphicsExtractor.text(font, label, x + 3, rowTop + 2, textColor, false);
         }
     }
 }

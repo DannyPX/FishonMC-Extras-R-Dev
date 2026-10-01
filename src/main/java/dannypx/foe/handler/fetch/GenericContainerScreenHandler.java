@@ -149,8 +149,8 @@ public class GenericContainerScreenHandler extends Handler {
             } else if (Objects.equals(genericContainerScreen.getTitle().getString(), PRESETS_SCREEN_CONTAINER)) {
                 PresetsScreenRenderHandler.instance().extractRenderButtonHelp(guiGraphicsExtractor, true, true);
             } else if(Objects.equals(genericContainerScreen.getTitle().getString(), TACKLE_BOX_SCREEN_CONTAINER)) {
-                TackleBoxScreenRenderHandler.instance().renderButtonHelp(guiGraphicsExtractor, true, false);
-                TackleBoxScreenRenderHandler.instance().render(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
+                TackleBoxScreenRenderHandler.instance().extractRenderButtonHelp(guiGraphicsExtractor, true, false);
+                TackleBoxScreenRenderHandler.instance().extractRenderState(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
             }
         }
     }

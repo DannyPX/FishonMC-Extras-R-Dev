@@ -3,7 +3,7 @@ package dannypx.foe.screens;
 import dannypx.foe.handler.io.ChangelogFetcherHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -251,10 +251,10 @@ public class ChangelogScreen extends Screen implements ChangelogFetcherHandler.L
 
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
 
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 12, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(this.font, this.title, this.width / 2, 12, 0xFFFFFFFF);
 
         int top = viewportTop();
         int bottom = viewportBottom();
@@ -265,15 +265,15 @@ public class ChangelogScreen extends Screen implements ChangelogFetcherHandler.L
         List<ChangelogFetcherHandler.ChangelogEntry> entries = ChangelogFetcherHandler.instance().getEntries();
 
         if (error != null) {
-            guiGraphics.drawCenteredString(this.font,
+            guiGraphicsExtractor.centeredText(this.font,
                     Component.literal("Failed to load changelog: " + error),
                     this.width / 2, top + 10, 0xFFFF5555);
         } else if (entries == null) {
-            guiGraphics.drawCenteredString(this.font, Component.literal("Loading changelog..."), this.width / 2, top + 10, 0xFFAAAAAA);
+            guiGraphicsExtractor.centeredText(this.font, Component.literal("Loading changelog..."), this.width / 2, top + 10, 0xFFAAAAAA);
         } else if (renderLines.isEmpty()) {
-            guiGraphics.drawCenteredString(this.font, Component.literal("No changelog entries found."), this.width / 2, top + 10, 0xFFAAAAAA);
+            guiGraphicsExtractor.centeredText(this.font, Component.literal("No changelog entries found."), this.width / 2, top + 10, 0xFFAAAAAA);
         } else {
-            guiGraphics.enableScissor(left, top, right, bottom);
+            guiGraphicsExtractor.enableScissor(left, top, right, bottom);
 
             int startY = top - (int) scrollAmount;
             for (RenderLine line : renderLines) {
@@ -282,34 +282,34 @@ public class ChangelogScreen extends Screen implements ChangelogFetcherHandler.L
                 if (line.sequence == null) continue;
 
                 if (line.scale == 1.0f) {
-                    guiGraphics.drawString(this.font, line.sequence, left + line.indent, y, line.color);
+                    guiGraphicsExtractor.text(this.font, line.sequence, left + line.indent, y, line.color);
                 } else {
-                    guiGraphics.pose().pushMatrix();
-                    guiGraphics.pose().translate(left + line.indent, y);
-                    guiGraphics.pose().scale(line.scale, line.scale);
-                    guiGraphics.drawString(this.font, line.sequence, 0, 0, line.color);
-                    guiGraphics.pose().popMatrix();
+                    guiGraphicsExtractor.pose().pushMatrix();
+                    guiGraphicsExtractor.pose().translate(left + line.indent, y);
+                    guiGraphicsExtractor.pose().scale(line.scale, line.scale);
+                    guiGraphicsExtractor.text(this.font, line.sequence, 0, 0, line.color);
+                    guiGraphicsExtractor.pose().popMatrix();
                 }
             }
 
-            guiGraphics.disableScissor();
+            guiGraphicsExtractor.disableScissor();
 
             if (maxScroll > 0) {
-                drawScrollbar(guiGraphics, right + 4, top, bottom);
+                drawScrollbar(guiGraphicsExtractor, right + 4, top, bottom);
             }
         }
 
     }
 
-    private void drawScrollbar(GuiGraphics guiGraphics, int x, int top, int bottom) {
+    private void drawScrollbar(GuiGraphicsExtractor guiGraphicsExtractor, int x, int top, int bottom) {
         int viewportHeight = bottom - top;
-        guiGraphics.fill(x, top, x + SCROLLBAR_WIDTH, bottom, 0x33FFFFFF);
+        guiGraphicsExtractor.fill(x, top, x + SCROLLBAR_WIDTH, bottom, 0x33FFFFFF);
 
         int contentHeight = viewportHeight + (int) maxScroll;
         int thumbHeight = Math.max(20, (int) ((long) viewportHeight * viewportHeight / Math.max(1, contentHeight)));
         int thumbY = top + (int) ((viewportHeight - thumbHeight) * (scrollAmount / maxScroll));
 
-        guiGraphics.fill(x, thumbY, x + SCROLLBAR_WIDTH, thumbY + thumbHeight, 0xAAFFFFFF);
+        guiGraphicsExtractor.fill(x, thumbY, x + SCROLLBAR_WIDTH, thumbY + thumbHeight, 0xAAFFFFFF);
     }
 
     @Override

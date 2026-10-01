@@ -9,7 +9,7 @@ import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
@@ -395,22 +395,22 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                 && mouseY >= this.formatTop() && mouseY < this.formatBottom();
     }
 
-    private void renderFormatButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderFormatButton(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         int left = this.formatLeft();
         int top = this.formatTop();
         boolean hovered = this.isOverFormatButton(mouseX, mouseY) && !this.isOverSuggestionPanel(mouseX, mouseY);
 
-        guiGraphics.fill(left, top, left + BUTTON_SIZE, top + BUTTON_SIZE,
+        guiGraphicsExtractor.fill(left, top, left + BUTTON_SIZE, top + BUTTON_SIZE,
                 hovered ? BUTTON_HOVER_COLOR : BUTTON_COLOR);
 
         int icon = hovered ? BUTTON_ICON_HOVER_COLOR : BUTTON_ICON_COLOR;
-        guiGraphics.fill(left + 2, top + 2, left + 9, top + 3, icon);
-        guiGraphics.fill(left + 4, top + 4, left + 9, top + 5, icon);
-        guiGraphics.fill(left + 4, top + 6, left + 9, top + 7, icon);
-        guiGraphics.fill(left + 2, top + 8, left + 9, top + 9, icon);
+        guiGraphicsExtractor.fill(left + 2, top + 2, left + 9, top + 3, icon);
+        guiGraphicsExtractor.fill(left + 4, top + 4, left + 9, top + 5, icon);
+        guiGraphicsExtractor.fill(left + 4, top + 6, left + 9, top + 7, icon);
+        guiGraphicsExtractor.fill(left + 2, top + 8, left + 9, top + 9, icon);
 
         if (hovered) {
-            guiGraphics.setTooltipForNextFrame(font, Component.literal("Click to format"), mouseX, mouseY);
+            guiGraphicsExtractor.setTooltipForNextFrame(font, Component.literal("Click to format"), mouseX, mouseY);
         }
     }
 
@@ -468,21 +468,21 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                 && mouseY >= this.formatTop() && mouseY < this.formatBottom();
     }
 
-    private void renderMinifyButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderMinifyButton(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         int left = this.minifyLeft();
         int top = this.formatTop();
         boolean hovered = this.isOverMinifyButton(mouseX, mouseY) && !this.isOverSuggestionPanel(mouseX, mouseY);
 
-        guiGraphics.fill(left, top, left + BUTTON_SIZE, top + BUTTON_SIZE,
+        guiGraphicsExtractor.fill(left, top, left + BUTTON_SIZE, top + BUTTON_SIZE,
                 hovered ? BUTTON_HOVER_COLOR : BUTTON_COLOR);
 
         int icon = hovered ? BUTTON_ICON_HOVER_COLOR : BUTTON_ICON_COLOR;
-        guiGraphics.fill(left + 2, top + 3, left + 9, top + 4, icon);
-        guiGraphics.fill(left + 2, top + 5, left + 9, top + 6, icon);
-        guiGraphics.fill(left + 2, top + 7, left + 9, top + 8, icon);
+        guiGraphicsExtractor.fill(left + 2, top + 3, left + 9, top + 4, icon);
+        guiGraphicsExtractor.fill(left + 2, top + 5, left + 9, top + 6, icon);
+        guiGraphicsExtractor.fill(left + 2, top + 7, left + 9, top + 8, icon);
 
         if (hovered) {
-            guiGraphics.setTooltipForNextFrame(font, Component.literal("Minify"), mouseX, mouseY);
+            guiGraphicsExtractor.setTooltipForNextFrame(font, Component.literal("Minify"), mouseX, mouseY);
         }
     }
 
@@ -495,22 +495,22 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                 && mouseY >= this.helpTop() && mouseY < this.helpTop() + BUTTON_SIZE;
     }
 
-    private void renderHelpButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderHelpButton(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         int left = this.formatLeft();
         int top = this.helpTop();
         boolean hovered = this.isOverHelpButton(mouseX, mouseY) && !this.isOverSuggestionPanel(mouseX, mouseY);
 
-        guiGraphics.fill(left, top, left + BUTTON_SIZE, top + BUTTON_SIZE,
+        guiGraphicsExtractor.fill(left, top, left + BUTTON_SIZE, top + BUTTON_SIZE,
                 hovered ? BUTTON_HOVER_COLOR : BUTTON_COLOR);
 
         String mark = "?";
-        guiGraphics.drawString(font, mark,
+        guiGraphicsExtractor.text(font, mark,
                 left + (BUTTON_SIZE - font.width(mark)) / 2 + 1,
                 top + (BUTTON_SIZE - font.lineHeight) / 2 + 1,
                 hovered ? BUTTON_ICON_HOVER_COLOR : BUTTON_ICON_COLOR, false);
 
         if (hovered) {
-            guiGraphics.setTooltipForNextFrame(font, SHORTCUTS_TOOLTIP, Optional.empty(), mouseX, mouseY);
+            guiGraphicsExtractor.setTooltipForNextFrame(font, SHORTCUTS_TOOLTIP, Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -1214,30 +1214,31 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         return true;
     }
 
+
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         this.updateFrameState(mouseX, mouseY);
         this.resolvePendingPlaceholder();
 
         int editorBottom = getBottom() - resultBoxHeight;
-        this.renderEditorFrame(guiGraphics, editorBottom);
+        this.renderEditorFrame(guiGraphicsExtractor, editorBottom);
 
-        guiGraphics.enableScissor(getX() + 1, getY() + 1, getRight() - 1, editorBottom - 1);
-        this.renderEditorText(guiGraphics);
-        this.renderCaret(guiGraphics);
-        this.renderScrollbar(guiGraphics, mouseX, mouseY);
-        this.renderFormatButton(guiGraphics, mouseX, mouseY);
-        this.renderMinifyButton(guiGraphics, mouseX, mouseY);
-        this.renderHelpButton(guiGraphics, mouseX, mouseY);
-        guiGraphics.disableScissor();
+        guiGraphicsExtractor.enableScissor(getX() + 1, getY() + 1, getRight() - 1, editorBottom - 1);
+        this.renderEditorText(guiGraphicsExtractor);
+        this.renderCaret(guiGraphicsExtractor);
+        this.renderScrollbar(guiGraphicsExtractor, mouseX, mouseY);
+        this.renderFormatButton(guiGraphicsExtractor, mouseX, mouseY);
+        this.renderMinifyButton(guiGraphicsExtractor, mouseX, mouseY);
+        this.renderHelpButton(guiGraphicsExtractor, mouseX, mouseY);
+        guiGraphicsExtractor.disableScissor();
 
-        this.renderResultFrame(guiGraphics, editorBottom);
+        this.renderResultFrame(guiGraphicsExtractor, editorBottom);
 
-        guiGraphics.enableScissor(getX() + 1, editorBottom + 1, getRight() - 1, getBottom() - 1);
-        this.renderResultText(guiGraphics, editorBottom);
-        guiGraphics.disableScissor();
+        guiGraphicsExtractor.enableScissor(getX() + 1, editorBottom + 1, getRight() - 1, getBottom() - 1);
+        this.renderResultText(guiGraphicsExtractor, editorBottom);
+        guiGraphicsExtractor.disableScissor();
 
-        this.requestMouseCursor(guiGraphics, mouseX, mouseY);
+        this.requestMouseCursor(guiGraphicsExtractor, mouseX, mouseY);
     }
 
     private void updateFrameState(int mouseX, int mouseY) {
@@ -1255,18 +1256,18 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         }
     }
 
-    private void renderEditorFrame(GuiGraphics guiGraphics, int editorBottom) {
-        guiGraphics.fill(getX(), getY(), getRight(), editorBottom, BACKGROUND_COLOR);
-        guiGraphics.fill(getX(), getY(), getRight(), getY() + 1, BORDER_COLOR);
-        guiGraphics.fill(getX(), editorBottom - 1, getRight(), editorBottom, BORDER_COLOR);
-        guiGraphics.fill(getX(), getY(), getX() + 1, editorBottom, BORDER_COLOR);
-        guiGraphics.fill(getRight() - 1, getY(), getRight(), editorBottom, BORDER_COLOR);
+    private void renderEditorFrame(GuiGraphicsExtractor guiGraphicsExtractor, int editorBottom) {
+        guiGraphicsExtractor.fill(getX(), getY(), getRight(), editorBottom, BACKGROUND_COLOR);
+        guiGraphicsExtractor.fill(getX(), getY(), getRight(), getY() + 1, BORDER_COLOR);
+        guiGraphicsExtractor.fill(getX(), editorBottom - 1, getRight(), editorBottom, BORDER_COLOR);
+        guiGraphicsExtractor.fill(getX(), getY(), getX() + 1, editorBottom, BORDER_COLOR);
+        guiGraphicsExtractor.fill(getRight() - 1, getY(), getRight(), editorBottom, BORDER_COLOR);
 
         int dividerX = getX() + GUTTER_LEFT_PAD + gutterNumberWidth + GUTTER_LEFT_PAD;
-        guiGraphics.fill(dividerX, getY() + 1, dividerX + 1, editorBottom - 1, GUTTER_DIVIDER_COLOR);
+        guiGraphicsExtractor.fill(dividerX, getY() + 1, dividerX + 1, editorBottom - 1, GUTTER_DIVIDER_COLOR);
     }
 
-    private void renderEditorText(GuiGraphics guiGraphics) {
+    private void renderEditorText(GuiGraphicsExtractor guiGraphicsExtractor) {
         int[] strippedToRaw = strippedToRawMap();
         List<PlaceholderSyntaxHighlighter.Span> spans = this.highlightSpans(strippedToRaw);
         PlaceholderStructure structure = this.structure();
@@ -1282,11 +1283,11 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
             VisualLine vl = visualLines.get(lineIdx);
             int drawY = getY() + PAD + row * lineHeight;
 
-            if (!vl.continuation()) this.renderGutterNumber(guiGraphics, vl, lineIdx, drawY);
-            this.renderIndentGuides(guiGraphics, vl, textX, drawY);
-            if (selecting) this.renderSelection(guiGraphics, vl, textX, drawY);
-            this.renderBrackets(guiGraphics, bracket, structure, strippedToRaw, vl, textX, drawY);
-            this.renderLineText(guiGraphics, spans, vl, textX, drawY);
+            if (!vl.continuation()) this.renderGutterNumber(guiGraphicsExtractor, vl, lineIdx, drawY);
+            this.renderIndentGuides(guiGraphicsExtractor, vl, textX, drawY);
+            if (selecting) this.renderSelection(guiGraphicsExtractor, vl, textX, drawY);
+            this.renderBrackets(guiGraphicsExtractor, bracket, structure, strippedToRaw, vl, textX, drawY);
+            this.renderLineText(guiGraphicsExtractor, spans, vl, textX, drawY);
         }
     }
 
@@ -1319,11 +1320,11 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                 : new BracketHighlight(first, -1, true);
     }
 
-    private void renderGutterNumber(GuiGraphics guiGraphics, VisualLine vl, int lineIdx, int drawY) {
+    private void renderGutterNumber(GuiGraphicsExtractor guiGraphicsExtractor, VisualLine vl, int lineIdx, int drawY) {
         String numStr = String.valueOf(vl.lineNumber());
         int numX = getX() + GUTTER_LEFT_PAD + (gutterNumberWidth - font.width(numStr));
         int numColor = (lineIdx == cursorLine) ? GUTTER_CURRENT_LINE_COLOR : GUTTER_NUMBER_COLOR;
-        guiGraphics.drawString(font, numStr, numX, drawY, numColor, false);
+        guiGraphicsExtractor.text(font, numStr, numX, drawY, numColor, false);
     }
 
     private int logicalLineStart(int pos) {
@@ -1331,7 +1332,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         return i < 0 ? 0 : i + 1;
     }
 
-    private void renderIndentGuides(GuiGraphics guiGraphics, VisualLine vl, int textX, int drawY) {
+    private void renderIndentGuides(GuiGraphicsExtractor guiGraphicsExtractor, VisualLine vl, int textX, int drawY) {
         int logicalStart = this.logicalLineStart(vl.start());
         int i = logicalStart;
         while (i < value.length() && value.charAt(i) == ' ') i++;
@@ -1342,34 +1343,34 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         int indentWidth = font.width(INDENT);
         for (int level = 1; level <= levels; level++) {
             int x = textX + (level - 1) * indentWidth;
-            guiGraphics.fill(x, drawY, x + 1, drawY + lineHeight, INDENT_GUIDE_COLOR);
+            guiGraphicsExtractor.fill(x, drawY, x + 1, drawY + lineHeight, INDENT_GUIDE_COLOR);
         }
     }
 
-    private void renderSelection(GuiGraphics guiGraphics, VisualLine vl, int textX, int drawY) {
+    private void renderSelection(GuiGraphicsExtractor guiGraphicsExtractor, VisualLine vl, int textX, int drawY) {
         int hs = Math.max(this.selStart(), vl.start());
         int he = Math.min(this.selEnd(), vl.end());
         if (he <= hs) return;
 
         int hx1 = textX + font.width(value.substring(vl.start(), hs));
         int hx2 = textX + font.width(value.substring(vl.start(), he));
-        guiGraphics.fill(hx1, drawY, hx2, drawY + lineHeight, SELECTION_COLOR);
+        guiGraphicsExtractor.fill(hx1, drawY, hx2, drawY + lineHeight, SELECTION_COLOR);
     }
 
-    private void renderBrackets(GuiGraphics guiGraphics, BracketHighlight bracket, PlaceholderStructure structure, int[] strippedToRaw, VisualLine vl, int textX, int drawY) {
+    private void renderBrackets(GuiGraphicsExtractor guiGraphicsExtractor, BracketHighlight bracket, PlaceholderStructure structure, int[] strippedToRaw, VisualLine vl, int textX, int drawY) {
         int lineStart = vl.start(), lineEnd = vl.end();
 
         if (bracket.first() >= 0) {
             int boxColor = bracket.unmatched() ? BRACKET_ERROR_BOX_COLOR : BRACKET_MATCH_COLOR;
-            this.markChar(guiGraphics, bracket.first(), lineStart, lineEnd, textX, drawY, boxColor, false);
-            if (bracket.second() >= 0) this.markChar(guiGraphics, bracket.second(), lineStart, lineEnd, textX, drawY, boxColor, false);
+            this.markChar(guiGraphicsExtractor, bracket.first(), lineStart, lineEnd, textX, drawY, boxColor, false);
+            if (bracket.second() >= 0) this.markChar(guiGraphicsExtractor, bracket.second(), lineStart, lineEnd, textX, drawY, boxColor, false);
         }
         for (PlaceholderStructure.Delimiter unmatched : structure.unmatched()) {
-            this.markChar(guiGraphics, strippedToRaw[unmatched.index()], lineStart, lineEnd, textX, drawY, BRACKET_ERROR_COLOR, true);
+            this.markChar(guiGraphicsExtractor, strippedToRaw[unmatched.index()], lineStart, lineEnd, textX, drawY, BRACKET_ERROR_COLOR, true);
         }
     }
 
-    private void renderLineText(GuiGraphics guiGraphics, List<PlaceholderSyntaxHighlighter.Span> spans, VisualLine vl, int textX, int drawY) {
+    private void renderLineText(GuiGraphicsExtractor guiGraphicsExtractor, List<PlaceholderSyntaxHighlighter.Span> spans, VisualLine vl, int textX, int drawY) {
         int lineStart = vl.start(), lineEnd = vl.end();
 
         MutableComponent rendered = Component.empty();
@@ -1384,11 +1385,11 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         }
         if (cur < lineEnd) rendered.append(plain(value.substring(cur, lineEnd), DEFAULT_TEXT_COLOR));
 
-        guiGraphics.drawString(font, Language.getInstance().getVisualOrder(rendered), textX, drawY, DEFAULT_TEXT_COLOR, false);
-        this.underlineErrors(guiGraphics, spans, lineStart, lineEnd, textX, drawY);
+        guiGraphicsExtractor.text(font, Language.getInstance().getVisualOrder(rendered), textX, drawY, DEFAULT_TEXT_COLOR, false);
+        this.underlineErrors(guiGraphicsExtractor, spans, lineStart, lineEnd, textX, drawY);
     }
 
-    private void renderCaret(GuiGraphics guiGraphics) {
+    private void renderCaret(GuiGraphicsExtractor guiGraphicsExtractor) {
         if (!isFocused() || this.hasSelection() || (System.currentTimeMillis() / CURSOR_BLINK_INTERVAL_MS) % 2 != 0) return;
 
         int row = cursorLine - scrollLines;
@@ -1397,10 +1398,10 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         VisualLine vl = visualLines.get(cursorLine);
         int cx = getX() + gutterWidth + font.width(value.substring(vl.start(), cursor));
         int cy = getY() + PAD + row * lineHeight - 2;
-        guiGraphics.fill(cx, cy, cx + 1, cy + font.lineHeight + 2, CURSOR_COLOR);
+        guiGraphicsExtractor.fill(cx, cy, cx + 1, cy + font.lineHeight + 2, CURSOR_COLOR);
     }
 
-    private void renderScrollbar(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderScrollbar(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         if (!this.isScrollbarVisible()) return;
 
         int thumbY = this.scrollThumbY();
@@ -1408,33 +1409,33 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         int barX = getRight() - SCROLLBAR_WIDTH - 1;
         boolean thumbActive = draggingScrollbar
                 || (this.isOverScrollbar(mouseX, mouseY) && this.isOverThumb(mouseY));
-        guiGraphics.fill(barX, thumbY, barX + SCROLLBAR_WIDTH, thumbY + thumbHeight,
+        guiGraphicsExtractor.fill(barX, thumbY, barX + SCROLLBAR_WIDTH, thumbY + thumbHeight,
                 thumbActive ? SCROLLBAR_ACTIVE_COLOR : SCROLLBAR_COLOR);
     }
 
-    private void renderResultFrame(GuiGraphics guiGraphics, int editorBottom) {
-        guiGraphics.fill(getX(), editorBottom, getRight(), getBottom(), BACKGROUND_COLOR);
-        guiGraphics.fill(getX(), getBottom() - 1, getRight(), getBottom(), BORDER_COLOR);
-        guiGraphics.fill(getX(), editorBottom, getX() + 1, getBottom(), BORDER_COLOR);
-        guiGraphics.fill(getRight() - 1, editorBottom, getRight(), getBottom(), BORDER_COLOR);
+    private void renderResultFrame(GuiGraphicsExtractor guiGraphicsExtractor, int editorBottom) {
+        guiGraphicsExtractor.fill(getX(), editorBottom, getRight(), getBottom(), BACKGROUND_COLOR);
+        guiGraphicsExtractor.fill(getX(), getBottom() - 1, getRight(), getBottom(), BORDER_COLOR);
+        guiGraphicsExtractor.fill(getX(), editorBottom, getX() + 1, getBottom(), BORDER_COLOR);
+        guiGraphicsExtractor.fill(getRight() - 1, editorBottom, getRight(), getBottom(), BORDER_COLOR);
     }
 
-    private void renderResultText(GuiGraphics guiGraphics, int editorBottom) {
+    private void renderResultText(GuiGraphicsExtractor guiGraphicsExtractor, int editorBottom) {
         if (pendingResolve || resolvedResult == null || this.getResolvedValue().isEmpty()) {
-            guiGraphics.drawString(font, "awaiting", getX() + PADDING, editorBottom + PADDING, RESULT_AWAITING_COLOR, false);
+            guiGraphicsExtractor.text(font, "awaiting", getX() + PADDING, editorBottom + PADDING, RESULT_AWAITING_COLOR, false);
         } else {
             if(resolvedResult.success()[1]) {
-                guiGraphics.drawString(font, TextHelper.concat(
+                guiGraphicsExtractor.text(font, TextHelper.concat(
                         Component.literal("Hidden ").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                         resolvedResult.text()
                 ), getX() + PADDING, editorBottom + PADDING, DEFAULT_TEXT_COLOR, false);
             } else {
-                guiGraphics.drawString(font, resolvedResult.text(), getX() + PADDING, editorBottom + PADDING, DEFAULT_TEXT_COLOR, false);
+                guiGraphicsExtractor.text(font, resolvedResult.text(), getX() + PADDING, editorBottom + PADDING, DEFAULT_TEXT_COLOR, false);
             }
         }
     }
 
-    private void requestMouseCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void requestMouseCursor(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         boolean overPanel = this.isOverSuggestionPanel(mouseX, mouseY);
         if (draggingScrollbar || overPanel || (this.isHovered() && !this.isOverHelpButton(mouseX, mouseY))) {
             boolean pointer = draggingScrollbar
@@ -1442,7 +1443,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                     || this.isOverScrollbar(mouseX, mouseY)
                     || this.isOverFormatButton(mouseX, mouseY)
                     || this.isOverMinifyButton(mouseX, mouseY);
-            guiGraphics.requestCursor(pointer ? CursorTypes.POINTING_HAND : CursorTypes.IBEAM);
+            guiGraphicsExtractor.requestCursor(pointer ? CursorTypes.POINTING_HAND : CursorTypes.IBEAM);
         }
     }
 
@@ -1450,7 +1451,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         return Component.literal(text).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(rgb)));
     }
 
-    private void underlineErrors(GuiGraphics guiGraphics, List<PlaceholderSyntaxHighlighter.Span> spans, int lineStart, int lineEnd, int textX, int drawY) {
+    private void underlineErrors(GuiGraphicsExtractor guiGraphicsExtractor, List<PlaceholderSyntaxHighlighter.Span> spans, int lineStart, int lineEnd, int textX, int drawY) {
         for (PlaceholderSyntaxHighlighter.Span span : spans) {
             if (!span.error()) continue;
 
@@ -1460,17 +1461,17 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
 
             int x1 = textX + font.width(value.substring(lineStart, start));
             int x2 = textX + font.width(value.substring(lineStart, end));
-            guiGraphics.fill(x1, drawY + font.lineHeight, x2, drawY + font.lineHeight + 1, span.color());
+            guiGraphicsExtractor.fill(x1, drawY + font.lineHeight, x2, drawY + font.lineHeight + 1, span.color());
         }
     }
 
-    private void markChar(GuiGraphics guiGraphics, int rawIndex, int lineStart, int lineEnd, int textX, int drawY, int color, boolean underline) {
+    private void markChar(GuiGraphicsExtractor guiGraphicsExtractor, int rawIndex, int lineStart, int lineEnd, int textX, int drawY, int color, boolean underline) {
         if (rawIndex < lineStart || rawIndex >= lineEnd) return;
 
         int x1 = textX + font.width(value.substring(lineStart, rawIndex));
         int x2 = x1 + font.width(value.substring(rawIndex, rawIndex + 1));
-        if (underline) guiGraphics.fill(x1, drawY + lineHeight - 2, x2, drawY + lineHeight - 1, color);
-        else guiGraphics.fill(x1, drawY, x2, drawY + lineHeight, color);
+        if (underline) guiGraphicsExtractor.fill(x1, drawY + lineHeight - 2, x2, drawY + lineHeight - 1, color);
+        else guiGraphicsExtractor.fill(x1, drawY, x2, drawY + lineHeight, color);
     }
 
     private PlaceholderStructure structure() {
@@ -1492,11 +1493,11 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         return this.suggestionIndexAt(this.suggestionPanel(), mouseX, mouseY) >= 0;
     }
 
-    public void renderSuggestions(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderSuggestions(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY) {
         SuggestionPanel panel = this.suggestionPanel();
         if (panel == null) return;
 
-        guiGraphics.nextStratum();
+        guiGraphicsExtractor.nextStratum();
 
         int hovered = this.suggestionIndexAt(panel, mouseX, mouseY);
         if (hovered >= 0 && mouseMoved) highlighted = hovered;
@@ -1504,21 +1505,21 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         List<PlaceholderSuggestionEngine.Suggestion> items = context.suggestions();
         int panelHeight = panel.rows() * ROW_HEIGHT;
 
-        guiGraphics.fill(panel.x(), panel.y(), panel.x() + PANEL_WIDTH, panel.y() + panelHeight, 0xF0101010);
+        guiGraphicsExtractor.fill(panel.x(), panel.y(), panel.x() + PANEL_WIDTH, panel.y() + panelHeight, 0xF0101010);
         for (int i = 0; i < panel.rows(); i++) {
             int itemIndex = suggestionScroll + i;
             PlaceholderSuggestionEngine.Suggestion item = items.get(itemIndex);
             int rowTop = panel.y() + i * ROW_HEIGHT;
-            if (itemIndex == highlighted) guiGraphics.fill(panel.x(), rowTop, panel.x() + PANEL_WIDTH, rowTop + ROW_HEIGHT, 0x803366CC);
+            if (itemIndex == highlighted) guiGraphicsExtractor.fill(panel.x(), rowTop, panel.x() + PANEL_WIDTH, rowTop + ROW_HEIGHT, 0x803366CC);
             int textColor = (itemIndex == highlighted) ? 0xFFFFFF55 : 0xFFCCCCCC;
             String label = item.name() + (item.isFunction() ? "(...)" : "");
-            guiGraphics.drawString(font, label, panel.x() + 3, rowTop + 2, textColor, false);
+            guiGraphicsExtractor.text(font, label, panel.x() + 3, rowTop + 2, textColor, false);
         }
 
         if (items.size() > panel.rows()) {
             int thumbHeight = Math.max(6, panelHeight * panel.rows() / items.size());
             int thumbY = panel.y() + (panelHeight - thumbHeight) * suggestionScroll / (items.size() - panel.rows());
-            guiGraphics.fill(panel.x() + PANEL_WIDTH - 3, thumbY, panel.x() + PANEL_WIDTH - 1, thumbY + thumbHeight, SCROLLBAR_COLOR);
+            guiGraphicsExtractor.fill(panel.x() + PANEL_WIDTH - 3, thumbY, panel.x() + PANEL_WIDTH - 1, thumbY + thumbHeight, SCROLLBAR_COLOR);
         }
     }
 
