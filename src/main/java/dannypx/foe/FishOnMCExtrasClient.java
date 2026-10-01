@@ -3,12 +3,13 @@ package dannypx.foe;
 import dannypx.foe.command.CommandRegistry;
 import dannypx.foe.entity.FishingHookEntityModel;
 import dannypx.foe.handler.fetch.*;
+import dannypx.foe.handler.io.ChangelogFetcherHandler;
 import dannypx.foe.handler.logic.*;
 import dannypx.foe.handler.renderer.*;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
+import dannypx.foe.handler.logic.PlaceholderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -18,23 +19,15 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+
 import java.util.List;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
@@ -48,10 +41,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
-        ClientReceiveMessageEvents.MODIFY_GAME.register(this::modifyGameMessage);
         ClientSendMessageEvents.MODIFY_CHAT.register(this::modifyChatMessage);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
-        UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
 
         this.initHudRenderer();
@@ -73,16 +64,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ChatHandler.instance().onReceiveMessage(message);
     }
 
-    private Component modifyGameMessage(Component message, boolean over) {
-        return ChatHandler.instance().onModifyGameMessage(message);
-    }
-
     private String modifyChatMessage(String text) {
         return ChatHandler.instance().onModifyChatMessage(text);
-    }
-
-    private InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
-        return InteractionResult.PASS;
     }
 
     private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
@@ -97,7 +80,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.registerEntityModels();
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
-        PlaceholderHandlerV2.instance().init();
+        PlaceholderHandler.instance().init();
+        ChangelogFetcherHandler.instance().fetch(false);
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
@@ -125,6 +109,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             CustomTimerDataHandler.instance().init();
             CustomEventTriggerDataHandler.instance().init();
             CustomTrackerDataHandler.instance().init();
+            CustomSnippetDataHandler.instance().init();
 
             ScoreboardHandler.instance().init();
             CrewHandler.instance().init();
@@ -172,7 +157,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();
 
                 // Placeholder Engine
-                PlaceholderHandlerV2.instance().tick();
+                PlaceholderHandler.instance().tick();
 
             } else {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();

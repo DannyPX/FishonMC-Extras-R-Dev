@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -57,7 +58,7 @@ public class MainScreen extends DefaultModScreen {
         Component creatorTriggerComponent = Component.literal("Creator: Triggers");
         guiGraphicsExtractor.text(font, creatorTriggerComponent,
                 width / 2 - font.width(creatorTriggerComponent) / 2,
-                height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 0 - font.lineHeight - PADDING_QUART - PADDING_HALF, CommonColors.WHITE, true
+                height / 2 - font.lineHeight - PADDING_QUART - PADDING_HALF, CommonColors.WHITE, true
         );
 
         Component creatorObserverComponent = Component.literal("Creator: Observers");
@@ -73,7 +74,6 @@ public class MainScreen extends DefaultModScreen {
         );
 
         //Versions
-        guiGraphicsExtractor.text(font, Component.literal("Mod Version: v" + FishOnMCExtras.VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - font.lineHeight - PADDING_QUART, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("HUD Version: v" + FishOnMCExtras.HUD_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 2, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("Chat Trigger Version: v" + FishOnMCExtras.CHAT_TRIGGER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 3, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("Timer Version: v" + FishOnMCExtras.TIMER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 4, CommonColors.WHITE, true);
@@ -83,6 +83,7 @@ public class MainScreen extends DefaultModScreen {
         guiGraphicsExtractor.text(font, Component.literal("Event Trigger Version: v" + FishOnMCExtras.EVENT_TRIGGER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 8, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("Tracker Version: v" + FishOnMCExtras.TRACKER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 9, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("HUD Icon Version: v" + FishOnMCExtras.HUD_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 10, CommonColors.WHITE, true);
+        guiGraphicsExtractor.text(font, Component.literal("Snippet Version: v" + FishOnMCExtras.SNIPPET_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 11, CommonColors.WHITE, true);
     }
 
     private void extractRenderWidgets() {
@@ -118,7 +119,15 @@ public class MainScreen extends DefaultModScreen {
                 .build()
         );
 
-
+        widgets.add(Button.builder(
+                        Component.literal("S"),
+                        button -> this.minecraft.setScreen(new CustomSnippetMakerScreen(this.minecraft.screen)))
+                .pos(width / 2 - BUTTON_WIDTH / 2 - BUTTON_HEIGHT - PADDING_QUART,
+                        height / 2 - (BUTTON_HEIGHT + PADDING_QUART) * 2)
+                .size(BUTTON_HEIGHT, BUTTON_HEIGHT)
+                .tooltip(Tooltip.create(Component.literal("Make placeholder snippets")))
+                .build()
+        );
 
         widgets.add(Button.builder(
                         Component.literal("Chat Triggers"),
@@ -202,6 +211,19 @@ public class MainScreen extends DefaultModScreen {
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.create(Component.literal("Open Controls Screen")))
                 .build()
+        );
+
+        Component modVersion = Component.literal("Mod Version: v" + FishOnMCExtras.VERSION + " (Click for Changelog)").withStyle(ChatFormatting.YELLOW);
+        widgets.add(
+                new PlainTextButton(
+                        PADDING_QUART,
+                        height - font.lineHeight - PADDING_QUART,
+                        font.width(modVersion),
+                        font.lineHeight,
+                        modVersion,
+                        button -> minecraft.setScreen(new ChangelogScreen(this)),
+                        font
+                )
         );
 
         widgets.forEach(this::addRenderableWidget);
