@@ -5,7 +5,8 @@
   "mixins": [
     "inject.BlockLightSectionStorageMixin",
     "inject.EntityMixin",
-    "inject.FishingHookEntityMixin"
+    "inject.FishingHookEntityMixin",
+    "inject.TextDisplayMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -16,7 +17,6 @@
   "client": [
     "accessor.AbstractSelectionListAccessor",
     "accessor.BossHealthOverlayAccessor",
-    "accessor.ChatScreenAccessor",
     "accessor.LevelRendererAccessor",
     "accessor.MinecraftAccessor",
     "accessor.PlayerTabOverlayAccessor",
@@ -24,9 +24,11 @@
     "inject.AbstractRecipeBookScreenMixin",
     "inject.AbstractSelectionListMixin",
     "inject.BossHealthOverlayMixin",
+    "inject.ChatScreenMixin",
     "inject.ClientPacketListenerMixin",
     "inject.GuiGraphicsExtractorMixin",
     "inject.ContextualBarRendererMixin",
+    "inject.EditBoxMixin",
     "inject.EntityRenderDispatcherMixin",
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",

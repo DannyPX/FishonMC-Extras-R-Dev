@@ -3,7 +3,7 @@ package dannypx.foe.handler.renderer;
 import dannypx.foe.handler.ScreenHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.SearchHandler;
-import dannypx.foe.screens.widget.SearchBarWidget;
+import dannypx.foe.search.editbox.SearchBarEditBox;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -31,7 +31,7 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     }
 
     //region Fields
-    SearchBarWidget searchBarWidget;
+    SearchBarEditBox searchBarWidget;
     //endregion
 
     //region Methods
