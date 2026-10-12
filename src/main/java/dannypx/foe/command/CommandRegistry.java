@@ -187,7 +187,7 @@ public class CommandRegistry {
                                 )
                         )
                         .then(command("get_color")
-                                .then(ClientCommandManager.argument("glyph", StringArgumentType.string())
+                                .then(ClientCommands.argument("glyph", StringArgumentType.string())
                                         .executes(Command.Helper::getColor))
                         )
                         .executes(Command.Foe::openMainScreen)

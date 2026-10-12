@@ -4,7 +4,7 @@ import dannypx.foe.handler.logic.SearchHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -36,16 +36,16 @@ public class SearchBarEditBox extends EditBox {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, delta);
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractWidgetRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
         if (this.isHovered()) {
-            this.renderHelp(guiGraphics);
+            this.extractRenderHelp(guiGraphicsExtractor);
         }
     }
 
 
-    private void renderHelp(GuiGraphics guiGraphics) {
+    private void extractRenderHelp(GuiGraphicsExtractor guiGraphicsExtractor) {
         List<Component> lines = SearchHelp.lines();
         int lineHeight = font.lineHeight + 1;
         int panelWidth = SearchHelp.width(font) + HELP_PADDING * 2;
@@ -61,24 +61,24 @@ public class SearchBarEditBox extends EditBox {
                 ? below
                 : Math.max(0, Math.round((this.getY() - HELP_MARGIN) / HELP_SCALE) - panelHeight);
 
-        guiGraphics.nextStratum();
-        guiGraphics.pose().pushMatrix();
+        guiGraphicsExtractor.nextStratum();
+        guiGraphicsExtractor.pose().pushMatrix();
         try {
-            guiGraphics.pose().scale(HELP_SCALE, HELP_SCALE);
+            guiGraphicsExtractor.pose().scale(HELP_SCALE, HELP_SCALE);
 
-            guiGraphics.fill(x, y, x + panelWidth, y + panelHeight, HELP_BACKGROUND);
-            guiGraphics.hLine(x, x + panelWidth - 1, y, HELP_BORDER);
-            guiGraphics.hLine(x, x + panelWidth - 1, y + panelHeight - 1, HELP_BORDER);
-            guiGraphics.vLine(x, y, y + panelHeight - 1, HELP_BORDER);
-            guiGraphics.vLine(x + panelWidth - 1, y, y + panelHeight - 1, HELP_BORDER);
+            guiGraphicsExtractor.fill(x, y, x + panelWidth, y + panelHeight, HELP_BACKGROUND);
+            guiGraphicsExtractor.horizontalLine(x, x + panelWidth - 1, y, HELP_BORDER);
+            guiGraphicsExtractor.horizontalLine(x, x + panelWidth - 1, y + panelHeight - 1, HELP_BORDER);
+            guiGraphicsExtractor.verticalLine(x, y, y + panelHeight - 1, HELP_BORDER);
+            guiGraphicsExtractor.verticalLine(x + panelWidth - 1, y, y + panelHeight - 1, HELP_BORDER);
 
             int textY = y + HELP_PADDING;
             for (Component line : lines) {
-                guiGraphics.drawString(font, line, x + HELP_PADDING, textY, CommonColors.WHITE, true);
+                guiGraphicsExtractor.text(font, line, x + HELP_PADDING, textY, CommonColors.WHITE, true);
                 textY += lineHeight;
             }
         } finally {
-            guiGraphics.pose().popMatrix();
+            guiGraphicsExtractor.pose().popMatrix();
         }
     }
 

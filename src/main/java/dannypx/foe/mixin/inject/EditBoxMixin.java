@@ -6,7 +6,7 @@ import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.interfaces.ICrewInputHolder;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -86,8 +86,8 @@ public abstract class EditBoxMixin extends AbstractWidget implements ICrewInputH
         this.shifted = false;
     }
 
-    @Inject(method = "renderWidget", at = @At("HEAD"))
-    private void injectRenderWidgetHead(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    @Inject(method = "extractWidgetRenderState", at = @At("HEAD"))
+    private void injectRenderWidgetHead(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.editBoxMixinRenderWidgetHead.get()
@@ -98,8 +98,8 @@ public abstract class EditBoxMixin extends AbstractWidget implements ICrewInputH
         }
     }
 
-    @Inject(method = "renderWidget", at = @At("RETURN"))
-    private void injectRenderWidgetReturn(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    @Inject(method = "extractWidgetRenderState", at = @At("RETURN"))
+    private void injectRenderWidgetReturn(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.editBoxMixinRenderWidgetReturn.get()
@@ -113,8 +113,8 @@ public abstract class EditBoxMixin extends AbstractWidget implements ICrewInputH
 
             int x = this.getX() - 2, y = this.getY() - 2;
 
-            guiGraphics.fill(x, y, x + this.badgeWidth(), y + this.getHeight(), 0xFF4B724A);
-            guiGraphics.drawString(this.font, this.badge, x + 3, getY(), CommonColors.WHITE, false);
+            guiGraphicsExtractor.fill(x, y, x + this.badgeWidth(), y + this.getHeight(), 0xFF4B724A);
+            guiGraphicsExtractor.text(this.font, this.badge, x + 3, getY(), CommonColors.WHITE, false);
         }
     }
 
