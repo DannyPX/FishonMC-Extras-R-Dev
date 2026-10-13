@@ -4,13 +4,11 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.EventHandler;
 import dannypx.foe.handler.logic.InventoryHandler;
-import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import dannypx.foe.type.tuple.Pair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -45,8 +43,6 @@ public class ScreenHander extends Handler {
         } else if(screen instanceof ContainerScreen genericContainerScreen) {
             GenericContainerScreenHandler.instance().init(genericContainerScreen);
             ScreenEvents.afterExtract(screen).register(GenericContainerScreenHandler.instance()::extractRenderState);
-        } else if(screen instanceof ChatScreen) {
-            ScreenEvents.afterExtract(screen).register(ChatScreenRenderHandler.instance()::extractRenderState);
         }
 
         this.dispatchLastScreen(screen.getTitle());

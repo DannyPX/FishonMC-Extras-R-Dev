@@ -3,7 +3,7 @@ package dannypx.foe.handler.renderer;
 import dannypx.foe.handler.ScreenHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.SearchHandler;
-import dannypx.foe.screens.widget.SearchBarWidget;
+import dannypx.foe.search.editbox.SearchBarEditBox;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -31,7 +31,7 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     }
 
     //region Fields
-    SearchBarWidget searchBarWidget;
+    SearchBarEditBox searchBarWidget;
     //endregion
 
     //region Methods
@@ -64,7 +64,7 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     public void extractRenderState(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         super.extractRenderState(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
 
-        if(searchBarWidget != null) searchBarWidget.render(guiGraphicsExtractor, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.extractRenderHelp(guiGraphicsExtractor, mouseX, mouseY, tickDelta);
     }
 
     public boolean checkMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {
