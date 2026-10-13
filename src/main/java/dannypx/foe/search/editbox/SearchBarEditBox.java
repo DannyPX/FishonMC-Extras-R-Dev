@@ -35,7 +35,7 @@ public class SearchBarEditBox extends EditBox {
         this.setResponder(handler::parseSearch);
     }
 
-    public void renderHelp(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
+    public void extractRenderHelp(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         if (this.isHovered()) {
             List<Component> lines = SearchHelp.lines();
             int lineHeight = font.lineHeight + 1;

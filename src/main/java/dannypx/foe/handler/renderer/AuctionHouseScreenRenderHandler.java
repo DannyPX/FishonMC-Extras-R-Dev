@@ -106,7 +106,7 @@ public class AuctionHouseScreenRenderHandler extends ScreenHandler {
     public void extractRenderState(Screen screen, GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         super.extractRenderState(screen, guiGraphicsExtractor, mouseX, mouseY, tickDelta);
 
-        if(searchBarWidget != null) searchBarWidget.renderHelp(guiGraphicsExtractor, mouseX, mouseY, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.extractRenderHelp(guiGraphicsExtractor, mouseX, mouseY, tickDelta);
     }
 
     //endregion
