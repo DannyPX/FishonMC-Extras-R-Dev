@@ -35,50 +35,42 @@ public class SearchBarEditBox extends EditBox {
         this.setResponder(handler::parseSearch);
     }
 
-    @Override
-    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
-        super.extractWidgetRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
-
+    public void renderHelp(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
         if (this.isHovered()) {
-            this.extractRenderHelp(guiGraphicsExtractor);
-        }
-    }
+            List<Component> lines = SearchHelp.lines();
+            int lineHeight = font.lineHeight + 1;
+            int panelWidth = SearchHelp.width(font) + HELP_PADDING * 2;
+            int panelHeight = lines.size() * lineHeight + HELP_PADDING * 2;
 
+            int screenWidth = Math.round(Minecraft.getInstance().getWindow().getGuiScaledWidth() / HELP_SCALE);
+            int screenHeight = Math.round(Minecraft.getInstance().getWindow().getGuiScaledHeight() / HELP_SCALE);
 
-    private void extractRenderHelp(GuiGraphicsExtractor guiGraphicsExtractor) {
-        List<Component> lines = SearchHelp.lines();
-        int lineHeight = font.lineHeight + 1;
-        int panelWidth = SearchHelp.width(font) + HELP_PADDING * 2;
-        int panelHeight = lines.size() * lineHeight + HELP_PADDING * 2;
+            int boxCenter = Math.round((this.getX() + this.getWidth() / 2f) / HELP_SCALE);
+            int x = Math.clamp(boxCenter - panelWidth / 2, 0, Math.max(0, screenWidth - panelWidth));
+            int below = Math.round((this.getY() + this.getHeight() + HELP_MARGIN) / HELP_SCALE);
+            int y = below + panelHeight <= screenHeight
+                    ? below
+                    : Math.max(0, Math.round((this.getY() - HELP_MARGIN) / HELP_SCALE) - panelHeight);
 
-        int screenWidth = Math.round(Minecraft.getInstance().getWindow().getGuiScaledWidth() / HELP_SCALE);
-        int screenHeight = Math.round(Minecraft.getInstance().getWindow().getGuiScaledHeight() / HELP_SCALE);
+            guiGraphicsExtractor.nextStratum();
+            guiGraphicsExtractor.pose().pushMatrix();
+            try {
+                guiGraphicsExtractor.pose().scale(HELP_SCALE, HELP_SCALE);
 
-        int boxCenter = Math.round((this.getX() + this.getWidth() / 2f) / HELP_SCALE);
-        int x = Math.clamp(boxCenter - panelWidth / 2, 0, Math.max(0, screenWidth - panelWidth));
-        int below = Math.round((this.getY() + this.getHeight() + HELP_MARGIN) / HELP_SCALE);
-        int y = below + panelHeight <= screenHeight
-                ? below
-                : Math.max(0, Math.round((this.getY() - HELP_MARGIN) / HELP_SCALE) - panelHeight);
+                guiGraphicsExtractor.fill(x, y, x + panelWidth, y + panelHeight, HELP_BACKGROUND);
+                guiGraphicsExtractor.horizontalLine(x, x + panelWidth - 1, y, HELP_BORDER);
+                guiGraphicsExtractor.horizontalLine(x, x + panelWidth - 1, y + panelHeight - 1, HELP_BORDER);
+                guiGraphicsExtractor.verticalLine(x, y, y + panelHeight - 1, HELP_BORDER);
+                guiGraphicsExtractor.verticalLine(x + panelWidth - 1, y, y + panelHeight - 1, HELP_BORDER);
 
-        guiGraphicsExtractor.nextStratum();
-        guiGraphicsExtractor.pose().pushMatrix();
-        try {
-            guiGraphicsExtractor.pose().scale(HELP_SCALE, HELP_SCALE);
-
-            guiGraphicsExtractor.fill(x, y, x + panelWidth, y + panelHeight, HELP_BACKGROUND);
-            guiGraphicsExtractor.horizontalLine(x, x + panelWidth - 1, y, HELP_BORDER);
-            guiGraphicsExtractor.horizontalLine(x, x + panelWidth - 1, y + panelHeight - 1, HELP_BORDER);
-            guiGraphicsExtractor.verticalLine(x, y, y + panelHeight - 1, HELP_BORDER);
-            guiGraphicsExtractor.verticalLine(x + panelWidth - 1, y, y + panelHeight - 1, HELP_BORDER);
-
-            int textY = y + HELP_PADDING;
-            for (Component line : lines) {
-                guiGraphicsExtractor.text(font, line, x + HELP_PADDING, textY, CommonColors.WHITE, true);
-                textY += lineHeight;
+                int textY = y + HELP_PADDING;
+                for (Component line : lines) {
+                    guiGraphicsExtractor.text(font, line, x + HELP_PADDING, textY, CommonColors.WHITE, true);
+                    textY += lineHeight;
+                }
+            } finally {
+                guiGraphicsExtractor.pose().popMatrix();
             }
-        } finally {
-            guiGraphicsExtractor.pose().popMatrix();
         }
     }
 
