@@ -5,7 +5,7 @@ import dannypx.foe.nearby_dispatcher.types.HatType;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.widget.SmallButtonBuilder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -62,41 +62,41 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, tickDelta);
+    public void extractBackground(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
+        super.extractBackground(guiGraphicsExtractor, mouseX, mouseY, tickDelta);
 
         if (minecraft.player != null) {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(
-                    guiGraphics, 0, 0, width, height, PREVIEW_SCALE, HEAD_FOCUS, mouseX, mouseY, minecraft.player);
+            InventoryScreen.extractEntityInInventoryFollowsMouse(
+                    guiGraphicsExtractor, 0, 0, width, height, PREVIEW_SCALE, HEAD_FOCUS, mouseX, mouseY, minecraft.player);
         }
 
-        this.renderBoxes(guiGraphics);
+        this.renderBoxes(guiGraphicsExtractor);
     }
 
     @Override
-    public void render(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        guiGraphics.nextStratum();
+    public void extractRenderState(@NonNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        guiGraphicsExtractor.nextStratum();
 
-        this.renderTitles(guiGraphics);
-        this.renderHints(guiGraphics);
+        this.extractRenderTitles(guiGraphicsExtractor);
+        this.extractRenderHints(guiGraphicsExtractor);
     }
 
-    private void renderBoxes(GuiGraphics guiGraphics) {
-        elements.forEach(element -> element.render(guiGraphics));
+    private void renderBoxes(GuiGraphicsExtractor guiGraphicsExtractor) {
+        elements.forEach(element -> element.extractRenderState(guiGraphicsExtractor));
     }
 
-    private void renderTitles(GuiGraphics guiGraphics) {
+    private void extractRenderTitles(GuiGraphicsExtractor guiGraphicsExtractor) {
         int scaleTitleY = scaleBoxY() - font.lineHeight - PADDING_QUART;
-        guiGraphics.drawCenteredString(font, Component.literal("Scale"), scaleBoxX() + BOX_WIDTH / 2, scaleTitleY, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(font, Component.literal("Scale"), scaleBoxX() + BOX_WIDTH / 2, scaleTitleY, 0xFFFFFFFF);
 
         int topButtonY = heightBoxY() - (EDIT_BUTTON_HEIGHT + PADDING_QUART) * 2;
         int heightTitleY = topButtonY - font.lineHeight - PADDING_QUART;
-        guiGraphics.drawCenteredString(font, Component.literal("Height"), heightBoxX() + BOX_WIDTH / 2, heightTitleY, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(font, Component.literal("Height"), heightBoxX() + BOX_WIDTH / 2, heightTitleY, 0xFFFFFFFF);
     }
 
-    private void renderHints(GuiGraphics guiGraphics) {
-        guiGraphics.drawString(font,
+    private void extractRenderHints(GuiGraphicsExtractor guiGraphicsExtractor) {
+        guiGraphicsExtractor.text(font,
                 "\uDB80\uDC67 Scroll to zoom",
                 PADDING, minecraft.getWindow().getGuiScaledHeight() - PADDING - font.lineHeight,
                 CommonColors.WHITE,
@@ -165,7 +165,6 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     private EditBox getScaleEditBox() {
         scaleEditBox = new EditBox(font, scaleBoxX(), scaleBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Scale"));
-        scaleEditBox.setFilter(text -> text.matches("[0-9]*\\.?[0-9]*"));
         scaleEditBox.setValue(format(Configs.rendererConfig.hatScale.get()));
         scaleEditBox.setResponder(this::onScaleChanged);
         scaleEditBox.setTooltip(Tooltip.create(Component.literal("Scale")));
@@ -174,7 +173,6 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     private EditBox getHeightEditBox() {
         heightEditBox = new EditBox(font, heightBoxX(), heightBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Height"));
-        heightEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         heightEditBox.setValue(format(Configs.rendererConfig.hatHeight.get()));
         heightEditBox.setResponder(this::onHeightChanged);
         heightEditBox.setTooltip(Tooltip.create(Component.literal("Height")));

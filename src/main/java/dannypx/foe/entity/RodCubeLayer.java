@@ -53,7 +53,7 @@ public class RodCubeLayer<S extends LivingEntityRenderState, M extends EntityMod
         if (player.distanceToSqr(renderState.x, renderState.y, renderState.z) > SAME_POSITION_TOLERANCE_SQ) return;
 
         RodEditorScreen.CubeBounds cube = editorScreen.cubeInModelSpace(player);
-        collector.submitCustomGeometry(poseStack, RenderTypes.entityCutoutNoCull(CUBE_TEXTURE), (pose, consumer) -> writeCube(pose, consumer, cube));
+        collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(CUBE_TEXTURE), (pose, consumer) -> writeCube(pose, consumer, cube));
     }
 
     private static void writeCube(PoseStack.Pose pose, VertexConsumer consumer, RodEditorScreen.CubeBounds cube) {

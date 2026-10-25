@@ -20,7 +20,6 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -88,7 +87,7 @@ public class HudRenderHandler extends Handler {
         LoggerHandler.info("Register Elements");
         HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_foreground"), (guiGraphicsExtractor, deltaTracker) -> {
             elements.forEach(element -> {
-                if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor,);
+                if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor);
             });
 
             if (Configs.mainConfig.enableMod.get()) this.extractRenderState(guiGraphicsExtractor);

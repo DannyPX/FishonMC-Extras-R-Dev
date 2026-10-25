@@ -2,6 +2,7 @@ package dannypx.foe;
 
 import dannypx.foe.command.CommandRegistry;
 import dannypx.foe.entity.FishingHookEntityModel;
+import dannypx.foe.entity.RodCubeLayer;
 import dannypx.foe.handler.fetch.*;
 import dannypx.foe.handler.io.ChangelogFetcherHandler;
 import dannypx.foe.handler.logic.*;
@@ -20,8 +21,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
@@ -56,12 +56,12 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientEntityEvents.ENTITY_UNLOAD.register(this::onEntityUnload);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
-        LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::onLivingEntityFeatureRenderingRegistrationCallback);
+        LivingEntityRenderLayerRegistrationCallback.EVENT.register(this::onLivingEntityRenderLayerRegistrationCallback);
 
         this.initHudRenderer();
     }
 
-    private void onLivingEntityFeatureRenderingRegistrationCallback(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?,?,?> livingEntityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
+    private void onLivingEntityRenderLayerRegistrationCallback(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?,?,?> livingEntityRenderer, LivingEntityRenderLayerRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
         if (entityType == EntityType.PLAYER && livingEntityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
             registrationHelper.register(RodCubeLayer.create(avatarRenderer));
         }

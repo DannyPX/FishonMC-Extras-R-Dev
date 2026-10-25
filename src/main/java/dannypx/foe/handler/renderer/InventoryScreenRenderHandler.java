@@ -205,7 +205,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     buttonMenuToggle = getCloseButtonMenuButton(screen);
                     Screens.getWidgets(screen).add(buttonMenuToggle);
 
-                    Screens.getButtons(screen).add(buttonMenuEditor);
+                    Screens.getWidgets(screen).add(buttonMenuEditor);
 
                     elements.add(buttonBox);
                     Screens.getWidgets(screen).addAll(buttons);
@@ -228,7 +228,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     buttonMenuToggle = getOpenButtonMenuButton(screen);
                     Screens.getWidgets(screen).add(buttonMenuToggle);
 
-                    Screens.getButtons(screen).remove(buttonMenuEditor);
+                    Screens.getWidgets(screen).remove(buttonMenuEditor);
 
                     elements.remove(buttonBox);
                     Screens.getWidgets(screen).removeAll(buttons);

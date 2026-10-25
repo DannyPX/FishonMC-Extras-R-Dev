@@ -5,7 +5,7 @@ import dannypx.foe.nearby_dispatcher.types.RodType;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.widget.SmallButtonBuilder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -99,37 +99,37 @@ public class RodEditorScreen extends DefaultModScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, tickDelta);
+    public void extractBackground(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float tickDelta) {
+        super.extractBackground(guiGraphicsExtractor, mouseX, mouseY, tickDelta);
 
         if (minecraft.player != null) {
             int originalTickCount = minecraft.player.tickCount;
             minecraft.player.tickCount = 0;
             try {
-                InventoryScreen.renderEntityInInventoryFollowsMouse(
-                        guiGraphics, 0, 0, width, height, PREVIEW_SCALE, HEAD_FOCUS, mouseX, mouseY, minecraft.player);
+                InventoryScreen.extractEntityInInventoryFollowsMouse(
+                        guiGraphicsExtractor, 0, 0, width, height, PREVIEW_SCALE, HEAD_FOCUS, mouseX, mouseY, minecraft.player);
             } finally {
                 minecraft.player.tickCount = originalTickCount;
             }
         }
 
-        this.renderBoxes(guiGraphics);
+        this.extractRenderBoxes(guiGraphicsExtractor);
     }
 
     @Override
-    public void render(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        guiGraphics.nextStratum();
+    public void extractRenderState(@NonNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
+        guiGraphicsExtractor.nextStratum();
 
-        this.renderTitles(guiGraphics);
-        this.renderHints(guiGraphics);
+        this.extractRenderTitles(guiGraphicsExtractor);
+        this.extractRenderHints(guiGraphicsExtractor);
     }
 
-    private void renderBoxes(GuiGraphics guiGraphics) {
-        elements.forEach(element -> element.render(guiGraphics));
+    private void extractRenderBoxes(GuiGraphicsExtractor guiGraphicsExtractor) {
+        elements.forEach(element -> element.extractRenderState(guiGraphicsExtractor));
     }
 
-    private void renderTitles(GuiGraphics guiGraphics) {
+    private void extractRenderTitles(GuiGraphicsExtractor guiGraphicsExtractor) {
         int topButtonY = offsetBoxY() - (EDIT_BUTTON_HEIGHT + PADDING_QUART) * 2;
         int axisY = topButtonY - font.lineHeight - PADDING_QUART;
         int titleY = axisY - font.lineHeight - PADDING_QUART;
@@ -137,22 +137,22 @@ public class RodEditorScreen extends DefaultModScreen {
         String[] axes = {"X", "Y", "Z"};
         for (int column = 0; column < 3; column++) {
             Component axis = Component.literal(axes[column]);
-            guiGraphics.drawCenteredString(font, axis, offsetBoxX(column) + BOX_WIDTH / 2, axisY, 0xFFFFFFFF);
-            guiGraphics.drawCenteredString(font, axis, lineOffsetBoxX(column) + BOX_WIDTH / 2, axisY, 0xFFFFFFFF);
+            guiGraphicsExtractor.centeredText(font, axis, offsetBoxX(column) + BOX_WIDTH / 2, axisY, 0xFFFFFFFF);
+            guiGraphicsExtractor.centeredText(font, axis, lineOffsetBoxX(column) + BOX_WIDTH / 2, axisY, 0xFFFFFFFF);
         }
 
         int rodCenterX = (offsetBoxX(0) + offsetBoxX(2) + BOX_WIDTH) / 2;
-        guiGraphics.drawCenteredString(font, Component.literal("Rod offset"), rodCenterX, titleY, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(font, Component.literal("Rod offset"), rodCenterX, titleY, 0xFFFFFFFF);
 
         int lineCenterX = (lineOffsetBoxX(2) + lineOffsetBoxX(0) + BOX_WIDTH) / 2;
-        guiGraphics.drawCenteredString(font, Component.literal("Line offset"), lineCenterX, titleY, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(font, Component.literal("Line offset"), lineCenterX, titleY, 0xFFFFFFFF);
 
         int scaleTitleY = scaleBoxY() - font.lineHeight - PADDING_QUART;
-        guiGraphics.drawCenteredString(font, Component.literal("Scale"), scaleBoxX() + BOX_WIDTH / 2, scaleTitleY, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(font, Component.literal("Scale"), scaleBoxX() + BOX_WIDTH / 2, scaleTitleY, 0xFFFFFFFF);
     }
 
-    private void renderHints(GuiGraphics guiGraphics) {
-        guiGraphics.drawString(font,
+    private void extractRenderHints(GuiGraphicsExtractor guiGraphicsExtractor) {
+        guiGraphicsExtractor.text(font,
                 "\uDB80\uDC67 Scroll to zoom",
                 PADDING, minecraft.getWindow().getGuiScaledHeight() - PADDING - font.lineHeight,
                 CommonColors.WHITE,
@@ -300,7 +300,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getScaleEditBox() {
         scaleEditBox = new EditBox(font, scaleBoxX(), scaleBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Scale"));
-        scaleEditBox.setFilter(text -> text.matches("[0-9]*\\.?[0-9]*"));
         scaleEditBox.setValue(format(Configs.rendererConfig.rodScale.get()));
         scaleEditBox.setResponder(this::onScaleChanged);
         scaleEditBox.setTooltip(Tooltip.create(Component.literal("Scale")));
@@ -309,7 +308,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getOffsetXEditBox() {
         offsetXEditBox = new EditBox(font, offsetBoxX(0), offsetBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Rod Offset X"));
-        offsetXEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         offsetXEditBox.setValue(format(Configs.rendererConfig.rodXPosition.get()));
         offsetXEditBox.setResponder(this::onOffsetXChanged);
         offsetXEditBox.setTooltip(Tooltip.create(Component.literal("Rod Offset X")));
@@ -318,7 +316,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getOffsetYEditBox() {
         offsetYEditBox = new EditBox(font, offsetBoxX(1), offsetBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Rod Offset Y"));
-        offsetYEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         offsetYEditBox.setValue(format(Configs.rendererConfig.rodYPosition.get()));
         offsetYEditBox.setResponder(this::onOffsetYChanged);
         offsetYEditBox.setTooltip(Tooltip.create(Component.literal("Rod Offset Y")));
@@ -327,7 +324,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getOffsetZEditBox() {
         offsetZEditBox = new EditBox(font, offsetBoxX(2), offsetBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Rod Offset Z"));
-        offsetZEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         offsetZEditBox.setValue(format(Configs.rendererConfig.rodZPosition.get()));
         offsetZEditBox.setResponder(this::onOffsetZChanged);
         offsetZEditBox.setTooltip(Tooltip.create(Component.literal("Rod Offset Z")));
@@ -336,7 +332,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getLineOffsetXEditBox() {
         lineOffsetXEditBox = new EditBox(font, lineOffsetBoxX(0), offsetBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Line Offset X"));
-        lineOffsetXEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         lineOffsetXEditBox.setValue(format(Configs.rendererConfig.lineXPosition.get()));
         lineOffsetXEditBox.setResponder(this::onLineOffsetXChanged);
         lineOffsetXEditBox.setTooltip(Tooltip.create(Component.literal("Line Offset X")));
@@ -345,7 +340,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getLineOffsetYEditBox() {
         lineOffsetYEditBox = new EditBox(font, lineOffsetBoxX(1), offsetBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Line Offset Y"));
-        lineOffsetYEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         lineOffsetYEditBox.setValue(format(Configs.rendererConfig.lineYPosition.get()));
         lineOffsetYEditBox.setResponder(this::onLineOffsetYChanged);
         lineOffsetYEditBox.setTooltip(Tooltip.create(Component.literal("Line Offset Y")));
@@ -354,7 +348,6 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private EditBox getLineOffsetZEditBox() {
         lineOffsetZEditBox = new EditBox(font, lineOffsetBoxX(2), offsetBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Line Offset Z"));
-        lineOffsetZEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         lineOffsetZEditBox.setValue(format(Configs.rendererConfig.lineZPosition.get()));
         lineOffsetZEditBox.setResponder(this::onLineOffsetZChanged);
         lineOffsetZEditBox.setTooltip(Tooltip.create(Component.literal("Line Offset Z")));

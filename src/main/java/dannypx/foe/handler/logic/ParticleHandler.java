@@ -4,7 +4,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.particle.RippleParticle;
 import dannypx.foe.type.tuple.Pair;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -33,7 +33,7 @@ public class ParticleHandler extends Handler {
     @Override
     public void init() {
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "ripple"), RIPPLE);
-        ParticleFactoryRegistry.getInstance().register(RIPPLE, RippleParticle.Provider::new);
+        ParticleProviderRegistry.getInstance().register(RIPPLE, RippleParticle.Provider::new);
     }
     //endregion
 
