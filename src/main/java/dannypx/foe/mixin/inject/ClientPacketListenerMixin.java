@@ -5,6 +5,13 @@ import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.TextDisplayHandler;
+import dannypx.foe.nearby_dispatcher.NearbyDispatcher;
+import dannypx.foe.nearby_dispatcher.types.HatType;
+import dannypx.foe.nearby_dispatcher.types.ModUserType;
+import dannypx.foe.nearby_dispatcher.types.RodType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
@@ -49,6 +56,9 @@ public abstract class ClientPacketListenerMixin {
         ) {
             for (UUID uuid : packet.profileIds()) {
                 CrewHandler.instance().onPlayerLeave(uuid);
+                HatType.onPlayerLeave(uuid);
+                RodType.onPlayerLeave(uuid);
+                ModUserType.onPlayerLeave(uuid);
             }
         }
     }
@@ -73,5 +83,11 @@ public abstract class ClientPacketListenerMixin {
                 uuids.add(textDisplay.getUUID());
             }
         }
+    }
+
+    @Inject(method = "handleBlockDestruction", at = @At("HEAD"))
+    private void injectHandleBlockDestruction(ClientboundBlockDestructionPacket clientboundBlockDestructionPacket, CallbackInfo ci) {
+        if (!Minecraft.getInstance().isSameThread()) return;
+        NearbyDispatcher.onBlockDestruction(clientboundBlockDestructionPacket.getId(), clientboundBlockDestructionPacket.getPos(), clientboundBlockDestructionPacket.getProgress());
     }
 }

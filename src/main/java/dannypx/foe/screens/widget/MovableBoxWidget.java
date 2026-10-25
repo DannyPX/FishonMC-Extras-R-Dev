@@ -86,7 +86,7 @@ public class MovableBoxWidget extends AbstractWidget implements ScreenConstants 
         this.extractRenderBox(guiGraphicsExtractor);
         this.extractRenderTooltip(guiGraphicsExtractor, mouseX, mouseY);
         this.extractRenderAlignment(guiGraphicsExtractor);
-        this.element.extractRenderState(guiGraphicsExtractor, Minecraft.getInstance().getDeltaTracker());
+        this.element.extractRenderState(guiGraphicsExtractor,);
     }
 
     private void extractRenderAlignment(GuiGraphicsExtractor guiGraphicsExtractor) {

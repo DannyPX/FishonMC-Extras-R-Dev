@@ -5,6 +5,7 @@ import dannypx.foe.handler.logic.ConnectionHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dannypx.foe.config.Configs;
+import dannypx.foe.handler.renderer.RodRendererHandler;
 import dannypx.foe.interfaces.IFishingHookEntity;
 import dannypx.foe.interfaces.IFishingHookRenderState;
 import net.minecraft.client.Minecraft;
@@ -16,19 +17,32 @@ import net.minecraft.client.renderer.entity.state.FishingHookRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.TrackingItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(FishingHookRenderer.class)
 public abstract class FishingHookRendererMixin {
     @Unique
     private Model<FishingHookRenderState> fishingHookModel;
+
+    @Unique
+    private static final float TIP_OUTWARD = 0.0f;
+    @Unique
+    private static final float TIP_UP = 0.37f;
+    @Unique
+    private static final float TIP_FORWARD = 0.6f;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void injectInit(EntityRendererProvider.Context context, CallbackInfo ci) {
@@ -38,6 +52,7 @@ public abstract class FishingHookRendererMixin {
     @Inject(method = "vertex", at = @At("HEAD"), cancellable = true)
     private static void injectVertex(CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
                 && Configs.rendererConfig.showNewFishingHook.get()
                 && Configs.mixinConfig.fishingHookRendererMixinVertex.get()
         ) {
@@ -48,8 +63,9 @@ public abstract class FishingHookRendererMixin {
     @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/FishingHookRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At("RETURN"))
     private void injectRender(FishingHookRenderState fishingHookRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
                 && Configs.rendererConfig.showNewFishingHook.get()
-                && Configs.mixinConfig.fishingHookRendererMixinRender.get()
+                && Configs.mixinConfig.fishingHookRendererMixinSubmit.get()
         ) {
             poseStack.pushPose();
             poseStack.translate(0f, -0.0075f, 0f);
@@ -67,7 +83,9 @@ public abstract class FishingHookRendererMixin {
 
         ItemStack bait = ((IFishingHookRenderState) fishingHookRenderState).foer$getBaitStack();
         if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
                 && Configs.rendererConfig.showBaitOnFishingHook.get()
+                && Configs.mixinConfig.fishingHookRendererMixinSubmit.get()
                 && bait != null
                 && !bait.isEmpty()
                 && !((IFishingHookRenderState) fishingHookRenderState).foer$isDisabledBait()
@@ -92,7 +110,48 @@ public abstract class FishingHookRendererMixin {
 
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/projectile/FishingHook;Lnet/minecraft/client/renderer/entity/state/FishingHookRenderState;F)V", at = @At("TAIL"))
     private void injectUpdateRenderState(FishingHook fishingHookEntity, FishingHookRenderState fishingHookEntityState, float f, CallbackInfo ci) {
-        ((IFishingHookRenderState) fishingHookEntityState).foer$setBaitStack(((IFishingHookEntity) fishingHookEntity).foer$getBaitStack());
-        ((IFishingHookRenderState) fishingHookEntityState).foer$setDisabledBait(((IFishingHookEntity) fishingHookEntity).foer$isDisabledBait());
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showFishingRodPositions.get()
+                && Configs.mixinConfig.fishingHookRendererMixinExtractRenderState.get()
+        ) {
+            ((IFishingHookRenderState) fishingHookEntityState).foer$setBaitStack(((IFishingHookEntity) fishingHookEntity).foer$getBaitStack());
+            ((IFishingHookRenderState) fishingHookEntityState).foer$setDisabledBait(((IFishingHookEntity) fishingHookEntity).foer$isDisabledBait());
+        }
+    }
+
+    @Inject(method = "getPlayerHandPos", at = @At("RETURN"), cancellable = true)
+    private void injectGetPlayerHandPos(Player player, float f, float g, CallbackInfoReturnable<Vec3> cir) {
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showFishingRodPositions.get()
+                && Configs.mixinConfig.fishingHookRendererMixinGetPlayerHandPos.get()
+        ) {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.options.getCameraType().isFirstPerson() && player == minecraft.player) return;
+
+            RodRendererHandler.RodSettings settings = RodRendererHandler.instance().get(player.getUUID());
+            if (settings.isDefault()) return;
+
+            HumanoidArm holdingArm = player.getMainHandItem().is(Items.FISHING_ROD)
+                    ? player.getMainArm() : player.getMainArm().getOpposite();
+            float side = holdingArm == HumanoidArm.RIGHT ? 1.0f : -1.0f;
+
+            float scaleChange = settings.scale() - 1.0f;
+            float outward = settings.offsetRight() + settings.lineOffsetRight() + TIP_OUTWARD * scaleChange;
+            float up = settings.offsetUp() + settings.lineOffsetUp() + TIP_UP * scaleChange;
+            float forward = settings.offsetForward() + settings.lineOffsetForward() + TIP_FORWARD * scaleChange;
+
+            float bodyYawRadians = Mth.lerp(g, player.yBodyRotO, player.yBodyRot) * (float) (Math.PI / 180.0);
+            double sine = Math.sin(bodyYawRadians);
+            double cosine = Math.cos(bodyYawRadians);
+            float playerScale = player.getScale();
+
+            double worldX = (-cosine * side * outward - sine * forward) * playerScale;
+            double worldY = up * playerScale;
+            double worldZ = (-sine * side * outward + cosine * forward) * playerScale;
+
+            cir.setReturnValue(cir.getReturnValue().add(worldX, worldY, worldZ));
+        }
     }
 }

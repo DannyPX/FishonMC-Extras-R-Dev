@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 
 import dannypx.foe.type.StringStyle;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -70,7 +69,8 @@ public class NotificationElement extends Element implements ScreenConstants {
     }
 
     //region Methods
-    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor) {
         if(isError) {
             return;
         }

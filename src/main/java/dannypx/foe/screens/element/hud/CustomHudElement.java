@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -58,7 +56,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor) {
         if(!customHud.isShowElement()) { return; }
 
         int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHud.getScale()));
@@ -104,14 +102,14 @@ public class CustomHudElement extends Element implements ScreenConstants {
                     default -> 0;
                 };
 
-                this.extractRenderBox(guiGraphicsExtractor, deltaTracker, x, y);
-                this.extractRenderText(guiGraphicsExtractor, deltaTracker, x, y);
+                this.extractRenderBox(guiGraphicsExtractor, x, y);
+                this.extractRenderText(guiGraphicsExtractor, x, y);
             }
         }
         guiGraphicsExtractor.pose().popMatrix();
     }
 
-    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, int x, int y) {
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
         int componentX;
         int componentY;
 
@@ -161,7 +159,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         });
     }
 
-    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, int x, int y) {
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
         int boxX = x;
         int boxY = y;
 
