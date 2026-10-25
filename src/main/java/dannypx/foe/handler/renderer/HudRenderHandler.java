@@ -20,7 +20,6 @@ import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -88,23 +87,23 @@ public class HudRenderHandler extends Handler {
         LoggerHandler.info("Register Elements");
         HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_foreground"), (guiGraphicsExtractor, deltaTracker) -> {
             elements.forEach(element -> {
-                if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker);
+                if (Configs.mainConfig.enableMod.get()) element.value2().extractRenderState(guiGraphicsExtractor);
             });
 
-            if (Configs.mainConfig.enableMod.get()) this.extractRenderState(guiGraphicsExtractor, deltaTracker);
+            if (Configs.mainConfig.enableMod.get()) this.extractRenderState(guiGraphicsExtractor);
         });
 
         LoggerHandler.info("Register Priority Elements");
         HudElementRegistry.attachElementAfter(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_priority"), (guiGraphics, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics, deltaTracker);
+            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics);
         });
     }
 
-    private void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
-        customHudElements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor, deltaTracker));
+    private void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor) {
+        customHudElements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor));
     }
 
-    private void renderAfterSubtitles(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+    private void renderAfterSubtitles(GuiGraphicsExtractor guiGraphicsExtractor) {
         this.renderTooltip(guiGraphicsExtractor);
 
         if((!LoadingHandler.instance().isLoadingDone()

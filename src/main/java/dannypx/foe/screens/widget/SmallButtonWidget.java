@@ -1,5 +1,6 @@
 package dannypx.foe.screens.widget;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
@@ -7,7 +8,6 @@ import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.element.BoxElement;
 import dannypx.foe.screens.element.Element;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -23,26 +24,26 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public class SmallButtonWidget extends AbstractWidget {
+class SmallButtonWidget extends AbstractWidget {
     Minecraft minecraft = Minecraft.getInstance();
 
+    private final SmallButtonBuilder.Callback callback;
 
-    private final ClickCallback clickCallback;
+    Pattern PATTERN = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.+))$");
 
-    Pattern PATTERN = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.))$");
-
-    private final String icon;
-
+    private Component icon;
+    private final boolean smallCaps;
 
     Pair<String, Element> box;
     Pair<String, Element> box_hover;
 
     List<Pair<String, Element>> elements = new ArrayList<>();
 
-    public SmallButtonWidget(int x, int y, int width, int height, String icon, @Nullable Tooltip tooltip, Component message, ClickCallback clickCallback) {
+    public SmallButtonWidget(int x, int y, int width, int height, Component icon, boolean smallCaps, @Nullable Tooltip tooltip, Component message, SmallButtonBuilder.Callback callback) {
         super(x, y, width, height, message);
         this.icon = icon;
-        this.clickCallback = clickCallback;
+        this.smallCaps = smallCaps;
+        this.callback = callback;
         this.setTooltip(tooltip);
         this.init();
 
@@ -69,19 +70,24 @@ public class SmallButtonWidget extends AbstractWidget {
     protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         this.extractRenderBox(guiGraphicsExtractor);
         this.extractRenderIcon(guiGraphicsExtractor);
+        this.requestCursor(guiGraphicsExtractor);
+    }
+
+    private void requestCursor(@NotNull GuiGraphicsExtractor guiGraphicsExtractor) {
+        if(this.isHovered()) guiGraphicsExtractor.requestCursor(CursorTypes.POINTING_HAND);
     }
 
     private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor) {
-        (isHovered ? box_hover : box).value2().extractRenderState(guiGraphicsExtractor, minecraft.getDeltaTracker());
+        (isHovered ? box_hover : box).value2().extractRenderState(guiGraphicsExtractor);
     }
 
     private void extractRenderIcon(GuiGraphicsExtractor guiGraphicsExtractor) {
-        Matcher m = PATTERN.matcher(icon);
+        Matcher m = PATTERN.matcher(icon.getString());
 
         if (m.matches()) {
             if(m.group(1) != null) {
                 if(minecraft.player != null) {
-                    ItemStack itemStack = ItemStackHelper.valueOf(icon);
+                    ItemStack itemStack = ItemStackHelper.valueOf(icon.getString());
 
                     guiGraphicsExtractor.pose().pushMatrix();
                     guiGraphicsExtractor.pose().translate(getX() + ((float) width / 2) - 6, getY() + ((float) height / 2) - 6);
@@ -92,20 +98,49 @@ public class SmallButtonWidget extends AbstractWidget {
                     guiGraphicsExtractor.pose().popMatrix();
                 }
             } else {
-                int stringWidth = minecraft.font.width(TextHelper.smallCaps(icon));
+                int stringWidth = smallCaps ? minecraft.font.width(TextHelper.smallCaps(icon)) : minecraft.font.width(icon);
                 guiGraphicsExtractor.pose().pushMatrix();
                 guiGraphicsExtractor.pose().translate(0.0f, 0.0f);
 
-                GuiGraphicsHelper.text(guiGraphicsExtractor,
-                        minecraft.font,
-                        Component.literal(icon),
-                        getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,
-                        StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
-                );
+                if(smallCaps) {
+                    GuiGraphicsHelper.text(guiGraphicsExtractor,
+                            minecraft.font,
+                            icon,
+                            getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,
+                            StringStyle.SHADOW, StringStyle.MIDDLE, StringStyle.SMALL_CAPS
+                    );
+                } else {
+                    GuiGraphicsHelper.text(guiGraphicsExtractor,
+                            minecraft.font,
+                            icon,
+                            getX() + (width / 2) - stringWidth / 2, getY() + (height / 2) - minecraft.font.lineHeight / 2,
+                            StringStyle.SHADOW
+                    );
+                }
 
                 guiGraphicsExtractor.pose().popMatrix();
             }
         }
+    }
+
+    @Override
+    public void setPosition(int i, int j) {
+        super.setPosition(i, j);
+        box.value2().setPosition(i, j);
+        box_hover.value2().setPosition(i, j);
+    }
+
+    @Override
+    public void setSize(int i, int j) {
+        super.setSize(i, j);
+        box.value2().setSize(i, j);
+        box_hover.value2().setSize(i, j);
+    }
+
+    @Override
+    public void setMessage(Component component) {
+        super.setMessage(component);
+        this.icon = component;
     }
 
     @Override
@@ -114,12 +149,8 @@ public class SmallButtonWidget extends AbstractWidget {
     @Override
     public void onClick(@NotNull MouseButtonEvent mouseButtonEvent, boolean doubled) {
         super.onClick(mouseButtonEvent, doubled);
-        if(clickCallback != null) {
-            this.clickCallback.onClick(this);
+        if(callback != null) {
+            this.callback.onClick(this);
         }
-    }
-
-    public interface ClickCallback {
-        void onClick(SmallButtonWidget smallButtonWidget);
     }
 }

@@ -2,15 +2,20 @@ package dannypx.foe.screens;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
+import dannypx.foe.helper.GuiGraphicsHelper;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.screens.element.BoxElement;
+import dannypx.foe.screens.element.Element;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
+import dannypx.foe.type.StringStyle;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
@@ -22,6 +27,11 @@ public class MainScreen extends DefaultModScreen {
     //region Fields
     private static final Identifier ICON_TEXTURE = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "elements/icon");
     private static final int iconSize = 150;
+
+    private static final int BUTTON_WIDTH = 64;
+    private static final int BUTTON_HEIGHT = 16;
+
+    List<Element> elements = new ArrayList<>();
     //endregion
 
     //region Methods
@@ -33,47 +43,49 @@ public class MainScreen extends DefaultModScreen {
     protected void init() {
         super.init();
         this.extractRenderWidgets();
+        this.initElements();
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float delta) {
         super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, delta);
 
-        int screenWidth = this.minecraft.getWindow().getGuiScaledWidth();
-        int screenHeight = this.minecraft.getWindow().getGuiScaledHeight();
-
-        guiGraphicsExtractor.blitSprite(RenderPipelines.GUI_TEXTURED,
-                ICON_TEXTURE,
-                screenWidth / 2 - iconSize / 2,
-                screenHeight / 2 - iconSize + (BUTTON_HEIGHT + PADDING_QUART) * -2 + PADDING,
-                iconSize, iconSize
+        GuiGraphicsHelper.text(
+                guiGraphicsExtractor,
+                font,
+                Component.literal("HUD Elements"),
+                width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight,
+                StringStyle.SMALL_CAPS, StringStyle.MIDDLE, StringStyle.SHADOW
         );
 
-        Component creatorHUDComponent = Component.literal("Creator: HUD Elements");
-        guiGraphicsExtractor.text(font, creatorHUDComponent,
-                width / 2 - font.width(creatorHUDComponent) / 2,
-                height / 2 - (BUTTON_HEIGHT + PADDING_QUART) * 2 - font.lineHeight - PADDING_QUART, CommonColors.WHITE, true
+        GuiGraphicsHelper.text(
+                guiGraphicsExtractor,
+                font,
+                Component.literal("Triggers"),
+                width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight,
+                StringStyle.SMALL_CAPS, StringStyle.MIDDLE, StringStyle.SHADOW
         );
 
-        Component creatorTriggerComponent = Component.literal("Creator: Triggers");
-        guiGraphicsExtractor.text(font, creatorTriggerComponent,
-                width / 2 - font.width(creatorTriggerComponent) / 2,
-                height / 2 - font.lineHeight - PADDING_QUART - PADDING_HALF, CommonColors.WHITE, true
+        GuiGraphicsHelper.text(
+                guiGraphicsExtractor,
+                font,
+                Component.literal("Observers"),
+                width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING,
+                StringStyle.SMALL_CAPS, StringStyle.MIDDLE, StringStyle.SHADOW
         );
 
-        Component creatorObserverComponent = Component.literal("Creator: Observers");
-        guiGraphicsExtractor.text(font, creatorObserverComponent,
-                width / 2 - font.width(creatorObserverComponent) / 2,
-                height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 3 - font.lineHeight - PADDING_QUART - (PADDING_HALF * 2), CommonColors.WHITE, true
+        GuiGraphicsHelper.text(
+                guiGraphicsExtractor,
+                font,
+                Component.literal("Creators"),
+                width / 2 - BUTTON_WIDTH - font.width(TextHelper.smallCaps("Creators")) / 2 + BUTTON_WIDTH / 2,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight - PADDING - font.lineHeight + 1,
+                StringStyle.SMALL_CAPS, StringStyle.MIDDLE, StringStyle.SHADOW
         );
 
-        Component settingsComponent = Component.literal("Settings");
-        guiGraphicsExtractor.text(font, settingsComponent,
-                width / 2 - font.width(settingsComponent) / 2,
-                height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 6 - font.lineHeight - PADDING_QUART - (PADDING_HALF * 3), CommonColors.WHITE, true
-        );
-
-        //Versions
         guiGraphicsExtractor.text(font, Component.literal("HUD Version: v" + FishOnMCExtras.HUD_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 2, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("Chat Trigger Version: v" + FishOnMCExtras.CHAT_TRIGGER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 3, CommonColors.WHITE, true);
         guiGraphicsExtractor.text(font, Component.literal("Timer Version: v" + FishOnMCExtras.TIMER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 4, CommonColors.WHITE, true);
@@ -86,132 +98,137 @@ public class MainScreen extends DefaultModScreen {
         guiGraphicsExtractor.text(font, Component.literal("Snippet Version: v" + FishOnMCExtras.SNIPPET_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 11, CommonColors.WHITE, true);
     }
 
+    @Override
+    public void extractBackground(GuiGraphicsExtractor guiGraphicsExtractor, int i, int j, float f) {
+        super.extractBackground(guiGraphicsExtractor, i, j, f);
+
+        elements.forEach(element -> {
+            element.extractRenderState(guiGraphicsExtractor);
+        });
+    }
+
     private void extractRenderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
-        widgets.add(Button.builder(
-                Component.literal("HUD Texts"),
+        widgets.add(new SmallButtonBuilder(
+                width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
                 button -> this.minecraft.setScreen(new CustomHudMakerScreen(this.minecraft.screen)))
-                .pos(width / 2 - BUTTON_WIDTH / 2,
-                        height / 2 - (BUTTON_HEIGHT + PADDING_QUART) * 2)
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom HUD Text Creator Screen")))
-                .build()
-        );
+                .icon("HUD Text")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom HUD Text Creator screen")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("HUD Icons"),
-                        button -> this.minecraft.setScreen(new CustomHudIconMakerScreen(this.minecraft.screen)))
-                .pos(width / 2,
-                        height / 2 - (BUTTON_HEIGHT + PADDING_QUART) * 2)
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom HUD Icon Creator Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomHudIconMakerScreen(this.minecraft.screen)))
+                .icon("HUD Icon")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom HUD Icon Creator screen")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("M"),
-                        button -> this.minecraft.setScreen(new MoveElementScreen(this.minecraft.screen)))
-                .pos(width / 2 + BUTTON_WIDTH / 2,
-                        height / 2 - (BUTTON_HEIGHT + PADDING_QUART) * 2)
-                .size(BUTTON_HEIGHT, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Move HUDs")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 + PADDING_QUART,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new MoveElementScreen(this.minecraft.screen)))
+                .icon("Move")
+                .color(0xFF00CA3A)
+                .tooltip(Tooltip.create(Component.literal("Move HUD elements")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("S"),
-                        button -> this.minecraft.setScreen(new CustomSnippetMakerScreen(this.minecraft.screen)))
-                .pos(width / 2 - BUTTON_WIDTH / 2 - BUTTON_HEIGHT - PADDING_QUART,
-                        height / 2 - (BUTTON_HEIGHT + PADDING_QUART) * 2)
-                .size(BUTTON_HEIGHT, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Make placeholder snippets")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomChatTriggerMakerScreen(this.minecraft.screen)))
+                .icon("Chat")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom Chat Trigger Creator screen")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("Chat Triggers"),
-                        button -> this.minecraft.setScreen(new CustomChatTriggerMakerScreen(this.minecraft.screen)))
-                .pos(width / 2 - BUTTON_WIDTH / 2,
-                        height / 2  - PADDING_HALF)
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Chat Trigger Creator Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomEventTriggerMakerScreen(this.minecraft.screen)))
+                .icon("Event")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom Event Trigger Creator screen")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("Event Triggers"),
-                        button -> this.minecraft.setScreen(new CustomEventTriggerMakerScreen(this.minecraft.screen)))
-                .pos(width / 2,
-                        height / 2  - PADDING_HALF)
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Event Trigger Creator Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 + PADDING_QUART,
+                height / 2 - BUTTON_HEIGHT / 2,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomTimerMakerScreen(this.minecraft.screen)))
+                .icon("Timer")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom Timer Creator screen")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("Timers"),
-                        button -> this.minecraft.setScreen(new CustomTimerMakerScreen(this.minecraft.screen)))
-                .pos(width / 2 - BUTTON_WIDTH / 2,
-                        height / 2 + (BUTTON_HEIGHT + PADDING_QUART) - PADDING_HALF)
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Timer Creator Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomNotificationMakerScreen(this.minecraft.screen)))
+                .icon("Notif.")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom Notification Creator screen")))
+                .build());
 
+        widgets.add(new SmallButtonBuilder(
+                width / 2 - BUTTON_WIDTH,
+                height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomChatNotificationMakerScreen(this.minecraft.screen)))
+                .icon("Chat Notif.")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom Chat Notification Creator screen")))
+                .build());
 
+        widgets.add(new SmallButtonBuilder(
+                width / 2 + PADDING_QUART,
+                height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomTrackerMakerScreen(this.minecraft.screen)))
+                .icon("Tracker")
+                .color(0xFF1E90FF)
+                .tooltip(Tooltip.create(Component.literal("Open Custom Tracker Creator screen")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("Notifications"),
-                        button -> this.minecraft.setScreen(new CustomNotificationMakerScreen(this.minecraft.screen)))
-                .pos(width / 2 - BUTTON_WIDTH / 2,
-                        height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 3 - (PADDING_HALF * 2))
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Notification Creator Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 + PADDING_QUART + BUTTON_WIDTH + PADDING * 2 + PADDING_QUART,
+                height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new CustomSnippetMakerScreen(this.minecraft.screen)))
+                .icon("Snippet")
+                .color(0xFF00CA3A)
+                .tooltip(Tooltip.create(Component.literal("Open Placeholder Snippet editor")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("Chat Notifications"),
-                        button -> this.minecraft.setScreen(new CustomChatNotificationMakerScreen(this.minecraft.screen)))
-                .pos(width / 2,
-                        height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 3 - (PADDING_HALF * 2))
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Chat Notification Creator Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 + PADDING_QUART + BUTTON_WIDTH + PADDING * 2 + PADDING_QUART,
+                height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight - BUTTON_HEIGHT - PADDING_QUART,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> ConfigApiJava.INSTANCE.openScreen(Configs.keyBindConfig.translationKey()))
+                .icon("Keybinds")
+                .color(0xFFCC0000)
+                .tooltip(Tooltip.create(Component.literal("Open Mod keybinds")))
+                .build());
 
-        widgets.add(Button.builder(
-                        Component.literal("Trackers"),
-                        button -> this.minecraft.setScreen(new CustomTrackerMakerScreen(this.minecraft.screen)))
-                .pos(width / 2 - BUTTON_WIDTH / 2,
-                        height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 4 - (PADDING_HALF * 2))
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Custom Tracker Creator Screen")))
-                .build()
-        );
-
-
-
-        widgets.add(Button.builder(
-                        Component.literal("Configuration"),
-                        button -> ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
-                .pos(width / 2 - BUTTON_WIDTH / 2,
-                        height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 6 - (PADDING_HALF * 3))
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Configuration Screen")))
-                .build()
-        );
-
-        widgets.add(Button.builder(
-                        Component.literal("FOER Controls"),
-                        button -> ConfigApiJava.INSTANCE.openScreen(Configs.keyBindConfig.translationKey()))
-                .pos(width / 2,
-                        height / 2 + (BUTTON_HEIGHT + PADDING_QUART) * 6 - (PADDING_HALF * 3))
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .tooltip(Tooltip.create(Component.literal("Open Controls Screen")))
-                .build()
-        );
+        widgets.add(new SmallButtonBuilder(
+                width / 2 + PADDING_QUART + BUTTON_WIDTH + PADDING * 2 + PADDING_QUART,
+                height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
+                BUTTON_WIDTH, BUTTON_HEIGHT,
+                button -> ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
+                .icon("Config")
+                .color(0xFFCC0000)
+                .tooltip(Tooltip.create(Component.literal("Open Configuration screen")))
+                .build());
 
         Component modVersion = Component.literal("Mod Version: v" + FishOnMCExtras.VERSION + " (Click for Changelog)").withStyle(ChatFormatting.YELLOW);
         widgets.add(
@@ -227,6 +244,42 @@ public class MainScreen extends DefaultModScreen {
         );
 
         widgets.forEach(this::addRenderableWidget);
+    }
+
+    private void initElements() {
+        elements.clear();
+        elements.add(
+                new BoxElement(
+                        width / 2 - BUTTON_WIDTH - PADDING_HALF,
+                        height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight - PADDING - font.lineHeight - PADDING_HALF,
+                        PADDING_HALF * 2 + BUTTON_WIDTH,
+                        PADDING_HALF + font.lineHeight + 4,
+                        false,
+                        false
+                )
+        );
+
+        elements.add(
+                new BoxElement(
+                        width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH - PADDING,
+                        height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight - PADDING,
+                        PADDING * 2 + BUTTON_WIDTH * 3 + PADDING_QUART * 2,
+                        PADDING * 2 + BUTTON_HEIGHT * 3 + font.lineHeight * 3 + PADDING * 2,
+                        false,
+                        false
+                )
+        );
+
+        elements.add(
+                new BoxElement(
+                        width / 2 + PADDING_QUART + BUTTON_WIDTH + PADDING + PADDING_QUART,
+                        height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight - PADDING,
+                        PADDING * 2 + BUTTON_WIDTH,
+                        PADDING * 2 + BUTTON_HEIGHT * 3 + font.lineHeight * 3 + PADDING * 2,
+                        false,
+                        false
+                )
+        );
     }
     //endregion
 }

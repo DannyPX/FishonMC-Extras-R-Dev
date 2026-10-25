@@ -7,6 +7,9 @@ import dannypx.foe.handler.store.CustomButtonDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.screens.PlayerHatEditorScreen;
+import dannypx.foe.screens.RodEditorScreen;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
@@ -14,7 +17,6 @@ import dannypx.foe.screens.CustomButtonMakerScreen;
 import dannypx.foe.screens.MainScreen;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.screens.interfaces.ScreenConstants;
-import dannypx.foe.screens.widget.SmallButtonWidget;
 import dannypx.foe.screens.widget.StatListWidget;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
@@ -45,7 +47,8 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
     List<Pair<String, Element>> elements = new ArrayList<>();
     List<AbstractWidget> widgets = new ArrayList<>();
 
-    SmallButtonWidget buttonMenuToggle;
+    AbstractWidget buttonMenuToggle;
+    AbstractWidget buttonMenuEditor;
     List<AbstractWidget> buttons = new ArrayList<>();
     Pair<String, Element> buttonBox;
     final int buttonsPerRow = 8;
@@ -75,7 +78,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         ) {
             this.extractRenderButtonHelp(guiGraphicsExtractor, true, false);
 
-            elements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor, Minecraft.getInstance().getDeltaTracker()));
+            elements.forEach(element -> element.value2().extractRenderState(guiGraphicsExtractor));
             if(this.statList != null
                     && Configs.inventoryScreenConfig.showStatsElement.get()
             ) {
@@ -122,25 +125,32 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
 
             if(Configs.inventoryScreenConfig.showStatsElement.get()) widgets.add(getStatList());
 
-            widgets.add(new SmallButtonWidget(
+            widgets.add(new SmallButtonBuilder(
                     minecraft.getWindow().getGuiScaledWidth() / 2 + 66,
                     minecraft.getWindow().getGuiScaledHeight() / 2 - 23,
                     14, 14,
-                    "F",
-                    Tooltip.create(Component.literal("Open FOER Menu")),
-                    Component.literal("FOER Button"),
-                    (button) -> minecraft.setScreen(new MainScreen(minecraft.screen))
-            ));
+                    button -> minecraft.setScreen(new MainScreen(minecraft.screen)))
+                    .icon("F")
+                    .tooltip(Tooltip.create(Component.literal("Open FOER Menu")))
+                    .build());
 
-            widgets.add(new SmallButtonWidget(
-                    minecraft.getWindow().getGuiScaledWidth() / 2 + 50,
-                    minecraft.getWindow().getGuiScaledHeight() / 2 - 23,
-                    14, 14,
-                    "B",
-                    Tooltip.create(Component.literal("Edit Inventory Buttons")),
-                    Component.literal("Edit Inventory Buttons"),
-                    (button) -> minecraft.setScreen(new CustomButtonMakerScreen(minecraft.screen, CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN))
-            ));
+            widgets.add(new SmallButtonBuilder(
+                    minecraft.getWindow().getGuiScaledWidth() / 2 - 88,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 - 74,
+                    7, 13,
+                    button -> minecraft.setScreen(new PlayerHatEditorScreen(minecraft.screen)))
+                    .icon("⏴")
+                    .tooltip(Tooltip.create(Component.literal("Edit Hat Position")))
+                    .build());
+
+            widgets.add(new SmallButtonBuilder(
+                    minecraft.getWindow().getGuiScaledWidth() / 2 - 88,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 + 61,
+                    7, 13,
+                    button -> minecraft.setScreen(new RodEditorScreen(minecraft.screen)))
+                    .icon("⏴")
+                    .tooltip(Tooltip.create(Component.literal("Edit Rod Position")))
+                    .build());
 
             for (int i = 0; i < CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size(); i++) {
                 CustomButtonDataHandler.CustomButton button = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().get(i);
@@ -154,24 +164,27 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                         buttonDrawerTooltip.append(Component.literal("\n\n")).append(TextHelper.parseLegacyWithStyle(button.description.replace("&", "§")).value1());
                     }
 
-                    buttons.add(new SmallButtonWidget(
+                    buttons.add(new SmallButtonBuilder(
                             minecraft.getWindow().getGuiScaledWidth() / 2 - 84 + 5 + (column * 20) + 1,
                             minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + (row * 20) + 1,
                             buttonSize, buttonSize,
-                            button.icon,
-                            Tooltip.create(buttonDrawerTooltip),
-                            Component.literal(button.name),
                             (buttonWidget) -> {
                                 if(minecraft.player != null) {
                                     minecraft.player.connection.sendCommand(button.action.substring(1));
                                 }
-                            }
-                    ));
+                            })
+                            .icon(button.icon)
+                            .tooltip( Tooltip.create(buttonDrawerTooltip))
+                            .build());
                 }
             }
 
+
+            buttonMenuEditor = getButtonMenuEditorButton(screen);
+
             if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value2()) {
                 buttonMenuToggle = getCloseButtonMenuButton(screen);
+                widgets.add(buttonMenuEditor);
                 widgets.addAll(buttons);
             } else {
                 buttonMenuToggle = getOpenButtonMenuButton(screen);
@@ -182,47 +195,61 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
         }
     }
 
-    public SmallButtonWidget getOpenButtonMenuButton(Screen screen) {
-        return new SmallButtonWidget(
+    public AbstractWidget getOpenButtonMenuButton(Screen screen) {
+        return new SmallButtonBuilder(
                 minecraft.getWindow().getGuiScaledWidth() / 2 - 20,
                 minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 - 3,
                 40, 12,
-                "⏷",
-                Tooltip.create(Component.literal("Open Button Menu")),
-                Component.literal("Open Button Menu Button"),
                 (button) -> {
                     Screens.getWidgets(screen).remove(buttonMenuToggle);
                     buttonMenuToggle = getCloseButtonMenuButton(screen);
                     Screens.getWidgets(screen).add(buttonMenuToggle);
 
+                    Screens.getWidgets(screen).add(buttonMenuEditor);
+
                     elements.add(buttonBox);
                     Screens.getWidgets(screen).addAll(buttons);
 
                     CustomButtonDataHandler.instance().updateButton(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, true);
-                }
-        );
+                })
+                .icon("⏷")
+                .tooltip(Tooltip.create(Component.literal("Open Button Menu")))
+                .build();
     }
 
-    public SmallButtonWidget getCloseButtonMenuButton(Screen screen) {
-        return new SmallButtonWidget(
+    public AbstractWidget getCloseButtonMenuButton(Screen screen) {
+        return new SmallButtonBuilder(
                 minecraft.getWindow().getGuiScaledWidth() / 2 - 20,
                 buttonBoxRows != 0 ? minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + (buttonBoxRows * 20) + 1
-                : minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 17,
+                        : minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 17,
                 40, 12,
-                "⏶",
-                Tooltip.create(Component.literal("Close Button Menu")),
-                Component.literal("Close Button Menu Button"),
                 (button) -> {
                     Screens.getWidgets(screen).remove(buttonMenuToggle);
                     buttonMenuToggle = getOpenButtonMenuButton(screen);
                     Screens.getWidgets(screen).add(buttonMenuToggle);
 
+                    Screens.getWidgets(screen).remove(buttonMenuEditor);
+
                     elements.remove(buttonBox);
                     Screens.getWidgets(screen).removeAll(buttons);
 
                     CustomButtonDataHandler.instance().updateButton(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, false);
-                }
-        );
+                })
+                .icon("⏶")
+                .tooltip(Tooltip.create(Component.literal("Close Button Menu")))
+                .build();
+    }
+
+    public AbstractWidget getButtonMenuEditorButton(Screen screen) {
+        return new SmallButtonBuilder(
+                minecraft.getWindow().getGuiScaledWidth() / 2 - 20 - 12 - PADDING_QUART,
+                buttonBoxRows != 0 ? minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + (buttonBoxRows * 20) + 1
+                        : minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 17,
+                12, 12,
+                button -> minecraft.setScreen(new CustomButtonMakerScreen(minecraft.screen, CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN)))
+                .icon("B")
+                .tooltip(Tooltip.create(Component.literal("Edit Inventory Buttons")))
+                .build();
     }
 
     public boolean onMouseScrolled(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {

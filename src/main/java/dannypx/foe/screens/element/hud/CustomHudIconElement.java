@@ -53,7 +53,7 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor) {
         if(!customHudIcon.isShowElement()) { return; }
 
         int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHudIcon.getScale()));
@@ -97,13 +97,13 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
                 default -> 0;
             };
 
-            this.extractRenderBox(guiGraphicsExtractor, deltaTracker, x, y);
-            this.extractRenderText(guiGraphicsExtractor, deltaTracker, x, y);
+            this.extractRenderBox(guiGraphicsExtractor, x, y);
+            this.extractRenderText(guiGraphicsExtractor, x, y);
         }
         guiGraphicsExtractor.pose().popMatrix();
     }
 
-    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, int x, int y) {
+    private void extractRenderText(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
         int componentX;
         int componentY;
 
@@ -159,7 +159,7 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
         };
     }
 
-    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, int x, int y) {
+    private void extractRenderBox(GuiGraphicsExtractor guiGraphicsExtractor, int x, int y) {
         int boxX = x;
         int boxY = y;
 
