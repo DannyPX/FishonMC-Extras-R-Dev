@@ -192,7 +192,7 @@ public class CustomTrackerDataHandler extends Handler {
                                         }
                                     }
                                 }
-                            } catch (Exception ignored) {}
+                            } catch (NullPointerException | NumberFormatException ignored) {}
                         }
                     }
 
