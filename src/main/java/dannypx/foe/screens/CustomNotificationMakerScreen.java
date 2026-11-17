@@ -140,7 +140,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                         Triplet<String, CustomNotificationDataHandler.CustomNotification, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomNotificationDataHandler.CustomNotification.class, Integer.class).getType());
 
                         if(data.value3() > FishOnMCExtras.NOTIFICATION_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported Notification is made on a newer version"));
@@ -161,7 +161,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported Notification"));
@@ -169,7 +169,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -204,14 +204,14 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported Notification on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -277,7 +277,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
     private boolean save() {
         if(editCustomNotificationWidget.hasSelectedOption) {
             if(editCustomNotificationWidget.newName.isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Notification name is empty"));
@@ -289,7 +289,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                     !Objects.equals(editCustomNotificationWidget.currentSelectedNotification, editCustomNotificationWidget.newName)
                             && CustomNotificationDataHandler.instance().getCustomNotificationData().notificationList.containsKey(editCustomNotificationWidget.newName)
             ) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Notification name already exist"));
@@ -300,7 +300,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
             Pattern iconPattern = Pattern.compile("^(?:([a-z0-9_]+:[a-z0-9_]+)(?:\\[(.*)\\])?)?$");
             if(!iconPattern.matcher(editCustomNotificationWidget.icon).matches()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Icon is wrong format"));
@@ -341,7 +341,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Notification saved"),
                                 Component.literal(selectedNotificationId));
@@ -383,12 +383,12 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
                 button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
-                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreenAndShow(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
                             Util.getPlatform().openUri(url);
                         }
 
-                        this.minecraft.setScreen(null);
+                        this.minecraft.gui.setScreen(null);
                     }, url, true));
                 })
                 .icon("Wiki")
@@ -400,7 +400,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
     public boolean keyPressed(KeyEvent keyEvent) {
         if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Notification saved"),
                         Component.literal(selectedNotificationId));
@@ -412,7 +412,7 @@ public class CustomNotificationMakerScreen extends Screen implements ScreenConst
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
     //endregion
 }

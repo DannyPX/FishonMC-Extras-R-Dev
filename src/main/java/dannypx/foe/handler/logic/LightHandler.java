@@ -4,7 +4,7 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.config.Configs;
-import dannypx.foe.mixin.accessor.LevelRendererAccessor;
+
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -79,7 +79,7 @@ public class LightHandler extends Handler {
         for (int chunkX = minX; chunkX <= maxX; chunkX++) {
             for (int chunkY = minY; chunkY <= maxY; chunkY++) {
                 for (int chunkZ = minZ; chunkZ <= maxZ; chunkZ++) {
-                    ((LevelRendererAccessor) minecraft.levelRenderer).foer$setSectionDirty(chunkX, chunkY, chunkZ, false);
+                    minecraft.levelExtractor.setSectionDirty(chunkX, chunkY, chunkZ);
                 }
             }
         }

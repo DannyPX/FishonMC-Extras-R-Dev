@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +63,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     }
 
     private void onLivingEntityRenderLayerRegistrationCallback(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?,?,?> livingEntityRenderer, LivingEntityRenderLayerRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
-        if (entityType == EntityType.PLAYER && livingEntityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
+        if (entityType == EntityTypes.PLAYER && livingEntityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
             registrationHelper.register(RodCubeLayer.create(avatarRenderer));
         }
     }

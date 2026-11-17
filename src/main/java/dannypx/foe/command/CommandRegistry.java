@@ -203,7 +203,7 @@ public class CommandRegistry {
             }
 
             public static int openMainScreen(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(() -> Minecraft.getInstance().setScreen(new MainScreen(Minecraft.getInstance().screen)));
+                return executeCommand(() -> Minecraft.getInstance().setScreenAndShow(new MainScreen(Minecraft.getInstance().gui.screen())));
             }
 
             public static int exportPlaceholderData(CommandContext<FabricClientCommandSource> context) {
@@ -431,7 +431,7 @@ public class CommandRegistry {
                                 Minecraft minecraft = Minecraft.getInstance();
 
                                 if(index >= 0) {
-                                    if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                    if(minecraft.gui.screen() instanceof ContainerScreen genericContainerScreen) {
                                         TrackerValue trackerValue = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index.intValue()).getItem());
                                         return updateValue(context, TrackerAction.SET, tracker, trackerValue);
                                     } else {

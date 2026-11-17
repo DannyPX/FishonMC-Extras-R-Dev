@@ -4,19 +4,19 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.contextualbar.ExperienceBarRenderer;
+import net.minecraft.client.gui.contextualbar.ExperienceBar;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ExperienceBarRenderer.class)
-public abstract class ExperienceBarRendererMixin {
+@Mixin(ExperienceBar.class)
+public abstract class ExperienceBarMixin {
     @Inject(method = "extractBackground", at = @At("HEAD"), cancellable = true)
     private void injectExtractBackground(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
-                && Configs.mixinConfig.experienceBarRendererMixinRenderBackground.get()
+                && Configs.mixinConfig.experienceBarMixinRenderBackground.get()
         ) {
             ci.cancel();
         }
@@ -26,7 +26,7 @@ public abstract class ExperienceBarRendererMixin {
     private void injectExtractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, DeltaTracker deltaTracker, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
-                && Configs.mixinConfig.experienceBarRendererMixinRender.get()
+                && Configs.mixinConfig.experienceBarMixinRender.get()
         ) {
             ci.cancel();
         }

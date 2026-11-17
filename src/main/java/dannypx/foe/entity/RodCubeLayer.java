@@ -43,7 +43,7 @@ public class RodCubeLayer<S extends LivingEntityRenderState, M extends EntityMod
     @Override
     public void submit(@NonNull PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, @NonNull S renderState, float yRot, float xRot) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (!(minecraft.screen instanceof RodEditorScreen editorScreen)) return;
+        if (!(minecraft.gui.screen() instanceof RodEditorScreen editorScreen)) return;
 
         Player player = minecraft.player;
         if (player == null) return;

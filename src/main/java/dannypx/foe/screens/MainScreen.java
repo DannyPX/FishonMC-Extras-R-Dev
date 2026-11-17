@@ -114,7 +114,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
                 height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomHudMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomHudMakerScreen(this.minecraft.gui.screen())))
                 .icon("HUD Text")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom HUD Text Creator screen")))
@@ -124,7 +124,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 - BUTTON_WIDTH,
                 height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomHudIconMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomHudIconMakerScreen(this.minecraft.gui.screen())))
                 .icon("HUD Icon")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom HUD Icon Creator screen")))
@@ -134,7 +134,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 + PADDING_QUART,
                 height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new MoveElementScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new MoveElementScreen(this.minecraft.gui.screen())))
                 .icon("Move")
                 .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Move HUD elements")))
@@ -144,7 +144,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
                 height / 2 - BUTTON_HEIGHT / 2,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomChatTriggerMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomChatTriggerMakerScreen(this.minecraft.gui.screen())))
                 .icon("Chat")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Chat Trigger Creator screen")))
@@ -154,7 +154,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 - BUTTON_WIDTH,
                 height / 2 - BUTTON_HEIGHT / 2,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomEventTriggerMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomEventTriggerMakerScreen(this.minecraft.gui.screen())))
                 .icon("Event")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Event Trigger Creator screen")))
@@ -164,7 +164,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 + PADDING_QUART,
                 height / 2 - BUTTON_HEIGHT / 2,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomTimerMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomTimerMakerScreen(this.minecraft.gui.screen())))
                 .icon("Timer")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Timer Creator screen")))
@@ -174,7 +174,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 - BUTTON_WIDTH - PADDING_QUART - BUTTON_WIDTH,
                 height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomNotificationMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomNotificationMakerScreen(this.minecraft.gui.screen())))
                 .icon("Notif.")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Notification Creator screen")))
@@ -184,7 +184,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 - BUTTON_WIDTH,
                 height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomChatNotificationMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomChatNotificationMakerScreen(this.minecraft.gui.screen())))
                 .icon("Chat Notif.")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Chat Notification Creator screen")))
@@ -194,7 +194,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 + PADDING_QUART,
                 height / 2 - BUTTON_HEIGHT / 2 + BUTTON_HEIGHT + PADDING + font.lineHeight,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomTrackerMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomTrackerMakerScreen(this.minecraft.gui.screen())))
                 .icon("Tracker")
                 .color(0xFF1E90FF)
                 .tooltip(Tooltip.create(Component.literal("Open Custom Tracker Creator screen")))
@@ -204,7 +204,7 @@ public class MainScreen extends DefaultModScreen {
                 width / 2 + PADDING_QUART + BUTTON_WIDTH + PADDING * 2 + PADDING_QUART,
                 height / 2 - BUTTON_HEIGHT / 2 - font.lineHeight - PADDING - BUTTON_HEIGHT - font.lineHeight,
                 BUTTON_WIDTH, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new CustomSnippetMakerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new CustomSnippetMakerScreen(this.minecraft.gui.screen())))
                 .icon("Snippet")
                 .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Open Placeholder Snippet editor")))
@@ -238,7 +238,7 @@ public class MainScreen extends DefaultModScreen {
                         font.width(modVersion),
                         font.lineHeight,
                         modVersion,
-                        button -> minecraft.setScreen(new ChangelogScreen(this)),
+                        button -> minecraft.setScreenAndShow(new ChangelogScreen(this)),
                         font
                 )
         );

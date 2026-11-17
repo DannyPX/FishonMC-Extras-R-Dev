@@ -28,7 +28,7 @@ public abstract class EntityMixin<T extends Entity, S extends EntityRenderState>
                     && this.getName().getString().contains("Pet")
             ) {
                 cir.setReturnValue(false);
-            } else if (Minecraft.getInstance().options.hideGui) {
+            } else if (Minecraft.getInstance().gui.hud.isHidden()) {
                 cir.setReturnValue(false);
             }
         }

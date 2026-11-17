@@ -59,7 +59,7 @@ public class TabOverlayHandler extends Handler {
 
     private void fetchFromPlayerTabOverlay() {
         try {
-            PlayerTabOverlay playerTabOverlay = minecraft.gui.getTabList();
+            PlayerTabOverlay playerTabOverlay = minecraft.gui.hud.getTabList();
             this.fetchFromListing(playerTabOverlay);
             this.fetchFromHeaderAndFooter(playerTabOverlay);
         } catch (Exception e) {

@@ -143,7 +143,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         Triplet<String, CustomHudDataHandler.CustomHud, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomHudDataHandler.CustomHud.class, Integer.class).getType());
 
                         if(data.value3() > FishOnMCExtras.HUD_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported HUD is made on a newer version"));
@@ -164,7 +164,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported HUD"));
@@ -172,7 +172,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -209,14 +209,14 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported HUD on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -284,7 +284,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     private boolean save() {
         if(editCustomHUDWidget.hasSelectedOption) {
             if(editCustomHUDWidget.newName.isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("HUD name is empty"));
@@ -296,7 +296,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                     !Objects.equals(editCustomHUDWidget.currentSelectedHud, editCustomHUDWidget.newName)
                             && CustomHudDataHandler.instance().getCustomHudData().customHudRawDataList.containsKey(editCustomHUDWidget.newName)
             ) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("HUD name already exist"));
@@ -340,7 +340,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("HUD saved"),
                                 Component.literal(selectedHudId));
@@ -384,12 +384,12 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
                 button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
-                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreenAndShow(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
                             Util.getPlatform().openUri(url);
                         }
 
-                        this.minecraft.setScreen(null);
+                        this.minecraft.gui.setScreen(null);
                     }, url, true));
                 })
                 .icon("Wiki")
@@ -401,7 +401,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
     public boolean keyPressed(KeyEvent keyEvent) {
         if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("HUD saved"),
                         Component.literal(selectedHudId));
@@ -413,7 +413,7 @@ public class CustomHudMakerScreen extends Screen implements ScreenConstants {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
     //endregion
 }

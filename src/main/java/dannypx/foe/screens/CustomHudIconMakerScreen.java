@@ -323,7 +323,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
                         Triplet<String, CustomHudIconDataHandler.CustomHudIcon, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomHudIconDataHandler.CustomHudIcon.class, Integer.class).getType());
 
                         if(data.value3() > FishOnMCExtras.HUD_ICON_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported HUD Icon is made on a newer version"));
@@ -344,7 +344,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported HUD Icon"));
@@ -352,7 +352,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -388,14 +388,14 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported HUD Icon on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -524,7 +524,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
     private boolean save() {
         if(selectedHudIconId != null) {
             if(idEditBox.getValue().isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("HUD Icon name is empty"));
@@ -536,7 +536,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
             try {
                 scale = Float.parseFloat(scaleEditBox.getValue());
             } catch (NumberFormatException ignored) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Could not parse scale"));
@@ -545,7 +545,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
             }
 
             if(iconEditBox.getValue().isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Icon is empty"));
@@ -577,7 +577,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
             }
 
             if(!couldParseIcon) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Could not parse icon"));
@@ -619,7 +619,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("HUD icon saved"),
                                 Component.literal(selectedHudIconId));
@@ -647,12 +647,12 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
                 button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
-                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreenAndShow(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
                             Util.getPlatform().openUri(url);
                         }
 
-                        this.minecraft.setScreen(null);
+                        this.minecraft.gui.setScreen(null);
                     }, url, true));
                 })
                 .icon("Wiki")
@@ -664,7 +664,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
     public boolean keyPressed(KeyEvent keyEvent) {
         if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("HUD icon saved"),
                         Component.literal(selectedHudIconId));
@@ -676,7 +676,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
     //endregion
 }
