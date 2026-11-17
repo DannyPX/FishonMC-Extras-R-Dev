@@ -69,7 +69,7 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
                 width - PADDING_HALF - 50 - PADDING_HALF - 50,
                 height - PADDING_HALF - BUTTON_HEIGHT,
                 50, BUTTON_HEIGHT,
-                button -> this.minecraft.setScreen(new DebugHandlerScreen(this.minecraft.screen)))
+                button -> this.minecraft.setScreenAndShow(new DebugHandlerScreen(this.minecraft.gui.screen())))
                 .icon("Debug")
                 .color(0xFF800000)
                 .build();
@@ -82,6 +82,6 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
 }

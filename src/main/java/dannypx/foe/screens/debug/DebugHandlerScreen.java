@@ -146,7 +146,7 @@ public class DebugHandlerScreen extends DefaultModScreen {
 
             minecraftClient.keyboardHandler.setClipboard(json);
 
-            SystemToast.add(minecraftClient.getToastManager(),
+            SystemToast.add(minecraftClient.gui.toastManager(),
                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                     Component.literal("Fish On Extras Rebirth"),
                     Component.literal("Copied " + hoveredName + " JSON"));

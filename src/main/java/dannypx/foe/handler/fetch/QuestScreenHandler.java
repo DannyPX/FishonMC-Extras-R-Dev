@@ -62,7 +62,7 @@ public class QuestScreenHandler extends Handler {
                 if (minecraft.player != null
                         && slot.container != minecraft.player.getInventory()
                         && slot.getItem().is(ItemTags.SHULKER_BOXES)
-                        && slot.getItem().getItem() != Items.WHITE_SHULKER_BOX
+                        && slot.getItem().getItem() != Items.DYED_SHULKER_BOX.white()
                         && slot.getItem().getHoverName().getString().startsWith("Fishing Quest")
                 ) {
                     QuestDataHandler.Quest quest = this.extractQuestData(slot.getItem());

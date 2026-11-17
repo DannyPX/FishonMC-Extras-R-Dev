@@ -818,7 +818,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                         }
 
                         if(data.value4() > FishOnMCExtras.TIMER_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported Timer is made on a newer version"));
@@ -842,14 +842,14 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported Timer"));
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -887,14 +887,14 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported Button on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -945,7 +945,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private boolean save() {
         if(selectedTimerId != null) {
             if(nameEditBox.getValue().isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Timer name is empty"));
@@ -956,7 +956,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
             if(!Objects.equals(selectedTimerId, nameEditBox.getValue())
                     && CustomTimerDataHandler.instance().getCustomTimerData().timerList.containsKey(nameEditBox.getValue())
             ) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Timer name already exist"));
@@ -967,7 +967,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
             try {
                 Integer.parseInt(timerEditBox.getValue());
             } catch (NumberFormatException e) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Timer is not correct format"));
@@ -982,7 +982,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     Integer.parseInt(offTimerEditBox.getValue());
                 }
             } catch (NumberFormatException e) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Off Timer is not correct format"));
@@ -995,7 +995,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
             try {
                 Integer.parseInt(offsetEditBox.getValue());
             } catch (NumberFormatException e) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Offset is not correct format"));
@@ -1061,7 +1061,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Timer saved"),
                                 Component.literal(selectedTimerId));
@@ -1222,7 +1222,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     public boolean keyPressed(KeyEvent keyEvent) {
         if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Timer saved"),
                         Component.literal(selectedTimerId));
@@ -1234,7 +1234,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
     //endregion
 }

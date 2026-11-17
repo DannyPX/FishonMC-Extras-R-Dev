@@ -39,7 +39,7 @@ public class ChatNotifierHandler extends Handler {
     }
 
     public void sendChatMessage(Component message) {
-        minecraft.gui.getChat().addClientSystemMessage(
+        minecraft.gui.hud.getChat().addClientSystemMessage(
                 TextHelper.concat(
                         Component.literal("FoER ").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD),
                         Component.literal("» ").withStyle(ChatFormatting.DARK_GRAY),
