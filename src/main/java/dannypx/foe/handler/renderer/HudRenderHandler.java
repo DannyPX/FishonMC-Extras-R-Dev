@@ -21,6 +21,7 @@ import dannypx.foe.screens.element.hud.*;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -146,7 +147,7 @@ public class HudRenderHandler extends Handler {
                                 clientTooltipComponents.add(clientTooltipComponents.isEmpty() ? 0 : 1, ClientTooltipComponent.create(tooltipComponent))
                         );
 
-                guiGraphicsExtractor.tooltip(minecraft.font, clientTooltipComponents, itemX, itemY, DefaultTooltipPositioner.INSTANCE, itemStack.get(DataComponents.TOOLTIP_STYLE));
+                guiGraphicsExtractor.tooltip(minecraft.font, clientTooltipComponents, itemX, itemY, DefaultTooltipPositioner.INSTANCE, itemStack.get(DataComponents.TOOLTIP_STYLE), true);
             }
         }
     }

@@ -26,7 +26,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     //region Fields
@@ -646,7 +646,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
+        if(keyEvent.hasControlDown() && keyEvent.key() == SDLScancode.SDL_SCANCODE_S) {
             if(this.save()) {
                 SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,

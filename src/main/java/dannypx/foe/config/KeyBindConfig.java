@@ -13,7 +13,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 @Version(version = 4)
 @Translatable.Name("Controls")
@@ -23,13 +23,13 @@ public class KeyBindConfig extends Config {
     }
 
     @Name("Open FOER Menu")
-    public ValidatedKeybind openMainKeybind = new ValidatedKeybind(GLFW.GLFW_KEY_O, ContextInput.KEYBOARD, false, false, false);
+    public ValidatedKeybind openMainKeybind = new ValidatedKeybind(SDLScancode.SDL_SCANCODE_O, ContextInput.KEYBOARD, false, false, false);
 
     @Name("Inspect")
     public ConfigGroup inspectGroup = new ConfigGroup("inspect_group");
 
     @Name("Inspect Key")
-    public ValidatedKeybind inspectKeybind = new ValidatedKeybind(GLFW.GLFW_KEY_LEFT_SHIFT, ContextInput.KEYBOARD, false, false, false);
+    public ValidatedKeybind inspectKeybind = new ValidatedKeybind(SDLScancode.SDL_SCANCODE_LSHIFT, ContextInput.KEYBOARD, false, false, false);
 
     @ConfigGroup.Pop
     @Name("Button mode")

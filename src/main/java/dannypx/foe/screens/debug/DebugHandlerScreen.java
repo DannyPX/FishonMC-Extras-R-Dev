@@ -7,7 +7,6 @@ import dannypx.foe.screens.DefaultModScreen;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jspecify.annotations.NonNull;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,8 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
+import org.lwjgl.sdl.SDLKeycode;
+import org.lwjgl.sdl.SDLScancode;
 
 public class DebugHandlerScreen extends DefaultModScreen {
     //region Fields
@@ -133,10 +134,10 @@ public class DebugHandlerScreen extends DefaultModScreen {
     }
 
     public void copyField(KeyEvent input) {
-        boolean ctrl = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0
-                || (input.modifiers() & GLFW.GLFW_MOD_SUPER) != 0;
+        boolean ctrl = (input.modifiers() & SDLKeycode.SDL_KMOD_CTRL) != 0
+                || (input.modifiers() & SDLKeycode.SDL_KMOD_GUI) != 0;
 
-        if(ctrl && input.key() == GLFW.GLFW_KEY_C) {
+        if(ctrl && input.key() == SDLScancode.SDL_SCANCODE_C) {
             String json;
             if(Objects.equals(hoveredValue.value2(), Component.empty())) {
                 json = TextHelper.componentToJsonPretty(hoveredValue.value1());
