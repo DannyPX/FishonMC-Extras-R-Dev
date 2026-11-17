@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
 import org.jspecify.annotations.NonNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import java.util.List;
 
@@ -80,19 +80,19 @@ public class PlaceholderEditBox extends EditBox {
     @Override
     public boolean keyPressed(@NonNull KeyEvent keyEvent) {
         if(this.isSuggesting()) {
-            if(keyEvent.key() == GLFW.GLFW_KEY_TAB) {
+            if(keyEvent.key() == SDLScancode.SDL_SCANCODE_TAB) {
                 this.acceptHighlighted();
                 return true;
             }
-            if(keyEvent.key() == GLFW.GLFW_KEY_DOWN) {
+            if(keyEvent.key() == SDLScancode.SDL_SCANCODE_DOWN) {
                 highlighted = Math.min(highlighted + 1, context.suggestions().size() - 1);
                 return true;
             }
-            if(keyEvent.key() == GLFW.GLFW_KEY_UP) {
+            if(keyEvent.key() == SDLScancode.SDL_SCANCODE_UP) {
                 highlighted = Math.max(highlighted - 1, 0);
                 return true;
             }
-            if(keyEvent.key() == GLFW.GLFW_KEY_ESCAPE) {
+            if(keyEvent.key() == SDLScancode.SDL_SCANCODE_ESCAPE) {
                 context = PlaceholderSuggestionContext.NONE;
                 return true;
             }

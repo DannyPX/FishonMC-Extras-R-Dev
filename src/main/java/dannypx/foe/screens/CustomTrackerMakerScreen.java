@@ -3,6 +3,7 @@ package dannypx.foe.screens;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.blaze3d.Blaze3D;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
@@ -32,8 +33,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -537,11 +539,11 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
 
                     this.minecraft.setScreenAndShow(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
-                            Util.getPlatform().openUri(url);
+                            Blaze3D.openUri(URI.create(url));
                         }
 
                         this.minecraft.gui.setScreen(null);
-                    }, url, true));
+                    }, URI.create(url), true));
                 })
                 .icon("Wiki")
                 .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
@@ -550,7 +552,7 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
+        if(keyEvent.hasControlDown() && keyEvent.key() == SDLScancode.SDL_SCANCODE_S) {
             if(this.save()) {
                 SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,

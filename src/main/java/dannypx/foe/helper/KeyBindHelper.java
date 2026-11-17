@@ -5,7 +5,6 @@ import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindUnbound;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.InputConstants;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
 
@@ -171,7 +170,7 @@ public class KeyBindHelper {
 
     public static String getTranslatableKey(ValidatedKeybind validatedKeybind) {
         if(validatedKeybind.get() instanceof FzzyKeybindSimple fzzyKeybindSimple) {
-            InputConstants.Key key = InputConstants.Type.KEYSYM.getOrCreate(fzzyKeybindSimple.getInputCode());
+            InputConstants.Key key = InputConstants.Type.KEYBOARD.getOrCreate(fzzyKeybindSimple.getInputCode());
             return key.getName();
         } else if (validatedKeybind.get() instanceof FzzyKeybindUnbound) {
             return "Not Bound";
@@ -187,7 +186,7 @@ public class KeyBindHelper {
                 && !validatedKeybind.needsCtrl()
                 && validatedKeybind.get() instanceof FzzyKeybindSimple fzzyKeybindSimple
         ) {
-            return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), fzzyKeybindSimple.getInputCode());
+            return InputConstants.isKeyDown(fzzyKeybindSimple.getInputCode());
         }
 
         return false;
@@ -200,7 +199,7 @@ public class KeyBindHelper {
     public static String getKeyFromCodes(int ...codes) {
         StringBuilder keysBuilder = new StringBuilder();
         for (int code : codes) {
-            String key = InputConstants.Type.KEYSYM.getOrCreate(code).getName();
+            String key = InputConstants.Type.KEYBOARD.getOrCreate(code).getName();
             keysBuilder.append(getKey(key));
         }
         return keysBuilder.toString();

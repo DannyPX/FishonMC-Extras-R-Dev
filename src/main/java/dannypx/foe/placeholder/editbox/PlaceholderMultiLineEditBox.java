@@ -22,7 +22,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import org.jspecify.annotations.NonNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
+import org.lwjgl.sdl.SDLScancode;
 
 import java.util.*;
 
@@ -77,56 +78,56 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
             Component.literal("Keyboard shortcuts").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
             shortcut(
                     KeyBindHelper.getKeyFromCodes(
-                            GLFW.GLFW_KEY_LEFT_SHIFT,
-                            GLFW.GLFW_KEY_A
+                            SDLScancode.SDL_SCANCODE_LSHIFT,
+                            SDLScancode.SDL_SCANCODE_A
                     ), "Select all"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_C) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_X) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_V), "Copy / Cut / Paste"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_C) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_X) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_V), "Copy / Cut / Paste"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_Z) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_Y), "Undo / Redo"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_Z) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_Y), "Undo / Redo"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_S), "Save"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_S), "Save"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_TAB), "Insert 2 spaces / indent selected lines"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_TAB), "Insert 2 spaces / indent selected lines"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.GLFW_KEY_TAB), "Un-indent line / selected lines"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LSHIFT, SDLScancode.SDL_SCANCODE_TAB), "Un-indent line / selected lines"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_BACKSPACE) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_DELETE), "Delete word"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_BACKSPACE) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_DELETE), "Delete word"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_LEFT) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT), "Jump by word"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_LEFT) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_LCTRL, SDLScancode.SDL_SCANCODE_RIGHT), "Jump by word"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_HOME) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_END), "Start / end of line"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_HOME) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_END), "Start / end of line"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_PAGE_UP) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_PAGE_DOWN), "Move one page"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_PAGEUP) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_PAGEDOWN), "Move one page"
             ),
             Component.empty(),
             Component.literal("While suggestions are shown").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_TAB) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_TAB) + " / " +
                     "\uDB80\uDC68", "Accept suggestion"
             ),
             shortcut(
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_UP) + " / " +
-                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_DOWN), "Choose suggestion"
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_UP) + " / " +
+                    KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_DOWN), "Choose suggestion"
             ),
             shortcut("\uDB80\uDC67", "Scroll suggestions"),
-            shortcut(KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_ESCAPE), "Close suggestions")
+            shortcut(KeyBindHelper.getKeyFromCodes(SDLScancode.SDL_SCANCODE_ESCAPE), "Close suggestions")
     );
 
     private static Component shortcut(String keys, String action) {
@@ -996,21 +997,21 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
     @Override
     public boolean keyPressed(@NonNull KeyEvent keyEvent) {
         if (this.isSuggesting()) {
-            if (keyEvent.key() == GLFW.GLFW_KEY_TAB && !keyEvent.hasShiftDown()) {
+            if (keyEvent.key() == SDLScancode.SDL_SCANCODE_TAB && !keyEvent.hasShiftDown()) {
                 this.acceptHighlighted();
                 return true;
             }
-            if (keyEvent.key() == GLFW.GLFW_KEY_DOWN) {
+            if (keyEvent.key() == SDLScancode.SDL_SCANCODE_DOWN) {
                 highlighted = Math.min(highlighted + 1, context.suggestions().size() - 1);
                 this.keepHighlightVisible();
                 return true;
             }
-            if (keyEvent.key() == GLFW.GLFW_KEY_UP) {
+            if (keyEvent.key() == SDLScancode.SDL_SCANCODE_UP) {
                 highlighted = Math.max(highlighted - 1, 0);
                 this.keepHighlightVisible();
                 return true;
             }
-            if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE) {
+            if (keyEvent.key() == SDLScancode.SDL_SCANCODE_ESCAPE) {
                 context = PlaceholderSuggestionContext.NONE;
                 return true;
             }
@@ -1049,31 +1050,31 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         boolean shift = keyEvent.hasShiftDown();
         boolean ctrl = keyEvent.hasControlDown();
 
-        if (ctrl && keyEvent.key() == GLFW.GLFW_KEY_Z) {
+        if (ctrl && keyEvent.key() == SDLScancode.SDL_SCANCODE_Z) {
             this.undo();
             return true;
         }
-        if (ctrl && keyEvent.key() == GLFW.GLFW_KEY_Y) {
+        if (ctrl && keyEvent.key() == SDLScancode.SDL_SCANCODE_Y) {
             this.redo();
             return true;
         }
 
         switch (keyEvent.key()) {
-            case GLFW.GLFW_KEY_TAB -> {
+            case SDLScancode.SDL_SCANCODE_TAB -> {
                 if (shift) this.unindent();
                 else if (this.hasSelection()) this.indent();
                 else this.insert(INDENT);
             }
-            case GLFW.GLFW_KEY_BACKSPACE -> {
+            case SDLScancode.SDL_SCANCODE_BACKSPACE -> {
                 if (ctrl && !this.hasSelection()) this.deleteWordBack();
                 else this.backspace();
             }
-            case GLFW.GLFW_KEY_DELETE -> {
+            case SDLScancode.SDL_SCANCODE_DELETE -> {
                 if (ctrl && !this.hasSelection()) this.deleteWordForward();
                 else this.deleteForward();
             }
-            case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> this.smartEnter();
-            case GLFW.GLFW_KEY_LEFT -> {
+            case SDLScancode.SDL_SCANCODE_KP_ENTER, SDLScancode.SDL_SCANCODE_RETURN -> this.smartEnter();
+            case SDLScancode.SDL_SCANCODE_LEFT -> {
                 if (ctrl) {
                     cursor = this.prevWordBoundary(cursor);
                     cursorLine = this.defaultLineIndexForOffset(cursor);
@@ -1090,7 +1091,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                     }
                 }
             }
-            case GLFW.GLFW_KEY_RIGHT -> {
+            case SDLScancode.SDL_SCANCODE_RIGHT -> {
                 if (ctrl) {
                     cursor = this.nextWordBoundary(cursor);
                     cursorLine = this.defaultLineIndexForOffset(cursor);
@@ -1107,12 +1108,12 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                     }
                 }
             }
-            case GLFW.GLFW_KEY_UP -> this.moveVertical(-1);
-            case GLFW.GLFW_KEY_DOWN -> this.moveVertical(1);
-            case GLFW.GLFW_KEY_HOME -> this.moveHome();
-            case GLFW.GLFW_KEY_END -> this.moveEnd();
-            case GLFW.GLFW_KEY_PAGE_UP -> this.moveVertical(-this.visibleRows());
-            case GLFW.GLFW_KEY_PAGE_DOWN -> this.moveVertical(this.visibleRows());
+            case SDLScancode.SDL_SCANCODE_UP -> this.moveVertical(-1);
+            case SDLScancode.SDL_SCANCODE_DOWN -> this.moveVertical(1);
+            case SDLScancode.SDL_SCANCODE_HOME -> this.moveHome();
+            case SDLScancode.SDL_SCANCODE_END -> this.moveEnd();
+            case SDLScancode.SDL_SCANCODE_PAGEUP -> this.moveVertical(-this.visibleRows());
+            case SDLScancode.SDL_SCANCODE_PAGEDOWN -> this.moveVertical(this.visibleRows());
             default -> {
                 return false;
             }
@@ -1131,7 +1132,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
 
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
-        if (mouseButtonEvent.buttonInfo().button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+        if (mouseButtonEvent.buttonInfo().button() == SDLMouse.SDL_BUTTON_LEFT) {
             int index = this.suggestionIndexAt(this.suggestionPanel(), mouseButtonEvent.x(), mouseButtonEvent.y());
             if (index >= 0) {
                 pressedButton = true;
@@ -1145,7 +1146,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
 
     @Override
     public void onClick(MouseButtonEvent mouseButtonEvent, boolean bl) {
-        if (mouseButtonEvent.buttonInfo().button() != GLFW.GLFW_MOUSE_BUTTON_LEFT) return;
+        if (mouseButtonEvent.buttonInfo().button() != SDLMouse.SDL_BUTTON_LEFT) return;
 
         draggingScrollbar = false;
         pressedButton = false;
@@ -1205,7 +1206,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
 
     @Override
     public boolean mouseDragged(MouseButtonEvent mouseButtonEvent, double dragX, double dragY) {
-        if (mouseButtonEvent.buttonInfo().button() != GLFW.GLFW_MOUSE_BUTTON_LEFT) return false;
+        if (mouseButtonEvent.buttonInfo().button() != SDLMouse.SDL_BUTTON_LEFT) return false;
 
         if (pressedButton) return true;
 
@@ -1231,7 +1232,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
 
     @Override
     public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
-        if (mouseButtonEvent.buttonInfo().button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+        if (mouseButtonEvent.buttonInfo().button() == SDLMouse.SDL_BUTTON_LEFT) {
             draggingScrollbar = false;
             pressedButton = false;
         }
@@ -1281,7 +1282,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         lastMouseX = mouseX;
         lastMouseY = mouseY;
 
-        if (draggingScrollbar && GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) != GLFW.GLFW_PRESS) draggingScrollbar = false;
+        if (draggingScrollbar && (SDLMouse.SDL_GetMouseState(null, null) & SDLMouse.SDL_BUTTON_LMASK) == 0) draggingScrollbar = false;
     }
 
     private void resolvePendingPlaceholder() {
