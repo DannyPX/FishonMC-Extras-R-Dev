@@ -30,7 +30,7 @@ public abstract class ItemInHandRendererMixin {
     @Shadow
     public abstract void renderItem(LivingEntity entity, ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight);
 
-    @Inject(method = "renderArmWithItem", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
     private void injectRenderArmWithItem(AbstractClientPlayer abstractClientPlayer, float f, float g, InteractionHand interactionHand, float h, ItemStack itemStack, float equipProgress, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()

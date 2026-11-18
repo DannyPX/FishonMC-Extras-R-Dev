@@ -51,7 +51,7 @@ public record ItemStackValue(Pair<ItemStack, String> value) implements TrackerVa
 
                 if(index >= 0) {
                     Minecraft minecraft = Minecraft.getInstance();
-                    if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                    if(minecraft.gui.screen() instanceof ContainerScreen genericContainerScreen) {
                         itemStack = genericContainerScreen.getMenu().slots.get((int) index).getItem();
                     } else {
                         itemStack = minecraft.player.getInventory().getItem((int) index);

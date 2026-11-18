@@ -33,10 +33,10 @@ public class KeyBindHandler extends Handler {
 
     //region Methods
     public void tick() {
-        if(minecraft.screen == null
+        if(minecraft.gui.screen() == null
                 && KeyBindHelper.isPressed(Configs.keyBindConfig.openMainKeybind)
         ) {
-            minecraft.setScreen(new MainScreen(minecraft.screen));
+            minecraft.setScreenAndShow(new MainScreen(minecraft.gui.screen()));
         }
 
         switch (Configs.keyBindConfig.inspectMode.get()) {

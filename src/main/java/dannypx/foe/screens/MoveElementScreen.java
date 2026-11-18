@@ -159,7 +159,7 @@ public class MoveElementScreen extends DefaultModScreen {
 
                                 @Override
                                 public void onConfig() {
-                                    Minecraft.getInstance().setScreen(new CustomHudMakerScreen(Minecraft.getInstance().screen));
+                                    Minecraft.getInstance().setScreenAndShow(new CustomHudMakerScreen(Minecraft.getInstance().gui.screen()));
                                 }
                             }
                     ));
@@ -176,7 +176,7 @@ public class MoveElementScreen extends DefaultModScreen {
 
                                 @Override
                                 public void onConfig() {
-                                    Minecraft.getInstance().setScreen(new CustomHudIconMakerScreen(Minecraft.getInstance().screen));
+                                    Minecraft.getInstance().setScreenAndShow(new CustomHudIconMakerScreen(Minecraft.getInstance().gui.screen()));
                                 }
                             }
                     ));

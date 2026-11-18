@@ -172,7 +172,7 @@ public class CustomTrackerDataHandler extends Handler {
 
                                             if(index >= 0) {
                                                 try {
-                                                    if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                                    if(minecraft.gui.screen() instanceof ContainerScreen genericContainerScreen) {
                                                         valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index).getItem());
                                                     } else {
                                                         valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index));

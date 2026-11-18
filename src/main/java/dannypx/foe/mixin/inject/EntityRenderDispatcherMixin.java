@@ -21,7 +21,7 @@ public abstract class EntityRenderDispatcherMixin {
                 && LoadingHandler.instance().isLoadingDone()
                 && Configs.mixinConfig.entityRenderDispatcherMixinShouldRender.get()
         ) {
-            if(Minecraft.getInstance().options.hideGui
+            if(Minecraft.getInstance().gui.hud.isHidden()
                     && entity instanceof Display.TextDisplay textDisplay
                     && textDisplay.getBillboardConstraints() != Display.BillboardConstraints.FIXED
             ) {

@@ -321,7 +321,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                         Pair<CustomButtonDataHandler.CustomButton, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Pair.class, CustomButtonDataHandler.CustomButton.class, Integer.class).getType());
 
                         if(data.value2() > FishOnMCExtras.BUTTON_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported Button is made on a newer version"));
@@ -342,14 +342,14 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported Button"));
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -385,14 +385,14 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported Button on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -443,7 +443,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     private boolean save() {
         if(selectedButtonId != null) {
             if(nameEditBox.getValue().isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Button name is empty"));
@@ -454,7 +454,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
             if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().anyMatch(b -> Objects.equals(b.name, nameEditBox.getValue()))
                     && !Objects.equals(selectedButton.name, nameEditBox.getValue())
             ) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Button name already exist"));
@@ -463,7 +463,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
             }
 
             if(!actionEditBox.getValue().startsWith("/")) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Command must start with /"));
@@ -473,7 +473,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
             Pattern iconPattern = Pattern.compile("^(?:([a-z_]+:[a-z_]+)(?:\\[(.*)\\])?|(.))$");
             if(!iconPattern.matcher(iconEditBox.getValue()).matches()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Icon is not right format"));
@@ -512,7 +512,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Button saved"),
                                 Component.literal(selectedButtonId));
@@ -648,7 +648,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     public boolean keyPressed(KeyEvent keyEvent) {
         if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Button saved"),
                         Component.literal(selectedButtonId));
@@ -660,7 +660,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
     //endregion
 }

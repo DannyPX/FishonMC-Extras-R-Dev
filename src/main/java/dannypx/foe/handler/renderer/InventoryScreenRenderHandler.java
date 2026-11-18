@@ -129,7 +129,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     minecraft.getWindow().getGuiScaledWidth() / 2 + 66,
                     minecraft.getWindow().getGuiScaledHeight() / 2 - 23,
                     14, 14,
-                    button -> minecraft.setScreen(new MainScreen(minecraft.screen)))
+                    button -> minecraft.setScreenAndShow(new MainScreen(minecraft.gui.screen())))
                     .icon("F")
                     .tooltip(Tooltip.create(Component.literal("Open FOER Menu")))
                     .build());
@@ -138,7 +138,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     minecraft.getWindow().getGuiScaledWidth() / 2 - 88,
                     minecraft.getWindow().getGuiScaledHeight() / 2 - 74,
                     7, 13,
-                    button -> minecraft.setScreen(new PlayerHatEditorScreen(minecraft.screen)))
+                    button -> minecraft.setScreenAndShow(new PlayerHatEditorScreen(minecraft.gui.screen())))
                     .icon("⏴")
                     .tooltip(Tooltip.create(Component.literal("Edit Hat Position")))
                     .build());
@@ -147,7 +147,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     minecraft.getWindow().getGuiScaledWidth() / 2 - 88,
                     minecraft.getWindow().getGuiScaledHeight() / 2 + 61,
                     7, 13,
-                    button -> minecraft.setScreen(new RodEditorScreen(minecraft.screen)))
+                    button -> minecraft.setScreenAndShow(new RodEditorScreen(minecraft.gui.screen())))
                     .icon("⏴")
                     .tooltip(Tooltip.create(Component.literal("Edit Rod Position")))
                     .build());
@@ -246,7 +246,7 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                 buttonBoxRows != 0 ? minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + (buttonBoxRows * 20) + 1
                         : minecraft.getWindow().getGuiScaledHeight() / 2 + INVENTORY_HEIGHT / 2 + 17,
                 12, 12,
-                button -> minecraft.setScreen(new CustomButtonMakerScreen(minecraft.screen, CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN)))
+                button -> minecraft.setScreenAndShow(new CustomButtonMakerScreen(minecraft.gui.screen(), CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN)))
                 .icon("B")
                 .tooltip(Tooltip.create(Component.literal("Edit Inventory Buttons")))
                 .build();
