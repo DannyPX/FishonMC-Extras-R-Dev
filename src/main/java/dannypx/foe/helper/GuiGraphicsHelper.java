@@ -1,7 +1,6 @@
 package dannypx.foe.helper;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import dannypx.foe.type.StringStyle;
@@ -18,19 +17,21 @@ public class GuiGraphicsHelper {
         EnumSet<StringStyle> styles = stringStyles.length == 0
                 ? EnumSet.noneOf(StringStyle.class)
                 : EnumSet.copyOf(Arrays.asList(stringStyles));
-        text(guiGraphicsExtractor, font, component, x, y, styles);
+        text(guiGraphicsExtractor, font, component, x, y, Style.EMPTY, styles);
     }
 
-    private static int text(GuiGraphicsExtractor guiGraphicsExtractor, Font font, Component component, int x, int y, EnumSet<StringStyle> styles) {
-        List<Component> siblings = component.getSiblings();
+    private static int text(GuiGraphicsExtractor guiGraphicsExtractor, Font font, Component component, int x, int y, Style parentStyle, EnumSet<StringStyle> styles) {
+        Style style = component.getStyle().applyTo(parentStyle);
 
-        if (siblings.isEmpty()) {
-            return drawGlyphs(guiGraphicsExtractor, font, component.getString(), x, y, component.getStyle(), styles);
+        String own = component.plainCopy().getString();
+        if (!own.isEmpty()) {
+            x = drawGlyphs(guiGraphicsExtractor, font, own, x, y, style, styles);
         }
 
-        for (Component sibling : siblings) {
-            x = text(guiGraphicsExtractor, font, sibling, x, y, styles);
+        for (Component sibling : component.getSiblings()) {
+            x = text(guiGraphicsExtractor, font, sibling, x, y, style, styles);
         }
+
         return x;
     }
 
