@@ -16,12 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
     @Inject(method = "shouldRender", at = @At("RETURN"), cancellable = true)
-    public <E extends Entity> void injectShouldRender(E entity, Frustum frustum, double d, double e, double f, CallbackInfoReturnable<Boolean> cir) {
+    public <E extends Entity> void injectShouldRender(E entity, Frustum culler, double camX, double camY, double camZ, float partialTicks, CallbackInfoReturnable<Boolean> cir) {
         if(ConnectionHandler.instance().isOnServer()
                 && LoadingHandler.instance().isLoadingDone()
                 && Configs.mixinConfig.entityRenderDispatcherMixinShouldRender.get()
         ) {
-            if(Minecraft.getInstance().options.hideGui
+            if(Minecraft.getInstance().gui.hud.isHidden()
                     && entity instanceof Display.TextDisplay textDisplay
                     && textDisplay.getBillboardConstraints() != Display.BillboardConstraints.FIXED
             ) {

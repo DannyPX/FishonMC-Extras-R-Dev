@@ -76,8 +76,7 @@ public abstract class FishingHookRendererMixin {
                     FishingHookEntityModel.RENDER_LAYER,
                     fishingHookRenderState.lightCoords,
                     OverlayTexture.NO_OVERLAY,
-                    fishingHookRenderState.outlineColor,
-                    null);
+                    fishingHookRenderState.outlineColor);
             poseStack.popPose();
         }
 
@@ -95,7 +94,7 @@ public abstract class FishingHookRendererMixin {
                 poseStack.pushPose();
                 poseStack.translate(0, -0.4, 0);
 
-                poseStack.mulPose(Axis.YP.rotationDegrees(-minecraft.getEntityRenderDispatcher().camera.yRot()));
+                poseStack.rotateDegrees(Axis.YP, -minecraft.getEntityRenderDispatcher().camera.yRot());
 
                 ItemModelResolver itemModelManager = minecraft.getItemModelResolver();
                 TrackingItemStackRenderState itemRenderState = new TrackingItemStackRenderState();

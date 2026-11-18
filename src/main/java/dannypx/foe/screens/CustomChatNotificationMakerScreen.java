@@ -3,6 +3,7 @@ package dannypx.foe.screens;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.blaze3d.Blaze3D;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
@@ -24,8 +25,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
+import java.net.URI;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -230,7 +232,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                         Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, String.class, Integer.class).getType());
 
                         if(data.value3() > FishOnMCExtras.CHAT_NOTIFICATION_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported Chat Notification is made on a newer version"));
@@ -252,14 +254,14 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported Chat Notification"));
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -296,14 +298,14 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported Chat Notification on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -354,7 +356,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
     private boolean save() {
         if(selectedChatNotificationId != null) {
             if(nameEditBox.getValue().isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Chat Notification name is empty"));
@@ -365,7 +367,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
             if(!Objects.equals(selectedChatNotificationId, nameEditBox.getValue())
                     && CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.containsKey(nameEditBox.getValue())
             ) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Chat Notification name already exist"));
@@ -398,7 +400,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Chat notification saved"),
                                 Component.literal(selectedChatNotificationId));
@@ -425,13 +427,13 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                 button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
-                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreenAndShow(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
-                            Util.getPlatform().openUri(url);
+                            Blaze3D.openUri(URI.create(url));
                         }
 
-                        this.minecraft.setScreen(null);
-                    }, url, true));
+                        this.minecraft.gui.setScreen(null);
+                    }, URI.create(url), true));
                 })
                 .icon("Wiki")
                 .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
@@ -480,9 +482,9 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
+        if(keyEvent.hasControlDown() && keyEvent.key() == SDLScancode.SDL_SCANCODE_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Chat notification saved"),
                         Component.literal(selectedChatNotificationId));
@@ -494,7 +496,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
     //endregion
 }

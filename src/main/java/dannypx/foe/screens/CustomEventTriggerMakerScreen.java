@@ -22,7 +22,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -386,7 +386,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                         Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomEventTriggerDataHandler.CustomEventTrigger.class, Integer.class).getType());
 
                         if(data.value3() > FishOnMCExtras.EVENT_TRIGGER_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported Event Trigger is made on a newer version"));
@@ -409,14 +409,14 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported Event Trigger"));
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -452,14 +452,14 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported Button on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -510,7 +510,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
     private boolean save() {
         if(selectedEventTriggerId != null) {
             if(nameEditBox.getValue().isBlank()) {
-                SystemToast.add(minecraft.getToastManager(),
+                SystemToast.add(minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Event Trigger name is empty"));
@@ -521,7 +521,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             if(!Objects.equals(selectedEventTriggerId, nameEditBox.getValue())
                     && CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.containsKey(nameEditBox.getValue())
             ) {
-                SystemToast.add(minecraft.getToastManager(),
+                SystemToast.add(minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Event Trigger name already exist"));
@@ -532,7 +532,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             if(Arrays.stream(EventTrigger.values()).noneMatch(eventTrigger ->
                     eventTrigger.name().equals(eventEditBox.getValue())
             )) {
-                SystemToast.add(minecraft.getToastManager(),
+                SystemToast.add(minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Event does not exist"));
@@ -571,7 +571,7 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Event trigger saved"),
                                 Component.literal(selectedEventTriggerId));
@@ -660,13 +660,13 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
 
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if (keyEvent.key() == GLFW.GLFW_KEY_TAB) {
+        if (keyEvent.key() == SDLScancode.SDL_SCANCODE_TAB) {
             String current = eventEditBox.getValue();
 
             for (String event : Arrays.stream(EventTrigger.values()).map(Enum::name).toList()) {
@@ -678,9 +678,9 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
             }
         }
 
-        if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
+        if(keyEvent.hasControlDown() && keyEvent.key() == SDLScancode.SDL_SCANCODE_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Event trigger saved"),
                         Component.literal(selectedEventTriggerId));

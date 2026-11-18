@@ -79,7 +79,7 @@ public class ChangelogScreen extends Screen implements ChangelogFetcherHandler.L
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().setScreen(parent);
+        Minecraft.getInstance().setScreenAndShow(parent);
     }
 
     private int contentLeft() {

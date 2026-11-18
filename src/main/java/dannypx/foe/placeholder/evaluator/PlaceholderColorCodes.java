@@ -37,7 +37,7 @@ public class PlaceholderColorCodes {
                         this.flush(result, segment);
                         if(formatting == ChatFormatting.RESET) {
                             currentStyle = Style.EMPTY;
-                        } else if (formatting.isColor()) {
+                        } else if (TextColor.fromLegacyFormat(formatting) != null) {
                             currentStyle = Style.EMPTY.applyFormat(formatting);
                         } else {
                             currentStyle = currentStyle.applyFormat(formatting);
@@ -112,7 +112,7 @@ public class PlaceholderColorCodes {
                 if(formatting != null) {
                     if(formatting == ChatFormatting.RESET) {
                         styleToApply = Style.EMPTY;
-                    } else if (formatting.isColor()) {
+                    } else if (TextColor.fromLegacyFormat(formatting) != null) {
                         styleToApply = Style.EMPTY.applyFormat(formatting);
                     } else {
                         styleToApply = styleToApply.applyFormat(formatting);
@@ -150,7 +150,7 @@ public class PlaceholderColorCodes {
                 if(formatting != null) {
                     if(formatting == ChatFormatting.RESET) {
                         styleToApply = Style.EMPTY;
-                    } else if (formatting.isColor()) {
+                    } else if (TextColor.fromLegacyFormat(formatting) != null) {
                         styleToApply = Style.EMPTY.applyFormat(formatting);
                     } else {
                         styleToApply = styleToApply.applyFormat(formatting);

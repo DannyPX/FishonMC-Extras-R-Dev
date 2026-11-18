@@ -4,19 +4,19 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
+import net.minecraft.client.gui.contextualbar.ContextualBar;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ContextualBarRenderer.class)
-public interface ContextualBarRendererMixin {
+@Mixin(ContextualBar.class)
+public interface ContextualBarMixin {
     @Inject(method = "extractExperienceLevel", at = @At("HEAD"), cancellable = true)
     private static void injectExtractExperienceLevel(GuiGraphicsExtractor guiGraphicsExtractor, Font font, int level, CallbackInfo ci) {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
-                && Configs.mixinConfig.contextualBarRendererMixinRenderExperienceLevel.get()
+                && Configs.mixinConfig.contextualBarMixinRenderExperienceLevel.get()
         ) {
             ci.cancel();
         }

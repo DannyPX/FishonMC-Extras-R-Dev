@@ -33,12 +33,12 @@ public class EventHandler extends Handler {
             if(Configs.handlerConfig.openEventsOnJoin.get()) minecraft.player.connection.sendCommand("events");
 
             //Update UI for missing HUD elements
-            minecraft.options.hideGui = true;
-            minecraft.options.hideGui = false;
+            minecraft.gui.hud.toggle();
+            minecraft.gui.hud.toggle();
 
             if(ChangelogFetcherHandler.instance().isNeedsUpdate()) {
                 ChangelogFetcherHandler.instance().setNeedsUpdate(false);
-                minecraft.setScreen(new ChangelogScreen(null));
+                minecraft.setScreenAndShow(new ChangelogScreen(null));
             }
 
             this.sendEventTrigger(EventTrigger.ON_JOIN);

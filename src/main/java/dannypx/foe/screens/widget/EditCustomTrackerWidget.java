@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -770,7 +770,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
         }
 
         public boolean keyPressed(KeyEvent keyEvent) {
-            if (trackerActionEditBoxWidget.isFocused() && keyEvent.key() == GLFW.GLFW_KEY_TAB) {
+            if (trackerActionEditBoxWidget.isFocused() && keyEvent.key() == SDLScancode.SDL_SCANCODE_TAB) {
                 String current = trackerActionEditBoxWidget.getValue();
 
                 for (String trackerAction : Arrays.stream(TrackerAction.values()).map(Enum::name).toList()) {

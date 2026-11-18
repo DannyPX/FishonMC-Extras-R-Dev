@@ -76,7 +76,7 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
                     -HoldingFishRenderHandler.FISH_DOWN_OFFSET,
                     -HoldingFishRenderHandler.FISH_FORWARD_OFFSET
             );
-            poseStack.mulPose(Axis.ZP.rotationDegrees(HoldingFishRenderHandler.FISH_ROLL));
+            poseStack.rotateDegrees(Axis.ZP, HoldingFishRenderHandler.FISH_ROLL);
 
             Pair<Boolean, FishTagObject> validatedFish = ValidateItem.isFish(itemStack);
             if (validatedFish.value1()) {

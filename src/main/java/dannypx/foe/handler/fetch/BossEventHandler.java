@@ -67,7 +67,7 @@ public class BossEventHandler extends Handler {
     }
 
     private void fetchFromBossBar() {
-        Map<UUID, LerpingBossEvent> bossEventMap = ((BossHealthOverlayAccessor) (minecraft.gui.getBossOverlay())).getEvents();
+        Map<UUID, LerpingBossEvent> bossEventMap = ((BossHealthOverlayAccessor) (minecraft.gui.hud.getBossOverlay())).getEvents();
         if(!bossEventMap.isEmpty()) {
             bossEventMap.forEach(((uuid, lerpingBossEvent) -> {
                 if(lerpingBossEvent.getName().getString().contains("\uF039") && !Objects.equals(prevBossEvent, lerpingBossEvent.getName().getString())) {

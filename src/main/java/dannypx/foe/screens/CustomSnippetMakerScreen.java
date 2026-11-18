@@ -3,6 +3,7 @@ package dannypx.foe.screens;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.blaze3d.Blaze3D;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
@@ -25,10 +26,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
+import org.lwjgl.sdl.SDLScancode;
 
+import java.net.URI;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -216,7 +218,7 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
                         Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, String.class, Integer.class).getType());
 
                         if(data.value3() > FishOnMCExtras.SNIPPET_VERSION) {
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Could not Import. Imported Chat Notification is made on a newer version"));
@@ -238,14 +240,14 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
                         buttonList.addEntry(buttonEntry);
                         buttonEntryMap.put(id, buttonEntry);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Imported Snippet"));
                     } catch (Exception e) {
                         LoggerHandler.error(e);
 
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("Fish On Extras Rebirth"),
                                 Component.literal("Could not Import. Data invalid"));
@@ -282,14 +284,14 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
 
                             this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("Exported Snippet on your clipboard"));
                         } catch (Exception e) {
                             LoggerHandler.error(e);
 
-                            SystemToast.add(this.minecraft.getToastManager(),
+                            SystemToast.add(this.minecraft.gui.toastManager(),
                                     SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                     Component.literal("Fish On Extras Rebirth"),
                                     Component.literal("An error has occurred"));
@@ -343,7 +345,7 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
                 BUTTON_WIDTH / 4, BUTTON_HEIGHT,
                 button -> {
                     if(this.save()) {
-                        SystemToast.add(this.minecraft.getToastManager(),
+                        SystemToast.add(this.minecraft.gui.toastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                                 Component.literal("HUD saved"),
                                 Component.literal(selectedSnippetId));
@@ -372,13 +374,13 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
                 button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
-                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                    this.minecraft.setScreenAndShow(new ConfirmLinkScreen((confirmed) -> {
                         if (confirmed) {
-                            Util.getPlatform().openUri(url);
+                            Blaze3D.openUri(URI.create(url));
                         }
 
-                        this.minecraft.setScreen(null);
-                    }, url, true));
+                        this.minecraft.gui.setScreen(null);
+                    }, URI.create(url), true));
                 })
                 .icon("Wiki")
                 .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
@@ -400,7 +402,7 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
     private boolean save() {
         if(selectedSnippetId != null) {
             if(nameEditBox.getValue().isBlank()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Snippet name is empty"));
@@ -411,7 +413,7 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
             if(!Objects.equals(selectedSnippetId, nameEditBox.getValue())
                     && CustomSnippetDataHandler.instance().getCustomSnippetData().snippetList.containsKey(nameEditBox.getValue())
             ) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Fish On Extras Rebirth"),
                         Component.literal("Snippet name already exist"));
@@ -458,12 +460,12 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if(keyEvent.key() == GLFW.GLFW_KEY_ESCAPE && snippetEditBox.hasActiveSuggestions()) {
+        if(keyEvent.key() == SDLScancode.SDL_SCANCODE_ESCAPE && snippetEditBox.hasActiveSuggestions()) {
             return snippetEditBox.keyPressed(keyEvent);
         }
-        if(keyEvent.hasControlDown() && keyEvent.key() == GLFW.GLFW_KEY_S) {
+        if(keyEvent.hasControlDown() && keyEvent.key() == SDLScancode.SDL_SCANCODE_S) {
             if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
+                SystemToast.add(this.minecraft.gui.toastManager(),
                         SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                         Component.literal("Snippet saved"),
                         Component.literal(selectedSnippetId));
@@ -475,13 +477,13 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parentScreen);
+        this.minecraft.setScreenAndShow(this.parentScreen);
     }
 
     @Override
     public void removed() {
         super.removed();
-        GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().handle(), 0L);
+        SDLMouse.SDL_SetCursor(SDLMouse.SDL_GetDefaultCursor());
     }
 
     //endregion
