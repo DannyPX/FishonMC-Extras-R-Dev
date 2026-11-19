@@ -208,7 +208,14 @@ public class ItemRendererHandler extends Handler {
                                     || (
                                             validatedItem.value2().getType().equals("lure")
                                             && validatedCursor.value2().getString("size").equals(validatedItem.value2().getString("size"))
-                                            && validatedCursor.value2().getString("color").equals(validatedItem.value2().getString("color"))
+                                            && validatedCursor.value2().getString("color")
+                                                    .replaceAll("§.", "")
+                                                    .replaceAll("<[^>]*>", "")
+                                                    .equals(
+                                                            validatedItem.value2().getString("color")
+                                                                    .replaceAll("§.", "")
+                                                                    .replaceAll("<[^>]*>", "")
+                                                    )
                                     )
                             )
                             && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))
